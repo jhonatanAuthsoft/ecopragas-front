@@ -1,20 +1,26 @@
-import { MainLayout } from "@/components/Layout/MainLayout";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import {
-  BarChart,
   Bar,
-  LineChart,
-  Line,
-  PieChart,
-  Pie,
+  BarChart,
+  CartesianGrid,
   Cell,
+  Legend,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
 } from "recharts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/atomic/mol.card/card.component";
+import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 
 const Relatorios = () => {
   // Dados de exemplo - Serviços por mês
@@ -59,7 +65,9 @@ const Relatorios = () => {
           <Card>
             <CardHeader>
               <CardTitle>Serviços Realizados por Mês</CardTitle>
-              <CardDescription>Quantidade de serviços concluídos nos últimos 6 meses</CardDescription>
+              <CardDescription>
+                Quantidade de serviços concluídos nos últimos 6 meses
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -86,16 +94,18 @@ const Relatorios = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="mes" />
                   <YAxis />
-                  <Tooltip 
-                    formatter={(value: number) => 
-                      new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
+                  <Tooltip
+                    formatter={(value: number) =>
+                      new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(
+                        value,
+                      )
                     }
                   />
                   <Legend />
-                  <Line 
-                    type="monotone" 
-                    dataKey="receita" 
-                    stroke="#82ca9d" 
+                  <Line
+                    type="monotone"
+                    dataKey="receita"
+                    stroke="#82ca9d"
                     strokeWidth={2}
                     name="Receita (R$)"
                   />

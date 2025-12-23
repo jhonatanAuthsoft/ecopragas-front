@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { MainLayout } from "@/components/Layout/MainLayout";
-import { CRMMetrics } from "@/components/CRM/CRMMetrics";
-import { LeadKanban } from "@/components/CRM/LeadKanban";
-import { AddLeadDialog } from "@/components/CRM/AddLeadDialog";
-import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/atomic/atm.button/button.component";
+import { AddLeadDialog } from "@/atomic/obj.add-lead-dialog/add-lead-dialog.component";
+import { CRMMetrics } from "@/atomic/obj.crmmetrics/crmmetrics.component";
+import { LeadKanban } from "@/atomic/obj.lead-kanban/lead-kanban.component";
+import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 
 export type Lead = {
   id: string;
@@ -79,11 +79,7 @@ const Leads = () => {
   };
 
   const handleUpdateLeadStatus = (leadId: string, newStatus: Lead["status"]) => {
-    setLeads(
-      leads.map((lead) =>
-        lead.id === leadId ? { ...lead, status: newStatus } : lead
-      )
-    );
+    setLeads(leads.map((lead) => (lead.id === leadId ? { ...lead, status: newStatus } : lead)));
   };
 
   return (

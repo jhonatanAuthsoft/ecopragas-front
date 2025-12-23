@@ -1,11 +1,11 @@
+import { Building2, Plus, Search, UserCheck, Users } from "lucide-react";
 import { useState } from "react";
-import { MainLayout } from "@/components/Layout/MainLayout";
-import { ClientesTable } from "@/components/Clientes/ClientesTable";
-import { AddClienteDialog } from "@/components/Clientes/AddClienteDialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Search, Plus, Users, Building2, UserCheck } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/atomic/atm.button/button.component";
+import { Input } from "@/atomic/atm.input/input.component";
+import { Card, CardContent } from "@/atomic/mol.card/card.component";
+import { AddClienteDialog } from "@/atomic/obj.add-cliente-dialog/add-cliente-dialog.component";
+import { ClientesTable } from "@/atomic/obj.clientes-table/clientes-table.component";
+import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 
 export type Cliente = {
   id: string;
@@ -110,7 +110,7 @@ const Clientes = () => {
     (cliente) =>
       cliente.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
       cliente.cpfCnpj.includes(searchTerm) ||
-      cliente.email.toLowerCase().includes(searchTerm.toLowerCase())
+      cliente.email.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const handleAddCliente = (cliente: Omit<Cliente, "id" | "datacadastro">) => {
@@ -183,12 +183,8 @@ const Clientes = () => {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-muted-foreground">
-                        {stat.title}
-                      </p>
-                      <p className="text-2xl font-bold text-foreground mt-1">
-                        {stat.value}
-                      </p>
+                      <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
+                      <p className="text-2xl font-bold text-foreground mt-1">{stat.value}</p>
                     </div>
                     <div className={`rounded-full ${stat.bgColor} p-3`}>
                       <Icon className={`h-5 w-5 ${stat.color}`} />

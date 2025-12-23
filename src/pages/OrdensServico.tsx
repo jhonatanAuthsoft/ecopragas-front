@@ -1,11 +1,11 @@
+import { AlertCircle, CheckCircle2, ClipboardList, Clock, Plus, Search } from "lucide-react";
 import { useState } from "react";
-import { MainLayout } from "@/components/Layout/MainLayout";
-import { OrdensServicoTable } from "@/components/OrdensServico/OrdensServicoTable";
-import { AddOrdemServicoDialog } from "@/components/OrdensServico/AddOrdemServicoDialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Search, Plus, ClipboardList, CheckCircle2, Clock, AlertCircle } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/atomic/atm.button/button.component";
+import { Input } from "@/atomic/atm.input/input.component";
+import { Card, CardContent } from "@/atomic/mol.card/card.component";
+import { AddOrdemServicoDialog } from "@/atomic/obj.add-ordem-servico-dialog/add-ordem-servico-dialog.component";
+import { OrdensServicoTable } from "@/atomic/obj.ordens-servico-table/ordens-servico-table.component";
+import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 
 export type OrdemServico = {
   id: string;
@@ -108,7 +108,7 @@ const OrdensServico = () => {
     (os) =>
       os.numeroOS.toLowerCase().includes(searchTerm.toLowerCase()) ||
       os.clienteNome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      os.tecnicoNome.toLowerCase().includes(searchTerm.toLowerCase())
+      os.tecnicoNome.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const handleAddOrdemServico = (os: Omit<OrdemServico, "id" | "numeroOS">) => {
@@ -185,12 +185,8 @@ const OrdensServico = () => {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-muted-foreground">
-                        {stat.title}
-                      </p>
-                      <p className="text-2xl font-bold text-foreground mt-1">
-                        {stat.value}
-                      </p>
+                      <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
+                      <p className="text-2xl font-bold text-foreground mt-1">{stat.value}</p>
                     </div>
                     <div className={`rounded-full ${stat.bgColor} p-3`}>
                       <Icon className={`h-5 w-5 ${stat.color}`} />

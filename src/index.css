@@ -1,10 +1,159 @@
 @tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+@theme inline {
+  /* Design System Typography */
+  --font-segoe: "Segoe UI", sans-serif;
+
+  --text-xxs: 14px;
+  --text-xs: 16px;
+  --text-sm: 18px;
+  --text-md: 20px;
+  --text-lg: 24px;
+  --text-xl: 32px;
+  --text-2xl: 48px;
+
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --font-weight-heavy: 900;
+
+  --leading-tight: 100%;
+  --leading-snug: 130%;
+  --leading-normal: 150%;
+
+  --radius-2xs: 4px;
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+
+  --spacing-2xs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+  --spacing-4xl: 96px;
+
+  /* Effects */
+  --shadow-dropshadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  /* Design System Colors */
+  --color-brand-primary-light: #4ADE7F;
+  --color-brand-primary-medium: #16A249;
+  --color-brand-primary-dark: #14532D;
+
+  --color-brand-secondary-light: #1EB1FF;
+  --color-brand-secondary-medium: #0073E5;
+  --color-brand-secondary-dark: #0D549B;
+
+  --color-brand-cta-light: #BDF5D1;
+  --color-brand-cta-medium: #42D778;
+  --color-brand-cta-dark: #1A9F4B;
+
+  --color-brand-accessory-orange: #FFBB28;
+  --color-brand-accessory-purple: #8884D8;
+  --color-brand-accessory-strong-orange: #FF8042;
+  --color-brand-accessory-green: #00C49F;
+
+  /* Grayscale */
+  --color-grayscale-white: #FFF;
+  --color-grayscale-x-light: #F8F8F7;
+  --color-grayscale-light: #E5E7EB;
+  --color-grayscale-medium: #768B9A;
+  --color-grayscale-dark: #4E5E6C;
+  --color-grayscale-x-dark: #21262C;
+
+  /* Feedback */
+  --color-feedback-success-light: #E1FBE9;
+  --color-feedback-success-medium: #1E8F44;
+  --color-feedback-success-dark: #0A5C25;
+  --color-feedback-warning-light: #FFF8C2;
+  --color-feedback-warning-medium: #EF9B00;
+  --color-feedback-warning-dark: #4F4910;
+  --color-feedback-error-light: #FDE6E7;
+  --color-feedback-error-medium: #EF4343;
+  --color-feedback-error-dark: #621A17;
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-sidebar: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
 */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
 
 @layer base {
   :root {
@@ -108,8 +257,7 @@ All colors MUST be HSL.
   * {
     @apply border-border;
   }
-
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-segoe;
   }
 }

@@ -1,4 +1,4 @@
-import { MainLayout } from "@/components/Layout/MainLayout";
+import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import Dashboard from "./Dashboard";
 
 const Index = () => {

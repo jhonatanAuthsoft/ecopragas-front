@@ -1,26 +1,26 @@
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { MainLayout } from "@/components/Layout/MainLayout";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Textarea } from "@/components/ui/textarea";
-import { 
-  ArrowLeft, 
-  Calendar, 
-  Clock, 
-  MapPin, 
-  User, 
+import {
+  ArrowLeft,
+  Calendar,
   Camera,
   CheckCircle2,
+  Clock,
+  MapPin,
   QrCode,
+  User,
 } from "lucide-react";
-import { QRCodeScanner } from "@/components/OrdensServico/QRCodeScanner";
-import { PhotoUpload } from "@/components/OrdensServico/PhotoUpload";
-import { ServiceChecklist } from "@/components/OrdensServico/ServiceChecklist";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { Badge } from "@/atomic/atm.badge/badge.component";
+import { Button } from "@/atomic/atm.button/button.component";
+import { Checkbox } from "@/atomic/atm.checkbox/checkbox.component";
+import { Textarea } from "@/atomic/atm.textarea/textarea.component";
+import { Card } from "@/atomic/mol.card/card.component";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
+import { PhotoUpload } from "@/atomic/obj.photo-upload/photo-upload.component";
+import { QRCodeScanner } from "@/atomic/obj.qrcode-scanner/qrcode-scanner.component";
+import { ServiceChecklist } from "@/atomic/obj.service-checklist/service-checklist.component";
+import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 
 export default function OrdemServicoDetalhes() {
   const { id } = useParams();
@@ -37,7 +37,7 @@ export default function OrdemServicoDetalhes() {
     dataAgendamento: "2024-01-15",
     horaAgendamento: "14:00",
     status: "Em Andamento",
-    valorServico: 350.00,
+    valorServico: 350.0,
   };
 
   const handleConcluir = () => {
@@ -50,15 +50,11 @@ export default function OrdemServicoDetalhes() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <Button
-            variant="ghost"
-            onClick={() => navigate("/ordens-servico")}
-            className="mb-4"
-          >
+          <Button variant="ghost" onClick={() => navigate("/ordens-servico")} className="mb-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Voltar
           </Button>
-          
+
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div>
               <h1 className="text-3xl font-bold mb-2">{ordem.numeroOS}</h1>
@@ -154,17 +150,10 @@ export default function OrdemServicoDetalhes() {
 
         {/* Actions */}
         <div className="flex gap-4">
-          <Button 
-            variant="outline" 
-            className="flex-1"
-            onClick={() => navigate("/ordens-servico")}
-          >
+          <Button variant="outline" className="flex-1" onClick={() => navigate("/ordens-servico")}>
             Salvar Rascunho
           </Button>
-          <Button 
-            className="flex-1"
-            onClick={handleConcluir}
-          >
+          <Button className="flex-1" onClick={handleConcluir}>
             Concluir Serviço
           </Button>
         </div>

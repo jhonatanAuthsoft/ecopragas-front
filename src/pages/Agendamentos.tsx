@@ -1,14 +1,20 @@
-import { useState } from "react";
-import { MainLayout } from "@/components/Layout/MainLayout";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Plus, Calendar as CalendarIcon, User, Wrench } from "lucide-react";
-import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
+import { eachDayOfInterval, endOfMonth, format, isSameDay, startOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { AddAgendamentoDialog } from "@/components/Agendamentos/AddAgendamentoDialog";
+import { Calendar as CalendarIcon, Plus, User, Wrench } from "lucide-react";
+import { useState } from "react";
+import { Badge } from "@/atomic/atm.badge/badge.component";
+import { Button } from "@/atomic/atm.button/button.component";
+import { Calendar } from "@/atomic/mol.calendar/calendar.component";
+import { Card, CardContent, CardHeader, CardTitle } from "@/atomic/mol.card/card.component";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/atomic/mol.select/select.component";
+import { AddAgendamentoDialog } from "@/atomic/obj.add-agendamento-dialog/add-agendamento-dialog.component";
+import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 
 interface Agendamento {
   id: string;
@@ -54,7 +60,13 @@ const Agendamentos = () => {
   ]);
 
   const tecnicos = ["todos", "Carlos Santos", "Pedro Lima", "Ana Costa", "Roberto Alves"];
-  const tiposServico = ["todos", "Dedetização", "Limpeza de Caixa D'água", "Desinsetização", "Descupinização"];
+  const tiposServico = [
+    "todos",
+    "Dedetização",
+    "Limpeza de Caixa D'água",
+    "Desinsetização",
+    "Descupinização",
+  ];
 
   const handleAddAgendamento = (agendamento: Omit<Agendamento, "id">) => {
     const newAgendamento = {
@@ -72,7 +84,7 @@ const Agendamentos = () => {
   });
 
   const agendamentosDoDia = agendamentosFiltrados.filter((agendamento) =>
-    isSameDay(agendamento.data, selectedDate)
+    isSameDay(agendamento.data, selectedDate),
   );
 
   const getDayAgendamentos = (day: Date) => {
@@ -173,7 +185,7 @@ const Agendamentos = () => {
                   hasAgendamento: "bg-primary/20 font-bold",
                 }}
               />
-              
+
               {viewMode === "lista" && (
                 <div className="mt-6 space-y-4">
                   <h3 className="text-lg font-semibold">
@@ -194,9 +206,12 @@ const Agendamentos = () => {
                               )}
                             </div>
                             <p className="text-sm text-muted-foreground mt-1">
-                              {format(agendamento.data, "dd/MM/yyyy", { locale: ptBR })} às {agendamento.horario}
+                              {format(agendamento.data, "dd/MM/yyyy", { locale: ptBR })} às{" "}
+                              {agendamento.horario}
                             </p>
-                            <p className="text-sm text-muted-foreground">Técnico: {agendamento.tecnico}</p>
+                            <p className="text-sm text-muted-foreground">
+                              Técnico: {agendamento.tecnico}
+                            </p>
                             <p className="text-sm text-muted-foreground">{agendamento.endereco}</p>
                           </div>
                           <Badge className={getStatusColor(agendamento.status)}>
@@ -262,8 +277,8 @@ const Agendamentos = () => {
         open={isAddDialogOpen}
         onOpenChange={setIsAddDialogOpen}
         onAdd={handleAddAgendamento}
-        tecnicos={tecnicos.filter(t => t !== "todos")}
-        tiposServico={tiposServico.filter(s => s !== "todos")}
+        tecnicos={tecnicos.filter((t) => t !== "todos")}
+        tiposServico={tiposServico.filter((s) => s !== "todos")}
       />
     </MainLayout>
   );

@@ -1,15 +1,13 @@
-import { MetricCard } from "@/components/Dashboard/MetricCard";
-import { RecentClients } from "@/components/Dashboard/RecentClients";
-import { Users, ClipboardCheck, DollarSign, TrendingUp } from "lucide-react";
+import { ClipboardCheck, DollarSign, TrendingUp, Users } from "lucide-react";
+import { MetricCard } from "@/atomic/obj.metric-card/metric-card.component";
+import { RecentClients } from "@/atomic/obj.recent-clients/recent-clients.component";
 
 const Dashboard = () => {
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Visão geral das operações da Eco Pragas
-        </p>
+        <p className="text-muted-foreground">Visão geral das operações da Eco Pragas</p>
       </div>
 
       {/* Metrics Grid */}

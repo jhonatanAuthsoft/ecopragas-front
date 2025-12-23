@@ -1,10 +1,10 @@
+import { CheckCircle2, Clock, FileText, Search, XCircle } from "lucide-react";
 import { useState } from "react";
-import { MainLayout } from "@/components/Layout/MainLayout";
-import { ContratosTable } from "@/components/Contratos/ContratosTable";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Search, FileText, CheckCircle2, Clock, XCircle } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/atomic/atm.button/button.component";
+import { Input } from "@/atomic/atm.input/input.component";
+import { Card, CardContent } from "@/atomic/mol.card/card.component";
+import { ContratosTable } from "@/atomic/obj.contratos-table/contratos-table.component";
+import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 
 export type Contrato = {
   id: string;
@@ -101,7 +101,7 @@ const Contratos = () => {
     (contrato) =>
       contrato.clienteNome.toLowerCase().includes(searchTerm.toLowerCase()) ||
       contrato.numeroContrato.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      contrato.clienteCpfCnpj.includes(searchTerm)
+      contrato.clienteCpfCnpj.includes(searchTerm),
   );
 
   const totalContratos = contratos.length;
@@ -168,12 +168,8 @@ const Contratos = () => {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-muted-foreground">
-                        {stat.title}
-                      </p>
-                      <p className="text-2xl font-bold text-foreground mt-1">
-                        {stat.value}
-                      </p>
+                      <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
+                      <p className="text-2xl font-bold text-foreground mt-1">{stat.value}</p>
                     </div>
                     <div className={`rounded-full ${stat.bgColor} p-3`}>
                       <Icon className={`h-5 w-5 ${stat.color}`} />
@@ -212,7 +208,8 @@ const Contratos = () => {
                 <div className="text-right">
                   <p className="text-sm text-muted-foreground">MRR Anual Projetado</p>
                   <p className="text-xl font-semibold text-foreground mt-1">
-                    R$ {(valorTotalMensal * 12).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                    R${" "}
+                    {(valorTotalMensal * 12).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                   </p>
                 </div>
               </div>
