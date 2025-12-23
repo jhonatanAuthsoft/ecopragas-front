@@ -1,17 +1,17 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import Auth from "./pages/Auth";
-import Leads from "./pages/Leads";
-import Clientes from "./pages/Clientes";
-import OrdensServico from "./pages/OrdensServico";
-import OrdemServicoDetalhes from "./pages/OrdemServicoDetalhes";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Toaster as Sonner } from "@/atomic/mol.sonner/sonner.component";
+import { Toaster } from "@/atomic/mol.toaster/toaster.component";
+import { TooltipProvider } from "@/atomic/mol.tooltip/tooltip.component";
 import Agendamentos from "./pages/Agendamentos";
-import Relatorios from "./pages/Relatorios";
+import Auth from "./pages/Auth";
+import Clientes from "./pages/Clientes";
+import Index from "./pages/Index";
+import Leads from "./pages/Leads";
 import NotFound from "./pages/NotFound";
+import OrdemServicoDetalhes from "./pages/OrdemServicoDetalhes";
+import OrdensServico from "./pages/OrdensServico";
+import Relatorios from "./pages/Relatorios";
 
 const queryClient = new QueryClient();
 

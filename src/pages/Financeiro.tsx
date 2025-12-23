@@ -1,15 +1,15 @@
-import { useState, useEffect } from "react";
-import { MainLayout } from "@/components/Layout/MainLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Search, DollarSign, AlertCircle, CheckCircle2, Clock } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { AlertCircle, CheckCircle2, Clock, DollarSign, Plus, Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Badge } from "@/atomic/atm.badge/badge.component";
+import { Button } from "@/atomic/atm.button/button.component";
+import { Input } from "@/atomic/atm.input/input.component";
+import { Card, CardContent, CardHeader, CardTitle } from "@/atomic/mol.card/card.component";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
+import { CobrancasTable } from "@/atomic/obj.cobrancas-table/cobrancas-table.component";
+import { GerarCobrancaDialog } from "@/atomic/obj.gerar-cobranca-dialog/gerar-cobranca-dialog.component";
+import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { useToast } from "@/hooks/use-toast";
-import { GerarCobrancaDialog } from "@/components/Financeiro/GerarCobrancaDialog";
-import { CobrancasTable } from "@/components/Financeiro/CobrancasTable";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Cobranca {
   id: string;
@@ -56,7 +56,9 @@ const Financeiro = () => {
     setCobrancas(data || []);
   };
 
-  const handleGerarCobranca = async (cobranca: Omit<Cobranca, "id" | "data_emissao" | "created_at" | "updated_at">) => {
+  const handleGerarCobranca = async (
+    cobranca: Omit<Cobranca, "id" | "data_emissao" | "created_at" | "updated_at">,
+  ) => {
     const { error } = await supabase.from("cobrancas").insert([cobranca]);
 
     if (error) {
@@ -78,23 +80,24 @@ const Financeiro = () => {
   };
 
   const filteredCobrancas = cobrancas.filter((cobranca) => {
-    const matchSearch = cobranca.cliente_nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchSearch =
+      cobranca.cliente_nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
       cobranca.ordem_servico_id.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     if (activeTab === "todas") return matchSearch;
     return matchSearch && cobranca.status === activeTab;
   });
 
   const totalPendente = cobrancas
-    .filter(c => c.status === "pendente")
+    .filter((c) => c.status === "pendente")
     .reduce((sum, c) => sum + Number(c.valor), 0);
 
   const totalPago = cobrancas
-    .filter(c => c.status === "pago")
+    .filter((c) => c.status === "pago")
     .reduce((sum, c) => sum + Number(c.valor), 0);
 
   const totalVencido = cobrancas
-    .filter(c => c.status === "vencido")
+    .filter((c) => c.status === "vencido")
     .reduce((sum, c) => sum + Number(c.valor), 0);
 
   return (
@@ -119,10 +122,12 @@ const Financeiro = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalPendente)}
+                {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(
+                  totalPendente,
+                )}
               </div>
               <p className="text-xs text-muted-foreground">
-                {cobrancas.filter(c => c.status === "pendente").length} cobrança(s)
+                {cobrancas.filter((c) => c.status === "pendente").length} cobrança(s)
               </p>
             </CardContent>
           </Card>
@@ -134,10 +139,12 @@ const Financeiro = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalPago)}
+                {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(
+                  totalPago,
+                )}
               </div>
               <p className="text-xs text-muted-foreground">
-                {cobrancas.filter(c => c.status === "pago").length} cobrança(s)
+                {cobrancas.filter((c) => c.status === "pago").length} cobrança(s)
               </p>
             </CardContent>
           </Card>
@@ -149,10 +156,12 @@ const Financeiro = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalVencido)}
+                {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(
+                  totalVencido,
+                )}
               </div>
               <p className="text-xs text-muted-foreground">
-                {cobrancas.filter(c => c.status === "vencido").length} cobrança(s)
+                {cobrancas.filter((c) => c.status === "vencido").length} cobrança(s)
               </p>
             </CardContent>
           </Card>
@@ -164,13 +173,11 @@ const Financeiro = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-                  totalPendente + totalPago + totalVencido
+                {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(
+                  totalPendente + totalPago + totalVencido,
                 )}
               </div>
-              <p className="text-xs text-muted-foreground">
-                {cobrancas.length} cobrança(s)
-              </p>
+              <p className="text-xs text-muted-foreground">{cobrancas.length} cobrança(s)</p>
             </CardContent>
           </Card>
         </div>
@@ -200,10 +207,7 @@ const Financeiro = () => {
               </TabsList>
 
               <TabsContent value={activeTab} className="mt-4">
-                <CobrancasTable 
-                  cobrancas={filteredCobrancas} 
-                  onRefresh={carregarCobrancas}
-                />
+                <CobrancasTable cobrancas={filteredCobrancas} onRefresh={carregarCobrancas} />
               </TabsContent>
             </Tabs>
           </CardContent>
