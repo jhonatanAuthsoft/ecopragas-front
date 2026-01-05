@@ -73,7 +73,7 @@ export const inputStyle = tv({
       caption: "block text-xxs leading-tight text-muted-foreground",
     },
     status: {
-      success: "text-green-600",
+      success: "text-feedback-success-medium",
       error: "text-destructive",
     },
     disabled: {
