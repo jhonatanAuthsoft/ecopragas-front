@@ -118,7 +118,7 @@ const Financeiro = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Pendente</CardTitle>
-              <Clock className="h-4 w-4 text-yellow-500" />
+              <Clock className="h-4 w-4 text-feedback-warning-medium" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
@@ -135,7 +135,7 @@ const Financeiro = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Pago</CardTitle>
-              <CheckCircle2 className="h-4 w-4 text-green-500" />
+              <CheckCircle2 className="h-4 w-4 text-feedback-success-medium" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
@@ -152,7 +152,7 @@ const Financeiro = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Vencido</CardTitle>
-              <AlertCircle className="h-4 w-4 text-red-500" />
+              <AlertCircle className="h-4 w-4 text-feedback-error-medium" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">

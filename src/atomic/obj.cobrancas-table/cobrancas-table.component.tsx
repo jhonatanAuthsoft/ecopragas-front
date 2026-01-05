@@ -45,25 +45,25 @@ export const CobrancasTable = ({ cobrancas, onRefresh }: CobrancasTableProps) =>
     switch (status) {
       case "pendente":
         return (
-          <Badge variant="outline" className="bg-yellow-500/10 text-yellow-700">
+          <Badge variant="outline" className="bg-feedback-warning-light text-feedback-warning-dark">
             Pendente
           </Badge>
         );
       case "pago":
         return (
-          <Badge variant="outline" className="bg-green-500/10 text-green-700">
+          <Badge variant="outline" className="bg-feedback-success-light text-feedback-success-dark">
             Pago
           </Badge>
         );
       case "vencido":
         return (
-          <Badge variant="outline" className="bg-red-500/10 text-red-700">
+          <Badge variant="outline" className="bg-feedback-error-light text-feedback-error-dark">
             Vencido
           </Badge>
         );
       case "cancelado":
         return (
-          <Badge variant="outline" className="bg-gray-500/10 text-gray-700">
+          <Badge variant="outline" className="bg-grayscale-light text-grayscale-dark">
             Cancelado
           </Badge>
         );

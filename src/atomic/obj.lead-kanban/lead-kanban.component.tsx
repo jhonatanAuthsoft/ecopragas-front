@@ -9,12 +9,12 @@ interface LeadKanbanProps {
 }
 
 const columns: { status: Lead["status"]; title: string; color: string }[] = [
-  { status: "novo", title: "Novo", color: "border-l-primary" },
-  { status: "contato", title: "Em Contato", color: "border-l-secondary" },
-  { status: "proposta", title: "Proposta Enviada", color: "border-l-info" },
-  { status: "negociacao", title: "Negociação", color: "border-l-warning" },
-  { status: "ganho", title: "Ganho", color: "border-l-success" },
-  { status: "perdido", title: "Perdido", color: "border-l-destructive" },
+  { status: "novo", title: "Novo", color: "border-l-brand-primary-medium" },
+  { status: "contato", title: "Em Contato", color: "border-l-brand-secondary-medium" },
+  { status: "proposta", title: "Proposta Enviada", color: "border-l-brand-secondary-dark" },
+  { status: "negociacao", title: "Negociação", color: "border-l-feedback-warning-medium" },
+  { status: "ganho", title: "Ganho", color: "border-l-feedback-success-medium" },
+  { status: "perdido", title: "Perdido", color: "border-l-feedback-error-medium" },
 ];
 
 export const LeadKanban = ({ leads, onUpdateStatus }: LeadKanbanProps) => {

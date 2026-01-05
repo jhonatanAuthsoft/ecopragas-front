@@ -108,7 +108,7 @@ export function QRCodeScanner({ ordemId }: QRCodeScannerProps) {
           <div className="space-y-3">
             {scanResults.map((result, index) => (
               <div key={index} className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
-                <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
+                <CheckCircle2 className="h-5 w-5 text-feedback-success-medium mt-0.5" />
                 <div className="flex-1">
                   <p className="font-medium">{result.tipo}</p>
                   <p className="text-sm text-muted-foreground">{result.codigo}</p>

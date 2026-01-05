@@ -98,15 +98,15 @@ const Agendamentos = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "agendado":
-        return "bg-blue-500";
+        return "bg-brand-secondary-medium text-white hover:bg-brand-secondary-dark";
       case "em-andamento":
-        return "bg-yellow-500";
+        return "bg-feedback-warning-medium text-white hover:bg-feedback-warning-dark";
       case "concluido":
-        return "bg-green-500";
+        return "bg-feedback-success-medium text-white hover:bg-feedback-success-dark";
       case "cancelado":
-        return "bg-red-500";
+        return "bg-feedback-error-medium text-white hover:bg-feedback-error-dark";
       default:
-        return "bg-gray-500";
+        return "bg-grayscale-medium text-white hover:bg-grayscale-dark";
     }
   };
 
@@ -182,7 +182,7 @@ const Agendamentos = () => {
                   hasAgendamento: (date) => getDayAgendamentos(date).length > 0,
                 }}
                 modifiersClassNames={{
-                  hasAgendamento: "bg-primary/20 font-bold",
+                  hasAgendamento: "bg-brand-primary-light/20 font-bold text-brand-primary-dark",
                 }}
               />
 

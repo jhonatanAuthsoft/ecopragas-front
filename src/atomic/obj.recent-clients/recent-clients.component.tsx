@@ -56,13 +56,13 @@ export const RecentClients = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Ativo":
-        return "bg-success/10 text-success hover:bg-success/20";
+        return "bg-feedback-success-light text-feedback-success-dark hover:bg-feedback-success-light/80";
       case "Lead":
-        return "bg-info/10 text-info hover:bg-info/20";
+        return "bg-brand-secondary-light/30 text-brand-secondary-dark hover:bg-brand-secondary-light/40";
       case "Inativo":
-        return "bg-muted text-muted-foreground hover:bg-muted";
+        return "bg-grayscale-light text-grayscale-dark hover:bg-grayscale-light/80";
       default:
-        return "bg-muted text-muted-foreground";
+        return "bg-grayscale-light text-grayscale-dark";
     }
   };
 

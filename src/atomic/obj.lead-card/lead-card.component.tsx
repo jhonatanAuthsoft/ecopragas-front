@@ -10,12 +10,12 @@ interface LeadCardProps {
 }
 
 const originColors: Record<Lead["origin"], string> = {
-  Google: "bg-chart-1 text-primary-foreground",
-  Instagram: "bg-chart-2 text-secondary-foreground",
-  Indicação: "bg-chart-3 text-accent-foreground",
-  Facebook: "bg-chart-4 text-secondary-foreground",
-  Website: "bg-chart-5 text-foreground",
-  Outro: "bg-muted text-muted-foreground",
+  Google: "bg-brand-accessory-green text-white",
+  Instagram: "bg-brand-accessory-purple text-white",
+  Indicação: "bg-brand-accessory-orange text-white",
+  Facebook: "bg-brand-secondary-medium text-white",
+  Website: "bg-brand-primary-medium text-white",
+  Outro: "bg-grayscale-light text-grayscale-dark",
 };
 
 export const LeadCard = ({ lead }: LeadCardProps) => {
@@ -52,7 +52,7 @@ export const LeadCard = ({ lead }: LeadCardProps) => {
         </div>
 
         <div className="pt-2 border-t border-border flex items-center justify-between">
-          <span className="text-sm font-bold text-primary">
+          <span className="text-sm font-bold text-brand-primary-medium">
             R$ {lead.value.toLocaleString("pt-BR")}
           </span>
           <div className="flex items-center gap-1 text-xs text-muted-foreground">
