@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/atomic/mol.select/select.component";
-import type { Lead } from "@/pages/Leads";
+import type { Lead } from "@/pages/leads/Leads";
 
 interface AddLeadDialogProps {
   open: boolean;

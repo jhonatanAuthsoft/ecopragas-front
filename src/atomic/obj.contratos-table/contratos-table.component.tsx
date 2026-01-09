@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/atomic/mol.table/table.component";
-import type { Contrato } from "@/pages/Contratos";
+import type { Contrato } from "@/pages/contratos/Contratos";
 
 interface ContratosTableProps {
   contratos: Contrato[];

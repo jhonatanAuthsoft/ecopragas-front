@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Button } from "@/atomic/atm.button/button.component";
 import { Input } from "@/atomic/atm.input/input.component";
 import { Card, CardContent } from "@/atomic/mol.card/card.component";
-import { AddClienteDialog } from "@/atomic/obj.add-cliente-dialog/add-cliente-dialog.component";
-import { ClientesTable } from "@/atomic/obj.clientes-table/clientes-table.component";
+import { AddClienteDialog } from "./components/AddClienteDialog";
+import { ClientesTable } from "./components/ClientesTable";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 
 export type Cliente = {
@@ -225,3 +225,4 @@ const Clientes = () => {
 };
 
 export default Clientes;
+

@@ -17,9 +17,9 @@ import { Checkbox } from "@/atomic/atm.checkbox/checkbox.component";
 import { Textarea } from "@/atomic/atm.textarea/textarea.component";
 import { Card } from "@/atomic/mol.card/card.component";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
-import { PhotoUpload } from "@/atomic/obj.photo-upload/photo-upload.component";
-import { QRCodeScanner } from "@/atomic/obj.qrcode-scanner/qrcode-scanner.component";
-import { ServiceChecklist } from "@/atomic/obj.service-checklist/service-checklist.component";
+import { PhotoUpload } from "./components/PhotoUpload";
+import { QRCodeScanner } from "./components/QRCodeScanner";
+import { ServiceChecklist } from "./components/ServiceChecklist";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 
 export default function OrdemServicoDetalhes() {
@@ -27,7 +27,6 @@ export default function OrdemServicoDetalhes() {
   const navigate = useNavigate();
   const [observacoes, setObservacoes] = useState("");
 
-  // Mock data - substituir por dados reais
   const ordem = {
     id: id || "1",
     numeroOS: "OS-2024-001",
@@ -48,7 +47,6 @@ export default function OrdemServicoDetalhes() {
   return (
     <MainLayout>
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
         <div className="mb-6">
           <Button variant="ghost" onClick={() => navigate("/ordens-servico")} className="mb-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -64,7 +62,6 @@ export default function OrdemServicoDetalhes() {
           </div>
         </div>
 
-        {/* Info Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <Card className="p-4">
             <div className="flex items-center gap-3">
@@ -107,7 +104,6 @@ export default function OrdemServicoDetalhes() {
           </Card>
         </div>
 
-        {/* Tabs */}
         <Tabs defaultValue="checklist" className="mb-6">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="checklist">
@@ -137,7 +133,6 @@ export default function OrdemServicoDetalhes() {
           </TabsContent>
         </Tabs>
 
-        {/* Observações */}
         <Card className="p-6 mb-6">
           <h3 className="text-lg font-semibold mb-4">Observações</h3>
           <Textarea
@@ -148,7 +143,6 @@ export default function OrdemServicoDetalhes() {
           />
         </Card>
 
-        {/* Actions */}
         <div className="flex gap-4">
           <Button variant="outline" className="flex-1" onClick={() => navigate("/ordens-servico")}>
             Salvar Rascunho
@@ -161,3 +155,4 @@ export default function OrdemServicoDetalhes() {
     </MainLayout>
   );
 }
+

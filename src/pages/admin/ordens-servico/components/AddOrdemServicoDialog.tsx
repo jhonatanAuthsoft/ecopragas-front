@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@/atomic/mol.select/select.component";
 import { cn } from "@/lib/utils";
-import type { OrdemServico } from "@/pages/OrdensServico";
+import type { OrdemServico } from "@/pages/admin/ordens-servico/OrdensServico";
 
 interface AddOrdemServicoDialogProps {
   open: boolean;

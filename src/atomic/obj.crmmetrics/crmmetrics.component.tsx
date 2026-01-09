@@ -1,6 +1,6 @@
 import { DollarSign, Percent, Target, TrendingUp, Users } from "lucide-react";
 import { Card, CardContent } from "@/atomic/mol.card/card.component";
-import type { Lead } from "@/pages/Leads";
+import type { Lead } from "@/pages/leads/Leads";
 
 interface CRMMetricsProps {
   leads: Lead[];

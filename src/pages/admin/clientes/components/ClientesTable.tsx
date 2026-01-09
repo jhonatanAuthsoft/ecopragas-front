@@ -17,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/atomic/mol.table/table.component";
-import type { Cliente } from "@/pages/Clientes";
+import type { Cliente } from "@/pages/admin/clientes/Clientes";
 
 interface ClientesTableProps {
   clientes: Cliente[];
