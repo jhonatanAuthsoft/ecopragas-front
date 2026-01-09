@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Button } from "@/atomic/atm.button/button.component";
 import { Input } from "@/atomic/atm.input/input.component";
 import { Card, CardContent } from "@/atomic/mol.card/card.component";
-import { AddOrdemServicoDialog } from "@/atomic/obj.add-ordem-servico-dialog/add-ordem-servico-dialog.component";
-import { OrdensServicoTable } from "@/atomic/obj.ordens-servico-table/ordens-servico-table.component";
+import { AddOrdemServicoDialog } from "./components/AddOrdemServicoDialog";
+import { OrdensServicoTable } from "./components/OrdensServicoTable";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 
 export type OrdemServico = {
@@ -227,3 +227,4 @@ const OrdensServico = () => {
 };
 
 export default OrdensServico;
+

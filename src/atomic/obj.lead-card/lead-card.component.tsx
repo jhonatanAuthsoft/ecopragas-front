@@ -3,7 +3,7 @@ import { ptBR } from "date-fns/locale";
 import { Building2, Calendar, Mail, Phone } from "lucide-react";
 import { Badge } from "@/atomic/atm.badge/badge.component";
 import { Card, CardContent } from "@/atomic/mol.card/card.component";
-import type { Lead } from "@/pages/Leads";
+import type { Lead } from "@/pages/leads/Leads";
 
 interface LeadCardProps {
   lead: Lead;

@@ -23,7 +23,6 @@ import {
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 
 const Relatorios = () => {
-  // Dados de exemplo - Serviços por mês
   const servicosPorMes = [
     { mes: "Jan", servicos: 45, receita: 12500 },
     { mes: "Fev", servicos: 52, receita: 14800 },
@@ -33,7 +32,6 @@ const Relatorios = () => {
     { mes: "Jun", servicos: 67, receita: 18400 },
   ];
 
-  // Dados de exemplo - Tipos de serviço
   const tiposServico = [
     { nome: "Dedetização", valor: 145, percentual: 35 },
     { nome: "Limpeza Caixa D'água", valor: 98, percentual: 24 },
@@ -42,7 +40,6 @@ const Relatorios = () => {
     { nome: "Outros", valor: 28, percentual: 7 },
   ];
 
-  // Dados de exemplo - Status das O.S.
   const statusOS = [
     { status: "Agendadas", quantidade: 28 },
     { status: "Em Andamento", quantidade: 15 },
@@ -60,7 +57,6 @@ const Relatorios = () => {
           <p className="text-muted-foreground">Visualize o desempenho e métricas do seu negócio</p>
         </div>
 
-        {/* Linha 1 - Gráficos de Serviços e Receita */}
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
@@ -115,7 +111,6 @@ const Relatorios = () => {
           </Card>
         </div>
 
-        {/* Linha 2 - Gráficos de Tipos de Serviço e Status */}
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
@@ -169,7 +164,6 @@ const Relatorios = () => {
           </Card>
         </div>
 
-        {/* Cards de Resumo */}
         <div className="grid gap-4 md:grid-cols-4">
           <Card>
             <CardHeader className="pb-2">
@@ -225,3 +219,4 @@ const Relatorios = () => {
 };
 
 export default Relatorios;
+

@@ -1,6 +1,6 @@
 import { ClipboardCheck, DollarSign, TrendingUp, Users } from "lucide-react";
-import { MetricCard } from "@/atomic/obj.metric-card/metric-card.component";
-import { RecentClients } from "@/atomic/obj.recent-clients/recent-clients.component";
+import { MetricCard } from "./components/MetricCard";
+import { RecentClients } from "./components/RecentClients";
 
 const Dashboard = () => {
   return (
@@ -45,3 +45,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+

@@ -24,7 +24,6 @@ export type Contrato = {
 const Contratos = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Mock data - dados de exemplo
   const [contratos] = useState<Contrato[]>([
     {
       id: "1",
@@ -224,3 +223,4 @@ const Contratos = () => {
 };
 
 export default Contratos;
+

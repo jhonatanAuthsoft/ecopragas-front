@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/atomic/mol.select/select.component";
-import { AddAgendamentoDialog } from "@/atomic/obj.add-agendamento-dialog/add-agendamento-dialog.component";
+import { AddAgendamentoDialog } from "./components/AddAgendamentoDialog";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 
 interface Agendamento {
@@ -285,3 +285,4 @@ const Agendamentos = () => {
 };
 
 export default Agendamentos;
+

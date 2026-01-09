@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/atomic/mol.card/card.component";
 import { ScrollArea } from "@/atomic/mol.scroll-area/scroll-area.component";
-import type { Lead } from "@/pages/Leads";
+import type { Lead } from "@/pages/leads/Leads";
 import { LeadCard } from "@/atomic/obj.lead-card/lead-card.component";
 
 interface LeadKanbanProps {
