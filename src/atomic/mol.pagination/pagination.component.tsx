@@ -38,7 +38,7 @@ const PaginationLink = ({ className, isActive, disabled, size = "icon", ...props
     tabIndex={disabled ? -1 : undefined}
     className={cn(
       buttonVariants({
-        variant: isActive ? "outline" : "ghost",
+        variant: isActive ? "primary" : "ghost",
         size,
       }),
       disabled && "pointer-events-none text-grayscale-dark opacity-50",

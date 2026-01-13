@@ -1,7 +1,6 @@
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Edit, Eye, MoreVertical } from "lucide-react";
-import { Badge } from "@/atomic/atm.badge/badge.component";
 import { Button } from "@/atomic/atm.button/button.component";
 import {
   DropdownMenu,
@@ -17,30 +16,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/atomic/mol.table/table.component";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/atomic/mol.pagination/pagination.component";
 import type { OrdemServico } from "@/pages/admin/ordens-servico/OrdensServico";
 
 interface OrdensServicoTableProps {
   ordensServico: OrdemServico[];
 }
-
-const statusConfig = {
-  agendada: {
-    label: "Agendada",
-    className: "bg-info/10 text-info hover:bg-info/20",
-  },
-  em_andamento: {
-    label: "Em Andamento",
-    className: "bg-warning/10 text-warning hover:bg-warning/20",
-  },
-  concluida: {
-    label: "Concluída",
-    className: "bg-success/10 text-success hover:bg-success/20",
-  },
-  cancelada: {
-    label: "Cancelada",
-    className: "bg-muted text-muted-foreground hover:bg-muted/80",
-  },
-};
 
 const tipoServicoLabels: Record<OrdemServico["tipoServico"], string> = {
   dedetizacao: "Dedetização",
@@ -61,19 +50,18 @@ export const OrdensServicoTable = ({ ordensServico }: OrdensServicoTableProps) =
   }
 
   return (
-    <div className="rounded-md border border-border">
+    <div className="rounded-md border border-border p-md">
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Nº O.S.</TableHead>
             <TableHead>Cliente</TableHead>
-            <TableHead>Tipo de Serviço</TableHead>
+            <TableHead>Serviço</TableHead>
             <TableHead>Técnico</TableHead>
-            <TableHead>Data/Hora</TableHead>
+            <TableHead>Data</TableHead>
+            <TableHead>Horário</TableHead>
             <TableHead>Endereço</TableHead>
             <TableHead>Valor</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -84,23 +72,16 @@ export const OrdensServicoTable = ({ ordensServico }: OrdensServicoTableProps) =
               <TableCell>{tipoServicoLabels[os.tipoServico]}</TableCell>
               <TableCell className="text-muted-foreground">{os.tecnicoNome}</TableCell>
               <TableCell>
-                <div className="space-y-0.5">
-                  <div className="text-sm">
-                    {format(os.dataAgendamento, "dd/MM/yyyy", { locale: ptBR })}
-                  </div>
-                  <div className="text-xs text-muted-foreground">{os.horaAgendamento}</div>
-                </div>
+                {format(os.dataAgendamento, "dd/MM/yyyy", { locale: ptBR })}
+              </TableCell>
+              <TableCell>
+                {os.horaAgendamento}
               </TableCell>
               <TableCell className="max-w-[200px] truncate text-muted-foreground text-sm">
                 {os.endereco}
               </TableCell>
-              <TableCell className="font-semibold text-primary">
+              <TableCell className="font-semibold text-brand-secondary-medium">
                 R$ {os.valorServico.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-              </TableCell>
-              <TableCell>
-                <Badge className={statusConfig[os.status].className}>
-                  {statusConfig[os.status].label}
-                </Badge>
               </TableCell>
               <TableCell className="text-right">
                 <DropdownMenu>
@@ -127,6 +108,33 @@ export const OrdensServicoTable = ({ ordensServico }: OrdensServicoTableProps) =
           ))}
         </TableBody>
       </Table>
+      
+      <div className="mt-4">
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious href="#" disabled />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#" isActive className="bg-brand-primary-medium text-white hover:bg-brand-primary-dark hover:text-white">
+                1
+              </PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">2</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">3</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext href="#" />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
     </div>
   );
 };

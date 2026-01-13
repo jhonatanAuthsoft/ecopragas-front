@@ -1,11 +1,11 @@
-import { AlertCircle, CheckCircle2, ClipboardList, Clock, Plus, Search } from "lucide-react";
+import { AlertCircle, CheckCircle2, ClipboardList, Clock, Plus } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/atomic/atm.button/button.component";
-import { Input } from "@/atomic/atm.input/input.component";
 import { Card, CardContent } from "@/atomic/mol.card/card.component";
 import { AddOrdemServicoDialog } from "./components/AddOrdemServicoDialog";
 import { OrdensServicoTable } from "./components/OrdensServicoTable";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
+import { SearchInput } from "@/atomic/mol.search/search.component";
 
 export type OrdemServico = {
   id: string;
@@ -136,28 +136,28 @@ const OrdensServico = () => {
       value: totalOS,
       icon: ClipboardList,
       color: "text-brand-primary-medium",
-      bgColor: "bg-brand-primary-light/20",
+      bgColor: "bg-brand-cta-light",
     },
     {
       title: "Agendadas",
       value: osAgendadas,
       icon: Clock,
-      color: "text-brand-secondary-dark",
-      bgColor: "bg-brand-secondary-light/30",
+      color: "text-brand-primary-medium",
+      bgColor: "bg-brand-cta-light",
     },
     {
       title: "Em Andamento",
       value: osEmAndamento,
       icon: AlertCircle,
-      color: "text-feedback-warning-medium",
-      bgColor: "bg-feedback-warning-light",
+      color: "text-brand-primary-medium",
+      bgColor: "bg-brand-cta-light",
     },
     {
       title: "Concluídas",
       value: osConcluidas,
       icon: CheckCircle2,
-      color: "text-feedback-success-medium",
-      bgColor: "bg-feedback-success-light",
+      color: "text-brand-primary-medium",
+      bgColor: "bg-brand-cta-light",
     },
   ];
 
@@ -171,50 +171,40 @@ const OrdensServico = () => {
               Gerencie as ordens de serviço e acompanhe a execução
             </p>
           </div>
-          <Button onClick={() => setIsDialogOpen(true)} size="lg">
-            <Plus className="mr-2 h-5 w-5" />
-            Nova O.S.
-          </Button>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {stats.map((stat) => {
-            const Icon = stat.icon;
-            return (
-              <Card key={stat.title} className="border-border">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
-                      <p className="text-2xl font-bold text-foreground mt-1">{stat.value}</p>
+        <div className="flex flex-col gap-xl">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {stats.map((stat) => {
+              const Icon = stat.icon;
+              return (
+                <Card key={stat.title} className="border-border">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
+                        <p className="text-2xl font-bold text-foreground mt-1">{stat.value}</p>
+                      </div>
+                      <div className={`rounded-full ${stat.bgColor} p-3`}>
+                        <Icon className={`h-5 w-5 ${stat.color}`} />
+                      </div>
                     </div>
-                    <div className={`rounded-full ${stat.bgColor} p-3`}>
-                      <Icon className={`h-5 w-5 ${stat.color}`} />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-
-        <Card className="border-border">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Buscar por número da O.S., cliente ou técnico..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+          <div className="flex items-center justify-between">
+            <SearchInput />
+            <Button variant="primary" onClick={() => setIsDialogOpen(true)} size="lg">
+              <Plus className="mr-2 h-5 w-5" />
+              Nova O.S.
+            </Button>
+          </div>
+          <CardContent className="p-0">
             <OrdensServicoTable ordensServico={filteredOrdens} />
           </CardContent>
-        </Card>
+        </div>
 
         <AddOrdemServicoDialog
           open={isDialogOpen}
