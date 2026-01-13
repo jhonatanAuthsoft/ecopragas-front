@@ -17,6 +17,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/atomic/mol.table/table.component";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/atomic/mol.pagination/pagination.component";
 import type { Cliente } from "@/pages/admin/clientes/Clientes";
 
 interface ClientesTableProps {
@@ -34,7 +43,7 @@ export const ClientesTable = ({ clientes }: ClientesTableProps) => {
   }
 
   return (
-    <div className="rounded-md border border-border">
+    <div className="rounded-md border border-border p-md">
       <Table>
         <TableHeader>
           <TableRow>
@@ -43,10 +52,8 @@ export const ClientesTable = ({ clientes }: ClientesTableProps) => {
             <TableHead>Tipo</TableHead>
             <TableHead>Telefone</TableHead>
             <TableHead>E-mail</TableHead>
-            <TableHead>Cidade/Estado</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead>Local</TableHead>
             <TableHead>Último Serviço</TableHead>
-            <TableHead className="text-right">Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -59,8 +66,8 @@ export const ClientesTable = ({ clientes }: ClientesTableProps) => {
                   variant="outline"
                   className={
                     cliente.tipoCliente === "fixo"
-                      ? "bg-secondary/10 text-secondary border-secondary/20"
-                      : "bg-info/10 text-info border-info/20"
+                      ? "bg-brand-secondary-light/20 text-brand-secondary-medium hover:bg-brand-secondary-light/20 border border-brand-secondary-medium"
+                      : "bg-feedback-warning-light text-feedback-warning-dark border border-brand-accessory-orange"
                   }
                 >
                   {cliente.tipoCliente === "fixo" ? "Fixo" : "Esporádico"}
@@ -70,17 +77,6 @@ export const ClientesTable = ({ clientes }: ClientesTableProps) => {
               <TableCell className="text-muted-foreground">{cliente.email}</TableCell>
               <TableCell>
                 {cliente.cidade}/{cliente.estado}
-              </TableCell>
-              <TableCell>
-                <Badge
-                  className={
-                    cliente.status === "ativo"
-                      ? "bg-success/10 text-success hover:bg-success/20"
-                      : "bg-muted text-muted-foreground hover:bg-muted/80"
-                  }
-                >
-                  {cliente.status === "ativo" ? "Ativo" : "Inativo"}
-                </Badge>
               </TableCell>
               <TableCell>
                 {cliente.ultimoServico ? (
@@ -114,6 +110,33 @@ export const ClientesTable = ({ clientes }: ClientesTableProps) => {
           ))}
         </TableBody>
       </Table>
+
+      <div className="mt-4">
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious href="#" disabled />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#" isActive className="bg-brand-primary-medium text-white hover:bg-brand-primary-dark hover:text-white">
+                1
+              </PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">2</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">3</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext href="#" />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
     </div>
   );
 };
