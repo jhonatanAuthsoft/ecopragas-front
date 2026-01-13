@@ -1,4 +1,4 @@
-import { Bell, Search, User } from "lucide-react";
+import { Bell, Menu, Search, User } from "lucide-react";
 import { Button } from "@/atomic/atm.button/button.component";
 import { Input } from "@/atomic/atm.input/input.component";
 import {
@@ -9,11 +9,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/atomic/mol.dropdown-menu/dropdown-menu.component";
+import { Sheet, SheetContent, SheetTrigger } from "@/atomic/mol.sheet/sheet.component";
+import { Sidebar } from "@/atomic/obj.sidebar/sidebar.component";
 
 export const Header = () => {
   return (
-    <header className="fixed left-64 right-0 top-0 z-30 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-16 items-center gap-4 px-6">
+    <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border bg-background px-6">
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="outline" size="icon" className="shrink-0 md:hidden">
+            <Menu className="h-5 w-5" />
+            <span className="sr-only">Toggle navigation menu</span>
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="p-0 w-64">
+          <Sidebar className="w-full border-none" />
+        </SheetContent>
+      </Sheet>
+
+      <div className="flex flex-1 items-center gap-4">
         {/* Search */}
         <div className="flex-1 max-w-75">
           <div className="relative">
