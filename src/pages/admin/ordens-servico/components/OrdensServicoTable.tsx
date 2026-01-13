@@ -16,15 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/atomic/mol.table/table.component";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/atomic/mol.pagination/pagination.component";
+import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
 import type { OrdemServico } from "@/pages/admin/ordens-servico/OrdensServico";
 
 interface OrdensServicoTableProps {
@@ -109,32 +101,11 @@ export const OrdensServicoTable = ({ ordensServico }: OrdensServicoTableProps) =
         </TableBody>
       </Table>
       
-      <div className="mt-4">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious href="#" disabled />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#" isActive className="bg-brand-primary-medium text-white hover:bg-brand-primary-dark hover:text-white">
-                1
-              </PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">2</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">3</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext href="#" />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </div>
+      <PaginationControl 
+        className="mt-4"
+        currentPage={1}
+        totalPages={3}
+      />
     </div>
   );
 };
