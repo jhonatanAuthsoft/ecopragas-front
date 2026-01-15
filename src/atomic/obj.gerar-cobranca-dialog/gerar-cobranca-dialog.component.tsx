@@ -101,7 +101,7 @@ export const GerarCobrancaDialog = ({ open, onOpenChange, onGerar }: GerarCobran
             <div className="grid grid-cols-3 gap-2">
               <Button
                 type="button"
-                variant={tipoPagamento === "pix" ? "default" : "outline"}
+                variant={tipoPagamento === "pix" ? "primary" : "outline"}
                 onClick={() => setTipoPagamento("pix")}
                 className="flex flex-col items-center gap-2 h-auto py-4"
               >
@@ -110,7 +110,7 @@ export const GerarCobrancaDialog = ({ open, onOpenChange, onGerar }: GerarCobran
               </Button>
               <Button
                 type="button"
-                variant={tipoPagamento === "boleto" ? "default" : "outline"}
+                variant={tipoPagamento === "boleto" ? "primary" : "outline"}
                 onClick={() => setTipoPagamento("boleto")}
                 className="flex flex-col items-center gap-2 h-auto py-4"
               >
@@ -119,7 +119,7 @@ export const GerarCobrancaDialog = ({ open, onOpenChange, onGerar }: GerarCobran
               </Button>
               <Button
                 type="button"
-                variant={tipoPagamento === "cartao" ? "default" : "outline"}
+                variant={tipoPagamento === "cartao" ? "primary" : "outline"}
                 onClick={() => setTipoPagamento("cartao")}
                 className="flex flex-col items-center gap-2 h-auto py-4"
               >

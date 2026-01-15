@@ -7,12 +7,13 @@ interface MainLayoutProps {
 
 export const MainLayout = ({ children }: MainLayoutProps) => {
   return (
-    <div className="min-h-screen bg-background">
-      <Sidebar />
-      <Header />
-      <main className="ml-64 pt-16">
-        <div className="container mx-auto p-6">{children}</div>
-      </main>
+    <div className="grid min-h-screen w-full md:grid-cols-[256px_1fr]">
+      <Sidebar className="hidden md:block" />
+      <div className="flex flex-col">
+        <main className="flex-1 p-6">
+          {children}
+        </main>
+      </div>
     </div>
   );
 };

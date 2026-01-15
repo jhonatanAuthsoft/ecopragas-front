@@ -19,13 +19,12 @@ export const MetricCard = ({ title, value, icon: Icon, trend, className }: Metri
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
-            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+            <p className="text-sm font-normal text-muted-foreground">{title}</p>
             <p className="text-3xl font-bold text-foreground">{value}</p>
             {trend && (
               <p
                 className={cn(
-                  "text-sm font-medium",
-                  trend.isPositive ? "text-success" : "text-destructive",
+                  "text-sm font-normal text-grayscale-x-dark",
                 )}
               >
                 {trend.isPositive ? "+" : ""}
@@ -33,8 +32,8 @@ export const MetricCard = ({ title, value, icon: Icon, trend, className }: Metri
               </p>
             )}
           </div>
-          <div className="rounded-full bg-primary/10 p-3">
-            <Icon className="h-6 w-6 text-primary" />
+          <div className="rounded-full bg-brand-cta-light p-md">
+            <Icon className="h-6 w-6 text-brand-primary-medium" />
           </div>
         </div>
       </CardContent>

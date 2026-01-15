@@ -22,18 +22,15 @@ const menuItems = [
   { icon: BarChart3, label: "Relatórios", path: "/relatorios" },
 ];
 
-export const Sidebar = () => {
+export const Sidebar = ({ className }: { className?: string }) => {
   const location = useLocation();
 
   return (
-    <aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r border-border bg-sidebar transition-transform">
+    <aside className={cn("h-screen w-64 border-r border-border bg-sidebar transition-transform", className)}>
       <div className="flex h-full flex-col">
-        {/* Logo */}
-        <div className="flex h-16 items-center gap-2 border-b border-sidebar-border px-6">
-          <Bug className="h-8 w-8 text-primary" />
+        <div className="flex h-16 items-center gap-2 border-sidebar-border px-6">
           <div>
-            <h1 className="text-xl font-bold text-sidebar-foreground">Eco Pragas</h1>
-            <p className="text-xs text-muted-foreground">Sistema de Gestão</p>
+            <img src="/logo.png" alt="" />
           </div>
         </div>
 
@@ -51,8 +48,8 @@ export const Sidebar = () => {
                     className={cn(
                       "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all",
                       isActive
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                        : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground",
+                        ? "bg-sidebar-accent text-brand-cta-dark"
+                        : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-grayscale-black",
                     )}
                   >
                     <Icon className="h-5 w-5" />
