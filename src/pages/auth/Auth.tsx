@@ -5,7 +5,7 @@ import { Button } from "@/atomic/atm.button/button.component";
 import { Input } from "@/atomic/atm.input/input.component";
 import { Label } from "@/atomic/atm.label/label.component";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import api from "@/services/api";
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -17,41 +17,45 @@ export default function Auth() {
   const [loginPassword, setLoginPassword] = useState("");
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        navigate("/");
-      }
-    });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) {
-        navigate("/");
-      }
-    });
-
-    return () => subscription.unsubscribe();
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/");
+    }
   }, [navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email: loginEmail,
-      password: loginPassword,
-    });
+    try {
+      const { data } = await api.post("/authenticate", {
+        username: loginEmail,
+        password: loginPassword,
+      });
 
-    if (error) {
+      if (data && data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.usuarioRepose));
+        
+        api.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+
+        toast({
+          title: "Login realizado com sucesso",
+          variant: "default",
+          className: "bg-feedback-success-light border-feedback-success-medium text-feedback-success-dark",
+        });
+        navigate("/");
+      }
+    } catch (error: any) {
+      console.error(error);
       toast({
         title: "Erro ao fazer login",
-        description: error.message,
+        description: error.response?.data?.message || "Verifique suas credenciais e tente novamente.",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   return (
