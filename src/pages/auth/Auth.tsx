@@ -28,7 +28,7 @@ export default function Auth() {
     setIsLoading(true);
 
     try {
-      const { data } = await api.post("/authenticate", {
+      const { data } = await api.post("/cliente/authenticate", {
         username: loginEmail,
         password: loginPassword,
       });
