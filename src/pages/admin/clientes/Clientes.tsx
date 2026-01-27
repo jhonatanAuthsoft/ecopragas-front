@@ -1,12 +1,13 @@
 import { Building2, Plus, Search, UserCheck, Users } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/atomic/atm.button/button.component";
-import { Input } from "@/atomic/atm.input/input.component";
 import { Card, CardContent } from "@/atomic/mol.card/card.component";
 import { AddClienteDialog } from "./components/AddClienteDialog";
 import { ClientesTable } from "./components/ClientesTable";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { SearchInput } from "@/atomic/mol.search/search.component";
+import api from "@/services/api";
+import { toast } from "sonner";
 
 export type Cliente = {
   id: string;
@@ -28,84 +29,46 @@ export type Cliente = {
 const Clientes = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [clientes, setClientes] = useState<Cliente[]>([
-    {
-      id: "1",
-      nome: "Restaurante Bom Sabor",
-      cpfCnpj: "12.345.678/0001-90",
-      tipoCliente: "fixo",
-      email: "contato@bomsabor.com",
-      telefone: "(11) 98765-4321",
-      endereco: "Rua das Flores, 123",
-      cidade: "São Paulo",
-      estado: "SP",
-      cep: "01234-567",
-      status: "ativo",
-      datacadastro: new Date("2024-01-15"),
-      ultimoServico: new Date("2025-01-10"),
-    },
-    {
-      id: "2",
-      nome: "Padaria Pão Quente",
-      cpfCnpj: "98.765.432/0001-10",
-      tipoCliente: "fixo",
-      email: "padaria@paoquente.com",
-      telefone: "(11) 97654-3210",
-      endereco: "Av. Principal, 456",
-      cidade: "São Paulo",
-      estado: "SP",
-      cep: "01234-890",
-      status: "ativo",
-      datacadastro: new Date("2024-03-20"),
-      ultimoServico: new Date("2025-01-08"),
-    },
-    {
-      id: "3",
-      nome: "Supermercado Central",
-      cpfCnpj: "11.222.333/0001-44",
-      tipoCliente: "fixo",
-      email: "gerencia@central.com",
-      telefone: "(11) 96543-2109",
-      endereco: "Rua do Comércio, 789",
-      cidade: "São Paulo",
-      estado: "SP",
-      cep: "01235-123",
-      status: "ativo",
-      datacadastro: new Date("2023-11-10"),
-      ultimoServico: new Date("2025-01-05"),
-    },
-    {
-      id: "4",
-      nome: "Ana Oliveira",
-      cpfCnpj: "123.456.789-00",
-      tipoCliente: "esporadico",
-      email: "ana@email.com",
-      telefone: "(11) 95432-1098",
-      endereco: "Rua das Palmeiras, 321",
-      cidade: "São Paulo",
-      estado: "SP",
-      cep: "01236-456",
-      status: "ativo",
-      datacadastro: new Date("2024-12-05"),
-      ultimoServico: new Date("2024-12-20"),
-    },
-    {
-      id: "5",
-      nome: "Hotel Descanso",
-      cpfCnpj: "55.666.777/0001-88",
-      tipoCliente: "fixo",
-      email: "contato@hoteldescanso.com",
-      telefone: "(11) 94321-0987",
-      endereco: "Av. Turística, 999",
-      cidade: "Guarujá",
-      estado: "SP",
-      cep: "11400-000",
-      status: "inativo",
-      datacadastro: new Date("2023-06-15"),
-      ultimoServico: new Date("2024-11-30"),
-    },
-  ]);
+  const fetchClientes = async () => {
+    try {
+      setIsLoading(true);
+      const { data } = await api.get("/admin/clientes");
+      
+      const mappedClientes: Cliente[] = data.map((item: any) => {
+        const [cidade, estado] = item.local ? item.local.split("/") : ["", ""];
+        
+        return {
+          id: item.id,
+          nome: item.nome,
+          cpfCnpj: item.cpfCnpj,
+          tipoCliente: item.tipoCliente === "RECORRENTE" ? "fixo" : "esporadico",
+          email: item.email,
+          telefone: item.telefone,
+          endereco: "",
+          cidade: cidade || "",
+          estado: estado || "",
+          cep: "",
+          status: "ativo",
+          datacadastro: new Date(),
+          ultimoServico: undefined,
+        };
+      });
+
+      setClientes(mappedClientes);
+    } catch (error) {
+      console.error("Erro ao buscar clientes:", error);
+      toast.error("Erro ao carregar clientes");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchClientes();
+  }, []);
 
   const filteredClientes = clientes.filter(
     (cliente) =>
