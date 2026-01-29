@@ -25,7 +25,7 @@ import { formatCEP, formatCPFCNPJ, formatPhone } from "@/utils/formatters";
 interface AddClienteDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddCliente: (cliente: Omit<Cliente, "id" | "datacadastro">) => void;
+  onAddCliente: (cliente: any) => Promise<boolean>;
 }
 
 export const AddClienteDialog = ({ open, onOpenChange, onAddCliente }: AddClienteDialogProps) => {
@@ -36,6 +36,7 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente }: AddClient
     email: "",
     telefone: "",
     endereco: "",
+    bairro: "",
     numero: "",
     complemento: "",
     cidade: "",
@@ -50,11 +51,31 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente }: AddClient
     cep: string;
     estado: string;
     cidade: string;
+    bairro: string;
     endereco: string;
     numero: string;
     complemento: string;
     padrao: boolean;
   }>>([]);
+
+  const [files, setFiles] = useState<File[]>([]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFiles(Array.from(e.target.files));
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      setFiles(Array.from(e.dataTransfer.files));
+    }
+  };
+
+  const handleRemoveFile = (index: number) => {
+    setFiles(files.filter((_, i) => i !== index));
+  };
 
   const handleCepBlur = async () => {
     const cep = formData.cep.replace(/\D/g, "");
@@ -66,6 +87,7 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente }: AddClient
           setFormData((prev) => ({
             ...prev,
             endereco: data.logradouro,
+            bairro: data.bairro,
             cidade: data.localidade,
             estado: data.uf,
           }));
@@ -85,6 +107,7 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente }: AddClient
         cep: formData.cep,
         estado: formData.estado,
         cidade: formData.cidade,
+        bairro: formData.bairro,
         endereco: formData.endereco,
         numero: formData.numero,
         complemento: formData.complemento,
@@ -97,6 +120,7 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente }: AddClient
       cep: "",
       estado: "",
       cidade: "",
+      bairro: "",
       endereco: "",
       numero: "",
       complemento: "",
@@ -108,63 +132,90 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente }: AddClient
     setEnderecos(enderecos.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const hasCurrentAddress = formData.cep && formData.endereco;
+    const payloadEnderecos = [];
     
-    let finalAddress = {
-      cep: formData.cep,
-      endereco: formData.endereco,
-      numero: formData.numero,
-      complemento: formData.complemento,
-      cidade: formData.cidade,
-      estado: formData.estado,
-    };
-
-    if (!hasCurrentAddress && enderecos.length > 0) {
-      const defaultAddr = enderecos.find(e => e.padrao) || enderecos[0];
-      finalAddress = {
-        cep: defaultAddr.cep,
-        endereco: defaultAddr.endereco,
-        numero: defaultAddr.numero,
-        complemento: defaultAddr.complemento,
-        cidade: defaultAddr.cidade,
-        estado: defaultAddr.estado,
-      };
+    if (enderecos.length > 0) {
+      enderecos.forEach(addr => {
+        payloadEnderecos.push({
+          rua: addr.endereco,
+          numero: addr.numero,
+          complemento: addr.complemento,
+          endereco: addr.bairro,
+          cidade: addr.cidade,
+          estado: addr.estado,
+          cep: addr.cep.replace(/\D/g, ""),
+          principal: addr.padrao
+        });
+      });
     }
 
-    onAddCliente({
-      nome: formData.nome,
-      cpfCnpj: formData.cpfCnpj.replace(/\D/g, ""),
-      tipoCliente: formData.tipoCliente || "fixo",
-      email: formData.email,
-      telefone: formData.telefone.replace(/\D/g, ""),
-      endereco: `${finalAddress.endereco}, ${finalAddress.numero}${finalAddress.complemento ? ` - ${finalAddress.complemento}` : ""}`,
-      cidade: finalAddress.cidade,
-      estado: finalAddress.estado,
-      cep: finalAddress.cep.replace(/\D/g, ""),
-      status: formData.status || "ativo",
-      observacoes: formData.observacoes || undefined,
+    const hasCurrentAddress = formData.cep && formData.endereco && formData.numero;
+    if (hasCurrentAddress) {
+       if (enderecos.length === 0) {
+          payloadEnderecos.push({
+            rua: formData.endereco,
+            numero: formData.numero,
+            complemento: formData.complemento,
+            endereco: formData.bairro,
+            cidade: formData.cidade,
+            estado: formData.estado,
+            cep: formData.cep.replace(/\D/g, ""),
+            principal: formData.salvarEnderecoPadrao
+          });
+       }
+    }
+    
+    const filePromises = files.map(file => {
+      return new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = error => reject(error);
+      });
     });
 
-    setFormData({
-      nome: "",
-      cpfCnpj: "",
-      tipoCliente: "" as any,
-      email: "",
-      telefone: "",
-      endereco: "",
-      numero: "",
-      complemento: "",
-      cidade: "",
-      estado: "",
-      cep: "",
-      status: "" as any,
-      observacoes: "",
-      salvarEnderecoPadrao: false,
-    });
-    setEnderecos([]);
+    const base64Files = await Promise.all(filePromises);
+
+    const payload = {
+      dados: {
+        nome: formData.nome,
+        email: formData.email,
+        cpfCnpj: formData.cpfCnpj.replace(/\D/g, ""),
+        telefone: formData.telefone.replace(/\D/g, ""),
+        tipoCliente: formData.tipoCliente ? formData.tipoCliente.toUpperCase() : "FIXO",
+        observacoes: formData.observacoes || "",
+        status: (formData.status || "ativo").toUpperCase(),
+        enderecos: payloadEnderecos
+      },
+      arquivos: base64Files
+    };
+
+    const success = await onAddCliente(payload);
+
+    if (success) {
+      setFormData({
+        nome: "",
+        cpfCnpj: "",
+        tipoCliente: "" as any,
+        email: "",
+        telefone: "",
+        endereco: "",
+        bairro: "",
+        numero: "",
+        complemento: "",
+        cidade: "",
+        estado: "",
+        cep: "",
+        status: "" as any,
+        observacoes: "",
+        salvarEnderecoPadrao: false,
+      });
+      setEnderecos([]);
+      setFiles([]);
+    }
   };
 
   return (
@@ -316,7 +367,7 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente }: AddClient
               <div className="pt-4 flex justify-center">
                 <Button 
                   type="button" 
-                  className="w-full max-w-md bg-brand-primary-medium hover:bg-brand-primary-dark text-white font-medium h-12 rounded-lg"
+                  className="bg-brand-primary-medium hover:bg-brand-primary-dark text-white font-medium h-12 rounded-lg"
                   onClick={() => {
                     const tabs = document.querySelector('[role="tablist"]');
                     const enderecoTab = tabs?.querySelector('[data-state="inactive"][value="endereco"]') as HTMLElement;
@@ -370,6 +421,17 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente }: AddClient
                      onChange={(e) => setFormData({ ...formData, cidade: e.target.value })}
                      className="border-grayscale-light rounded-lg h-12"
                      placeholder="Ex. Cruz das Almas"
+                  />
+                </div>
+
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="bairro" className="text-base font-normal text-grayscale-dark">Bairro</Label>
+                  <Input
+                     id="bairro"
+                     value={formData.bairro}
+                     onChange={(e) => setFormData({ ...formData, bairro: e.target.value })}
+                     className="border-grayscale-light rounded-lg h-12"
+                     placeholder="Ex. Centro"
                   />
                 </div>
 
@@ -447,7 +509,7 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente }: AddClient
                 <div key={index} className="border border-grayscale-light rounded-lg p-4 flex justify-between items-start mt-4">
                   <div>
                     <p className="font-medium text-grayscale-dark">{addr.endereco}, {addr.numero}{addr.complemento ? ` - ${addr.complemento}` : ""}</p>
-                    <p className="text-sm text-grayscale-medium">{addr.cep}, {addr.cidade}, {addr.estado}</p>
+                    <p className="text-sm text-grayscale-medium">{addr.bairro}, {addr.cidade} - {addr.estado}, {addr.cep}</p>
                     {addr.padrao && <p className="text-xs text-brand-primary-medium font-medium mt-1">Padrão</p>}
                   </div>
                   <Button 
@@ -472,13 +534,55 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente }: AddClient
             </TabsContent>
 
             <TabsContent value="documentacao" className="space-y-6">
-              <div className="border-2 border-dashed border-grayscale-light rounded-lg p-12 flex flex-col items-center justify-center text-center">
+              <div 
+                className="border-2 border-dashed border-grayscale-light rounded-lg p-12 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-gray-50 transition-colors"
+                onDrop={handleDrop}
+                onDragOver={(e) => e.preventDefault()}
+                onClick={() => document.getElementById("file-upload")?.click()}
+              >
+                <input
+                  id="file-upload"
+                  type="file"
+                  multiple
+                  className="hidden"
+                  onChange={handleFileChange}
+                  accept="image/jpeg,image/png,application/pdf"
+                />
                 <div className="bg-pink-50 p-2 rounded-full mb-4">
                   <Upload className="h-6 w-6 text-pink-500" />
                 </div>
                 <p className="text-grayscale-dark font-medium mb-1">Arraste e solte arquivos, ou <span className="text-brand-secondary-medium cursor-pointer">Browse</span></p>
                 <p className="text-sm text-grayscale-medium">Accepted formats: JPEG, PNG, of PDF</p>
               </div>
+
+              {files.length > 0 && (
+                <div className="space-y-2">
+                  <h4 className="text-sm font-medium text-grayscale-dark">Arquivos selecionados:</h4>
+                  {files.map((file, index) => (
+                    <div key={index} className="flex items-center justify-between border border-grayscale-light rounded-lg p-3">
+                      <div className="flex items-center space-x-3 overflow-hidden">
+                        <div className="bg-gray-100 p-2 rounded">
+                           <Upload className="h-4 w-4 text-gray-500" />
+                        </div>
+                        <div className="truncate">
+                          <p className="text-sm font-medium text-grayscale-dark truncate max-w-[200px]">{file.name}</p>
+                          <p className="text-xs text-grayscale-medium">{(file.size / 1024).toFixed(1)} KB</p>
+                        </div>
+                      </div>
+                      <button 
+                        type="button" 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveFile(index);
+                        }}
+                        className="text-feedback-error-medium hover:text-feedback-error-dark p-1"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               <div className="pt-6 flex justify-center">
                 <Button 

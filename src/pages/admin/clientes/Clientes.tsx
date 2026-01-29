@@ -77,14 +77,21 @@ const Clientes = () => {
       cliente.email.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const handleAddCliente = (cliente: Omit<Cliente, "id" | "datacadastro">) => {
-    const newCliente: Cliente = {
-      ...cliente,
-      id: Date.now().toString(),
-      datacadastro: new Date(),
-    };
-    setClientes([newCliente, ...clientes]);
-    setIsDialogOpen(false);
+  const handleAddCliente = async (payload: any) => {
+    try {
+      setIsLoading(true);
+      await api.post("/admin/cadastrar-cliente", payload);
+      toast.success("Cliente cadastrado com sucesso!");
+      setIsDialogOpen(false);
+      fetchClientes();
+      return true;
+    } catch (error) {
+      console.error("Erro ao cadastrar cliente:", error);
+      toast.error("Erro ao cadastrar cliente");
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const totalClientes = clientes.length;
