@@ -31,13 +31,29 @@ const Clientes = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
 
-  const fetchClientes = async () => {
+  const fetchClientes = async (pageIndex = 0) => {
     try {
       setIsLoading(true);
-      const { data } = await api.get("/admin/clientes");
+      const { data } = await api.get(`/admin/clientes?page=${pageIndex}&size=20`);
       
-      const mappedClientes: Cliente[] = data.map((item: any) => {
+      let content = [];
+      let totalPagesVal = 1;
+      let totalElementsVal = 0;
+
+      if (Array.isArray(data)) {
+        content = data;
+        totalElementsVal = data.length;
+      } else if (data.content) {
+        content = data.content;
+        totalPagesVal = data.totalPages;
+        totalElementsVal = data.totalElements;
+      }
+      
+      const mappedClientes: Cliente[] = content.map((item: any) => {
         const [cidade, estado] = item.local ? item.local.split("/") : ["", ""];
         
         return {
@@ -58,6 +74,9 @@ const Clientes = () => {
       });
 
       setClientes(mappedClientes);
+      setTotalPages(totalPagesVal);
+      setTotalElements(totalElementsVal);
+      setPage(pageIndex);
     } catch (error) {
       console.error("Erro ao buscar clientes:", error);
       toast.error("Erro ao carregar clientes");
@@ -67,7 +86,7 @@ const Clientes = () => {
   };
 
   useEffect(() => {
-    fetchClientes();
+    fetchClientes(0);
   }, []);
 
   const filteredClientes = clientes.filter(
@@ -83,7 +102,7 @@ const Clientes = () => {
       await api.post("/admin/cadastrar-cliente", payload);
       toast.success("Cliente cadastrado com sucesso!");
       setIsDialogOpen(false);
-      fetchClientes();
+      fetchClientes(page);
       return true;
     } catch (error) {
       console.error("Erro ao cadastrar cliente:", error);
@@ -94,7 +113,7 @@ const Clientes = () => {
     }
   };
 
-  const totalClientes = clientes.length;
+  const totalClientes = totalElements || clientes.length;
   const clientesAtivos = clientes.filter((c) => c.status === "ativo").length;
   const clientesFixos = clientes.filter((c) => c.tipoCliente === "fixo").length;
   const clientesEsporadicos = clientes.filter((c) => c.tipoCliente === "esporadico").length;
@@ -173,7 +192,12 @@ const Clientes = () => {
               </Button>
             </div>
             <CardContent className="p-0">
-              <ClientesTable clientes={filteredClientes} />
+              <ClientesTable 
+                clientes={filteredClientes} 
+                currentPage={page + 1}
+                totalPages={totalPages}
+                onPageChange={(p) => fetchClientes(p - 1)}
+              />
             </CardContent>
           </div>
         </div>

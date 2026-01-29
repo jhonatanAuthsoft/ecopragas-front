@@ -19,13 +19,21 @@ import {
   TableRow,
 } from "@/atomic/mol.table/table.component";
 import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
-import type { Cliente } from "@/pages/admin/clientes/Clientes";
+import { Cliente } from "../types";
 
 interface ClientesTableProps {
   clientes: Cliente[];
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
 }
 
-export const ClientesTable = ({ clientes }: ClientesTableProps) => {
+export const ClientesTable = ({ 
+  clientes, 
+  currentPage, 
+  totalPages, 
+  onPageChange 
+}: ClientesTableProps) => {
   const navigate = useNavigate();
 
   if (clientes.length === 0) {
@@ -110,8 +118,9 @@ export const ClientesTable = ({ clientes }: ClientesTableProps) => {
 
       <PaginationControl 
         className="mt-4"
-        currentPage={1}
-        totalPages={3}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
       />
     </div>
   );

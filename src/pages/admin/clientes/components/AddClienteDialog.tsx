@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/atomic/mol.select/select.component";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
-import type { Cliente } from "@/pages/admin/clientes/Clientes";
+import { Cliente } from "../types";
 import { formatCEP, formatCPFCNPJ, formatPhone } from "@/utils/formatters";
 
 interface AddClienteDialogProps {
