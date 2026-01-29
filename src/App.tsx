@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/atomic/mol.tooltip/tooltip.component";
 import Agendamentos from "./pages/admin/agendamentos/Agendamentos";
 import Auth from "./pages/auth/Auth";
 import Clientes from "./pages/admin/clientes/Clientes";
+import ClienteDetalhes from "./pages/admin/clientes/ClienteDetalhes";
 import Index from "./pages/admin/dashboard/Index";
 import Leads from "./pages/leads/Leads";
 import NotFound from "./pages/not-found/NotFound";
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/leads" element={<Leads />} />
           <Route path="/clientes" element={<Clientes />} />
+          <Route path="/admin/clientes/:id" element={<ClienteDetalhes />} />
           <Route path="/ordens-servico" element={<OrdensServico />} />
           <Route path="/ordens-servico/:id" element={<OrdemServicoDetalhes />} />
           <Route path="/agendamentos" element={<Agendamentos />} />

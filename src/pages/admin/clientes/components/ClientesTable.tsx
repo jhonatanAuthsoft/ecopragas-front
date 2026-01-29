@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Edit, Eye, MoreVertical } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Badge } from "@/atomic/atm.badge/badge.component";
 import { Button } from "@/atomic/atm.button/button.component";
 import {
@@ -18,13 +19,23 @@ import {
   TableRow,
 } from "@/atomic/mol.table/table.component";
 import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
-import type { Cliente } from "@/pages/admin/clientes/Clientes";
+import { Cliente } from "../types";
 
 interface ClientesTableProps {
   clientes: Cliente[];
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
 }
 
-export const ClientesTable = ({ clientes }: ClientesTableProps) => {
+export const ClientesTable = ({ 
+  clientes, 
+  currentPage, 
+  totalPages, 
+  onPageChange 
+}: ClientesTableProps) => {
+  const navigate = useNavigate();
+
   if (clientes.length === 0) {
     return (
       <div className="text-center py-12">
@@ -51,7 +62,9 @@ export const ClientesTable = ({ clientes }: ClientesTableProps) => {
         <TableBody>
           {clientes.map((cliente) => (
             <TableRow key={cliente.id}>
-              <TableCell className="font-medium">{cliente.nome}</TableCell>
+              <TableCell className="font-medium cursor-pointer hover:underline" onClick={() => navigate(`/admin/clientes/${cliente.id}`)}>
+                {cliente.nome}
+              </TableCell>
               <TableCell className="text-muted-foreground">{cliente.cpfCnpj}</TableCell>
               <TableCell>
                 <Badge
@@ -87,7 +100,7 @@ export const ClientesTable = ({ clientes }: ClientesTableProps) => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate(`/admin/clientes/${cliente.id}`)}>
                       <Eye className="mr-2 h-4 w-4" />
                       Ver Detalhes
                     </DropdownMenuItem>
@@ -105,8 +118,9 @@ export const ClientesTable = ({ clientes }: ClientesTableProps) => {
 
       <PaginationControl 
         className="mt-4"
-        currentPage={1}
-        totalPages={3}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
       />
     </div>
   );
