@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Edit, Eye, MoreVertical } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Badge } from "@/atomic/atm.badge/badge.component";
 import { Button } from "@/atomic/atm.button/button.component";
 import {
@@ -25,6 +26,8 @@ interface ClientesTableProps {
 }
 
 export const ClientesTable = ({ clientes }: ClientesTableProps) => {
+  const navigate = useNavigate();
+
   if (clientes.length === 0) {
     return (
       <div className="text-center py-12">
@@ -51,7 +54,9 @@ export const ClientesTable = ({ clientes }: ClientesTableProps) => {
         <TableBody>
           {clientes.map((cliente) => (
             <TableRow key={cliente.id}>
-              <TableCell className="font-medium">{cliente.nome}</TableCell>
+              <TableCell className="font-medium cursor-pointer hover:underline" onClick={() => navigate(`/admin/clientes/${cliente.id}`)}>
+                {cliente.nome}
+              </TableCell>
               <TableCell className="text-muted-foreground">{cliente.cpfCnpj}</TableCell>
               <TableCell>
                 <Badge
@@ -87,7 +92,7 @@ export const ClientesTable = ({ clientes }: ClientesTableProps) => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate(`/admin/clientes/${cliente.id}`)}>
                       <Eye className="mr-2 h-4 w-4" />
                       Ver Detalhes
                     </DropdownMenuItem>
