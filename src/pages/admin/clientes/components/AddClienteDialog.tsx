@@ -1,5 +1,5 @@
 import { Plus, Trash2, Upload, X, AlertTriangle } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Checkbox } from "@/atomic/atm.checkbox/checkbox.component";
 import { Button } from "@/atomic/atm.button/button.component";
 import { Input } from "@/atomic/atm.input/input.component";
@@ -27,9 +27,10 @@ interface AddClienteDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onAddCliente: (cliente: any) => Promise<boolean>;
+  initialData?: any;
 }
 
-export const AddClienteDialog = ({ open, onOpenChange, onAddCliente }: AddClienteDialogProps) => {
+export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData }: AddClienteDialogProps) => {
   const [activeTab, setActiveTab] = useState("dados");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -50,6 +51,15 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente }: AddClient
     observacoes: "",
     salvarEnderecoPadrao: false,
   });
+
+  useEffect(() => {
+    if (initialData && open) {
+      setFormData(prev => ({
+        ...prev,
+        ...initialData
+      }));
+    }
+  }, [initialData, open]);
 
   const [enderecos, setEnderecos] = useState<Array<{
     cep: string;

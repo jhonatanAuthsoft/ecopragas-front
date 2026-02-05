@@ -1,85 +1,148 @@
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
 import { AddLeadDialog } from "@/atomic/obj.add-lead-dialog/add-lead-dialog.component";
 import { CRMMetrics } from "@/atomic/obj.crmmetrics/crmmetrics.component";
 import { LeadKanban } from "@/atomic/obj.lead-kanban/lead-kanban.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
+import { leadsService, LeadDTO } from "@/services/leads.service";
 
 export type Lead = {
   id: string;
   name: string;
   company?: string;
-  email: string;
+  email?: string;
   phone: string;
   origin: "Google" | "Instagram" | "Indicação" | "Facebook" | "Website" | "Outro";
   value: number;
-  status: "novo" | "contato" | "proposta" | "negociacao" | "ganho" | "perdido";
+  status: "novo" | "em_contato" | "proposta_enviada" | "negociacao" | "ganho" | "perdido";
   notes?: string;
   createdAt: Date;
 };
 
-const Leads = () => {
-  const [leads, setLeads] = useState<Lead[]>([
-    {
-      id: "1",
-      name: "João Silva",
-      company: "Restaurante Bom Sabor",
-      email: "joao@bomsabor.com",
-      phone: "(11) 98765-4321",
-      origin: "Google",
-      value: 1500,
-      status: "novo",
-      createdAt: new Date("2025-01-10"),
-    },
-    {
-      id: "2",
-      name: "Maria Santos",
-      company: "Padaria Pão Quente",
-      email: "maria@paoquente.com",
-      phone: "(11) 97654-3210",
-      origin: "Instagram",
-      value: 2500,
-      status: "contato",
-      createdAt: new Date("2025-01-09"),
-    },
-    {
-      id: "3",
-      name: "Pedro Costa",
-      company: "Supermercado Central",
-      email: "pedro@central.com",
-      phone: "(11) 96543-2109",
-      origin: "Indicação",
-      value: 5000,
-      status: "proposta",
-      createdAt: new Date("2025-01-08"),
-    },
-    {
-      id: "4",
-      name: "Ana Oliveira",
-      email: "ana@email.com",
-      phone: "(11) 95432-1098",
-      origin: "Facebook",
-      value: 1200,
-      status: "negociacao",
-      createdAt: new Date("2025-01-07"),
-    },
-  ]);
-
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const handleAddLead = (lead: Omit<Lead, "id" | "createdAt">) => {
-    const newLead: Lead = {
-      ...lead,
-      id: Date.now().toString(),
-      createdAt: new Date(),
-    };
-    setLeads([newLead, ...leads]);
-    setIsDialogOpen(false);
+const mapDtoToLead = (dto: LeadDTO): Lead => {
+  const originMap: Record<string, Lead["origin"]> = {
+    "GOOGLE": "Google",
+    "INSTAGRAM": "Instagram",
+    "FACEBOOK": "Facebook",
+    "INDICACAO": "Indicação",
+    "WEBSITE": "Website",
+    "OUTRO": "Outro"
   };
 
-  const handleUpdateLeadStatus = (leadId: string, newStatus: Lead["status"]) => {
+  const statusMap: Record<string, Lead["status"]> = {
+    "NOVO": "novo",
+    "EM_CONTATO": "em_contato",
+    "PROPOSTA_ENVIADA": "proposta_enviada",
+    "NEGOCIACAO": "negociacao",
+    "GANHO": "ganho",
+    "PERDIDO": "perdido"
+  };
+
+  return {
+    id: dto.id || "",
+    name: dto.nome,
+    company: dto.empresa,
+    email: dto.email,
+    phone: dto.telefone,
+    origin: originMap[dto.origem] || "Outro",
+    value: dto.valorEstimado,
+    status: statusMap[dto.status] || "novo",
+    notes: dto.observacoes,
+    createdAt: dto.dataCriacao ? new Date(dto.dataCriacao) : new Date(),
+  };
+};
+
+import { useNavigate } from "react-router-dom";
+import { ConvertLeadDialog } from "@/atomic/obj.convert-lead-dialog/convert-lead-dialog.component";
+
+const Leads = () => {
+  const navigate = useNavigate();
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [convertLeadDialogOpen, setConvertLeadDialogOpen] = useState(false);
+  const [leadToConvert, setLeadToConvert] = useState<Lead | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchLeads = async () => {
+    try {
+      setIsLoading(true);
+      const response = await leadsService.getAll(0, 100);
+      const mappedLeads = response.content.map(mapDtoToLead);
+      setLeads(mappedLeads);
+    } catch (error) {
+      console.error("Erro ao buscar leads:", error);
+      toast.error("Erro ao carregar leads");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLeads();
+  }, []);
+
+  const handleAddLead = async (lead: Omit<Lead, "id" | "createdAt">) => {
+    try {
+      const dto: Omit<LeadDTO, "id" | "dataCriacao"> = {
+        nome: lead.name,
+        empresa: lead.company,
+        email: lead.email,
+        telefone: lead.phone,
+        origem: lead.origin.toUpperCase().replace("ÇÃ", "CA").replace("çã", "ca"),
+        valorEstimado: lead.value,
+        status: lead.status.toUpperCase(),
+        observacoes: lead.notes,
+      };
+
+      await leadsService.create(dto);
+      toast.success("Lead criado com sucesso!");
+      fetchLeads();
+      setIsDialogOpen(false);
+    } catch (error) {
+      console.error("Erro ao criar lead:", error);
+      toast.error("Erro ao criar lead");
+    }
+  };
+
+  const handleUpdateLeadStatus = async (leadId: string, newStatus: Lead["status"]) => {
+    const leadToUpdate = leads.find(l => l.id === leadId);
+    if (!leadToUpdate) return;
+
     setLeads(leads.map((lead) => (lead.id === leadId ? { ...lead, status: newStatus } : lead)));
+
+    try {
+      const dto: Omit<LeadDTO, "id" | "dataCriacao"> = {
+        nome: leadToUpdate.name,
+        empresa: leadToUpdate.company,
+        email: leadToUpdate.email,
+        telefone: leadToUpdate.phone,
+        origem: leadToUpdate.origin.toUpperCase().replace("ÇÃ", "CA"),
+        valorEstimado: leadToUpdate.value,
+        status: newStatus.toUpperCase(),
+        observacoes: leadToUpdate.notes,
+      };
+
+      await leadsService.update(leadId, dto);
+      toast.success("Status atualizado!");
+
+      if (newStatus === "ganho") {
+        setLeadToConvert(leadToUpdate);
+        setConvertLeadDialogOpen(true);
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar status:", error);
+      toast.error("Erro ao atualizar status");
+      setLeads(leads.map((lead) => (lead.id === leadId ? { ...lead, status: leadToUpdate.status } : lead)));
+    }
+  };
+
+  const handleConfirmConvert = () => {
+    if (leadToConvert) {
+      navigate("/clientes", { state: { leadData: leadToConvert } });
+    }
+    setConvertLeadDialogOpen(false);
   };
 
   return (
@@ -106,6 +169,13 @@ const Leads = () => {
           open={isDialogOpen}
           onOpenChange={setIsDialogOpen}
           onAddLead={handleAddLead}
+        />
+
+        <ConvertLeadDialog
+          open={convertLeadDialogOpen}
+          onOpenChange={setConvertLeadDialogOpen}
+          onConfirm={handleConfirmConvert}
+          lead={leadToConvert}
         />
       </div>
     </MainLayout>

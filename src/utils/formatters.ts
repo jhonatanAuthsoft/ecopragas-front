@@ -43,3 +43,13 @@ export const formatCEP = (value: string) => {
 export const cleanDigits = (value: string) => {
   return value.replace(/\D/g, "");
 };
+
+export const formatCurrency = (value: string) => {
+  const cleanValue = value.replace(/\D/g, "");
+  const numberValue = Number(cleanValue) / 100;
+  
+  return numberValue.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+};
