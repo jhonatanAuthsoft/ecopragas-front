@@ -20,11 +20,12 @@ import {
 } from "@/atomic/mol.select/select.component";
 import type { Lead } from "@/pages/leads/Leads";
 import { cn } from "@/lib/utils";
+import { formatCurrency, formatPhone, cleanDigits } from "@/utils/formatters";
 
 interface AddLeadDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddLead: (lead: Omit<Lead, "id" | "createdAt">) => void;
+  onAddLead: (lead: Omit<Lead, "id" | "createdAt">) => Promise<void> | void;
 }
 
 export const AddLeadDialog = ({ open, onOpenChange, onAddLead }: AddLeadDialogProps) => {
@@ -39,6 +40,7 @@ export const AddLeadDialog = ({ open, onOpenChange, onAddLead }: AddLeadDialogPr
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -53,31 +55,36 @@ export const AddLeadDialog = ({ open, onOpenChange, onAddLead }: AddLeadDialogPr
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateForm()) return;
 
-    onAddLead({
-      name: formData.name,
-      company: formData.company,
-      phone: formData.phone,
-      origin: formData.origin,
-      value: parseFloat(formData.value) || 0,
-      status: formData.status,
-      notes: formData.notes || undefined,
-    });
+    try {
+      setIsSubmitting(true);
+      await onAddLead({
+        name: formData.name,
+        company: formData.company,
+        phone: formData.phone,
+        origin: formData.origin,
+        value: Number(cleanDigits(formData.value)) / 100 || 0,
+        status: formData.status,
+        notes: formData.notes || undefined,
+      });
 
-    setFormData({
-      name: "",
-      company: "",
-      phone: "",
-      origin: "" as any,
-      value: "",
-      status: "" as any,
-      notes: "",
-    });
-    setErrors({});
+      setFormData({
+        name: "",
+        company: "",
+        phone: "",
+        origin: "" as any,
+        value: "",
+        status: "" as any,
+        notes: "",
+      });
+      setErrors({});
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -131,9 +138,10 @@ export const AddLeadDialog = ({ open, onOpenChange, onAddLead }: AddLeadDialogPr
               <Input
                 id="phone"
                 value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, phone: formatPhone(e.target.value) })}
                 className={cn("rounded-lg h-12", errors.phone ? "border-feedback-error-medium" : "border-grayscale-light")}
                 placeholder="Ex. (11) 90076-0010"
+                maxLength={15}
               />
               {errors.phone && <span className="text-xs text-feedback-error-dark mt-1 block">× {errors.phone}</span>}
             </div>
@@ -186,13 +194,10 @@ export const AddLeadDialog = ({ open, onOpenChange, onAddLead }: AddLeadDialogPr
               <Label htmlFor="value" className="text-base font-normal text-grayscale-dark">Valor Estimado (R$)</Label>
               <Input
                 id="value"
-                type="number"
-                step="0.01"
-                min="0"
                 value={formData.value}
-                onChange={(e) => setFormData({ ...formData, value: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, value: formatCurrency(e.target.value) })}
                 className={cn("rounded-lg h-12", errors.value ? "border-feedback-error-medium" : "border-grayscale-light")}
-                placeholder="Ex.2000"
+                placeholder="Ex. 2.000,00"
               />
               {errors.value && <span className="text-xs text-feedback-error-dark mt-1 block">× {errors.value}</span>}
             </div>
@@ -213,8 +218,9 @@ export const AddLeadDialog = ({ open, onOpenChange, onAddLead }: AddLeadDialogPr
             <Button 
               type="submit" 
               className="bg-green-600 hover:bg-green-700 text-white font-medium h-12 rounded-lg w-full md:w-auto px-12"
+              disabled={isSubmitting}
             >
-              Adicionar Lead
+              {isSubmitting ? "Adicionando..." : "Adicionar Lead"}
             </Button>
           </div>
         </form>
