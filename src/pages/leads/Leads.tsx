@@ -54,9 +54,15 @@ const mapDtoToLead = (dto: LeadDTO): Lead => {
   };
 };
 
+import { useNavigate } from "react-router-dom";
+import { ConvertLeadDialog } from "@/atomic/obj.convert-lead-dialog/convert-lead-dialog.component";
+
 const Leads = () => {
+  const navigate = useNavigate();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [convertLeadDialogOpen, setConvertLeadDialogOpen] = useState(false);
+  const [leadToConvert, setLeadToConvert] = useState<Lead | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchLeads = async () => {
@@ -120,11 +126,23 @@ const Leads = () => {
 
       await leadsService.update(leadId, dto);
       toast.success("Status atualizado!");
+
+      if (newStatus === "ganho") {
+        setLeadToConvert(leadToUpdate);
+        setConvertLeadDialogOpen(true);
+      }
     } catch (error) {
       console.error("Erro ao atualizar status:", error);
       toast.error("Erro ao atualizar status");
       setLeads(leads.map((lead) => (lead.id === leadId ? { ...lead, status: leadToUpdate.status } : lead)));
     }
+  };
+
+  const handleConfirmConvert = () => {
+    if (leadToConvert) {
+      navigate("/clientes", { state: { leadData: leadToConvert } });
+    }
+    setConvertLeadDialogOpen(false);
   };
 
   return (
@@ -151,6 +169,13 @@ const Leads = () => {
           open={isDialogOpen}
           onOpenChange={setIsDialogOpen}
           onAddLead={handleAddLead}
+        />
+
+        <ConvertLeadDialog
+          open={convertLeadDialogOpen}
+          onOpenChange={setConvertLeadDialogOpen}
+          onConfirm={handleConfirmConvert}
+          lead={leadToConvert}
         />
       </div>
     </MainLayout>

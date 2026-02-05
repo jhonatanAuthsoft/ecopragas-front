@@ -1,5 +1,6 @@
 import { Building2, Plus, Search, UserCheck, Users } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Button } from "@/atomic/atm.button/button.component";
 import { Card, CardContent } from "@/atomic/mol.card/card.component";
 import { AddClienteDialog } from "./components/AddClienteDialog";
@@ -27,10 +28,26 @@ export type Cliente = {
 };
 
 const Clientes = () => {
+  const location = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [initialData, setInitialData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (location.state?.leadData) {
+      const lead = location.state.leadData;
+      setInitialData({
+        nome: lead.name,
+        email: lead.email || "",
+        telefone: lead.phone,
+        observacoes: lead.notes || "",
+      });
+      setIsDialogOpen(true);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
@@ -206,6 +223,7 @@ const Clientes = () => {
           open={isDialogOpen}
           onOpenChange={setIsDialogOpen}
           onAddCliente={handleAddCliente}
+          initialData={initialData}
         />
       </div>
     </MainLayout>
