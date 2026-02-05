@@ -16,7 +16,7 @@ export type Lead = {
   phone: string;
   origin: "Google" | "Instagram" | "Indicação" | "Facebook" | "Website" | "Outro";
   value: number;
-  status: "novo" | "contato" | "proposta" | "negociacao" | "ganho" | "perdido";
+  status: "novo" | "em_contato" | "proposta_enviada" | "negociacao" | "ganho" | "perdido";
   notes?: string;
   createdAt: Date;
 };
@@ -33,8 +33,8 @@ const mapDtoToLead = (dto: LeadDTO): Lead => {
 
   const statusMap: Record<string, Lead["status"]> = {
     "NOVO": "novo",
-    "CONTATO": "contato",
-    "PROPOSTA": "proposta",
+    "EM_CONTATO": "em_contato",
+    "PROPOSTA_ENVIADA": "proposta_enviada",
     "NEGOCIACAO": "negociacao",
     "GANHO": "ganho",
     "PERDIDO": "perdido"
@@ -62,7 +62,7 @@ const Leads = () => {
   const fetchLeads = async () => {
     try {
       setIsLoading(true);
-      const response = await leadsService.getAll(0, 100); // Fetching 100 for now to populate kanban
+      const response = await leadsService.getAll(0, 100);
       const mappedLeads = response.content.map(mapDtoToLead);
       setLeads(mappedLeads);
     } catch (error) {
@@ -84,7 +84,7 @@ const Leads = () => {
         empresa: lead.company,
         email: lead.email,
         telefone: lead.phone,
-        origem: lead.origin.toUpperCase().replace("ÇÃ", "CA").replace("çã", "ca"), // Simple normalization
+        origem: lead.origin.toUpperCase().replace("ÇÃ", "CA").replace("çã", "ca"),
         valorEstimado: lead.value,
         status: lead.status.toUpperCase(),
         observacoes: lead.notes,
@@ -104,7 +104,6 @@ const Leads = () => {
     const leadToUpdate = leads.find(l => l.id === leadId);
     if (!leadToUpdate) return;
 
-    // Optimistic update
     setLeads(leads.map((lead) => (lead.id === leadId ? { ...lead, status: newStatus } : lead)));
 
     try {
@@ -124,7 +123,6 @@ const Leads = () => {
     } catch (error) {
       console.error("Erro ao atualizar status:", error);
       toast.error("Erro ao atualizar status");
-      // Revert optimistic update
       setLeads(leads.map((lead) => (lead.id === leadId ? { ...lead, status: leadToUpdate.status } : lead)));
     }
   };
