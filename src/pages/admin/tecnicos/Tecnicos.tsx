@@ -4,14 +4,33 @@ import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
 import { SearchInput } from "@/atomic/mol.search/search.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
-import { Tecnico, tecnicosService } from "@/services/tecnicos.service";
+import { Tecnico, tecnicosService, UpdateTecnicoDTO } from "@/services/tecnicos.service";
 import { TecnicosTable } from "./components/TecnicosTable";
+import { EditTecnicoDialog } from "@/atomic/obj.edit-tecnico-dialog/edit-tecnico-dialog.component";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/atomic/mol.alert-dialog/alert-dialog.component";
 
 const Tecnicos = () => {
   const [tecnicos, setTecnicos] = useState<Tecnico[]>([]);
   const [filteredTecnicos, setFilteredTecnicos] = useState<Tecnico[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+
+  // Edit State
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedTecnico, setSelectedTecnico] = useState<Tecnico | null>(null);
+
+  // Delete State
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [tecnicoToDelete, setTecnicoToDelete] = useState<Tecnico | null>(null);
 
   const fetchTecnicos = async () => {
     try {
@@ -41,11 +60,40 @@ const Tecnicos = () => {
   }, [searchTerm, tecnicos]);
 
   const handleEdit = (tecnico: Tecnico) => {
-    console.log("Edit", tecnico);
+    setSelectedTecnico(tecnico);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleSaveEdit = async (id: string, data: UpdateTecnicoDTO) => {
+    try {
+      await tecnicosService.update(id, data);
+      toast.success("Técnico atualizado com sucesso!");
+      fetchTecnicos();
+    } catch (error) {
+      console.error("Erro ao atualizar técnico:", error);
+      toast.error("Erro ao atualizar técnico");
+    }
   };
 
   const handleDelete = (tecnico: Tecnico) => {
-    console.log("Delete", tecnico);
+    setTecnicoToDelete(tecnico);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!tecnicoToDelete) return;
+    
+    try {
+      await tecnicosService.delete(tecnicoToDelete.id);
+      toast.success("Técnico excluído com sucesso!");
+      fetchTecnicos();
+    } catch (error) {
+      console.error("Erro ao excluir técnico:", error);
+      toast.error("Erro ao excluir técnico");
+    } finally {
+      setIsDeleteDialogOpen(false);
+      setTecnicoToDelete(null);
+    }
   };
 
   return (
@@ -80,6 +128,35 @@ const Tecnicos = () => {
             onDelete={handleDelete}
           />
         </div>
+
+        <EditTecnicoDialog
+          open={isEditDialogOpen}
+          onOpenChange={setIsEditDialogOpen}
+          tecnico={selectedTecnico}
+          onSave={handleSaveEdit}
+        />
+
+        <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Tem certeza absoluta?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Essa ação não pode ser desfeita. Isso excluirá permanentemente o técnico
+                <span className="font-bold text-foreground"> {tecnicoToDelete?.nome} </span>
+                e removerá seus dados de nossos servidores.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={confirmDelete}
+                className="bg-feedback-error-medium hover:bg-feedback-error-dark text-white"
+              >
+                Sim, excluir
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </MainLayout>
   );
