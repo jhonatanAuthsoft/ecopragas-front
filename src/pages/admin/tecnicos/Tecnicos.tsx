@@ -7,16 +7,7 @@ import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { Tecnico, tecnicosService, UpdateTecnicoDTO, CreateTecnicoDTO } from "@/services/tecnicos.service";
 import { TecnicosTable } from "./components/TecnicosTable";
 import { EditTecnicoDialog } from "@/atomic/obj.edit-tecnico-dialog/edit-tecnico-dialog.component";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/atomic/mol.alert-dialog/alert-dialog.component";
+import { DeleteTecnicoDialog } from "@/atomic/obj.delete-tecnico-dialog/delete-tecnico-dialog.component";
 
 const Tecnicos = () => {
   const [tecnicos, setTecnicos] = useState<Tecnico[]>([]);
@@ -151,27 +142,12 @@ const Tecnicos = () => {
           onSave={handleSave}
         />
 
-        <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Tem certeza absoluta?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Essa ação não pode ser desfeita. Isso excluirá permanentemente o técnico
-                <span className="font-bold text-foreground"> {tecnicoToDelete?.nome} </span>
-                e removerá seus dados de nossos servidores.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancelar</AlertDialogCancel>
-              <AlertDialogAction 
-                onClick={confirmDelete}
-                className="bg-feedback-error-medium hover:bg-feedback-error-dark text-white"
-              >
-                Sim, excluir
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <DeleteTecnicoDialog
+          open={isDeleteDialogOpen}
+          onOpenChange={setIsDeleteDialogOpen}
+          tecnico={tecnicoToDelete}
+          onConfirm={confirmDelete}
+        />
       </div>
     </MainLayout>
   );
