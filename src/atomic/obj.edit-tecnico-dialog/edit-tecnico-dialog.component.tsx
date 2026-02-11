@@ -13,6 +13,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Tecnico, UpdateTecnicoDTO } from "@/services/tecnicos.service";
 import { formatCPFCNPJ, formatPhone } from "@/utils/formatters";
+import { ImageCropperDialog } from "@/atomic/obj.image-cropper-dialog/image-cropper-dialog.component";
 
 interface EditTecnicoDialogProps {
   open: boolean;
@@ -38,6 +39,9 @@ export const EditTecnicoDialog = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [isCropperOpen, setIsCropperOpen] = useState(false);
+  const [selectedImageForCrop, setSelectedImageForCrop] = useState<string | null>(null);
+
   useEffect(() => {
     if (tecnico) {
       setFormData({
@@ -56,10 +60,18 @@ export const EditTecnicoDialog = ({
       const file = e.target.files[0];
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData({ ...formData, foto: reader.result as string });
+        setSelectedImageForCrop(reader.result as string);
+        setIsCropperOpen(true);
+        e.target.value = "";
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleCropComplete = (croppedImage: string) => {
+    setFormData({ ...formData, foto: croppedImage });
+    setIsCropperOpen(false);
+    setSelectedImageForCrop(null);
   };
 
   const validateForm = () => {
@@ -242,6 +254,13 @@ export const EditTecnicoDialog = ({
             </Button>
           </div>
         </form>
+
+        <ImageCropperDialog
+          open={isCropperOpen}
+          onOpenChange={setIsCropperOpen}
+          imageSrc={selectedImageForCrop}
+          onCropComplete={handleCropComplete}
+        />
       </DialogContent>
     </Dialog>
   );
