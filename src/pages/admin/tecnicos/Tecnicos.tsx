@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
 import { SearchInput } from "@/atomic/mol.search/search.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
-import { Tecnico, tecnicosService, UpdateTecnicoDTO } from "@/services/tecnicos.service";
+import { Tecnico, tecnicosService, UpdateTecnicoDTO, CreateTecnicoDTO } from "@/services/tecnicos.service";
 import { TecnicosTable } from "./components/TecnicosTable";
 import { EditTecnicoDialog } from "@/atomic/obj.edit-tecnico-dialog/edit-tecnico-dialog.component";
 import {
@@ -24,7 +24,7 @@ const Tecnicos = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
-  // Edit State
+  // Edit/Create State
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [selectedTecnico, setSelectedTecnico] = useState<Tecnico | null>(null);
 
@@ -59,19 +59,30 @@ const Tecnicos = () => {
     setFilteredTecnicos(results);
   }, [searchTerm, tecnicos]);
 
+  const handleCreate = () => {
+    setSelectedTecnico(null);
+    setIsEditDialogOpen(true);
+  };
+
   const handleEdit = (tecnico: Tecnico) => {
     setSelectedTecnico(tecnico);
     setIsEditDialogOpen(true);
   };
 
-  const handleSaveEdit = async (id: string, data: UpdateTecnicoDTO) => {
+  const handleSave = async (data: UpdateTecnicoDTO | CreateTecnicoDTO, id?: string) => {
     try {
-      await tecnicosService.update(id, data);
-      toast.success("Técnico atualizado com sucesso!");
+      if (id) {
+        await tecnicosService.update(id, data);
+        toast.success("Técnico atualizado com sucesso!");
+      } else {
+        await tecnicosService.create(data as CreateTecnicoDTO);
+        toast.success("Técnico cadastrado com sucesso!");
+      }
       fetchTecnicos();
     } catch (error) {
-      console.error("Erro ao atualizar técnico:", error);
-      toast.error("Erro ao atualizar técnico");
+      console.error("Erro ao salvar técnico:", error);
+      toast.error("Erro ao salvar técnico");
+      throw error;
     }
   };
 
@@ -116,7 +127,11 @@ const Tecnicos = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <Button size="lg" className="bg-brand-primary-medium hover:bg-brand-primary-dark">
+            <Button 
+              size="lg" 
+              className="bg-brand-primary-medium hover:bg-brand-primary-dark"
+              onClick={handleCreate}
+            >
               <Plus className="mr-2 h-5 w-5" />
               Novo
             </Button>
@@ -133,7 +148,7 @@ const Tecnicos = () => {
           open={isEditDialogOpen}
           onOpenChange={setIsEditDialogOpen}
           tecnico={selectedTecnico}
-          onSave={handleSaveEdit}
+          onSave={handleSave}
         />
 
         <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>

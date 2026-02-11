@@ -20,10 +20,23 @@ export interface UpdateTecnicoDTO {
   telefone?: string;
 }
 
+export interface CreateTecnicoDTO {
+  nome: string;
+  email: string;
+  cpf: string;
+  foto: string;
+  telefone: string;
+}
+
 export const tecnicosService = {
   getAll: async () => {
     const { data } = await api.get<Tecnico[]>("/admin/tecnicos");
     return data;
+  },
+
+  create: async (data: CreateTecnicoDTO) => {
+    const response = await api.post("/admin/cadastrar-tecnico", data);
+    return response.data;
   },
 
   update: async (id: string, data: UpdateTecnicoDTO) => {

@@ -1,4 +1,4 @@
-import { Upload, X } from "lucide-react";
+import { Upload, X, Camera } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/atomic/atm.avatar/avatar.component";
 import { Button } from "@/atomic/atm.button/button.component";
@@ -19,7 +19,7 @@ interface EditTecnicoDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   tecnico: Tecnico | null;
-  onSave: (id: string, data: UpdateTecnicoDTO) => Promise<void>;
+  onSave: (data: UpdateTecnicoDTO, id?: string) => Promise<void>;
 }
 
 export const EditTecnicoDialog = ({
@@ -43,14 +43,24 @@ export const EditTecnicoDialog = ({
   const [selectedImageForCrop, setSelectedImageForCrop] = useState<string | null>(null);
 
   useEffect(() => {
-    if (tecnico) {
-      setFormData({
-        nome: tecnico.nome,
-        email: tecnico.email,
-        cpfCnpj: formatCPFCNPJ(tecnico.cpfCnpj),
-        telefone: tecnico.telefone ? formatPhone(tecnico.telefone) : "",
-        foto: tecnico.foto || "",
-      });
+    if (open) {
+      if (tecnico) {
+        setFormData({
+          nome: tecnico.nome,
+          email: tecnico.email,
+          cpfCnpj: formatCPFCNPJ(tecnico.cpfCnpj),
+          telefone: tecnico.telefone ? formatPhone(tecnico.telefone) : "",
+          foto: tecnico.foto || "",
+        });
+      } else {
+        setFormData({
+          nome: "",
+          email: "",
+          cpfCnpj: "",
+          telefone: "",
+          foto: "",
+        });
+      }
       setErrors({});
     }
   }, [tecnico, open]);
@@ -87,17 +97,17 @@ export const EditTecnicoDialog = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm() || !tecnico) return;
+    if (!validateForm()) return;
 
     try {
       setIsSubmitting(true);
-      await onSave(tecnico.id, {
+      await onSave({
         nome: formData.nome,
         email: formData.email,
         cpf: formData.cpfCnpj.replace(/\D/g, ""),
         foto: formData.foto,
         telefone: formData.telefone.replace(/\D/g, ""),
-      });
+      }, tecnico?.id);
       onOpenChange(false);
     } catch (error) {
       console.error("Error saving tecnico:", error);
@@ -106,14 +116,14 @@ export const EditTecnicoDialog = ({
     }
   };
 
-  if (!tecnico) return null;
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px] p-8">
         <DialogHeader className="mb-6">
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-2xl font-bold">Editar Técnico</DialogTitle>
+            <DialogTitle className="text-2xl font-bold">
+              {tecnico ? "Editar Técnico" : "Novo Técnico"}
+            </DialogTitle>
           </div>
         </DialogHeader>
 
@@ -121,8 +131,9 @@ export const EditTecnicoDialog = ({
           <div className="flex flex-col items-center gap-4 mb-6">
             <Avatar className="h-24 w-24">
               <AvatarImage src={formData.foto} />
-              <AvatarFallback className="text-2xl">
-                {formData.nome.substring(0, 2).toUpperCase()}
+              <AvatarFallback className="bg-zinc-600 flex flex-col items-center justify-center text-white">
+                <Camera className="h-8 w-8 mb-1" />
+                <span className="text-[10px] font-bold">ADD PHOTO</span>
               </AvatarFallback>
             </Avatar>
             <div className="relative">
@@ -250,7 +261,7 @@ export const EditTecnicoDialog = ({
               className="bg-feedback-success-medium hover:bg-feedback-success-dark text-white font-medium h-12 rounded-lg w-full md:w-auto px-12"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Salvando..." : "Salvar alterações"}
+              {isSubmitting ? "Salvando..." : (tecnico ? "Salvar alterações" : "Adicionar Técnico")}
             </Button>
           </div>
         </form>
