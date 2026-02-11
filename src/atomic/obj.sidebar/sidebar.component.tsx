@@ -9,6 +9,7 @@ import {
   Package,
   Settings,
   Users,
+  Wrench,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -16,10 +17,11 @@ import { cn } from "@/lib/utils";
 const menuItems = [
   { icon: Users, label: "CRM / Leads", path: "/leads" },
   { icon: LayoutDashboard, label: "Dashboard", path: "/" },
-  { icon: Users, label: "Clientes", path: "/clientes" },
-  { icon: ClipboardList, label: "Ordens de Serviço", path: "/ordens-servico" },
-  { icon: Calendar, label: "Agendamentos", path: "/agendamentos" },
-  { icon: BarChart3, label: "Relatórios", path: "/relatorios" },
+  { icon: Users, label: "Clientes", path: "/admin/clientes" },
+  { icon: ClipboardList, label: "Ordens de Serviço", path: "/admin/ordens-servico" },
+  { icon: Calendar, label: "Agendamentos", path: "/admin/agendamentos" },
+  { icon: BarChart3, label: "Relatórios", path: "/admin/relatorios" },
+  { icon: Wrench, label: "Técnicos", path: "/admin/tecnicos" },
 ];
 
 export const Sidebar = ({ className }: { className?: string }) => {

@@ -13,6 +13,7 @@ import NotFound from "./pages/not-found/NotFound";
 import OrdemServicoDetalhes from "./pages/admin/ordens-servico/OrdemServicoDetalhes";
 import OrdensServico from "./pages/admin/ordens-servico/OrdensServico";
 import Relatorios from "./pages/admin/relatorios/Relatorios";
+import Tecnicos from "./pages/admin/tecnicos/Tecnicos";
 
 const queryClient = new QueryClient();
 
@@ -26,12 +27,13 @@ const App = () => (
           <Route path="/login" element={<Auth />} />
           <Route path="/" element={<Index />} />
           <Route path="/leads" element={<Leads />} />
-          <Route path="/clientes" element={<Clientes />} />
+          <Route path="/admin/clientes" element={<Clientes />} />
           <Route path="/admin/clientes/:id" element={<ClienteDetalhes />} />
-          <Route path="/ordens-servico" element={<OrdensServico />} />
-          <Route path="/ordens-servico/:id" element={<OrdemServicoDetalhes />} />
-          <Route path="/agendamentos" element={<Agendamentos />} />
-          <Route path="/relatorios" element={<Relatorios />} />
+          <Route path="/admin/ordens-servico" element={<OrdensServico />} />
+          <Route path="/admin/ordens-servico/:id" element={<OrdemServicoDetalhes />} />
+          <Route path="/admin/agendamentos" element={<Agendamentos />} />
+          <Route path="/admin/relatorios" element={<Relatorios />} />
+          <Route path="/admin/tecnicos" element={<Tecnicos />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
