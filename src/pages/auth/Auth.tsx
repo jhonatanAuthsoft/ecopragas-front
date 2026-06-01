@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/atomic/atm.button/button.component";
 import { Input } from "@/atomic/atm.input/input.component";
 import { Label } from "@/atomic/atm.label/label.component";
+import { ROUTES } from "@/constants/routes";
 import { useLogin } from "@/domain/auth";
 import { useToast } from "@/hooks/use-toast";
 import { type AuthUser, useAuthStore } from "@/store/auth";
@@ -25,7 +26,7 @@ export default function Auth() {
           className:
             "bg-feedback-success-light border-feedback-success-medium text-feedback-success-dark",
         });
-        navigate("/");
+        navigate(ROUTES.HOME);
       }
     },
     onError: (error) => {
@@ -45,7 +46,7 @@ export default function Auth() {
 
   useEffect(() => {
     if (!token) return;
-    navigate("/");
+    navigate(ROUTES.HOME);
   }, [navigate, token]);
 
   const handleLogin = (e: React.FormEvent) => {

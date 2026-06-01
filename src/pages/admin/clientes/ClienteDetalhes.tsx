@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
+import { ROUTES } from "@/constants/routes";
 import api from "@/services/api";
 import { formatCEP, formatCPFCNPJ, formatPhone } from "@/utils/formatters";
 
@@ -95,7 +96,7 @@ const ClienteDetalhes = () => {
       <MainLayout>
         <div className="flex flex-col items-center justify-center h-full gap-4">
           <p>Cliente não encontrado</p>
-          <Button onClick={() => navigate("/clientes")}>Voltar para Clientes</Button>
+          <Button onClick={() => navigate(ROUTES.CLIENTES.BASE)}>Voltar para Clientes</Button>
         </div>
       </MainLayout>
     );
@@ -111,7 +112,7 @@ const ClienteDetalhes = () => {
       <div className="space-y-6">
         <div
           className="flex items-center gap-2 text-grayscale-medium hover:text-brand-primary-medium transition-colors cursor-pointer w-fit"
-          onClick={() => navigate("/clientes")}
+          onClick={() => navigate(ROUTES.CLIENTES.BASE)}
         >
           <ArrowLeft className="h-4 w-4" />
           <span className="text-sm">Voltar para Clientes</span>
