@@ -1,6 +1,5 @@
 import { AlertCircle, CheckCircle2, Clock, DollarSign, Plus, Search } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Badge } from "@/atomic/atm.badge/badge.component";
+import { useState } from "react";
 import { Button } from "@/atomic/atm.button/button.component";
 import { Input } from "@/atomic/atm.input/input.component";
 import { Card, CardContent, CardHeader, CardTitle } from "@/atomic/mol.card/card.component";
@@ -9,9 +8,9 @@ import { CobrancasTable } from "@/atomic/obj.cobrancas-table/cobrancas-table.com
 import { GerarCobrancaDialog } from "@/atomic/obj.gerar-cobranca-dialog/gerar-cobranca-dialog.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 
-interface Cobranca {
+// TODO: adicionar todas as tipagens na pasta de model (vai ser adicionado)
+export interface Cobranca {
   id: string;
   ordem_servico_id: string;
   cliente_nome: string;
@@ -27,6 +26,7 @@ interface Cobranca {
   transaction_id?: string;
 }
 
+// TODO: possivelmente excluir, por inutilização
 const Financeiro = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [cobrancas, setCobrancas] = useState<Cobranca[]>([]);
@@ -34,49 +34,49 @@ const Financeiro = () => {
   const [activeTab, setActiveTab] = useState("todas");
   const { toast } = useToast();
 
-  useEffect(() => {
-    carregarCobrancas();
-  }, []);
-
-  const carregarCobrancas = async () => {
-    const { data, error } = await supabase
-      .from("cobrancas")
-      .select("*")
-      .order("data_emissao", { ascending: false });
-
-    if (error) {
-      toast({
-        title: "Erro ao carregar cobranças",
-        description: error.message,
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setCobrancas(data || []);
-  };
-
-  const handleGerarCobranca = async (
+  const handleGerarCobranca = (
     cobranca: Omit<Cobranca, "id" | "data_emissao" | "created_at" | "updated_at">,
   ) => {
-    const { error } = await supabase.from("cobrancas").insert([cobranca]);
+    const novaCobranca: Cobranca = {
+      ...cobranca,
+      id: crypto.randomUUID(),
+      data_emissao: new Date().toISOString(),
+    };
 
-    if (error) {
-      toast({
-        title: "Erro ao gerar cobrança",
-        description: error.message,
-        variant: "destructive",
-      });
-      return;
-    }
+    setCobrancas((prev) => [novaCobranca, ...prev]);
 
     toast({
       title: "Cobrança gerada com sucesso",
       description: `Cobrança de ${cobranca.tipo_pagamento.toUpperCase()} criada para ${cobranca.cliente_nome}`,
     });
 
-    carregarCobrancas();
     setIsDialogOpen(false);
+  };
+
+  const handleMarcarPago = (id: string) => {
+    setCobrancas((prev) =>
+      prev.map((c) =>
+        c.id === id
+          ? { ...c, status: "pago" as const, data_pagamento: new Date().toISOString() }
+          : c,
+      ),
+    );
+
+    toast({
+      title: "Cobranca atualizada",
+      description: "Cobranca marcada como paga com sucesso",
+    });
+  };
+
+  const handleCancelar = (id: string) => {
+    setCobrancas((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, status: "cancelado" as const } : c)),
+    );
+
+    toast({
+      title: "Cobranca cancelada",
+      description: "Cobranca cancelada com sucesso",
+    });
   };
 
   const filteredCobrancas = cobrancas.filter((cobranca) => {
@@ -207,7 +207,11 @@ const Financeiro = () => {
               </TabsList>
 
               <TabsContent value={activeTab} className="mt-4">
-                <CobrancasTable cobrancas={filteredCobrancas} onRefresh={carregarCobrancas} />
+                <CobrancasTable
+                  cobrancas={filteredCobrancas}
+                  onMarcarPago={handleMarcarPago}
+                  onCancelar={handleCancelar}
+                />
               </TabsContent>
             </Tabs>
           </CardContent>
