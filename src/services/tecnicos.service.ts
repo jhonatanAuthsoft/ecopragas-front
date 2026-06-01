@@ -1,3 +1,4 @@
+// TODO: apagar após substituição por chamada do back
 import api from "./api";
 
 export interface Tecnico {

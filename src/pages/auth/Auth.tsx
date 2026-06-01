@@ -4,14 +4,40 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/atomic/atm.button/button.component";
 import { Input } from "@/atomic/atm.input/input.component";
 import { Label } from "@/atomic/atm.label/label.component";
+import { useLogin } from "@/domain/auth";
 import { useToast } from "@/hooks/use-toast";
-import api from "@/services/api";
+import { type AuthUser, useAuthStore } from "@/store/auth.store";
 
 export default function Auth() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const setSession = useAuthStore((s) => s.setSession);
+
+  const { login, isLoading } = useLogin({
+    onSuccess: (data) => {
+      if (data?.token) {
+        setSession(data.token, data.usuarioResponse as AuthUser);
+        toast({
+          title: "Login realizado com sucesso",
+          variant: "default",
+          className:
+            "bg-feedback-success-light border-feedback-success-medium text-feedback-success-dark",
+        });
+        navigate("/");
+      }
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao fazer login",
+        description:
+          error.response?.data?.message ??
+          error.response?.data?.detail ??
+          "Verifique suas credenciais e tente novamente.",
+        variant: "destructive",
+      });
+    },
+  });
 
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -23,41 +49,12 @@ export default function Auth() {
     }
   }, [navigate]);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const { data } = await api.post("/admin/authenticate", {
-        username: loginEmail,
-        password: loginPassword,
-      });
-
-      if (data && data.token) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.usuarioRepose));
-
-        api.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
-
-        toast({
-          title: "Login realizado com sucesso",
-          variant: "default",
-          className:
-            "bg-feedback-success-light border-feedback-success-medium text-feedback-success-dark",
-        });
-        navigate("/");
-      }
-    } catch (error: any) {
-      console.error(error);
-      toast({
-        title: "Erro ao fazer login",
-        description:
-          error.response?.data?.message || "Verifique suas credenciais e tente novamente.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    login({
+      username: loginEmail,
+      password: loginPassword,
+    });
   };
 
   return (
