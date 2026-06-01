@@ -5,8 +5,8 @@ export type ErrorResponse = components["schemas"]["ErrorResponse"];
 
 export type AxiosErrorResponse = AxiosError<ErrorResponse>;
 
-export interface UseCaseBaseParams<T = void> {
+export interface UseCaseBaseParams<T = void, TError = AxiosErrorResponse> {
   onSuccess?: (data: T) => void;
-  onError?: (error: AxiosErrorResponse) => void;
-  onSettled?: (data: T, error: AxiosErrorResponse | null) => void;
+  onError?: (error: TError) => void;
+  onSettled?: (data: T, error: TError | null) => void;
 }

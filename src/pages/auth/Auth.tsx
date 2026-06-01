@@ -15,7 +15,7 @@ export default function Auth() {
   const token = useAuthStore((s) => s.token);
   const setSession = useAuthStore((s) => s.setSession);
 
-  const { login, isLoading } = useLogin({
+  const { login, isLoginLoading } = useLogin({
     onSuccess: (data) => {
       if (data?.token) {
         setSession(data.token, data.usuarioResponse as AuthUser);
@@ -120,10 +120,10 @@ export default function Auth() {
 
               <Button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoginLoading}
                 className="h-12 w-full rounded-lg bg-brand-primary-medium text-sm font-medium text-grayscale-white hover:bg-brand-primary-dark"
               >
-                {isLoading ? "Acessando..." : "Acessar"}
+                {isLoginLoading ? "Acessando..." : "Acessar"}
               </Button>
 
               <button

@@ -1,31 +1,23 @@
-import { useMutation } from "@tanstack/react-query";
+import { useCustomMutation } from "@/domain/custom-mutation";
 import type { LoginRequest, LoginResponse } from "@/model/rest/auth";
-import type { AxiosErrorResponse, UseCaseBaseParams } from "@/model/use-case.model";
+import type { UseCaseBaseParams } from "@/model/use-case.model";
 import { loginDatasource } from "@/rest/auth";
 
 export function useLogin(params: UseCaseBaseParams<LoginResponse> = {}) {
-  const { onSuccess, onError, onSettled } = params;
-
-  const { mutate, data, error, isPending } = useMutation<
-    LoginResponse,
-    AxiosErrorResponse,
-    LoginRequest
-  >({
+  const {
+    mutate: login,
+    data,
+    error,
+    isLoading,
+  } = useCustomMutation<LoginResponse, LoginRequest>({
     mutationFn: loginDatasource,
-    onSuccess,
-    onError,
-    onSettled,
+    ...params,
   });
-
-  const login = (body: LoginRequest) => {
-    if (isPending) return;
-    mutate(body);
-  };
 
   return {
     login,
-    data,
-    error,
-    isLoading: isPending,
+    loginData: data,
+    loginError: error,
+    isLoginLoading: isLoading,
   };
 }
