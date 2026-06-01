@@ -22,11 +22,7 @@ export const MetricCard = ({ title, value, icon: Icon, trend, className }: Metri
             <p className="text-sm font-normal text-muted-foreground">{title}</p>
             <p className="text-3xl font-bold text-foreground">{value}</p>
             {trend && (
-              <p
-                className={cn(
-                  "text-sm font-normal text-grayscale-x-dark",
-                )}
-              >
+              <p className={cn("text-sm font-normal text-grayscale-x-dark")}>
                 {trend.isPositive ? "+" : ""}
                 {trend.value}% vs mês anterior
               </p>

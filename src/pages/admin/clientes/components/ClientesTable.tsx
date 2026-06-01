@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/atomic/mol.dropdown-menu/dropdown-menu.component";
+import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
 import {
   Table,
   TableBody,
@@ -18,8 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/atomic/mol.table/table.component";
-import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
-import { Cliente } from "../types";
+import type { Cliente } from "../types";
 
 interface ClientesTableProps {
   clientes: Cliente[];
@@ -28,11 +28,11 @@ interface ClientesTableProps {
   onPageChange: (page: number) => void;
 }
 
-export const ClientesTable = ({ 
-  clientes, 
-  currentPage, 
-  totalPages, 
-  onPageChange 
+export const ClientesTable = ({
+  clientes,
+  currentPage,
+  totalPages,
+  onPageChange,
 }: ClientesTableProps) => {
   const navigate = useNavigate();
 
@@ -62,7 +62,10 @@ export const ClientesTable = ({
         <TableBody>
           {clientes.map((cliente) => (
             <TableRow key={cliente.id}>
-              <TableCell className="font-medium cursor-pointer hover:underline" onClick={() => navigate(`/admin/clientes/${cliente.id}`)}>
+              <TableCell
+                className="font-medium cursor-pointer hover:underline"
+                onClick={() => navigate(`/admin/clientes/${cliente.id}`)}
+              >
                 {cliente.nome}
               </TableCell>
               <TableCell className="text-muted-foreground">{cliente.cpfCnpj}</TableCell>
@@ -116,7 +119,7 @@ export const ClientesTable = ({
         </TableBody>
       </Table>
 
-      <PaginationControl 
+      <PaginationControl
         className="mt-4"
         currentPage={currentPage}
         totalPages={totalPages}

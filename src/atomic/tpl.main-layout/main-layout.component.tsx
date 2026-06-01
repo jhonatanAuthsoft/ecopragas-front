@@ -10,9 +10,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
     <div className="grid min-h-screen w-full md:grid-cols-[256px_1fr]">
       <Sidebar className="hidden md:block" />
       <div className="flex flex-col">
-        <main className="flex-1 p-6">
-          {children}
-        </main>
+        <main className="flex-1 p-6">{children}</main>
       </div>
     </div>
   );

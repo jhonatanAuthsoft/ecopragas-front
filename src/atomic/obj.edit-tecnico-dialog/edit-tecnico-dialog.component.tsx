@@ -1,4 +1,4 @@
-import { Upload, X, Camera } from "lucide-react";
+import { Camera, Upload, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/atomic/atm.avatar/avatar.component";
 import { Button } from "@/atomic/atm.button/button.component";
@@ -10,10 +10,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/atomic/mol.dialog/dialog.component";
-import { cn } from "@/lib/utils";
-import { Tecnico, UpdateTecnicoDTO } from "@/services/tecnicos.service";
-import { formatCPFCNPJ, formatPhone } from "@/utils/formatters";
 import { ImageCropperDialog } from "@/atomic/obj.image-cropper-dialog/image-cropper-dialog.component";
+import { cn } from "@/lib/utils";
+import type { Tecnico, UpdateTecnicoDTO } from "@/services/tecnicos.service";
+import { formatCPFCNPJ, formatPhone } from "@/utils/formatters";
 
 interface EditTecnicoDialogProps {
   open: boolean;
@@ -89,7 +89,7 @@ export const EditTecnicoDialog = ({
     if (!formData.nome) newErrors.nome = "Campo Obrigatório";
     if (!formData.cpfCnpj) newErrors.cpfCnpj = "Campo Obrigatório";
     if (!formData.telefone) newErrors.telefone = "Campo Obrigatório";
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -101,13 +101,16 @@ export const EditTecnicoDialog = ({
 
     try {
       setIsSubmitting(true);
-      await onSave({
-        nome: formData.nome,
-        email: formData.email,
-        cpf: formData.cpfCnpj.replace(/\D/g, ""),
-        foto: formData.foto,
-        telefone: formData.telefone.replace(/\D/g, ""),
-      }, tecnico?.id);
+      await onSave(
+        {
+          nome: formData.nome,
+          email: formData.email,
+          cpf: formData.cpfCnpj.replace(/\D/g, ""),
+          foto: formData.foto,
+          telefone: formData.telefone.replace(/\D/g, ""),
+        },
+        tecnico?.id,
+      );
       onOpenChange(false);
     } catch (error) {
       console.error("Error saving tecnico:", error);
@@ -168,7 +171,7 @@ export const EditTecnicoDialog = ({
                   onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
                   className={cn(
                     "pr-10 rounded-lg h-12",
-                    errors.nome ? "border-feedback-error-medium" : "border-grayscale-light"
+                    errors.nome ? "border-feedback-error-medium" : "border-grayscale-light",
                   )}
                   placeholder="Nome do técnico"
                 />
@@ -183,9 +186,7 @@ export const EditTecnicoDialog = ({
                 )}
               </div>
               {errors.nome && (
-                <span className="text-xs text-feedback-error-dark mt-1 block">
-                  × {errors.nome}
-                </span>
+                <span className="text-xs text-feedback-error-dark mt-1 block">× {errors.nome}</span>
               )}
             </div>
 
@@ -201,9 +202,7 @@ export const EditTecnicoDialog = ({
                 }
                 className={cn(
                   "rounded-lg h-12",
-                  errors.telefone
-                    ? "border-feedback-error-medium"
-                    : "border-grayscale-light"
+                  errors.telefone ? "border-feedback-error-medium" : "border-grayscale-light",
                 )}
                 placeholder="(00) 00000-0000"
                 maxLength={15}
@@ -227,9 +226,7 @@ export const EditTecnicoDialog = ({
                 }
                 className={cn(
                   "rounded-lg h-12",
-                  errors.cpfCnpj
-                    ? "border-feedback-error-medium"
-                    : "border-grayscale-light"
+                  errors.cpfCnpj ? "border-feedback-error-medium" : "border-grayscale-light",
                 )}
                 placeholder="000.000.000-00"
                 maxLength={14}
@@ -261,7 +258,7 @@ export const EditTecnicoDialog = ({
               className="bg-feedback-success-medium hover:bg-feedback-success-dark text-white font-medium h-12 rounded-lg w-full md:w-auto px-12"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Salvando..." : (tecnico ? "Salvar alterações" : "Adicionar Técnico")}
+              {isSubmitting ? "Salvando..." : tecnico ? "Salvar alterações" : "Adicionar Técnico"}
             </Button>
           </div>
         </form>

@@ -3,11 +3,16 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
 import { SearchInput } from "@/atomic/mol.search/search.component";
-import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
-import { Tecnico, tecnicosService, UpdateTecnicoDTO, CreateTecnicoDTO } from "@/services/tecnicos.service";
-import { TecnicosTable } from "./components/TecnicosTable";
-import { EditTecnicoDialog } from "@/atomic/obj.edit-tecnico-dialog/edit-tecnico-dialog.component";
 import { DeleteTecnicoDialog } from "@/atomic/obj.delete-tecnico-dialog/delete-tecnico-dialog.component";
+import { EditTecnicoDialog } from "@/atomic/obj.edit-tecnico-dialog/edit-tecnico-dialog.component";
+import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
+import {
+  type CreateTecnicoDTO,
+  type Tecnico,
+  tecnicosService,
+  type UpdateTecnicoDTO,
+} from "@/services/tecnicos.service";
+import { TecnicosTable } from "./components/TecnicosTable";
 
 const Tecnicos = () => {
   const [tecnicos, setTecnicos] = useState<Tecnico[]>([]);
@@ -42,10 +47,11 @@ const Tecnicos = () => {
   }, []);
 
   useEffect(() => {
-    const results = tecnicos.filter((tecnico) =>
-      tecnico.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tecnico.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tecnico.cpfCnpj.includes(searchTerm)
+    const results = tecnicos.filter(
+      (tecnico) =>
+        tecnico.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        tecnico.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        tecnico.cpfCnpj.includes(searchTerm),
     );
     setFilteredTecnicos(results);
   }, [searchTerm, tecnicos]);
@@ -84,7 +90,7 @@ const Tecnicos = () => {
 
   const confirmDelete = async () => {
     if (!tecnicoToDelete) return;
-    
+
     try {
       await tecnicosService.delete(tecnicoToDelete.id);
       toast.success("Técnico excluído com sucesso!");
@@ -112,14 +118,14 @@ const Tecnicos = () => {
 
         <div className="flex flex-col gap-md">
           <div className="flex items-center justify-between">
-            <SearchInput 
+            <SearchInput
               placeholder="Buscar por nome, e-mail ou CPF/CNPJ..."
               className="w-full"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               className="bg-brand-primary-medium hover:bg-brand-primary-dark"
               onClick={handleCreate}
             >
@@ -127,12 +133,8 @@ const Tecnicos = () => {
               Novo
             </Button>
           </div>
-          
-          <TecnicosTable 
-            tecnicos={filteredTecnicos} 
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
+
+          <TecnicosTable tecnicos={filteredTecnicos} onEdit={handleEdit} onDelete={handleDelete} />
         </div>
 
         <EditTecnicoDialog

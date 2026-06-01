@@ -18,27 +18,15 @@ import {
   TableRow,
 } from "@/atomic/mol.table/table.component";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-
-interface Cobranca {
-  id: string;
-  ordem_servico_id: string;
-  cliente_nome: string;
-  valor: number;
-  tipo_pagamento: "boleto" | "pix" | "cartao";
-  status: "pendente" | "pago" | "vencido" | "cancelado";
-  data_emissao: string;
-  data_vencimento: string;
-  data_pagamento?: string;
-  pix_copia_cola?: string;
-}
+import type { Cobranca } from "@/pages/financeiro/Financeiro";
 
 interface CobrancasTableProps {
   cobrancas: Cobranca[];
-  onRefresh: () => void;
+  onMarcarPago: (id: string) => void;
+  onCancelar: (id: string) => void;
 }
 
-export const CobrancasTable = ({ cobrancas, onRefresh }: CobrancasTableProps) => {
+export const CobrancasTable = ({ cobrancas, onMarcarPago, onCancelar }: CobrancasTableProps) => {
   const { toast } = useToast();
 
   const getStatusBadge = (status: string) => {
@@ -83,52 +71,6 @@ export const CobrancasTable = ({ cobrancas, onRefresh }: CobrancasTableProps) =>
       default:
         return <Badge variant="secondary">{tipo}</Badge>;
     }
-  };
-
-  const marcarComoPago = async (id: string) => {
-    const { error } = await supabase
-      .from("cobrancas")
-      .update({
-        status: "pago",
-        data_pagamento: new Date().toISOString(),
-      })
-      .eq("id", id);
-
-    if (error) {
-      toast({
-        title: "Erro ao marcar como pago",
-        description: error.message,
-        variant: "destructive",
-      });
-      return;
-    }
-
-    toast({
-      title: "Cobrança atualizada",
-      description: "Cobrança marcada como paga com sucesso",
-    });
-
-    onRefresh();
-  };
-
-  const cancelarCobranca = async (id: string) => {
-    const { error } = await supabase.from("cobrancas").update({ status: "cancelado" }).eq("id", id);
-
-    if (error) {
-      toast({
-        title: "Erro ao cancelar cobrança",
-        description: error.message,
-        variant: "destructive",
-      });
-      return;
-    }
-
-    toast({
-      title: "Cobrança cancelada",
-      description: "Cobrança cancelada com sucesso",
-    });
-
-    onRefresh();
   };
 
   const copiarPixCopiaCola = (pixCopiaCola?: string) => {
@@ -205,13 +147,13 @@ export const CobrancasTable = ({ cobrancas, onRefresh }: CobrancasTableProps) =>
                         </DropdownMenuItem>
                       )}
                       {cobranca.status === "pendente" && (
-                        <DropdownMenuItem onClick={() => marcarComoPago(cobranca.id)}>
+                        <DropdownMenuItem onClick={() => onMarcarPago(cobranca.id)}>
                           <Check className="mr-2 h-4 w-4" />
                           Marcar como Pago
                         </DropdownMenuItem>
                       )}
                       {cobranca.status !== "cancelado" && cobranca.status !== "pago" && (
-                        <DropdownMenuItem onClick={() => cancelarCobranca(cobranca.id)}>
+                        <DropdownMenuItem onClick={() => onCancelar(cobranca.id)}>
                           <X className="mr-2 h-4 w-4" />
                           Cancelar
                         </DropdownMenuItem>

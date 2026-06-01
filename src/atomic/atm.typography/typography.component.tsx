@@ -91,10 +91,7 @@ export const InputLabel: Typography<InputVariants> = ({
   disabled,
   children,
 }) => (
-  <label
-    className={inputStyle({ type: "label", status, disabled, className })}
-    htmlFor={htmlFor}
-  >
+  <label className={inputStyle({ type: "label", status, disabled, className })} htmlFor={htmlFor}>
     {children}
   </label>
 );
@@ -106,11 +103,7 @@ export const InputValue: Typography<InputVariants> = ({
   disabled,
   children,
 }) => (
-  <span
-    className={inputStyle({ type: "value", status, disabled, className })}
-  >
-    {children}
-  </span>
+  <span className={inputStyle({ type: "value", status, disabled, className })}>{children}</span>
 );
 
 export const InputCaption: Typography<InputVariants> = ({
@@ -120,9 +113,5 @@ export const InputCaption: Typography<InputVariants> = ({
   disabled,
   children,
 }) => (
-  <span
-    className={inputStyle({ type: "caption", status, disabled, className })}
-  >
-    {children}
-  </span>
+  <span className={inputStyle({ type: "caption", status, disabled, className })}>{children}</span>
 );

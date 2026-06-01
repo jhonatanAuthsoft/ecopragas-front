@@ -28,7 +28,12 @@ export const Sidebar = ({ className }: { className?: string }) => {
   const location = useLocation();
 
   return (
-    <aside className={cn("h-screen w-64 border-r border-border bg-sidebar transition-transform", className)}>
+    <aside
+      className={cn(
+        "h-screen w-64 border-r border-border bg-sidebar transition-transform",
+        className,
+      )}
+    >
       <div className="flex h-full flex-col">
         <div className="flex h-16 items-center gap-2 border-sidebar-border px-6">
           <div>

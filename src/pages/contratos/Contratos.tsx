@@ -223,4 +223,3 @@ const Contratos = () => {
 };
 
 export default Contratos;
-

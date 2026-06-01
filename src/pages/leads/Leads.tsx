@@ -6,7 +6,7 @@ import { AddLeadDialog } from "@/atomic/obj.add-lead-dialog/add-lead-dialog.comp
 import { CRMMetrics } from "@/atomic/obj.crmmetrics/crmmetrics.component";
 import { LeadKanban } from "@/atomic/obj.lead-kanban/lead-kanban.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
-import { leadsService, LeadDTO } from "@/services/leads.service";
+import { type LeadDTO, leadsService } from "@/services/leads.service";
 
 export type Lead = {
   id: string;
@@ -23,21 +23,21 @@ export type Lead = {
 
 const mapDtoToLead = (dto: LeadDTO): Lead => {
   const originMap: Record<string, Lead["origin"]> = {
-    "GOOGLE": "Google",
-    "INSTAGRAM": "Instagram",
-    "FACEBOOK": "Facebook",
-    "INDICACAO": "Indicação",
-    "WEBSITE": "Website",
-    "OUTRO": "Outro"
+    GOOGLE: "Google",
+    INSTAGRAM: "Instagram",
+    FACEBOOK: "Facebook",
+    INDICACAO: "Indicação",
+    WEBSITE: "Website",
+    OUTRO: "Outro",
   };
 
   const statusMap: Record<string, Lead["status"]> = {
-    "NOVO": "novo",
-    "EM_CONTATO": "em_contato",
-    "PROPOSTA_ENVIADA": "proposta_enviada",
-    "NEGOCIACAO": "negociacao",
-    "GANHO": "ganho",
-    "PERDIDO": "perdido"
+    NOVO: "novo",
+    EM_CONTATO: "em_contato",
+    PROPOSTA_ENVIADA: "proposta_enviada",
+    NEGOCIACAO: "negociacao",
+    GANHO: "ganho",
+    PERDIDO: "perdido",
   };
 
   return {
@@ -107,7 +107,7 @@ const Leads = () => {
   };
 
   const handleUpdateLeadStatus = async (leadId: string, newStatus: Lead["status"]) => {
-    const leadToUpdate = leads.find(l => l.id === leadId);
+    const leadToUpdate = leads.find((l) => l.id === leadId);
     if (!leadToUpdate) return;
 
     setLeads(leads.map((lead) => (lead.id === leadId ? { ...lead, status: newStatus } : lead)));
@@ -134,7 +134,9 @@ const Leads = () => {
     } catch (error) {
       console.error("Erro ao atualizar status:", error);
       toast.error("Erro ao atualizar status");
-      setLeads(leads.map((lead) => (lead.id === leadId ? { ...lead, status: leadToUpdate.status } : lead)));
+      setLeads(
+        leads.map((lead) => (lead.id === leadId ? { ...lead, status: leadToUpdate.status } : lead)),
+      );
     }
   };
 
@@ -183,4 +185,3 @@ const Leads = () => {
 };
 
 export default Leads;
-

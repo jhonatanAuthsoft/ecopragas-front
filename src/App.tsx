@@ -4,16 +4,16 @@ import { Toaster as Sonner } from "@/atomic/mol.sonner/sonner.component";
 import { Toaster } from "@/atomic/mol.toaster/toaster.component";
 import { TooltipProvider } from "@/atomic/mol.tooltip/tooltip.component";
 import Agendamentos from "./pages/admin/agendamentos/Agendamentos";
-import Auth from "./pages/auth/Auth";
-import Clientes from "./pages/admin/clientes/Clientes";
 import ClienteDetalhes from "./pages/admin/clientes/ClienteDetalhes";
+import Clientes from "./pages/admin/clientes/Clientes";
 import Index from "./pages/admin/dashboard/Index";
-import Leads from "./pages/leads/Leads";
-import NotFound from "./pages/not-found/NotFound";
 import OrdemServicoDetalhes from "./pages/admin/ordens-servico/OrdemServicoDetalhes";
 import OrdensServico from "./pages/admin/ordens-servico/OrdensServico";
 import Relatorios from "./pages/admin/relatorios/Relatorios";
 import Tecnicos from "./pages/admin/tecnicos/Tecnicos";
+import Auth from "./pages/auth/Auth";
+import Leads from "./pages/leads/Leads";
+import NotFound from "./pages/not-found/NotFound";
 
 const queryClient = new QueryClient();
 

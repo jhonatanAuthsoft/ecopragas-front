@@ -1,10 +1,10 @@
 import { ArrowLeft, Download, FileText, MapPin, Phone } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import api from "@/services/api";
-import { toast } from "sonner";
 import { formatCEP, formatCPFCNPJ, formatPhone } from "@/utils/formatters";
 
 interface Endereco {
@@ -67,11 +67,11 @@ const ClienteDetalhes = () => {
 
   const handleDownloadDocumento = (doc: Documento) => {
     if (doc.conteudo) {
-      const dataUri = doc.conteudo.startsWith('data:') 
-        ? doc.conteudo 
-        : `data:${doc.tipo || 'application/octet-stream'};base64,${doc.conteudo}`;
-        
-      const link = document.createElement('a');
+      const dataUri = doc.conteudo.startsWith("data:")
+        ? doc.conteudo
+        : `data:${doc.tipo || "application/octet-stream"};base64,${doc.conteudo}`;
+
+      const link = document.createElement("a");
       link.href = dataUri;
       link.download = doc.nome;
       document.body.appendChild(link);
@@ -101,15 +101,18 @@ const ClienteDetalhes = () => {
     );
   }
 
-  const mainAddress = cliente.enderecos?.find(e => e.principal) || cliente.enderecos?.[0];
-  const addressString = mainAddress 
+  const mainAddress = cliente.enderecos?.find((e) => e.principal) || cliente.enderecos?.[0];
+  const addressString = mainAddress
     ? `${mainAddress.rua}, ${mainAddress.numero}${mainAddress.complemento ? `, ${mainAddress.complemento}` : ""}, ${formatCEP(mainAddress.cep)}, ${mainAddress.cidade} - ${mainAddress.estado}`
     : "Endereço não cadastrado";
 
   return (
     <MainLayout>
       <div className="space-y-6">
-        <div className="flex items-center gap-2 text-grayscale-medium hover:text-brand-primary-medium transition-colors cursor-pointer w-fit" onClick={() => navigate("/clientes")}>
+        <div
+          className="flex items-center gap-2 text-grayscale-medium hover:text-brand-primary-medium transition-colors cursor-pointer w-fit"
+          onClick={() => navigate("/clientes")}
+        >
           <ArrowLeft className="h-4 w-4" />
           <span className="text-sm">Voltar para Clientes</span>
         </div>
@@ -140,8 +143,10 @@ const ClienteDetalhes = () => {
 
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-grayscale-dark">Último Serviço</h3>
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12 p-4 bg-gray-50 rounded-lg">
-                <p className="text-sm text-grayscale-medium col-span-2">Informações do último serviço indisponíveis.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12 p-4 bg-gray-50 rounded-lg">
+              <p className="text-sm text-grayscale-medium col-span-2">
+                Informações do último serviço indisponíveis.
+              </p>
             </div>
           </div>
 
@@ -150,7 +155,10 @@ const ClienteDetalhes = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {cliente.documentos && cliente.documentos.length > 0 ? (
                 cliente.documentos.map((doc, index) => (
-                  <div key={doc.id || index} className="flex items-center justify-between p-4 border border-grayscale-light rounded-lg hover:bg-gray-50 transition-colors">
+                  <div
+                    key={doc.id || index}
+                    className="flex items-center justify-between p-4 border border-grayscale-light rounded-lg hover:bg-gray-50 transition-colors"
+                  >
                     <div className="flex items-center gap-3">
                       <div className="bg-red-50 p-2 rounded">
                         <FileText className="h-6 w-6 text-red-500" />
@@ -160,9 +168,9 @@ const ClienteDetalhes = () => {
                         <p className="text-xs text-grayscale-medium">120 KB</p>
                       </div>
                     </div>
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       className="text-green-600 hover:text-green-700 hover:bg-green-50"
                       onClick={() => handleDownloadDocumento(doc)}
                     >
@@ -171,7 +179,9 @@ const ClienteDetalhes = () => {
                   </div>
                 ))
               ) : (
-                <p className="text-grayscale-medium text-sm col-span-2">Nenhum documento encontrado.</p>
+                <p className="text-grayscale-medium text-sm col-span-2">
+                  Nenhum documento encontrado.
+                </p>
               )}
             </div>
           </div>

@@ -1,6 +1,4 @@
-@tailwind base;
 @import "tailwindcss";
-@plugin "tailwindcss-animate";
 
 @theme inline {
   /* Design System Typography */
@@ -43,41 +41,41 @@
   --shadow-dropshadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
   /* Design System Colors */
-  --color-brand-primary-light: #4ADE7F;
-  --color-brand-primary-medium: #16A249;
-  --color-brand-primary-dark: #14532D;
+  --color-brand-primary-light: #4ade7f;
+  --color-brand-primary-medium: #16a249;
+  --color-brand-primary-dark: #14532d;
 
-  --color-brand-secondary-light: #1EB1FF;
-  --color-brand-secondary-medium: #0073E5;
-  --color-brand-secondary-dark: #0D549B;
+  --color-brand-secondary-light: #1eb1ff;
+  --color-brand-secondary-medium: #0073e5;
+  --color-brand-secondary-dark: #0d549b;
 
-  --color-brand-cta-light: #BDF5D1;
-  --color-brand-cta-medium: #42D778;
-  --color-brand-cta-dark: #1A9F4B;
+  --color-brand-cta-light: #bdf5d1;
+  --color-brand-cta-medium: #42d778;
+  --color-brand-cta-dark: #1a9f4b;
 
-  --color-brand-accessory-orange: #FFBB28;
-  --color-brand-accessory-purple: #8884D8;
-  --color-brand-accessory-strong-orange: #FF8042;
-  --color-brand-accessory-green: #00C49F;
+  --color-brand-accessory-orange: #ffbb28;
+  --color-brand-accessory-purple: #8884d8;
+  --color-brand-accessory-strong-orange: #ff8042;
+  --color-brand-accessory-green: #00c49f;
 
   /* Grayscale */
-  --color-grayscale-white: #FFF;
-  --color-grayscale-x-light: #F8F8F7;
-  --color-grayscale-light: #E5E7EB;
-  --color-grayscale-medium: #768B9A;
-  --color-grayscale-dark: #4E5E6C;
-  --color-grayscale-x-dark: #21262C;
+  --color-grayscale-white: #fff;
+  --color-grayscale-x-light: #f8f8f7;
+  --color-grayscale-light: #e5e7eb;
+  --color-grayscale-medium: #768b9a;
+  --color-grayscale-dark: #4e5e6c;
+  --color-grayscale-x-dark: #21262c;
 
   /* Feedback */
-  --color-feedback-success-light: #E1FBE9;
-  --color-feedback-success-medium: #1E8F44;
-  --color-feedback-success-dark: #0A5C25;
-  --color-feedback-warning-light: #FFF8C2;
-  --color-feedback-warning-medium: #EF9B00;
-  --color-feedback-warning-dark: #4F4910;
-  --color-feedback-error-light: #FDE6E7;
-  --color-feedback-error-medium: #EF4343;
-  --color-feedback-error-dark: #621A17;
+  --color-feedback-success-light: #e1fbe9;
+  --color-feedback-success-medium: #1e8f44;
+  --color-feedback-success-dark: #0a5c25;
+  --color-feedback-warning-light: #fff8c2;
+  --color-feedback-warning-medium: #ef9b00;
+  --color-feedback-warning-dark: #4f4910;
+  --color-feedback-error-light: #fde6e7;
+  --color-feedback-error-medium: #ef4343;
+  --color-feedback-error-dark: #621a17;
 
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));

@@ -2,10 +2,10 @@ import { AlertCircle, CheckCircle2, ClipboardList, Clock, Plus } from "lucide-re
 import { useState } from "react";
 import { Button } from "@/atomic/atm.button/button.component";
 import { Card, CardContent } from "@/atomic/mol.card/card.component";
+import { SearchInput } from "@/atomic/mol.search/search.component";
+import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { AddOrdemServicoDialog } from "./components/AddOrdemServicoDialog";
 import { OrdensServicoTable } from "./components/OrdensServicoTable";
-import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
-import { SearchInput } from "@/atomic/mol.search/search.component";
 
 export type OrdemServico = {
   id: string;
@@ -217,4 +217,3 @@ const OrdensServico = () => {
 };
 
 export default OrdensServico;
-
