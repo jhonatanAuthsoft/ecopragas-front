@@ -27,7 +27,7 @@ export const leadsService = {
     params.append("page", page.toString());
     params.append("size", size.toString());
     if (sort) {
-      sort.forEach(s => params.append("sort", s));
+      sort.forEach((s) => params.append("sort", s));
     }
     const response = await api.get<LeadResponse>("/admin/leads", { params });
     return response.data;

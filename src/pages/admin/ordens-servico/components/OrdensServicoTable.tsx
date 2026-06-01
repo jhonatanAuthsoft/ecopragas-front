@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/atomic/mol.dropdown-menu/dropdown-menu.component";
+import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
 import {
   Table,
   TableBody,
@@ -16,7 +17,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/atomic/mol.table/table.component";
-import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
 import type { OrdemServico } from "@/pages/admin/ordens-servico/OrdensServico";
 
 interface OrdensServicoTableProps {
@@ -63,12 +63,8 @@ export const OrdensServicoTable = ({ ordensServico }: OrdensServicoTableProps) =
               <TableCell>{os.clienteNome}</TableCell>
               <TableCell>{tipoServicoLabels[os.tipoServico]}</TableCell>
               <TableCell className="text-muted-foreground">{os.tecnicoNome}</TableCell>
-              <TableCell>
-                {format(os.dataAgendamento, "dd/MM/yyyy", { locale: ptBR })}
-              </TableCell>
-              <TableCell>
-                {os.horaAgendamento}
-              </TableCell>
+              <TableCell>{format(os.dataAgendamento, "dd/MM/yyyy", { locale: ptBR })}</TableCell>
+              <TableCell>{os.horaAgendamento}</TableCell>
               <TableCell className="max-w-[200px] truncate text-muted-foreground text-sm">
                 {os.endereco}
               </TableCell>
@@ -100,12 +96,8 @@ export const OrdensServicoTable = ({ ordensServico }: OrdensServicoTableProps) =
           ))}
         </TableBody>
       </Table>
-      
-      <PaginationControl 
-        className="mt-4"
-        currentPage={1}
-        totalPages={3}
-      />
+
+      <PaginationControl className="mt-4" currentPage={1} totalPages={3} />
     </div>
   );
 };

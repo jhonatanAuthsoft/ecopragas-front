@@ -8,8 +8,9 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "biome lint .",
+    "check": "biome check .",
+    "check:fix": "biome check . --fix",
     "format": "biome format . --write",
-    "check": "biome check . --write",
     "preview": "vite preview"
   },
   "dependencies": {

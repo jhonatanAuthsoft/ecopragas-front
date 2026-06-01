@@ -1,7 +1,7 @@
-import { Plus, Trash2, Upload, X, AlertTriangle } from "lucide-react";
-import { useState, useEffect } from "react";
-import { Checkbox } from "@/atomic/atm.checkbox/checkbox.component";
+import { AlertTriangle, Plus, Trash2, Upload, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Button } from "@/atomic/atm.button/button.component";
+import { Checkbox } from "@/atomic/atm.checkbox/checkbox.component";
 import { Input } from "@/atomic/atm.input/input.component";
 import { Label } from "@/atomic/atm.label/label.component";
 import { Textarea } from "@/atomic/atm.textarea/textarea.component";
@@ -19,9 +19,9 @@ import {
   SelectValue,
 } from "@/atomic/mol.select/select.component";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
-import { Cliente } from "../types";
-import { formatCEP, formatCPFCNPJ, formatPhone } from "@/utils/formatters";
 import { cn } from "@/lib/utils";
+import { formatCEP, formatCPFCNPJ, formatPhone } from "@/utils/formatters";
+import type { Cliente } from "../types";
 
 interface AddClienteDialogProps {
   open: boolean;
@@ -30,7 +30,12 @@ interface AddClienteDialogProps {
   initialData?: any;
 }
 
-export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData }: AddClienteDialogProps) => {
+export const AddClienteDialog = ({
+  open,
+  onOpenChange,
+  onAddCliente,
+  initialData,
+}: AddClienteDialogProps) => {
   const [activeTab, setActiveTab] = useState("dados");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -54,36 +59,38 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
 
   useEffect(() => {
     if (initialData && open) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        ...initialData
+        ...initialData,
       }));
     }
   }, [initialData, open]);
 
-  const [enderecos, setEnderecos] = useState<Array<{
-    cep: string;
-    estado: string;
-    cidade: string;
-    bairro: string;
-    endereco: string;
-    numero: string;
-    complemento: string;
-    padrao: boolean;
-  }>>([]);
+  const [enderecos, setEnderecos] = useState<
+    Array<{
+      cep: string;
+      estado: string;
+      cidade: string;
+      bairro: string;
+      endereco: string;
+      numero: string;
+      complemento: string;
+      padrao: boolean;
+    }>
+  >([]);
 
   const [files, setFiles] = useState<File[]>([]);
   const [fileError, setFileError] = useState<string | null>(null);
 
   const validateFileTypes = (selectedFiles: File[]) => {
-    const validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
-    const isValid = selectedFiles.every(file => validTypes.includes(file.type));
-    
+    const validTypes = ["image/jpeg", "image/png", "application/pdf"];
+    const isValid = selectedFiles.every((file) => validTypes.includes(file.type));
+
     if (!isValid) {
       setFileError("Este formato de arquivo não é suportado.");
       return false;
     }
-    
+
     setFileError(null);
     return true;
   };
@@ -181,8 +188,15 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
 
   const validateEndereco = () => {
     const newErrors: Record<string, string> = {};
-    const isAddressEmpty = !formData.cep && !formData.estado && !formData.cidade && !formData.bairro && !formData.endereco && !formData.numero && !formData.complemento;
-    
+    const isAddressEmpty =
+      !formData.cep &&
+      !formData.estado &&
+      !formData.cidade &&
+      !formData.bairro &&
+      !formData.endereco &&
+      !formData.numero &&
+      !formData.complemento;
+
     if (enderecos.length === 0 || !isAddressEmpty) {
       if (!formData.cep) newErrors.cep = "Campo Obrigatório";
       if (!formData.estado) newErrors.estado = "Campo Obrigatório";
@@ -207,10 +221,12 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
   const handleNextEndereco = () => {
     // Limpa erros anteriores de endereço
     const currentErrors = { ...errors };
-    Object.keys(currentErrors).forEach(key => {
-        if (['cep', 'estado', 'cidade', 'bairro', 'endereco', 'numero', 'complemento'].includes(key)) {
-            delete currentErrors[key];
-        }
+    Object.keys(currentErrors).forEach((key) => {
+      if (
+        ["cep", "estado", "cidade", "bairro", "endereco", "numero", "complemento"].includes(key)
+      ) {
+        delete currentErrors[key];
+      }
     });
     setErrors(currentErrors);
 
@@ -221,24 +237,24 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     setErrors({});
     const isDadosValid = validateDados();
     const isEnderecoValid = validateEndereco();
 
     if (!isDadosValid) {
-        setActiveTab("dados");
-        return;
+      setActiveTab("dados");
+      return;
     }
     if (!isEnderecoValid) {
-        setActiveTab("endereco");
-        return;
+      setActiveTab("endereco");
+      return;
     }
-    
+
     const payloadEnderecos = [];
-    
+
     if (enderecos.length > 0) {
-      enderecos.forEach(addr => {
+      enderecos.forEach((addr) => {
         payloadEnderecos.push({
           rua: addr.endereco,
           numero: addr.numero,
@@ -247,33 +263,33 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
           cidade: addr.cidade,
           estado: addr.estado,
           cep: addr.cep.replace(/\D/g, ""),
-          principal: addr.padrao
+          principal: addr.padrao,
         });
       });
     }
 
     const hasCurrentAddress = formData.cep && formData.endereco && formData.numero;
     if (hasCurrentAddress) {
-       if (enderecos.length === 0) {
-          payloadEnderecos.push({
-            rua: formData.endereco,
-            numero: formData.numero,
-            complemento: formData.complemento,
-            endereco: formData.bairro,
-            cidade: formData.cidade,
-            estado: formData.estado,
-            cep: formData.cep.replace(/\D/g, ""),
-            principal: formData.salvarEnderecoPadrao
-          });
-       }
+      if (enderecos.length === 0) {
+        payloadEnderecos.push({
+          rua: formData.endereco,
+          numero: formData.numero,
+          complemento: formData.complemento,
+          endereco: formData.bairro,
+          cidade: formData.cidade,
+          estado: formData.estado,
+          cep: formData.cep.replace(/\D/g, ""),
+          principal: formData.salvarEnderecoPadrao,
+        });
+      }
     }
-    
-    const filePromises = files.map(file => {
+
+    const filePromises = files.map((file) => {
       return new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = () => resolve(reader.result as string);
-        reader.onerror = error => reject(error);
+        reader.onerror = (error) => reject(error);
       });
     });
 
@@ -288,9 +304,9 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
         tipoCliente: formData.tipoCliente ? formData.tipoCliente.toUpperCase() : "FIXO",
         observacoes: formData.observacoes || "",
         status: (formData.status || "ativo").toUpperCase(),
-        enderecos: payloadEnderecos
+        enderecos: payloadEnderecos,
       },
-      arquivos: base64Files
+      arquivos: base64Files,
     };
 
     const success = await onAddCliente(payload);
@@ -332,20 +348,20 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
         <form onSubmit={handleSubmit}>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-3 mb-8 bg-transparent border-b rounded-none h-auto p-0">
-              <TabsTrigger 
-                value="dados" 
+              <TabsTrigger
+                value="dados"
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-brand-primary-medium data-[state=active]:text-brand-primary-medium pb-2 bg-transparent data-[state=active]:bg-transparent shadow-none"
               >
                 Dados básicos
               </TabsTrigger>
-              <TabsTrigger 
-                value="endereco" 
+              <TabsTrigger
+                value="endereco"
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-brand-primary-medium data-[state=active]:text-brand-primary-medium pb-2 bg-transparent data-[state=active]:bg-transparent shadow-none"
               >
                 Endereço do cliente
               </TabsTrigger>
-              <TabsTrigger 
-                value="documentacao" 
+              <TabsTrigger
+                value="documentacao"
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-brand-primary-medium data-[state=active]:text-brand-primary-medium pb-2 bg-transparent data-[state=active]:bg-transparent shadow-none"
               >
                 Documentação
@@ -355,17 +371,22 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
             <TabsContent value="dados" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="nome" className="text-base font-normal text-grayscale-dark">Nome/ Razão Social</Label>
+                  <Label htmlFor="nome" className="text-base font-normal text-grayscale-dark">
+                    Nome/ Razão Social
+                  </Label>
                   <div className="relative">
                     <Input
                       id="nome"
                       value={formData.nome}
                       onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-                      className={cn("pr-10 rounded-lg h-12", errors.nome ? "border-feedback-error-medium" : "border-grayscale-light")}
+                      className={cn(
+                        "pr-10 rounded-lg h-12",
+                        errors.nome ? "border-feedback-error-medium" : "border-grayscale-light",
+                      )}
                       placeholder="João Silva"
                     />
                     {formData.nome && (
-                      <button 
+                      <button
                         type="button"
                         onClick={() => setFormData({ ...formData, nome: "" })}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-feedback-error-medium hover:text-feedback-error-dark"
@@ -374,24 +395,44 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
                       </button>
                     )}
                   </div>
-                  {errors.nome && <span className="text-xs text-feedback-error-dark mt-1 block">× {errors.nome}</span>}
+                  {errors.nome && (
+                    <span className="text-xs text-feedback-error-dark mt-1 block">
+                      × {errors.nome}
+                    </span>
+                  )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="cpfCnpj" className="text-base font-normal text-grayscale-dark">CPF/CNPJ</Label>
+                  <Label htmlFor="cpfCnpj" className="text-base font-normal text-grayscale-dark">
+                    CPF/CNPJ
+                  </Label>
                   <Input
                     id="cpfCnpj"
                     value={formData.cpfCnpj}
-                    onChange={(e) => setFormData({ ...formData, cpfCnpj: formatCPFCNPJ(e.target.value) })}
-                    className={cn("rounded-lg h-12", errors.cpfCnpj ? "border-feedback-error-medium" : "border-grayscale-light")}
+                    onChange={(e) =>
+                      setFormData({ ...formData, cpfCnpj: formatCPFCNPJ(e.target.value) })
+                    }
+                    className={cn(
+                      "rounded-lg h-12",
+                      errors.cpfCnpj ? "border-feedback-error-medium" : "border-grayscale-light",
+                    )}
                     placeholder="EX. 123.456.789/0001"
                     maxLength={18}
                   />
-                  {errors.cpfCnpj && <span className="text-xs text-feedback-error-dark mt-1 block">× {errors.cpfCnpj}</span>}
+                  {errors.cpfCnpj && (
+                    <span className="text-xs text-feedback-error-dark mt-1 block">
+                      × {errors.cpfCnpj}
+                    </span>
+                  )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="tipoCliente" className="text-base font-normal text-grayscale-dark">Tipo de cliente</Label>
+                  <Label
+                    htmlFor="tipoCliente"
+                    className="text-base font-normal text-grayscale-dark"
+                  >
+                    Tipo de cliente
+                  </Label>
                   <Select
                     value={formData.tipoCliente}
                     onValueChange={(value) =>
@@ -401,7 +442,15 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
                       })
                     }
                   >
-                    <SelectTrigger id="tipoCliente" className={cn("rounded-lg h-12 text-muted-foreground", errors.tipoCliente ? "border-feedback-error-medium" : "border-grayscale-light")}>
+                    <SelectTrigger
+                      id="tipoCliente"
+                      className={cn(
+                        "rounded-lg h-12 text-muted-foreground",
+                        errors.tipoCliente
+                          ? "border-feedback-error-medium"
+                          : "border-grayscale-light",
+                      )}
+                    >
                       <SelectValue placeholder="Selecione o tipo de cliente" />
                     </SelectTrigger>
                     <SelectContent>
@@ -409,11 +458,17 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
                       <SelectItem value="recorrente">Recorrente</SelectItem>
                     </SelectContent>
                   </Select>
-                  {errors.tipoCliente && <span className="text-xs text-feedback-error-dark mt-1 block">× {errors.tipoCliente}</span>}
+                  {errors.tipoCliente && (
+                    <span className="text-xs text-feedback-error-dark mt-1 block">
+                      × {errors.tipoCliente}
+                    </span>
+                  )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="status" className="text-base font-normal text-grayscale-dark">Status</Label>
+                  <Label htmlFor="status" className="text-base font-normal text-grayscale-dark">
+                    Status
+                  </Label>
                   <Select
                     value={formData.status}
                     onValueChange={(value) =>
@@ -423,7 +478,13 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
                       })
                     }
                   >
-                    <SelectTrigger id="status" className={cn("rounded-lg h-12 text-muted-foreground", errors.status ? "border-feedback-error-medium" : "border-grayscale-light")}>
+                    <SelectTrigger
+                      id="status"
+                      className={cn(
+                        "rounded-lg h-12 text-muted-foreground",
+                        errors.status ? "border-feedback-error-medium" : "border-grayscale-light",
+                      )}
+                    >
                       <SelectValue placeholder="Selecione o status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -431,38 +492,64 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
                       <SelectItem value="inativo">Inativo</SelectItem>
                     </SelectContent>
                   </Select>
-                  {errors.status && <span className="text-xs text-feedback-error-dark mt-1 block">× {errors.status}</span>}
+                  {errors.status && (
+                    <span className="text-xs text-feedback-error-dark mt-1 block">
+                      × {errors.status}
+                    </span>
+                  )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-base font-normal text-grayscale-dark">E-mail</Label>
+                  <Label htmlFor="email" className="text-base font-normal text-grayscale-dark">
+                    E-mail
+                  </Label>
                   <Input
                     id="email"
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className={cn("rounded-lg h-12", errors.email ? "border-feedback-error-medium" : "border-grayscale-light")}
+                    className={cn(
+                      "rounded-lg h-12",
+                      errors.email ? "border-feedback-error-medium" : "border-grayscale-light",
+                    )}
                     placeholder="Ex. contato@empresa.com"
                   />
-                  {errors.email && <span className="text-xs text-feedback-error-dark mt-1 block">× {errors.email}</span>}
+                  {errors.email && (
+                    <span className="text-xs text-feedback-error-dark mt-1 block">
+                      × {errors.email}
+                    </span>
+                  )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="telefone" className="text-base font-normal text-grayscale-dark">Telefone</Label>
+                  <Label htmlFor="telefone" className="text-base font-normal text-grayscale-dark">
+                    Telefone
+                  </Label>
                   <Input
                     id="telefone"
                     value={formData.telefone}
-                    onChange={(e) => setFormData({ ...formData, telefone: formatPhone(e.target.value) })}
-                    className={cn("rounded-lg h-12", errors.telefone ? "border-feedback-error-medium" : "border-grayscale-light")}
+                    onChange={(e) =>
+                      setFormData({ ...formData, telefone: formatPhone(e.target.value) })
+                    }
+                    className={cn(
+                      "rounded-lg h-12",
+                      errors.telefone ? "border-feedback-error-medium" : "border-grayscale-light",
+                    )}
                     placeholder="Ex.(11) 987765-4321"
                     maxLength={15}
                   />
-                  {errors.telefone && <span className="text-xs text-feedback-error-dark mt-1 block">× {errors.telefone}</span>}
+                  {errors.telefone && (
+                    <span className="text-xs text-feedback-error-dark mt-1 block">
+                      × {errors.telefone}
+                    </span>
+                  )}
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="observacoes" className="text-base font-normal text-grayscale-dark">Observações</Label>
+                <Label htmlFor="observacoes" className="text-base font-normal text-grayscale-dark">
+                  Observações
+                </Label>
                 <Textarea
                   id="observacoes"
                   value={formData.observacoes}
@@ -471,10 +558,10 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
                   className="border-grayscale-light rounded-lg min-h-[100px] resize-none"
                 />
               </div>
-              
+
               <div className="pt-4 flex justify-center">
-                <Button 
-                  type="button" 
+                <Button
+                  type="button"
                   className="bg-brand-primary-medium hover:bg-brand-primary-dark text-white font-medium h-12 rounded-lg"
                   onClick={handleNextDados}
                 >
@@ -486,26 +573,43 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
             <TabsContent value="endereco" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="cep" className="text-base font-normal text-grayscale-dark">CEP</Label>
+                  <Label htmlFor="cep" className="text-base font-normal text-grayscale-dark">
+                    CEP
+                  </Label>
                   <Input
                     id="cep"
                     value={formData.cep}
                     onChange={(e) => setFormData({ ...formData, cep: formatCEP(e.target.value) })}
                     onBlur={handleCepBlur}
-                    className={cn("rounded-lg h-12", errors.cep ? "border-feedback-error-medium" : "border-grayscale-light")}
+                    className={cn(
+                      "rounded-lg h-12",
+                      errors.cep ? "border-feedback-error-medium" : "border-grayscale-light",
+                    )}
                     placeholder="Ex.48000-000"
                     maxLength={9}
                   />
-                  {errors.cep && <span className="text-xs text-feedback-error-dark mt-1 block">× {errors.cep}</span>}
+                  {errors.cep && (
+                    <span className="text-xs text-feedback-error-dark mt-1 block">
+                      × {errors.cep}
+                    </span>
+                  )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="estado" className="text-base font-normal text-grayscale-dark">Estado</Label>
+                  <Label htmlFor="estado" className="text-base font-normal text-grayscale-dark">
+                    Estado
+                  </Label>
                   <Select
                     value={formData.estado}
                     onValueChange={(value) => setFormData({ ...formData, estado: value })}
                   >
-                    <SelectTrigger id="estado" className={cn("rounded-lg h-12 text-muted-foreground", errors.estado ? "border-feedback-error-medium" : "border-grayscale-light")}>
+                    <SelectTrigger
+                      id="estado"
+                      className={cn(
+                        "rounded-lg h-12 text-muted-foreground",
+                        errors.estado ? "border-feedback-error-medium" : "border-grayscale-light",
+                      )}
+                    >
                       <SelectValue placeholder="Selecione o estado" />
                     </SelectTrigger>
                     <SelectContent>
@@ -516,44 +620,73 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
                       <SelectItem value="RS">Rio Grande do Sul</SelectItem>
                     </SelectContent>
                   </Select>
-                  {errors.estado && <span className="text-xs text-feedback-error-dark mt-1 block">× {errors.estado}</span>}
+                  {errors.estado && (
+                    <span className="text-xs text-feedback-error-dark mt-1 block">
+                      × {errors.estado}
+                    </span>
+                  )}
                 </div>
 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="cidade" className="text-base font-normal text-grayscale-dark">Cidade</Label>
+                  <Label htmlFor="cidade" className="text-base font-normal text-grayscale-dark">
+                    Cidade
+                  </Label>
                   <Input
-                     id="cidade"
-                     value={formData.cidade}
-                     onChange={(e) => setFormData({ ...formData, cidade: e.target.value })}
-                     className={cn("rounded-lg h-12", errors.cidade ? "border-feedback-error-medium" : "border-grayscale-light")}
-                     placeholder="Ex. Cruz das Almas"
+                    id="cidade"
+                    value={formData.cidade}
+                    onChange={(e) => setFormData({ ...formData, cidade: e.target.value })}
+                    className={cn(
+                      "rounded-lg h-12",
+                      errors.cidade ? "border-feedback-error-medium" : "border-grayscale-light",
+                    )}
+                    placeholder="Ex. Cruz das Almas"
                   />
-                  {errors.cidade && <span className="text-xs text-feedback-error-dark mt-1 block">× {errors.cidade}</span>}
+                  {errors.cidade && (
+                    <span className="text-xs text-feedback-error-dark mt-1 block">
+                      × {errors.cidade}
+                    </span>
+                  )}
                 </div>
 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="bairro" className="text-base font-normal text-grayscale-dark">Bairro</Label>
+                  <Label htmlFor="bairro" className="text-base font-normal text-grayscale-dark">
+                    Bairro
+                  </Label>
                   <Input
-                     id="bairro"
-                     value={formData.bairro}
-                     onChange={(e) => setFormData({ ...formData, bairro: e.target.value })}
-                     className={cn("rounded-lg h-12", errors.bairro ? "border-feedback-error-medium" : "border-grayscale-light")}
-                     placeholder="Ex. Centro"
+                    id="bairro"
+                    value={formData.bairro}
+                    onChange={(e) => setFormData({ ...formData, bairro: e.target.value })}
+                    className={cn(
+                      "rounded-lg h-12",
+                      errors.bairro ? "border-feedback-error-medium" : "border-grayscale-light",
+                    )}
+                    placeholder="Ex. Centro"
                   />
-                  {errors.bairro && <span className="text-xs text-feedback-error-dark mt-1 block">× {errors.bairro}</span>}
+                  {errors.bairro && (
+                    <span className="text-xs text-feedback-error-dark mt-1 block">
+                      × {errors.bairro}
+                    </span>
+                  )}
                 </div>
 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="endereco" className="text-base font-normal text-grayscale-dark">Endereço</Label>
+                  <Label htmlFor="endereco" className="text-base font-normal text-grayscale-dark">
+                    Endereço
+                  </Label>
                   <div className="relative">
                     <Input
                       id="endereco"
                       value={formData.endereco}
                       onChange={(e) => setFormData({ ...formData, endereco: e.target.value })}
-                      className={cn("pr-10 rounded-lg h-12", errors.endereco ? "border-feedback-error-medium" : "border-brand-primary-medium border-2")}
+                      className={cn(
+                        "pr-10 rounded-lg h-12",
+                        errors.endereco
+                          ? "border-feedback-error-medium"
+                          : "border-brand-primary-medium border-2",
+                      )}
                       placeholder="Rua Leonidio Melo Sacramento"
                     />
-                    <button 
+                    <button
                       type="button"
                       onClick={() => setFormData({ ...formData, endereco: "" })}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-primary-medium"
@@ -561,39 +694,68 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
                       <X className="h-5 w-5 rounded-full border border-current p-0.5" />
                     </button>
                   </div>
-                  {errors.endereco && <span className="text-xs text-feedback-error-dark mt-1 block">× {errors.endereco}</span>}
+                  {errors.endereco && (
+                    <span className="text-xs text-feedback-error-dark mt-1 block">
+                      × {errors.endereco}
+                    </span>
+                  )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="numero" className="text-base font-normal text-grayscale-dark">Número</Label>
+                  <Label htmlFor="numero" className="text-base font-normal text-grayscale-dark">
+                    Número
+                  </Label>
                   <Input
                     id="numero"
                     value={formData.numero}
                     onChange={(e) => setFormData({ ...formData, numero: e.target.value })}
-                    className={cn("rounded-lg h-12", errors.numero ? "border-feedback-error-medium" : "border-grayscale-light")}
+                    className={cn(
+                      "rounded-lg h-12",
+                      errors.numero ? "border-feedback-error-medium" : "border-grayscale-light",
+                    )}
                     placeholder="Ex. 123"
                   />
-                  {errors.numero && <span className="text-xs text-feedback-error-dark mt-1 block">× {errors.numero}</span>}
+                  {errors.numero && (
+                    <span className="text-xs text-feedback-error-dark mt-1 block">
+                      × {errors.numero}
+                    </span>
+                  )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="complemento" className="text-base font-normal text-grayscale-dark">Complemento</Label>
+                  <Label
+                    htmlFor="complemento"
+                    className="text-base font-normal text-grayscale-dark"
+                  >
+                    Complemento
+                  </Label>
                   <Input
                     id="complemento"
                     value={formData.complemento}
                     onChange={(e) => setFormData({ ...formData, complemento: e.target.value })}
-                    className={cn("rounded-lg h-12", errors.complemento ? "border-feedback-error-medium" : "border-grayscale-light")}
+                    className={cn(
+                      "rounded-lg h-12",
+                      errors.complemento
+                        ? "border-feedback-error-medium"
+                        : "border-grayscale-light",
+                    )}
                     placeholder="Ex. Apto 101"
                   />
-                  {errors.complemento && <span className="text-xs text-feedback-error-dark mt-1 block">× {errors.complemento}</span>}
+                  {errors.complemento && (
+                    <span className="text-xs text-feedback-error-dark mt-1 block">
+                      × {errors.complemento}
+                    </span>
+                  )}
                 </div>
               </div>
 
               <div className="flex items-center space-x-2 pt-2">
-                <Checkbox 
-                  id="padrao" 
+                <Checkbox
+                  id="padrao"
                   checked={formData.salvarEnderecoPadrao}
-                  onCheckedChange={(checked) => setFormData({ ...formData, salvarEnderecoPadrao: checked as boolean })}
+                  onCheckedChange={(checked) =>
+                    setFormData({ ...formData, salvarEnderecoPadrao: checked as boolean })
+                  }
                   className="data-[state=checked]:bg-brand-primary-medium border-grayscale-medium"
                 />
                 <label
@@ -605,9 +767,9 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
               </div>
 
               <div className="pt-2">
-                <Button 
-                  type="button" 
-                  variant="ghost" 
+                <Button
+                  type="button"
+                  variant="ghost"
                   className="text-brand-primary-medium hover:text-brand-primary-dark hover:bg-transparent p-0 h-auto font-medium flex items-center gap-2"
                   onClick={handleAddEndereco}
                 >
@@ -617,15 +779,25 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
               </div>
 
               {enderecos.map((addr, index) => (
-                <div key={index} className="border border-grayscale-light rounded-lg p-4 flex justify-between items-start mt-4">
+                <div
+                  key={index}
+                  className="border border-grayscale-light rounded-lg p-4 flex justify-between items-start mt-4"
+                >
                   <div>
-                    <p className="font-medium text-grayscale-dark">{addr.endereco}, {addr.numero}{addr.complemento ? ` - ${addr.complemento}` : ""}</p>
-                    <p className="text-sm text-grayscale-medium">{addr.bairro}, {addr.cidade} - {addr.estado}, {addr.cep}</p>
-                    {addr.padrao && <p className="text-xs text-brand-primary-medium font-medium mt-1">Padrão</p>}
+                    <p className="font-medium text-grayscale-dark">
+                      {addr.endereco}, {addr.numero}
+                      {addr.complemento ? ` - ${addr.complemento}` : ""}
+                    </p>
+                    <p className="text-sm text-grayscale-medium">
+                      {addr.bairro}, {addr.cidade} - {addr.estado}, {addr.cep}
+                    </p>
+                    {addr.padrao && (
+                      <p className="text-xs text-brand-primary-medium font-medium mt-1">Padrão</p>
+                    )}
                   </div>
-                  <Button 
-                    type="button" 
-                    variant="ghost" 
+                  <Button
+                    type="button"
+                    variant="ghost"
                     className="text-feedback-error-medium hover:text-feedback-error-dark hover:bg-transparent p-0 h-auto"
                     onClick={() => handleRemoveEndereco(index)}
                   >
@@ -635,8 +807,8 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
               ))}
 
               <div className="pt-6 flex justify-center">
-                <Button 
-                  type="button" 
+                <Button
+                  type="button"
                   className="bg-brand-primary-medium hover:bg-brand-primary-dark text-white font-medium h-12 rounded-lg"
                   onClick={handleNextEndereco}
                 >
@@ -646,10 +818,10 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
             </TabsContent>
 
             <TabsContent value="documentacao" className="space-y-6">
-              <div 
+              <div
                 className={cn(
                   "border-2 border-dashed rounded-lg p-12 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-gray-50 transition-colors",
-                  fileError ? "border-feedback-error-medium" : "border-grayscale-light"
+                  fileError ? "border-feedback-error-medium" : "border-grayscale-light",
                 )}
                 onDrop={handleDrop}
                 onDragOver={(e) => e.preventDefault()}
@@ -666,7 +838,10 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
                 <div className="bg-pink-50 p-2 rounded-full mb-4">
                   <Upload className="h-6 w-6 text-pink-500" />
                 </div>
-                <p className="text-grayscale-dark font-medium mb-1">Arraste e solte arquivos, ou <span className="text-brand-secondary-medium cursor-pointer">Browse</span></p>
+                <p className="text-grayscale-dark font-medium mb-1">
+                  Arraste e solte arquivos, ou{" "}
+                  <span className="text-brand-secondary-medium cursor-pointer">Browse</span>
+                </p>
                 <p className="text-sm text-grayscale-medium">Accepted formats: JPEG, PNG, of PDF</p>
               </div>
 
@@ -674,9 +849,11 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
                 <div className="bg-feedback-error-light border border-feedback-error-light rounded-lg p-3 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <AlertTriangle className="h-5 w-5 text-feedback-error-medium" />
-                    <span className="text-sm font-medium text-feedback-error-dark">{fileError}</span>
+                    <span className="text-sm font-medium text-feedback-error-dark">
+                      {fileError}
+                    </span>
                   </div>
-                  <button 
+                  <button
                     type="button"
                     onClick={() => setFileError(null)}
                     className="text-feedback-error-dark hover:text-feedback-error-medium"
@@ -688,20 +865,29 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
 
               {files.length > 0 && (
                 <div className="space-y-2">
-                  <h4 className="text-sm font-medium text-grayscale-dark">Arquivos selecionados:</h4>
+                  <h4 className="text-sm font-medium text-grayscale-dark">
+                    Arquivos selecionados:
+                  </h4>
                   {files.map((file, index) => (
-                    <div key={index} className="flex items-center justify-between border border-grayscale-light rounded-lg p-3">
+                    <div
+                      key={index}
+                      className="flex items-center justify-between border border-grayscale-light rounded-lg p-3"
+                    >
                       <div className="flex items-center space-x-3 overflow-hidden">
                         <div className="bg-gray-100 p-2 rounded">
-                           <Upload className="h-4 w-4 text-gray-500" />
+                          <Upload className="h-4 w-4 text-gray-500" />
                         </div>
                         <div className="truncate">
-                          <p className="text-sm font-medium text-grayscale-dark truncate max-w-[200px]">{file.name}</p>
-                          <p className="text-xs text-grayscale-medium">{(file.size / 1024).toFixed(1)} KB</p>
+                          <p className="text-sm font-medium text-grayscale-dark truncate max-w-[200px]">
+                            {file.name}
+                          </p>
+                          <p className="text-xs text-grayscale-medium">
+                            {(file.size / 1024).toFixed(1)} KB
+                          </p>
                         </div>
                       </div>
-                      <button 
-                        type="button" 
+                      <button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleRemoveFile(index);
@@ -716,8 +902,8 @@ export const AddClienteDialog = ({ open, onOpenChange, onAddCliente, initialData
               )}
 
               <div className="pt-6 flex justify-center">
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   className="bg-brand-primary-medium hover:bg-brand-primary-dark text-white font-medium h-12 rounded-lg"
                 >
                   Cadastrar cliente

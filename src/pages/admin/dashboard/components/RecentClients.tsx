@@ -1,5 +1,6 @@
 import { Badge } from "@/atomic/atm.badge/badge.component";
 import { Card, CardContent, CardHeader, CardTitle } from "@/atomic/mol.card/card.component";
+import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
 import { SearchInput } from "@/atomic/mol.search/search.component";
 import {
   Table,
@@ -9,7 +10,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/atomic/mol.table/table.component";
-import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
 
 const recentClients = [
   {
@@ -55,7 +55,7 @@ const recentClients = [
 ];
 
 export const RecentClients = () => {
-  const getTipoColor = (tipo: String) => {
+  const getTipoColor = (tipo: string) => {
     switch (tipo) {
       case "Fixo":
         return "bg-brand-secondary-light/20 text-brand-secondary-medium hover:bg-brand-secondary-light/20 border border-brand-secondary-medium";
@@ -64,8 +64,8 @@ export const RecentClients = () => {
       default:
         return "bg-grayscale-light text-grayscale-dark";
     }
-  }
-  
+  };
+
   return (
     <div className="flex flex-col gap-md">
       <SearchInput />
@@ -96,11 +96,7 @@ export const RecentClients = () => {
             </TableBody>
           </Table>
 
-          <PaginationControl 
-            className="mt-4"
-            currentPage={1}
-            totalPages={3}
-          />
+          <PaginationControl className="mt-4" currentPage={1} totalPages={3} />
         </CardContent>
       </Card>
     </div>

@@ -19,7 +19,7 @@ export const formatCPFCNPJ = (value: string) => {
 
 export const formatPhone = (value: string) => {
   const cleanValue = value.replace(/\D/g, "");
-  
+
   if (cleanValue.length <= 10) {
     return cleanValue
       .replace(/(\d{2})(\d)/, "($1) $2")
@@ -47,7 +47,7 @@ export const cleanDigits = (value: string) => {
 export const formatCurrency = (value: string) => {
   const cleanValue = value.replace(/\D/g, "");
   const numberValue = Number(cleanValue) / 100;
-  
+
   return numberValue.toLocaleString("pt-BR", {
     style: "currency",
     currency: "BRL",

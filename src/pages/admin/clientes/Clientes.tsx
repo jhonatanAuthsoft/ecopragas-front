@@ -1,14 +1,14 @@
 import { Building2, Plus, Search, UserCheck, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
 import { Card, CardContent } from "@/atomic/mol.card/card.component";
+import { SearchInput } from "@/atomic/mol.search/search.component";
+import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
+import api from "@/services/api";
 import { AddClienteDialog } from "./components/AddClienteDialog";
 import { ClientesTable } from "./components/ClientesTable";
-import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
-import { SearchInput } from "@/atomic/mol.search/search.component";
-import api from "@/services/api";
-import { toast } from "sonner";
 
 export type Cliente = {
   id: string;
@@ -56,7 +56,7 @@ const Clientes = () => {
     try {
       setIsLoading(true);
       const { data } = await api.get(`/admin/clientes?page=${pageIndex}&size=20`);
-      
+
       let content = [];
       let totalPagesVal = 1;
       let totalElementsVal = 0;
@@ -69,10 +69,10 @@ const Clientes = () => {
         totalPagesVal = data.totalPages;
         totalElementsVal = data.totalElements;
       }
-      
+
       const mappedClientes: Cliente[] = content.map((item: any) => {
         const [cidade, estado] = item.local ? item.local.split("/") : ["", ""];
-        
+
         return {
           id: item.id,
           nome: item.nome,
@@ -209,8 +209,8 @@ const Clientes = () => {
               </Button>
             </div>
             <CardContent className="p-0">
-              <ClientesTable 
-                clientes={filteredClientes} 
+              <ClientesTable
+                clientes={filteredClientes}
                 currentPage={page + 1}
                 totalPages={totalPages}
                 onPageChange={(p) => fetchClientes(p - 1)}
@@ -231,4 +231,3 @@ const Clientes = () => {
 };
 
 export default Clientes;
-

@@ -17,10 +17,10 @@ import { Checkbox } from "@/atomic/atm.checkbox/checkbox.component";
 import { Textarea } from "@/atomic/atm.textarea/textarea.component";
 import { Card } from "@/atomic/mol.card/card.component";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
+import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { PhotoUpload } from "./components/PhotoUpload";
 import { QRCodeScanner } from "./components/QRCodeScanner";
 import { ServiceChecklist } from "./components/ServiceChecklist";
-import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 
 export default function OrdemServicoDetalhes() {
   const { id } = useParams();
@@ -155,4 +155,3 @@ export default function OrdemServicoDetalhes() {
     </MainLayout>
   );
 }
-

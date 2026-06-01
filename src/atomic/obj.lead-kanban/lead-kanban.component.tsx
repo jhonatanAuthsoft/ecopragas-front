@@ -1,10 +1,19 @@
-import { DndContext, DragEndEvent, DragOverlay, PointerSensor, useDraggable, useDroppable, useSensor, useSensors } from "@dnd-kit/core";
-import { Card, CardContent, CardHeader, CardTitle } from "@/atomic/mol.card/card.component";
-import { ScrollArea } from "@/atomic/mol.scroll-area/scroll-area.component";
-import type { Lead } from "@/pages/leads/Leads";
-import { LeadCard } from "@/atomic/obj.lead-card/lead-card.component";
+import {
+  DndContext,
+  type DragEndEvent,
+  DragOverlay,
+  PointerSensor,
+  useDraggable,
+  useDroppable,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import { useState } from "react";
 import { createPortal } from "react-dom";
+import { Card, CardContent, CardHeader, CardTitle } from "@/atomic/mol.card/card.component";
+import { ScrollArea } from "@/atomic/mol.scroll-area/scroll-area.component";
+import { LeadCard } from "@/atomic/obj.lead-card/lead-card.component";
+import type { Lead } from "@/pages/leads/Leads";
 
 interface LeadKanbanProps {
   leads: Lead[];
@@ -44,10 +53,7 @@ const DroppableColumn = ({ column, children, totalValue, count }: any) => {
   });
 
   return (
-    <Card
-      ref={setNodeRef}
-      className={`border-l-4 ${column.color} h-full`}
-    >
+    <Card ref={setNodeRef} className={`border-l-4 ${column.color} h-full`}>
       <CardHeader className="pb-3">
         <CardTitle className="text-sm font-semibold">{column.title}</CardTitle>
         <div className="flex items-center justify-between text-xs text-muted-foreground">
@@ -73,13 +79,13 @@ const DroppableColumn = ({ column, children, totalValue, count }: any) => {
 
 export const LeadKanban = ({ leads, onUpdateStatus }: LeadKanbanProps) => {
   const [activeLead, setActiveLead] = useState<Lead | null>(null);
-  
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
         distance: 8,
       },
-    })
+    }),
   );
 
   const getLeadsByStatus = (status: Lead["status"]) => {
@@ -92,49 +98,49 @@ export const LeadKanban = ({ leads, onUpdateStatus }: LeadKanbanProps) => {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    
+
     if (over && active.id !== over.id) {
-       const lead = active.data.current?.lead as Lead;
-       const newStatus = over.id as Lead["status"];
-       
-       if (lead && lead.status !== newStatus) {
-         onUpdateStatus(active.id as string, newStatus);
-       }
+      const lead = active.data.current?.lead as Lead;
+      const newStatus = over.id as Lead["status"];
+
+      if (lead && lead.status !== newStatus) {
+        onUpdateStatus(active.id as string, newStatus);
+      }
     }
     setActiveLead(null);
   };
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-         {columns.map((column) => {
-           const columnLeads = getLeadsByStatus(column.status);
-           const totalValue = columnLeads.reduce((sum, lead) => sum + lead.value, 0);
-           
-           return (
-             <DroppableColumn 
-               key={column.status} 
-               column={column} 
-               totalValue={totalValue} 
-               count={columnLeads.length}
-             >
-               {columnLeads.map((lead) => (
-                 <DraggableLead key={lead.id} lead={lead} />
-               ))}
-             </DroppableColumn>
-           );
-         })}
-       </div>
-       {createPortal(
-         <DragOverlay>
-           {activeLead ? (
-              <div className="opacity-90 rotate-3 cursor-grabbing">
-                <LeadCard lead={activeLead} />
-              </div>
-           ) : null}
-         </DragOverlay>,
-         document.body
-       )}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        {columns.map((column) => {
+          const columnLeads = getLeadsByStatus(column.status);
+          const totalValue = columnLeads.reduce((sum, lead) => sum + lead.value, 0);
+
+          return (
+            <DroppableColumn
+              key={column.status}
+              column={column}
+              totalValue={totalValue}
+              count={columnLeads.length}
+            >
+              {columnLeads.map((lead) => (
+                <DraggableLead key={lead.id} lead={lead} />
+              ))}
+            </DroppableColumn>
+          );
+        })}
+      </div>
+      {createPortal(
+        <DragOverlay>
+          {activeLead ? (
+            <div className="opacity-90 rotate-3 cursor-grabbing">
+              <LeadCard lead={activeLead} />
+            </div>
+          ) : null}
+        </DragOverlay>,
+        document.body,
+      )}
     </DndContext>
   );
 };

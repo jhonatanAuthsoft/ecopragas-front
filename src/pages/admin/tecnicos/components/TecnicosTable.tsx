@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/atomic/mol.table/table.component";
-import { Tecnico } from "@/services/tecnicos.service";
+import type { Tecnico } from "@/services/tecnicos.service";
 import { formatCPFCNPJ, formatPhone } from "@/utils/formatters";
 
 interface TecnicosTableProps {
@@ -52,7 +52,9 @@ export const TecnicosTable = ({ tecnicos, onEdit, onDelete }: TecnicosTableProps
                   <span>{tecnico.nome}</span>
                 </div>
               </TableCell>
-              <TableCell className="text-muted-foreground">{formatCPFCNPJ(tecnico.cpfCnpj)}</TableCell>
+              <TableCell className="text-muted-foreground">
+                {formatCPFCNPJ(tecnico.cpfCnpj)}
+              </TableCell>
               <TableCell>{tecnico.telefone ? formatPhone(tecnico.telefone) : "-"}</TableCell>
               <TableCell className="text-muted-foreground">{tecnico.email}</TableCell>
               <TableCell className="text-right">

@@ -1,7 +1,7 @@
-import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
-import { type VariantProps, tv } from "tailwind-variants";
 import { Loader2 } from "lucide-react";
+import * as React from "react";
+import { tv, type VariantProps } from "tailwind-variants";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = tv({

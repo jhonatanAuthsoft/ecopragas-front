@@ -30,21 +30,25 @@ export const PaginationControl = ({
       <Pagination>
         <PaginationContent>
           <PaginationItem>
-            <PaginationPrevious 
-              href="#" 
-              disabled={currentPage <= 1} 
+            <PaginationPrevious
+              href="#"
+              disabled={currentPage <= 1}
               onClick={(e) => {
                 e.preventDefault();
                 if (currentPage > 1) onPageChange?.(currentPage - 1);
               }}
             />
           </PaginationItem>
-          
+
           <PaginationItem>
-            <PaginationLink 
-              href="#" 
+            <PaginationLink
+              href="#"
               isActive={currentPage === 1}
-              className={currentPage === 1 ? "bg-brand-primary-medium text-white hover:bg-brand-primary-dark hover:text-white" : ""}
+              className={
+                currentPage === 1
+                  ? "bg-brand-primary-medium text-white hover:bg-brand-primary-dark hover:text-white"
+                  : ""
+              }
               onClick={(e) => {
                 e.preventDefault();
                 onPageChange?.(1);
@@ -56,10 +60,14 @@ export const PaginationControl = ({
 
           {totalPages > 1 && (
             <PaginationItem>
-              <PaginationLink 
+              <PaginationLink
                 href="#"
                 isActive={currentPage === 2}
-                className={currentPage === 2 ? "bg-brand-primary-medium text-white hover:bg-brand-primary-dark hover:text-white" : ""}
+                className={
+                  currentPage === 2
+                    ? "bg-brand-primary-medium text-white hover:bg-brand-primary-dark hover:text-white"
+                    : ""
+                }
                 onClick={(e) => {
                   e.preventDefault();
                   onPageChange?.(2);
@@ -78,10 +86,14 @@ export const PaginationControl = ({
 
           {totalPages > 2 && (
             <PaginationItem>
-              <PaginationLink 
+              <PaginationLink
                 href="#"
                 isActive={currentPage === totalPages}
-                className={currentPage === totalPages ? "bg-brand-primary-medium text-white hover:bg-brand-primary-dark hover:text-white" : ""}
+                className={
+                  currentPage === totalPages
+                    ? "bg-brand-primary-medium text-white hover:bg-brand-primary-dark hover:text-white"
+                    : ""
+                }
                 onClick={(e) => {
                   e.preventDefault();
                   onPageChange?.(totalPages);
@@ -93,8 +105,8 @@ export const PaginationControl = ({
           )}
 
           <PaginationItem>
-            <PaginationNext 
-              href="#" 
+            <PaginationNext
+              href="#"
               disabled={currentPage >= totalPages}
               onClick={(e) => {
                 e.preventDefault();

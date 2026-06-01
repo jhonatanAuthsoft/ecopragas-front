@@ -1,4 +1,5 @@
-import { useState, useCallback } from "react";
+import { ChevronLeft } from "lucide-react";
+import { useCallback, useState } from "react";
 import Cropper from "react-easy-crop";
 import { Button } from "@/atomic/atm.button/button.component";
 import {
@@ -8,7 +9,6 @@ import {
   DialogTitle,
 } from "@/atomic/mol.dialog/dialog.component";
 import getCroppedImg from "@/utils/cropImage";
-import { ChevronLeft } from "lucide-react";
 
 interface ImageCropperDialogProps {
   open: boolean;
@@ -35,12 +35,9 @@ export const ImageCropperDialog = ({
     setZoom(zoom);
   };
 
-  const onCropCompleteHandler = useCallback(
-    (croppedArea: any, croppedAreaPixels: any) => {
-      setCroppedAreaPixels(croppedAreaPixels);
-    },
-    []
-  );
+  const onCropCompleteHandler = useCallback((croppedArea: any, croppedAreaPixels: any) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
 
   const handleSave = async () => {
     if (imageSrc && croppedAreaPixels) {
@@ -88,13 +85,13 @@ export const ImageCropperDialog = ({
           </Button>
 
           <div className="flex justify-center">
-             <button
-               onClick={() => onOpenChange(false)}
-               className="flex items-center text-sm text-zinc-400 hover:text-white transition-colors"
-             >
-               <ChevronLeft className="h-4 w-4 mr-1" />
-               Voltar
-             </button>
+            <button
+              onClick={() => onOpenChange(false)}
+              className="flex items-center text-sm text-zinc-400 hover:text-white transition-colors"
+            >
+              <ChevronLeft className="h-4 w-4 mr-1" />
+              Voltar
+            </button>
           </div>
         </div>
       </DialogContent>

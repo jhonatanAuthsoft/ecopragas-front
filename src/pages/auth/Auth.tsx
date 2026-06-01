@@ -36,13 +36,14 @@ export default function Auth() {
       if (data && data.token) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.usuarioRepose));
-        
+
         api.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
 
         toast({
           title: "Login realizado com sucesso",
           variant: "default",
-          className: "bg-feedback-success-light border-feedback-success-medium text-feedback-success-dark",
+          className:
+            "bg-feedback-success-light border-feedback-success-medium text-feedback-success-dark",
         });
         navigate("/");
       }
@@ -50,7 +51,8 @@ export default function Auth() {
       console.error(error);
       toast({
         title: "Erro ao fazer login",
-        description: error.response?.data?.message || "Verifique suas credenciais e tente novamente.",
+        description:
+          error.response?.data?.message || "Verifique suas credenciais e tente novamente.",
         variant: "destructive",
       });
     } finally {
@@ -151,4 +153,3 @@ export default function Auth() {
     </div>
   );
 }
-
