@@ -6,12 +6,13 @@ import { Input } from "@/atomic/atm.input/input.component";
 import { Label } from "@/atomic/atm.label/label.component";
 import { useLogin } from "@/domain/auth";
 import { useToast } from "@/hooks/use-toast";
-import { type AuthUser, useAuthStore } from "@/store/auth.store";
+import { type AuthUser, useAuthStore } from "@/store/auth";
 
 export default function Auth() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
+  const token = useAuthStore((s) => s.token);
   const setSession = useAuthStore((s) => s.setSession);
 
   const { login, isLoading } = useLogin({
@@ -43,11 +44,9 @@ export default function Auth() {
   const [loginPassword, setLoginPassword] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/");
-    }
-  }, [navigate]);
+    if (!token) return;
+    navigate("/");
+  }, [navigate, token]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
