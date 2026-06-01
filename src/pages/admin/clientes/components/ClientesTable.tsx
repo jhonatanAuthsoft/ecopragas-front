@@ -19,6 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/atomic/mol.table/table.component";
+import { ROUTES } from "@/constants/routes";
 import type { Cliente } from "../types";
 
 interface ClientesTableProps {
@@ -64,7 +65,7 @@ export const ClientesTable = ({
             <TableRow key={cliente.id}>
               <TableCell
                 className="font-medium cursor-pointer hover:underline"
-                onClick={() => navigate(`/admin/clientes/${cliente.id}`)}
+                onClick={() => navigate(ROUTES.CLIENTES.DETAILS.replace(":id", cliente.id))}
               >
                 {cliente.nome}
               </TableCell>
@@ -103,7 +104,9 @@ export const ClientesTable = ({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => navigate(`/admin/clientes/${cliente.id}`)}>
+                    <DropdownMenuItem
+                      onClick={() => navigate(ROUTES.CLIENTES.DETAILS.replace(":id", cliente.id))}
+                    >
                       <Eye className="mr-2 h-4 w-4" />
                       Ver Detalhes
                     </DropdownMenuItem>

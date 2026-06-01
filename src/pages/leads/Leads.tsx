@@ -56,6 +56,7 @@ const mapDtoToLead = (dto: LeadDTO): Lead => {
 
 import { useNavigate } from "react-router-dom";
 import { ConvertLeadDialog } from "@/atomic/obj.convert-lead-dialog/convert-lead-dialog.component";
+import { ROUTES } from "@/constants/routes";
 
 const Leads = () => {
   const navigate = useNavigate();
@@ -142,7 +143,7 @@ const Leads = () => {
 
   const handleConfirmConvert = () => {
     if (leadToConvert) {
-      navigate("/clientes", { state: { leadData: leadToConvert } });
+      navigate(ROUTES.CLIENTES.BASE, { state: { leadData: leadToConvert } });
     }
     setConvertLeadDialogOpen(false);
   };

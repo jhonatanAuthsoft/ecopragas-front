@@ -1,8 +1,8 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/atomic/mol.sonner/sonner.component";
 import { Toaster } from "@/atomic/mol.toaster/toaster.component";
 import { TooltipProvider } from "@/atomic/mol.tooltip/tooltip.component";
+import { ROUTES } from "@/constants/routes";
 import Agendamentos from "./pages/admin/agendamentos/Agendamentos";
 import ClienteDetalhes from "./pages/admin/clientes/ClienteDetalhes";
 import Clientes from "./pages/admin/clientes/Clientes";
@@ -15,30 +15,24 @@ import Auth from "./pages/auth/Auth";
 import Leads from "./pages/leads/Leads";
 import NotFound from "./pages/not-found/NotFound";
 
-const queryClient = new QueryClient();
-
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<Auth />} />
-          <Route path="/" element={<Index />} />
-          <Route path="/leads" element={<Leads />} />
-          <Route path="/admin/clientes" element={<Clientes />} />
-          <Route path="/admin/clientes/:id" element={<ClienteDetalhes />} />
-          <Route path="/admin/ordens-servico" element={<OrdensServico />} />
-          <Route path="/admin/ordens-servico/:id" element={<OrdemServicoDetalhes />} />
-          <Route path="/admin/agendamentos" element={<Agendamentos />} />
-          <Route path="/admin/relatorios" element={<Relatorios />} />
-          <Route path="/admin/tecnicos" element={<Tecnicos />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <TooltipProvider>
+    <Toaster />
+    <Sonner />
+    <Routes>
+      <Route path={ROUTES.LOGIN} element={<Auth />} />
+      <Route path={ROUTES.HOME} element={<Index />} />
+      <Route path={ROUTES.LEADS} element={<Leads />} />
+      <Route path={ROUTES.CLIENTES.BASE} element={<Clientes />} />
+      <Route path={ROUTES.CLIENTES.DETAILS} element={<ClienteDetalhes />} />
+      <Route path={ROUTES.ORDENS_SERVICO.BASE} element={<OrdensServico />} />
+      <Route path={ROUTES.ORDENS_SERVICO.DETAILS} element={<OrdemServicoDetalhes />} />
+      <Route path={ROUTES.AGENDAMENTOS} element={<Agendamentos />} />
+      <Route path={ROUTES.RELATORIOS} element={<Relatorios />} />
+      <Route path={ROUTES.TECNICOS} element={<Tecnicos />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  </TooltipProvider>
 );
 
 export default App;

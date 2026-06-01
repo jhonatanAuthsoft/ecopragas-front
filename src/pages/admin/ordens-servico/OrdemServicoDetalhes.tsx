@@ -18,6 +18,7 @@ import { Textarea } from "@/atomic/atm.textarea/textarea.component";
 import { Card } from "@/atomic/mol.card/card.component";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
+import { ROUTES } from "@/constants/routes";
 import { PhotoUpload } from "./components/PhotoUpload";
 import { QRCodeScanner } from "./components/QRCodeScanner";
 import { ServiceChecklist } from "./components/ServiceChecklist";
@@ -41,14 +42,14 @@ export default function OrdemServicoDetalhes() {
 
   const handleConcluir = () => {
     toast.success("Ordem de Serviço concluída com sucesso!");
-    navigate("/ordens-servico");
+    navigate(ROUTES.ORDENS_SERVICO.BASE);
   };
 
   return (
     <MainLayout>
       <div className="max-w-4xl mx-auto">
         <div className="mb-6">
-          <Button variant="ghost" onClick={() => navigate("/ordens-servico")} className="mb-4">
+          <Button variant="ghost" onClick={() => navigate(ROUTES.ORDENS_SERVICO.BASE)} className="mb-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Voltar
           </Button>
@@ -144,7 +145,7 @@ export default function OrdemServicoDetalhes() {
         </Card>
 
         <div className="flex gap-4">
-          <Button variant="outline" className="flex-1" onClick={() => navigate("/ordens-servico")}>
+          <Button variant="outline" className="flex-1" onClick={() => navigate(ROUTES.ORDENS_SERVICO.BASE)}>
             Salvar Rascunho
           </Button>
           <Button className="flex-1" onClick={handleConcluir}>
