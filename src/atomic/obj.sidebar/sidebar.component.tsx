@@ -14,11 +14,11 @@ import { cn } from "@/lib/utils";
 const menuItems = [
   { icon: Users, label: "CRM / Leads", path: ROUTES.LEADS },
   { icon: LayoutDashboard, label: "Dashboard", path: ROUTES.HOME },
-  { icon: Users, label: "Clientes", path: ROUTES.CLIENTES.BASE },
-  { icon: ClipboardList, label: "Ordens de Serviço", path: ROUTES.ORDENS_SERVICO.BASE },
-  { icon: Calendar, label: "Agendamentos", path: ROUTES.AGENDAMENTOS },
-  { icon: BarChart3, label: "Relatórios", path: ROUTES.RELATORIOS },
-  { icon: Wrench, label: "Técnicos", path: ROUTES.TECNICOS },
+  { icon: Users, label: "Clientes", path: ROUTES.CLIENT.BASE },
+  { icon: ClipboardList, label: "Ordens de Serviço", path: ROUTES.SERVICE_ORDER.BASE },
+  { icon: Calendar, label: "Agendamentos", path: ROUTES.SCHEDULING },
+  { icon: BarChart3, label: "Relatórios", path: ROUTES.REPORT },
+  { icon: Wrench, label: "Técnicos", path: ROUTES.TECHNICIAN },
 ];
 
 export const Sidebar = ({ className }: { className?: string }) => {

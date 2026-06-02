@@ -11,7 +11,8 @@ import OrdemServicoDetalhes from "./pages/admin/ordens-servico/OrdemServicoDetal
 import OrdensServico from "./pages/admin/ordens-servico/OrdensServico";
 import Relatorios from "./pages/admin/relatorios/Relatorios";
 import Tecnicos from "./pages/admin/tecnicos/Tecnicos";
-import Auth from "./pages/auth/Auth";
+import AdminLogin from "./pages/auth/AdminLogin";
+import ForgotPassword from "./pages/auth/ForgotPassword";
 import Leads from "./pages/leads/Leads";
 import NotFound from "./pages/not-found/NotFound";
 
@@ -20,16 +21,22 @@ const App = () => (
     <Toaster />
     <Sonner />
     <Routes>
-      <Route path={ROUTES.LOGIN} element={<Auth />} />
+      <Route path={ROUTES.AUTH.LOGIN.ADMIN} element={<AdminLogin />} />
+      {/* 
+        TODO: Adicionar rota para login de cliente e técnico
+        <Route path={ROUTES.AUTH.LOGIN.CLIENT} element={<ClientAuth />} />
+        <Route path={ROUTES.AUTH.LOGIN.TECHNICIAN} element={<TechnicianAuth />} /> 
+      */}
+      <Route path={ROUTES.AUTH.FORGOT_PASSWORD} element={<ForgotPassword />} />
       <Route path={ROUTES.HOME} element={<Index />} />
       <Route path={ROUTES.LEADS} element={<Leads />} />
-      <Route path={ROUTES.CLIENTES.BASE} element={<Clientes />} />
-      <Route path={ROUTES.CLIENTES.DETAILS} element={<ClienteDetalhes />} />
-      <Route path={ROUTES.ORDENS_SERVICO.BASE} element={<OrdensServico />} />
-      <Route path={ROUTES.ORDENS_SERVICO.DETAILS} element={<OrdemServicoDetalhes />} />
-      <Route path={ROUTES.AGENDAMENTOS} element={<Agendamentos />} />
-      <Route path={ROUTES.RELATORIOS} element={<Relatorios />} />
-      <Route path={ROUTES.TECNICOS} element={<Tecnicos />} />
+      <Route path={ROUTES.CLIENT.BASE} element={<Clientes />} />
+      <Route path={ROUTES.CLIENT.DETAILS} element={<ClienteDetalhes />} />
+      <Route path={ROUTES.SERVICE_ORDER.BASE} element={<OrdensServico />} />
+      <Route path={ROUTES.SERVICE_ORDER.DETAILS} element={<OrdemServicoDetalhes />} />
+      <Route path={ROUTES.SCHEDULING} element={<Agendamentos />} />
+      <Route path={ROUTES.REPORT} element={<Relatorios />} />
+      <Route path={ROUTES.TECHNICIAN} element={<Tecnicos />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   </TooltipProvider>
