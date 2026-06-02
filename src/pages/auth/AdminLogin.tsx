@@ -9,7 +9,7 @@ import { useLogin } from "@/domain/auth";
 import { useToast } from "@/hooks/use-toast";
 import { type AuthUser, useAuthStore } from "@/store/auth";
 
-export default function Auth() {
+export default function AdminLogin() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
@@ -66,7 +66,7 @@ export default function Auth() {
               <h1 className="text-xl font-black leading-tight text-grayscale-x-dark">
                 Boas-vindas!
               </h1>
-              <p className="text-xs leading-normal text-grayscale-medium">
+              <p className="text-sm leading-normal text-grayscale-dark">
                 Faça login para entrar na plataforma
               </p>
             </div>
@@ -114,6 +114,7 @@ export default function Auth() {
 
               <button
                 type="button"
+                onClick={() => navigate(ROUTES.AUTH.FORGOT_PASSWORD)}
                 className="text-left text-xs font-medium text-brand-primary-dark hover:underline"
               >
                 Esqueceu a senha?
@@ -122,7 +123,7 @@ export default function Auth() {
               <Button
                 type="submit"
                 disabled={isLoginLoading}
-                className="h-12 w-full rounded-lg bg-brand-primary-medium text-sm font-medium text-grayscale-white hover:bg-brand-primary-dark"
+                className="h-12 w-full cursor-pointer"
               >
                 {isLoginLoading ? "Acessando..." : "Acessar"}
               </Button>
@@ -144,7 +145,7 @@ export default function Auth() {
         <img
           src="/presentation-frame.png"
           alt=""
-          className="object-cover rounded-2xl border-2 border-brand-primary-light"
+          className="hidden object-cover rounded-2xl border-2 border-brand-primary-light lg:block"
         />
       </div>
     </div>

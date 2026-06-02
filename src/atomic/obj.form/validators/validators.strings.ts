@@ -1,0 +1,29 @@
+export const strings = {
+	required: "O campo é obrigatório.",
+	email: "O e-mail deve ser válido.",
+	number: "O campo deve ser um número.",
+	minLength: (length: number) =>
+		`O campo deve ter pelo menos ${length} caracteres.`,
+	maxLength: (length: number) =>
+		`O campo deve ter no máximo ${length} caracteres.`,
+	minNumber: (min: number) => `O valor deve ser maior que ${min}.`,
+	maxNumber: (max: number) => `O valor deve ser menor que ${max}.`,
+	password:
+		"Sua senha deve ter no mínimo 8 dígitos, e ser composta por pelo menos 1 número, 1 caractere especial, 1 letra maiúscula e 1 letra minúscula.",
+	match: "Os campos devem coincidir.",
+	minArrayLength: (min: number) =>
+		min === 1
+			? "Selecione pelo menos uma opção."
+			: `Selecione pelo menos ${min} opções.`,
+	uppercase: "O campo deve conter pelo menos uma letra maiúscula.",
+	lowercase: "O campo deve conter pelo menos uma letra minúscula.",
+	hasNumber: "O campo deve conter pelo menos um número.",
+	specialChar: "O campo deve conter pelo menos um caractere especial.",
+	noSpaces: "A senha não pode conter espaços em branco.",
+	fullName: "Nome e sobrenome são necessários.",
+	lettersOnly: "O campo deve conter apenas letras.",
+	cep: "O CEP deve ser válido.",
+	cnpj: "O CNPJ deve ser válido.",
+	url: "A URL deve ser válida.",
+	phone: "O telefone deve ser válido.",
+};

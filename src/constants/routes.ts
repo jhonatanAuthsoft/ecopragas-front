@@ -1,16 +1,23 @@
 export const ROUTES = {
-  LOGIN: "/login",
+  AUTH: {
+    LOGIN: {
+      ADMIN: "/login",
+      TECHNICIAN: "/login/technician",
+      CLIENT: "/login/client",
+    },
+    FORGOT_PASSWORD: "/forgot-password",
+  },
   HOME: "/",
   LEADS: "/leads",
-  CLIENTES: {
-    BASE: "/admin/clientes",
-    DETAILS: "/admin/clientes/:id",
+  CLIENT: {
+    BASE: "/admin/client",
+    DETAILS: "/admin/client/:id",
   },
-  ORDENS_SERVICO: {
-    BASE: "/admin/ordens-servico",
-    DETAILS: "/admin/ordens-servico/:id",
+  SERVICE_ORDER: {
+    BASE: "/admin/service-order",
+    DETAILS: "/admin/service-order/:id",
   },
-  AGENDAMENTOS: "/admin/agendamentos",
-  RELATORIOS: "/admin/relatorios",
-  TECNICOS: "/admin/tecnicos",
-} as const;
+  SCHEDULING: "/admin/scheduling",
+  REPORT: "/admin/report",
+  TECHNICIAN: "/admin/technician",
+};

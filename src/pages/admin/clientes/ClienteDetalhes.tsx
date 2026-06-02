@@ -96,7 +96,7 @@ const ClienteDetalhes = () => {
       <MainLayout>
         <div className="flex flex-col items-center justify-center h-full gap-4">
           <p>Cliente não encontrado</p>
-          <Button onClick={() => navigate(ROUTES.CLIENTES.BASE)}>Voltar para Clientes</Button>
+          <Button onClick={() => navigate(ROUTES.CLIENT.BASE)}>Voltar para Clientes</Button>
         </div>
       </MainLayout>
     );
@@ -112,7 +112,7 @@ const ClienteDetalhes = () => {
       <div className="space-y-6">
         <div
           className="flex items-center gap-2 text-grayscale-medium hover:text-brand-primary-medium transition-colors cursor-pointer w-fit"
-          onClick={() => navigate(ROUTES.CLIENTES.BASE)}
+          onClick={() => navigate(ROUTES.CLIENT.BASE)}
         >
           <ArrowLeft className="h-4 w-4" />
           <span className="text-sm">Voltar para Clientes</span>
