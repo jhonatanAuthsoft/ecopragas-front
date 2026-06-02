@@ -66,7 +66,7 @@ export default function AdminLogin() {
               <h1 className="text-xl font-black leading-tight text-grayscale-x-dark">
                 Boas-vindas!
               </h1>
-              <p className="text-sm leading-normal text-grayscale-medium">
+              <p className="text-sm leading-normal text-grayscale-dark">
                 Faça login para entrar na plataforma
               </p>
             </div>

@@ -30,7 +30,7 @@ export default function ForgotPassword() {
               <h1 className="text-xl font-black leading-tight text-grayscale-x-dark">
                 Recuperação de senha
               </h1>
-              <p className="text-sm leading-normal text-grayscale-medium">
+              <p className="text-sm leading-normal text-grayscale-dark max-w-[500px] mx-auto">
                 Insira o e-mail cadastrado para receber o código para recuperação de senha
               </p>
             </div>
