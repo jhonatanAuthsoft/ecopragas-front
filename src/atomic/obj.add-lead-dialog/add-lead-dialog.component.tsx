@@ -56,7 +56,7 @@ export const AddLeadDialog = (props: AddLeadDialogProps) => {
       <DialogContent className="sm:max-w-[800px] p-6">
         <DialogHeader className="mb-4">
           <div className="flex items-center justify-between">
-            <H2 className="text-2xl font-bold">Adicionar novo lead</H2>
+            <H2>Adicionar novo lead</H2>
           </div>
         </DialogHeader>
 

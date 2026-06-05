@@ -70,7 +70,7 @@ export const inputStyle = tv({
     type: {
       label: "block",
       value: "",
-      caption: "block text-xxs leading-tight text-muted-foreground",
+      caption: "block text-xxs! leading-tight text-muted-foreground",
     },
     status: {
       success: "text-feedback-success-medium",

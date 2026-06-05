@@ -60,18 +60,18 @@ const Leads = () => {
 
   return (
     <MainLayout>
-      <div className="flex flex-col gap-lg py-lg px-md">
-        <div className="flex items-center justify-between">
-          <div>
+      <div className="flex flex-col gap-lg">
+        <div className="flex flex-col items-center justify-between gap-xs md:flex-row">
+          <div className="flex flex-col self-start gap-xs">
             <H1>CRM - Gestão de Leads</H1>
-            <Body1 className="font-normal text-grayscale-dark mt-xs">
+            <Body1 className="font-normal text-grayscale-dark">
               Gerencie seus leads e acompanhe o funil de vendas
             </Body1>
           </div>
           <Button
             onClick={() => setIsDialogOpen(true)}
             size="lg"
-            className="px-md"
+            className="w-full px-md md:w-auto"
             leftIcon={<Plus className="size-md" />}
           >
             Novo Lead
@@ -80,7 +80,10 @@ const Leads = () => {
 
         <CRMMetrics leads={leads} />
 
-        <LeadKanban leads={leads} onUpdateStatus={handleUpdateLeadStatus} />
+        {/* TODO: ver tamanho com nav minimizada */}
+        <div className="md:max-w-[calc(100dvw-320px)]">
+          <LeadKanban leads={leads} onUpdateStatus={handleUpdateLeadStatus} />
+        </div>
 
         <AddLeadDialog
           open={isDialogOpen}

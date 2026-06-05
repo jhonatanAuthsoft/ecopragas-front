@@ -39,6 +39,8 @@ export const MOCK_LEADS: Lead[] = [
   {
     id: "lead-4",
     name: "Carlos Mendes",
+    company: "Restaurante Sabor & Arte",
+    email: "carlos.mendes@email.com",
     phone: "(41) 96543-2109",
     origin: "Facebook",
     value: 1800,
@@ -83,6 +85,8 @@ export const MOCK_LEADS: Lead[] = [
   {
     id: "lead-8",
     name: "Lucas Ferreira",
+    company: "Restaurante Sabor & Arte",
+    email: "lucas.ferreira@email.com",
     phone: "(85) 92109-8765",
     origin: "Outro",
     value: 900,

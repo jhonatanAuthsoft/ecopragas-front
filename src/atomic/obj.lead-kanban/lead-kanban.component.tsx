@@ -11,15 +11,12 @@ import {
 } from "@dnd-kit/core";
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/atomic/mol.card/card.component";
+import { H3, InputCaption } from "@/atomic/atm.typography";
+import { Card, CardContent, CardHeader } from "@/atomic/mol.card/card.component";
 import { ScrollArea } from "@/atomic/mol.scroll-area/scroll-area.component";
 import { LeadCard } from "@/atomic/obj.lead-card/lead-card.component";
 import type { Lead } from "@/pages/leads/Leads";
-
-interface LeadKanbanProps {
-  leads: Lead[];
-  onUpdateStatus: (leadId: string, newStatus: Lead["status"]) => void;
-}
+import { formatCurrency } from "@/utils/formatters";
 
 const columns: { status: Lead["status"]; title: string; color: string }[] = [
   { status: "novo", title: "Novo", color: "border-l-brand-primary-medium" },
@@ -30,7 +27,10 @@ const columns: { status: Lead["status"]; title: string; color: string }[] = [
   { status: "perdido", title: "Perdido", color: "border-l-feedback-error-medium" },
 ];
 
-const DraggableLead = ({ lead }: { lead: Lead }) => {
+interface DraggableLeadProps {
+  lead: Lead;
+}
+const DraggableLead = ({ lead }: DraggableLeadProps) => {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: lead.id,
     data: { lead },
@@ -61,13 +61,14 @@ const DroppableColumn = ({ column, children, totalValue, count }: DroppableColum
   });
 
   return (
-    <Card ref={setNodeRef} className={`border-l-4 ${column.color} h-full`}>
-      <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-semibold">{column.title}</CardTitle>
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span>{count} leads</span>
-          <span className="font-medium">R$ {totalValue.toLocaleString("pt-BR")}</span>
+    <Card ref={setNodeRef} className={`border-l-4 ${column.color} h-full w-full md:w-[250px]`}>
+      <CardHeader className="p-3 pb-xs w-[250px]">
+        <div className="flex items-center gap-xs">
+          <H3 className="font-bold text-grayscale-dark">{column.title}</H3>
+          <InputCaption className="font-bold text-brand-secondary-medium">({count})</InputCaption>
         </div>
+        <InputCaption className="font-medium">Total: {formatCurrency(totalValue)}</InputCaption>
+        <span className="w-full h-[1px] bg-grayscale-light"></span>
       </CardHeader>
       <CardContent className="p-0 px-3 pb-3 h-[calc(100%-80px)]">
         <ScrollArea className="h-[600px] pr-3">
@@ -84,6 +85,11 @@ const DroppableColumn = ({ column, children, totalValue, count }: DroppableColum
     </Card>
   );
 };
+
+interface LeadKanbanProps {
+  leads: Lead[];
+  onUpdateStatus: (leadId: string, newStatus: Lead["status"]) => void;
+}
 
 export const LeadKanban = ({ leads, onUpdateStatus }: LeadKanbanProps) => {
   const [activeLead, setActiveLead] = useState<Lead | null>(null);
@@ -120,14 +126,14 @@ export const LeadKanban = ({ leads, onUpdateStatus }: LeadKanbanProps) => {
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+      <div className="flex flex-col md:flex-row gap-md overflow-x-auto custom-scrollbar pb-xs">
         {columns.map((column) => {
           const columnLeads = getLeadsByStatus(column.status);
           const totalValue = columnLeads.reduce((sum, lead) => sum + lead.value, 0);
 
           return (
             <DroppableColumn
-              key={column.status}
+              key={`column-${column.status}-${column.title}`}
               column={column}
               totalValue={totalValue}
               count={columnLeads.length}
