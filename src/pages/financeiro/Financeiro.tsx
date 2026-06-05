@@ -1,6 +1,7 @@
 import { AlertCircle, CheckCircle2, Clock, DollarSign, Plus, Search } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/atomic/atm.button/button.component";
+import { Body1, H1 } from "@/atomic/atm.typography";
 import { Input } from "@/atomic/atm.input/input.component";
 import { Card, CardContent, CardHeader, CardTitle } from "@/atomic/mol.card/card.component";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
@@ -103,10 +104,12 @@ const Financeiro = () => {
   return (
     <MainLayout>
       <div className="space-y-6">
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Financeiro</h1>
-            <p className="text-muted-foreground">Gerencie cobranças e pagamentos</p>
+        <div className="flex flex-col items-center justify-between gap-xs md:flex-row">
+          <div className="flex flex-col self-start gap-xs">
+            <H1>Financeiro</H1>
+            <Body1 className="font-normal text-grayscale-dark">
+              Gerencie cobranças e pagamentos
+            </Body1>
           </div>
           <Button onClick={() => setIsDialogOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />

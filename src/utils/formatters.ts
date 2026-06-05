@@ -44,9 +44,8 @@ export const cleanDigits = (value: string) => {
   return value.replace(/\D/g, "");
 };
 
-export const formatCurrency = (value: string) => {
-  const cleanValue = value.replace(/\D/g, "");
-  const numberValue = Number(cleanValue) / 100;
+export const formatCurrency = (value: string | number) => {
+  const numberValue = typeof value === "number" ? value : Number(value.replace(/\D/g, "")) / 100;
 
   return numberValue.toLocaleString("pt-BR", {
     style: "currency",

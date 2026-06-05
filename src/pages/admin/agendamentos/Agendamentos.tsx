@@ -3,6 +3,7 @@ import { ptBR } from "date-fns/locale";
 import { Calendar as CalendarIcon, Plus, User, Wrench } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/atomic/atm.badge/badge.component";
+import { Body1, H1 } from "@/atomic/atm.typography";
 import { Button } from "@/atomic/atm.button/button.component";
 import { Calendar } from "@/atomic/mol.calendar/calendar.component";
 import { Card, CardContent, CardHeader, CardTitle } from "@/atomic/mol.card/card.component";
@@ -128,10 +129,10 @@ const Agendamentos = () => {
   return (
     <MainLayout>
       <div className="space-y-6">
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Agendamentos</h1>
-            <p className="text-muted-foreground">Gerencie a agenda de serviços</p>
+        <div className="flex flex-col items-center justify-between gap-xs md:flex-row">
+          <div className="flex flex-col self-start gap-xs">
+            <H1>Agendamentos</H1>
+            <Body1 className="font-normal text-grayscale-dark">Gerencie a agenda de serviços</Body1>
           </div>
           <Button onClick={() => setIsAddDialogOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />

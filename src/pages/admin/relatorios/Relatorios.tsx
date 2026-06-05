@@ -20,6 +20,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/atomic/mol.card/card.component";
+import { Body1, H1 } from "@/atomic/atm.typography";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 
 const Relatorios = () => {
@@ -52,9 +53,11 @@ const Relatorios = () => {
   return (
     <MainLayout>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Relatórios e Gráficos</h1>
-          <p className="text-muted-foreground">Visualize o desempenho e métricas do seu negócio</p>
+        <div className="flex flex-col self-start gap-xs">
+          <H1>Relatórios e Gráficos</H1>
+          <Body1 className="font-normal text-grayscale-dark">
+            Visualize o desempenho e métricas do seu negócio
+          </Body1>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">

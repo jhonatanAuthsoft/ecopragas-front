@@ -1,13 +1,16 @@
 import { ClipboardCheck, DollarSign, TrendingUp, Users } from "lucide-react";
+import { Body1, H1 } from "@/atomic/atm.typography";
 import { MetricCard } from "./components/MetricCard";
 import { RecentClients } from "./components/RecentClients";
 
 const Dashboard = () => {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground">Visão geral das operações da Eco Pragas</p>
+      <div className="flex flex-col self-start gap-xs">
+        <H1>Dashboard</H1>
+        <Body1 className="font-normal text-grayscale-dark">
+          Visão geral das operações da Eco Pragas
+        </Body1>
       </div>
 
       {/* Metrics Grid */}

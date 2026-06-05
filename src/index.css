@@ -259,3 +259,29 @@
     @apply bg-background text-foreground font-segoe;
   }
 }
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background: var(--color-grayscale-light);
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background: var(--color-grayscale-medium);
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--color-grayscale-dark);
+  }
+}
