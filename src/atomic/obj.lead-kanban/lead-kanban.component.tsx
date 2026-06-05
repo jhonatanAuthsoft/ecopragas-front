@@ -2,6 +2,7 @@ import {
   DndContext,
   type DragEndEvent,
   DragOverlay,
+  type DragStartEvent,
   PointerSensor,
   useDraggable,
   useDroppable,
@@ -47,7 +48,14 @@ const DraggableLead = ({ lead }: { lead: Lead }) => {
   );
 };
 
-const DroppableColumn = ({ column, children, totalValue, count }: any) => {
+interface DroppableColumnProps {
+  column: (typeof columns)[number];
+  children: React.ReactNode;
+  totalValue: number;
+  count: number;
+}
+
+const DroppableColumn = ({ column, children, totalValue, count }: DroppableColumnProps) => {
   const { setNodeRef } = useDroppable({
     id: column.status,
   });
@@ -92,7 +100,7 @@ export const LeadKanban = ({ leads, onUpdateStatus }: LeadKanbanProps) => {
     return leads.filter((lead) => lead.status === status);
   };
 
-  const handleDragStart = (event: any) => {
+  const handleDragStart = (event: DragStartEvent) => {
     setActiveLead(event.active.data.current?.lead);
   };
 

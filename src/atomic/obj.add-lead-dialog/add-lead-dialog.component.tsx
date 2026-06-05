@@ -1,26 +1,24 @@
-import { Plus, X } from "lucide-react";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { Button } from "@/atomic/atm.button/button.component";
-import { Input } from "@/atomic/atm.input/input.component";
-import { Label } from "@/atomic/atm.label/label.component";
-import { Textarea } from "@/atomic/atm.textarea/textarea.component";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/atomic/mol.dialog/dialog.component";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/atomic/mol.select/select.component";
-import { cn } from "@/lib/utils";
-import type { Lead } from "@/pages/leads/Leads";
+import { SelectInput } from "@/atomic/atm.select-input";
+import { TextInput } from "@/atomic/atm.text-input";
+import { TextareaInput } from "@/atomic/atm.textarea-input";
+import { H2 } from "@/atomic/atm.typography";
+import { Dialog, DialogContent, DialogHeader } from "@/atomic/mol.dialog/dialog.component";
+import { Form, FormField, PhoneValidator, RequiredValidator } from "@/atomic/obj.form";
+import type { Lead } from "@/pages/leads/leads.types";
 import { cleanDigits, formatCurrency, formatPhone } from "@/utils/formatters";
+import { DEFAULT_VALUES, ORIGIN_OPTIONS, STATUS_OPTIONS } from "./add-lead-dialog.data";
+
+export type AddLeadFormValues = {
+  name: string;
+  company: string;
+  phone: string;
+  origin: Lead["origin"] | "";
+  value: string;
+  status: Lead["status"] | "";
+  notes: string;
+};
 
 interface AddLeadDialogProps {
   open: boolean;
@@ -28,264 +26,89 @@ interface AddLeadDialogProps {
   onAddLead: (lead: Omit<Lead, "id" | "createdAt">) => Promise<void> | void;
 }
 
-export const AddLeadDialog = ({ open, onOpenChange, onAddLead }: AddLeadDialogProps) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    company: "",
-    phone: "",
-    origin: "" as Lead["origin"],
-    value: "",
-    status: "" as Lead["status"],
-    notes: "",
-  });
+export const AddLeadDialog = (props: AddLeadDialogProps) => {
+  const formMethods = useForm<AddLeadFormValues>();
+  const { isSubmitting } = formMethods.formState;
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-    if (!formData.name) newErrors.name = "Campo Obrigatório";
-    if (!formData.company) newErrors.company = "Campo Obrigatório";
-    if (!formData.phone) newErrors.phone = "Campo Obrigatório";
-    if (!formData.origin) newErrors.origin = "Campo Obrigatório";
-    if (!formData.status) newErrors.status = "Campo Obrigatório";
-    if (!formData.value) newErrors.value = "Campo Obrigatório";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) {
+      formMethods.reset(DEFAULT_VALUES);
+    }
+    props.onOpenChange(nextOpen);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (data: AddLeadFormValues) => {
+    await props.onAddLead({
+      name: data.name,
+      company: data.company,
+      phone: data.phone,
+      origin: data.origin as Lead["origin"],
+      value: Number(cleanDigits(data.value)) / 100 || 0,
+      status: data.status as Lead["status"],
+      notes: data.notes || undefined,
+    });
 
-    if (!validateForm()) return;
-
-    try {
-      setIsSubmitting(true);
-      await onAddLead({
-        name: formData.name,
-        company: formData.company,
-        phone: formData.phone,
-        origin: formData.origin,
-        value: Number(cleanDigits(formData.value)) / 100 || 0,
-        status: formData.status,
-        notes: formData.notes || undefined,
-      });
-
-      setFormData({
-        name: "",
-        company: "",
-        phone: "",
-        origin: "" as any,
-        value: "",
-        status: "" as any,
-        notes: "",
-      });
-      setErrors({});
-    } finally {
-      setIsSubmitting(false);
-    }
+    formMethods.reset(DEFAULT_VALUES);
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={props.open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[800px] p-6">
         <DialogHeader className="mb-4">
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-2xl font-bold">Adicionar novo lead</DialogTitle>
+            <H2 className="text-2xl font-bold">Adicionar novo lead</H2>
           </div>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <Form formMethods={formMethods} onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="name" className="text-base font-normal text-grayscale-dark">
-                Nome
-              </Label>
-              <div className="relative">
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className={cn(
-                    "pr-10 rounded-lg h-12",
-                    errors.name ? "border-feedback-error-medium" : "border-grayscale-light",
-                  )}
-                  placeholder="João Silva"
-                />
-                {formData.name && (
-                  <button
-                    type="button"
-                    onClick={() => setFormData({ ...formData, name: "" })}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-feedback-error-medium hover:text-feedback-error-dark"
-                  >
-                    <X className="h-5 w-5 rounded-full border border-current p-0.5" />
-                  </button>
-                )}
-              </div>
-              {errors.name && (
-                <span className="text-xs text-feedback-error-dark mt-1 block">× {errors.name}</span>
-              )}
-            </div>
+            <FormField name="name" validators={[RequiredValidator()]}>
+              <TextInput label="Nome" placeholder="Ex. João Silva" hasClearButton />
+            </FormField>
 
-            <div className="space-y-2">
-              <Label htmlFor="company" className="text-base font-normal text-grayscale-dark">
-                Empresa
-              </Label>
-              <Input
-                id="company"
-                value={formData.company}
-                onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                className={cn(
-                  "rounded-lg h-12",
-                  errors.company ? "border-feedback-error-medium" : "border-grayscale-light",
-                )}
-                placeholder="Ex. Empresa ABC"
-              />
-              {errors.company && (
-                <span className="text-xs text-feedback-error-dark mt-1 block">
-                  × {errors.company}
-                </span>
-              )}
-            </div>
+            <FormField name="company" validators={[RequiredValidator()]}>
+              <TextInput label="Empresa" placeholder="Ex. Empresa ABC" />
+            </FormField>
 
-            <div className="space-y-2">
-              <Label htmlFor="phone" className="text-base font-normal text-grayscale-dark">
-                Telefone
-              </Label>
-              <Input
-                id="phone"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: formatPhone(e.target.value) })}
-                className={cn(
-                  "rounded-lg h-12",
-                  errors.phone ? "border-feedback-error-medium" : "border-grayscale-light",
-                )}
+            <FormField name="phone" validators={[RequiredValidator(), PhoneValidator()]}>
+              <TextInput
+                label="Telefone"
                 placeholder="Ex. (11) 90076-0010"
+                formatter={formatPhone}
                 maxLength={15}
               />
-              {errors.phone && (
-                <span className="text-xs text-feedback-error-dark mt-1 block">
-                  × {errors.phone}
-                </span>
-              )}
-            </div>
+            </FormField>
 
-            <div className="space-y-2">
-              <Label htmlFor="origin" className="text-base font-normal text-grayscale-dark">
-                Origem
-              </Label>
-              <Select
-                value={formData.origin}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, origin: value as Lead["origin"] })
-                }
-              >
-                <SelectTrigger
-                  id="origin"
-                  className={cn(
-                    "rounded-lg h-12 text-muted-foreground",
-                    errors.origin ? "border-feedback-error-medium" : "border-grayscale-light",
-                  )}
-                >
-                  <SelectValue placeholder="Google Ads" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Google">Google</SelectItem>
-                  <SelectItem value="Instagram">Instagram</SelectItem>
-                  <SelectItem value="Facebook">Facebook</SelectItem>
-                  <SelectItem value="Indicação">Indicação</SelectItem>
-                  <SelectItem value="Website">Website</SelectItem>
-                  <SelectItem value="Outro">Outro</SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.origin && (
-                <span className="text-xs text-feedback-error-dark mt-1 block">
-                  × {errors.origin}
-                </span>
-              )}
-            </div>
+            <FormField name="origin" validators={[RequiredValidator()]}>
+              <SelectInput label="Origem" placeholder="Ex. Google Ads" options={ORIGIN_OPTIONS} />
+            </FormField>
 
-            <div className="space-y-2">
-              <Label htmlFor="status" className="text-base font-normal text-grayscale-dark">
-                Status Inicial
-              </Label>
-              <Select
-                value={formData.status}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, status: value as Lead["status"] })
-                }
-              >
-                <SelectTrigger
-                  id="status"
-                  className={cn(
-                    "rounded-lg h-12 text-muted-foreground",
-                    errors.status ? "border-feedback-error-medium" : "border-grayscale-light",
-                  )}
-                >
-                  <SelectValue placeholder="Novo" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="novo">Novo</SelectItem>
-                  <SelectItem value="contato">Em Contato</SelectItem>
-                  <SelectItem value="proposta">Proposta Enviada</SelectItem>
-                  <SelectItem value="negociacao">Negociação</SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.status && (
-                <span className="text-xs text-feedback-error-dark mt-1 block">
-                  × {errors.status}
-                </span>
-              )}
-            </div>
+            <FormField name="status" validators={[RequiredValidator()]}>
+              <SelectInput label="Status Inicial" placeholder="Ex. Novo" options={STATUS_OPTIONS} />
+            </FormField>
 
-            <div className="space-y-2">
-              <Label htmlFor="value" className="text-base font-normal text-grayscale-dark">
-                Valor Estimado (R$)
-              </Label>
-              <Input
-                id="value"
-                value={formData.value}
-                onChange={(e) =>
-                  setFormData({ ...formData, value: formatCurrency(e.target.value) })
-                }
-                className={cn(
-                  "rounded-lg h-12",
-                  errors.value ? "border-feedback-error-medium" : "border-grayscale-light",
-                )}
+            <FormField name="value" validators={[RequiredValidator()]}>
+              <TextInput
+                label="Valor Estimado (R$)"
                 placeholder="Ex. 2.000,00"
+                formatter={formatCurrency}
               />
-              {errors.value && (
-                <span className="text-xs text-feedback-error-dark mt-1 block">
-                  × {errors.value}
-                </span>
-              )}
-            </div>
+            </FormField>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="notes" className="text-base font-normal text-grayscale-dark">
-              Observações
-            </Label>
-            <Textarea
-              id="notes"
-              value={formData.notes}
-              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              placeholder="Informações adicionais sobre o lead..."
-              className="border-grayscale-light rounded-lg min-h-[100px] resize-none"
+          <FormField name="notes">
+            <TextareaInput
+              label="Observações"
+              placeholder="Informacoes adicionais sobre o lead..."
             />
-          </div>
+          </FormField>
 
           <div className="pt-6 flex justify-center">
-            <Button
-              type="submit"
-              className="bg-green-600 hover:bg-green-700 text-white font-medium h-12 rounded-lg w-full md:w-auto px-12"
-              disabled={isSubmitting}
-            >
+            <Button type="submit" className="h-11 w-full md:w-[400px]" disabled={isSubmitting}>
               {isSubmitting ? "Adicionando..." : "Adicionar Lead"}
             </Button>
           </div>
-        </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

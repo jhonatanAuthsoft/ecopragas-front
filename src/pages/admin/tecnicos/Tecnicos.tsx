@@ -1,5 +1,5 @@
 import { Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
 import { SearchInput } from "@/atomic/mol.search/search.component";
@@ -14,9 +14,35 @@ import {
 } from "@/services/tecnicos.service";
 import { TecnicosTable } from "./components/TecnicosTable";
 
+const TECHNICIANS_MOCK: Tecnico[] = [
+  {
+    id: "mock-1",
+    nome: "John Doe",
+    email: "john.doe@example.com",
+    cpfCnpj: "1234567890",
+    telefone: "1234567890",
+    foto: "https://via.placeholder.com/150",
+    observacoes: "Lorem ipsum dolor sit amet",
+    status: "ATIVO",
+    permissao: "ADMIN",
+  },
+  {
+    id: "mock-2",
+    nome: "John Smith",
+    email: "john.smith@example.com",
+    cpfCnpj: "123.456.789-00",
+    telefone: "(11) 99999-9999",
+    foto: "https://github.com/shadcn.png",
+    observacoes: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
+    status: "INATIVO",
+    permissao: "TECNICO",
+  },
+];
+
 const Tecnicos = () => {
   const [tecnicos, setTecnicos] = useState<Tecnico[]>([]);
-  const [filteredTecnicos, setFilteredTecnicos] = useState<Tecnico[]>([]);
+  const [filteredTecnicos, setFilteredTecnicos] = useState<Tecnico[]>(TECHNICIANS_MOCK);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -42,19 +68,19 @@ const Tecnicos = () => {
     }
   };
 
-  useEffect(() => {
-    fetchTecnicos();
-  }, []);
+  // useEffect(() => {
+  //   fetchTecnicos();
+  // }, []);
 
-  useEffect(() => {
-    const results = tecnicos.filter(
-      (tecnico) =>
-        tecnico.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        tecnico.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        tecnico.cpfCnpj.includes(searchTerm),
-    );
-    setFilteredTecnicos(results);
-  }, [searchTerm, tecnicos]);
+  // useEffect(() => {
+  //   const results = tecnicos.filter(
+  //     (tecnico) =>
+  //       tecnico.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //       tecnico.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //       tecnico.cpfCnpj.includes(searchTerm),
+  //   );
+  //   setFilteredTecnicos(results);
+  // }, [searchTerm, tecnicos]);
 
   const handleCreate = () => {
     setSelectedTecnico(null);
