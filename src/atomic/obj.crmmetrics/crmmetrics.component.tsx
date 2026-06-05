@@ -1,4 +1,7 @@
-import { DollarSign, Percent, Target, TrendingUp, Users } from "lucide-react";
+import { ArrowPathIcon } from "@/assets/icons/arrowpath";
+import { BankNotesIcon } from "@/assets/icons/banknotes";
+import { UsersIcon } from "@/assets/icons/users";
+import { Body2, H2 } from "@/atomic/atm.typography";
 import { Card, CardContent } from "@/atomic/mol.card/card.component";
 import type { Lead } from "@/pages/leads/Leads";
 
@@ -22,52 +25,39 @@ export const CRMMetrics = ({ leads }: CRMMetricsProps) => {
 
   const taxaConversao = totalLeads > 0 ? ((leadsGanhos / totalLeads) * 100).toFixed(1) : "0";
 
-  // CAC simulado (custo de aquisição por cliente)
   const cacSimulado = leadsGanhos > 0 ? (5000 / leadsGanhos).toFixed(2) : "0";
 
   const metrics = [
     {
       title: "Total de Leads",
       value: totalLeads,
-      icon: Users,
-      color: "text-brand-primary-medium",
-      bgColor: "bg-brand-primary-light/20",
+      icon: UsersIcon,
     },
     {
       title: "Leads Ativos",
       value: leadsAtivos,
-      icon: TrendingUp,
-      color: "text-brand-secondary-medium",
-      bgColor: "bg-brand-secondary-light/20",
+      icon: UsersIcon,
     },
     {
       title: "Valor Fechado",
       value: `R$ ${valorTotal.toLocaleString("pt-BR")}`,
-      icon: DollarSign,
-      color: "text-feedback-success-medium",
-      bgColor: "bg-feedback-success-light",
+      icon: BankNotesIcon,
     },
     {
       title: "Valor Potencial",
       value: `R$ ${valorPotencial.toLocaleString("pt-BR")}`,
-      icon: Target,
-      color: "text-brand-secondary-dark",
-      bgColor: "bg-brand-secondary-light/30",
+      icon: BankNotesIcon,
     },
     {
       title: "Taxa de Conversão",
       value: `${taxaConversao}%`,
-      icon: Percent,
-      color: "text-brand-accessory-purple",
-      bgColor: "bg-brand-accessory-purple/20",
+      icon: ArrowPathIcon,
       subtitle: `${leadsGanhos} ganhos / ${leadsPerdidos} perdidos`,
     },
     {
       title: "CAC Médio",
-      value: `R$ ${cacSimulado}`,
-      icon: DollarSign,
-      color: "text-feedback-warning-medium",
-      bgColor: "bg-feedback-warning-light",
+      value: `R$ ${Number(cacSimulado).toLocaleString("pt-BR")}`,
+      icon: BankNotesIcon,
       subtitle: "Custo de Aquisição por Cliente",
     },
   ];
@@ -78,18 +68,26 @@ export const CRMMetrics = ({ leads }: CRMMetricsProps) => {
         const Icon = metric.icon;
         return (
           <Card key={metric.title} className="border-border hover:shadow-lg transition-shadow">
-            <CardContent className="p-4">
-              <div className="flex items-start justify-between">
-                <div className="space-y-1 flex-1">
-                  <p className="text-xs font-medium text-muted-foreground">{metric.title}</p>
-                  <p className="text-xl font-bold text-foreground">{metric.value}</p>
-                  {metric.subtitle && (
-                    <p className="text-xs text-muted-foreground">{metric.subtitle}</p>
-                  )}
+            <CardContent className="p-sm!">
+              <div className="flex flex-col gap-xs">
+                <div className="flex items-start justify-between gap-xs">
+                  <div className="flex flex-col gap-xs flex-1">
+                    <Body2 className="text-xxs! text-grayscale-dark font-normal">
+                      {metric.title}
+                    </Body2>
+                    <H2>{metric.value}</H2>
+                  </div>
+
+                  <div className="rounded-full bg-brand-cta-light p-2xs">
+                    <Icon className="size-5 text-brand-primary-medium" />
+                  </div>
                 </div>
-                <div className={`rounded-full ${metric.bgColor} p-2`}>
-                  <Icon className={`h-4 w-4 ${metric.color}`} />
-                </div>
+
+                {metric.subtitle && (
+                  <Body2 className="text-xxs! text-grayscale-dark font-normal">
+                    {metric.subtitle}
+                  </Body2>
+                )}
               </div>
             </CardContent>
           </Card>

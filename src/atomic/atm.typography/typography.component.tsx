@@ -4,7 +4,7 @@ export const typographyStyle = tv({
   slots: {
     base: "font-segoe text-foreground",
     display: ["text-xl md:text-2xl font-heavy leading-snug"],
-    h1: ["text-lg md:text-xl font-medium leading-snug"],
+    h1: ["text-lg md:text-xl font-bold leading-snug"],
     h2: ["text-md md:text-lg font-bold leading-snug"],
     h3: ["text-sm md:text-md font-medium leading-snug"],
     h4: ["text-xs md:text-sm font-bold leading-snug"],

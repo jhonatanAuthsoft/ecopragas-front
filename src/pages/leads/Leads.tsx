@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
+import { Body1, H1 } from "@/atomic/atm.typography";
 import { AddLeadDialog } from "@/atomic/obj.add-lead-dialog/add-lead-dialog.component";
 import { ConvertLeadDialog } from "@/atomic/obj.convert-lead-dialog/convert-lead-dialog.component";
 import { CRMMetrics } from "@/atomic/obj.crmmetrics/crmmetrics.component";
@@ -59,16 +60,20 @@ const Leads = () => {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="flex flex-col gap-lg py-lg px-md">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">CRM - Gestão de Leads</h1>
-            <p className="text-muted-foreground mt-1">
+            <H1>CRM - Gestão de Leads</H1>
+            <Body1 className="font-normal text-grayscale-dark mt-xs">
               Gerencie seus leads e acompanhe o funil de vendas
-            </p>
+            </Body1>
           </div>
-          <Button onClick={() => setIsDialogOpen(true)} size="lg">
-            <Plus className="mr-2 h-5 w-5" />
+          <Button
+            onClick={() => setIsDialogOpen(true)}
+            size="lg"
+            className="px-md"
+            leftIcon={<Plus className="size-md" />}
+          >
             Novo Lead
           </Button>
         </div>
