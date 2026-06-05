@@ -12,6 +12,7 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Badge } from "@/atomic/atm.badge/badge.component";
+import { Body1, H1 } from "@/atomic/atm.typography";
 import { Button } from "@/atomic/atm.button/button.component";
 import { Checkbox } from "@/atomic/atm.checkbox/checkbox.component";
 import { Textarea } from "@/atomic/atm.textarea/textarea.component";
@@ -59,9 +60,9 @@ export default function OrdemServicoDetalhes() {
           </Button>
 
           <div className="flex items-start justify-between gap-4 flex-wrap">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">{ordem.numeroOS}</h1>
-              <p className="text-muted-foreground">{ordem.cliente}</p>
+            <div className="flex flex-col self-start gap-xs">
+              <H1>Detalhes do Serviço: {ordem.numeroOS}</H1>
+              <Body1 className="font-normal text-grayscale-dark">{ordem.cliente}</Body1>
             </div>
             <Badge className="text-sm">{ordem.status}</Badge>
           </div>

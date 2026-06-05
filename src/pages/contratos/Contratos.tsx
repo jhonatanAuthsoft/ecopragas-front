@@ -1,6 +1,7 @@
 import { CheckCircle2, Clock, FileText, Search, XCircle } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/atomic/atm.button/button.component";
+import { Body1, H1 } from "@/atomic/atm.typography";
 import { Input } from "@/atomic/atm.input/input.component";
 import { Card, CardContent } from "@/atomic/mol.card/card.component";
 import { ContratosTable } from "@/atomic/obj.contratos-table/contratos-table.component";
@@ -21,6 +22,7 @@ export type Contrato = {
   urlDocumento?: string;
 };
 
+// TODO: possivelmente excluir, por inutilização
 const Contratos = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -146,12 +148,12 @@ const Contratos = () => {
   return (
     <MainLayout>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Contratos</h1>
-            <p className="text-muted-foreground mt-1">
+        <div className="flex flex-col items-center justify-between gap-xs md:flex-row">
+          <div className="flex flex-col self-start gap-xs">
+            <H1>Contratos</H1>
+            <Body1 className="font-normal text-grayscale-dark">
               Gerencie os contratos de clientes fixos e esporádicos
-            </p>
+            </Body1>
           </div>
           <Button size="lg">
             <FileText className="mr-2 h-5 w-5" />

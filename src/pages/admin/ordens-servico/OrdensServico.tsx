@@ -1,6 +1,7 @@
 import { AlertCircle, CheckCircle2, ClipboardList, Clock, Plus } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/atomic/atm.button/button.component";
+import { Body1, H1 } from "@/atomic/atm.typography";
 import { Card, CardContent } from "@/atomic/mol.card/card.component";
 import { SearchInput } from "@/atomic/mol.search/search.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
@@ -164,13 +165,11 @@ const OrdensServico = () => {
   return (
     <MainLayout>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Ordens de Serviço</h1>
-            <p className="text-muted-foreground mt-1">
-              Gerencie as ordens de serviço e acompanhe a execução
-            </p>
-          </div>
+        <div className="flex flex-col self-start gap-xs">
+          <H1>Ordens de Serviço</H1>
+          <Body1 className="font-normal text-grayscale-dark">
+            Gerencie as ordens de serviço e acompanhe a execução
+          </Body1>
         </div>
 
         <div className="flex flex-col gap-xl">

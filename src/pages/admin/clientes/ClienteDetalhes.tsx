@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
+import { Body1, H1 } from "@/atomic/atm.typography";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
 import api from "@/services/api";
@@ -118,9 +119,11 @@ const ClienteDetalhes = () => {
           <span className="text-sm">Voltar para Clientes</span>
         </div>
 
-        <div>
-          <h1 className="text-2xl font-bold text-grayscale-dark">Perfil do cliente</h1>
-          <p className="text-grayscale-medium">Visualize informações sobre o cliente</p>
+        <div className="flex flex-col self-start gap-xs">
+          <H1>Perfil do Cliente</H1>
+          <Body1 className="font-normal text-grayscale-dark">
+            Visualize informações sobre o cliente
+          </Body1>
         </div>
 
         <div className="bg-white rounded-lg p-6 shadow-sm border border-grayscale-light space-y-8">
