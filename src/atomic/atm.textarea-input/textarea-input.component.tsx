@@ -32,6 +32,7 @@ export const TextareaInput = forwardRef<HTMLTextAreaElement, TextareaInputProps>
         onChange={(event) => onChange?.(event.target.value)}
         className={cn(
           "border-grayscale-light rounded-lg min-h-[100px] resize-none",
+          "placeholder:text-grayscale-medium placeholder:text-xs",
           invalid && "border-feedback-error-medium",
         )}
         {...rest}
