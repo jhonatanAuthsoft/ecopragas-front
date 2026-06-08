@@ -1,8 +1,17 @@
-import { AlertCircle, CheckCircle2, ClipboardList, Clock, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useState } from "react";
+import { CheckCircleIcon } from "@/assets/icons/check-circle";
+import { ClipboardDocumentListIcon } from "@/assets/icons/clipboard-document-list";
+import { ClockIcon } from "@/assets/icons/clock";
+import { ExclamationCircleIcon } from "@/assets/icons/exclamation-circle";
 import { Button } from "@/atomic/atm.button/button.component";
-import { Body1, H1 } from "@/atomic/atm.typography";
-import { Card, CardContent } from "@/atomic/mol.card/card.component";
+import { Body1, H1, H2 } from "@/atomic/atm.typography";
+import {
+  Card,
+  CardContent,
+  CardSubtitle,
+  CardTitleSecondary,
+} from "@/atomic/mol.card/card.component";
 import { SearchInput } from "@/atomic/mol.search/search.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { AddOrdemServicoDialog } from "./components/AddOrdemServicoDialog";
@@ -135,28 +144,29 @@ const OrdensServico = () => {
     {
       title: "Total de O.S.",
       value: totalOS,
-      icon: ClipboardList,
+      icon: ClipboardDocumentListIcon,
       color: "text-brand-primary-medium",
       bgColor: "bg-brand-cta-light",
+      subtitle: "com base na data atual",
     },
     {
       title: "Agendadas",
       value: osAgendadas,
-      icon: Clock,
+      icon: ClockIcon,
       color: "text-brand-primary-medium",
       bgColor: "bg-brand-cta-light",
     },
     {
       title: "Em Andamento",
       value: osEmAndamento,
-      icon: AlertCircle,
+      icon: ExclamationCircleIcon,
       color: "text-brand-primary-medium",
       bgColor: "bg-brand-cta-light",
     },
     {
       title: "Concluídas",
       value: osConcluidas,
-      icon: CheckCircle2,
+      icon: CheckCircleIcon,
       color: "text-brand-primary-medium",
       bgColor: "bg-brand-cta-light",
     },
@@ -172,37 +182,41 @@ const OrdensServico = () => {
           </Body1>
         </div>
 
-        <div className="flex flex-col gap-xl">
+        <div className="flex flex-col gap-md">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {stats.map((stat) => {
               const Icon = stat.icon;
               return (
-                <Card key={stat.title} className="border-border">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
-                        <p className="text-2xl font-bold text-foreground mt-1">{stat.value}</p>
-                      </div>
-                      <div className={`rounded-full ${stat.bgColor} p-3`}>
-                        <Icon className={`h-5 w-5 ${stat.color}`} />
-                      </div>
-                    </div>
+                <Card key={stat.title}>
+                  <CardContent>
+                    <CardTitleSecondary>{stat.title}</CardTitleSecondary>
+                    <H2>{stat.value}</H2>
+                    {stat.subtitle && (
+                      <CardSubtitle className="text-grayscale-dark">{stat.subtitle}</CardSubtitle>
+                    )}
                   </CardContent>
+
+                  <div className={`rounded-full ${stat.bgColor} p-sm`}>
+                    <Icon className={`size-lg ${stat.color}`} />
+                  </div>
                 </Card>
               );
             })}
           </div>
+
           <div className="flex items-center justify-between">
-            <SearchInput />
-            <Button variant="primary" onClick={() => setIsDialogOpen(true)} size="lg">
-              <Plus className="mr-2 h-5 w-5" />
+            <SearchInput placeholder="Buscar  por clientes, Nº O.S." />
+            <Button
+              variant="primary"
+              onClick={() => setIsDialogOpen(true)}
+              size="lg"
+              leftIcon={<Plus className="size-md" />}
+            >
               Nova O.S.
             </Button>
           </div>
-          <CardContent className="p-0">
-            <OrdensServicoTable ordensServico={filteredOrdens} />
-          </CardContent>
+
+          <OrdensServicoTable ordensServico={filteredOrdens} />
         </div>
 
         <AddOrdemServicoDialog
