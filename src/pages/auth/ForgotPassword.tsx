@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/atomic/atm.button/button.component";
 import { TextInput } from "@/atomic/atm.text-input";
 import { EmailValidator, Form, FormField, RequiredValidator } from "@/atomic/obj.form";
@@ -7,7 +7,10 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+
+  const isTechnician = location.state?.isTechnician;
 
   function handleSubmit() {
     toast({
@@ -18,7 +21,7 @@ export default function ForgotPassword() {
         "bg-feedback-success-light border-feedback-success-medium text-feedback-success-dark",
     });
 
-    navigate(ROUTES.AUTH.LOGIN.ADMIN);
+    navigate(isTechnician ? ROUTES.AUTH.LOGIN.TECHNICIAN : ROUTES.AUTH.LOGIN.ADMIN);
   }
 
   return (
@@ -37,7 +40,10 @@ export default function ForgotPassword() {
 
             <Form onSubmit={handleSubmit} className="flex flex-col gap-lg mt-lg">
               <FormField name="email" validators={[RequiredValidator(), EmailValidator()]}>
-                <TextInput label="Email" placeholder="Digite seu email" />
+                <TextInput 
+                  label="Email" 
+                  placeholder="Digite seu email" 
+                />
               </FormField>
 
               <Button type="submit" className="h-12 w-full cursor-pointer">
@@ -52,7 +58,7 @@ export default function ForgotPassword() {
         </div>
 
         <img
-          src="/presentation-frame.png"
+          src={isTechnician ? "/presentation-tech.png" : "/presentation-frame.png"}
           alt=""
           className="hidden object-cover rounded-2xl border-2 border-brand-primary-light lg:block"
         />
