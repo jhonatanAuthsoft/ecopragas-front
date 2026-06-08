@@ -1,15 +1,8 @@
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Edit, Eye, MoreVertical } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/atomic/atm.badge/badge.component";
-import { Button } from "@/atomic/atm.button/button.component";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/atomic/mol.dropdown-menu/dropdown-menu.component";
 import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
 import {
   Table,
@@ -47,7 +40,7 @@ export const ClientesTable = ({
   }
 
   return (
-    <div className="rounded-md border border-border p-md">
+    <div className="rounded-xs border border-border p-lg">
       <Table>
         <TableHeader>
           <TableRow>
@@ -62,60 +55,30 @@ export const ClientesTable = ({
         </TableHeader>
         <TableBody>
           {clientes.map((cliente) => (
-            <TableRow key={cliente.id}>
-              <TableCell
-                className="font-medium cursor-pointer hover:underline"
-                onClick={() => navigate(ROUTES.CLIENT.DETAILS.replace(":id", cliente.id))}
-              >
-                {cliente.nome}
-              </TableCell>
-              <TableCell className="text-muted-foreground">{cliente.cpfCnpj}</TableCell>
-              <TableCell>
-                <Badge
-                  variant="outline"
-                  className={
-                    cliente.tipoCliente === "fixo"
-                      ? "bg-brand-secondary-light/20 text-brand-secondary-medium hover:bg-brand-secondary-light/20 border border-brand-secondary-medium"
-                      : "bg-feedback-warning-light text-feedback-warning-dark border border-brand-accessory-orange"
-                  }
-                >
+            <TableRow
+              key={cliente.id}
+              className="cursor-pointer"
+              // onClick={() => navigate(ROUTES.CLIENT.DETAILS.replace(":id", cliente.id))}
+            >
+              <TableCell className="text-grayscale-x-dark">{cliente.nome}</TableCell>
+              <TableCell>{cliente.cpfCnpj}</TableCell>
+              <TableCell className="break-normal">
+                <Badge variant="outline" color={cliente.tipoCliente === "fixo" ? "blue" : "orange"}>
                   {cliente.tipoCliente === "fixo" ? "Fixo" : "Esporádico"}
                 </Badge>
               </TableCell>
               <TableCell>{cliente.telefone}</TableCell>
-              <TableCell className="text-muted-foreground">{cliente.email}</TableCell>
+              <TableCell>{cliente.email}</TableCell>
               <TableCell>
                 {cliente.cidade}/{cliente.estado}
               </TableCell>
               <TableCell>
-                {cliente.ultimoServico ? (
-                  <span className="text-sm text-muted-foreground">
-                    {format(cliente.ultimoServico, "dd/MM/yyyy", { locale: ptBR })}
-                  </span>
-                ) : (
-                  <span className="text-sm text-muted-foreground italic">Nunca</span>
-                )}
+                {cliente.ultimoServico
+                  ? format(cliente.ultimoServico, "dd/MM/yyyy", { locale: ptBR })
+                  : "-"}
               </TableCell>
               <TableCell className="text-right">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm">
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem
-                      onClick={() => navigate(ROUTES.CLIENT.DETAILS.replace(":id", cliente.id))}
-                    >
-                      <Eye className="mr-2 h-4 w-4" />
-                      Ver Detalhes
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Edit className="mr-2 h-4 w-4" />
-                      Editar
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <ChevronRight className="size-[20px]" />
               </TableCell>
             </TableRow>
           ))}
@@ -123,7 +86,7 @@ export const ClientesTable = ({
       </Table>
 
       <PaginationControl
-        className="mt-4"
+        className="mt-xs"
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={onPageChange}

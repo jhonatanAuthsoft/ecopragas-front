@@ -1,10 +1,11 @@
 import * as React from "react";
 
+import { Body2 } from "@/atomic/atm.typography";
 import { cn } from "@/lib/utils";
 
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
-    <div className="relative w-full overflow-auto pt-xl">
+    <div className="relative w-full overflow-auto">
       <table ref={ref} className={cn("w-full caption-bottom text-sm", className)} {...props} />
     </div>
   ),
@@ -60,7 +61,7 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={cn(
-      "h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0",
+      "h-12 px-4 py-2xs text-md text-left align-middle font-medium text-grayscale-dark [&:has([role=checkbox])]:pr-0",
       className,
     )}
     {...props}
@@ -71,12 +72,17 @@ TableHead.displayName = "TableHead";
 const TableCell = React.forwardRef<
   HTMLTableCellElement,
   React.TdHTMLAttributes<HTMLTableCellElement>
->(({ className, ...props }, ref) => (
+>(({ className, children, ...props }, ref) => (
   <td
     ref={ref}
-    className={cn("p-4 align-middle [&:has([role=checkbox])]:pr-0", className)}
+    className={cn(
+      "p-4 align-middle [&:has([role=checkbox])]:pr-0 text-grayscale-dark break-all",
+      className,
+    )}
     {...props}
-  />
+  >
+    <Body2>{children}</Body2>
+  </td>
 ));
 TableCell.displayName = "TableCell";
 
