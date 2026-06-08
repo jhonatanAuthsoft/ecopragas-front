@@ -1,73 +1,105 @@
-import { ArrowLeft, Download, FileText, MapPin, Phone } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "sonner";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { ChevronLeft, Download, FileText, MapPin, Phone } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { PdfFile } from "@/assets/vectors/pdf-file";
 import { Button } from "@/atomic/atm.button/button.component";
-import { Body1, H1 } from "@/atomic/atm.typography";
+import { DetailItem } from "@/atomic/atm.detail-item";
+import { Body1, Body2, H1, H2, H3, H4, InputCaption } from "@/atomic/atm.typography";
+import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
-import api from "@/services/api";
-import { formatCEP, formatCPFCNPJ, formatPhone } from "@/utils/formatters";
+import { formatCEP, formatCPFCNPJ, formatCurrency, formatPhone } from "@/utils/formatters";
+import type { ClienteDetalhes as ClienteDetalhesData, ClienteDocumento } from "./types";
 
-interface Endereco {
-  id: string;
-  rua: string;
-  numero: string;
-  complemento: string;
-  bairro: string;
-  cidade: string;
-  estado: string;
-  cep: string;
-  principal: boolean;
-}
+const DOCUMENTOS_PAGE_SIZE = 4;
 
-interface Documento {
-  id: string;
-  nome: string;
-  conteudo: string;
-  tamanho?: string;
-  tipo?: string;
-}
-
-interface ClienteDetalhesData {
-  id: string;
-  nome: string;
-  cpfCnpj: string;
-  tipoCliente: string;
-  telefone: string;
-  email: string;
-  observacoes: string;
-  status: string;
-  enderecos: Endereco[];
-  documentos: Documento[];
-}
+const MOCK_CLIENTE: ClienteDetalhesData = {
+  id: "mock-cliente-001",
+  nome: "Supermercado Bom Preco Ltda",
+  cpfCnpj: "12.345.678/0001-90",
+  tipoCliente: "fixo",
+  telefone: "(11) 98765-4321",
+  email: "contato@bompreco.com.br",
+  endereco: "Rua das Flores, 1500, Loja 3",
+  cidade: "Sao Paulo",
+  estado: "SP",
+  cep: "01310-100",
+  status: "ativo",
+  datacadastro: new Date("2024-06-15"),
+  ultimoServico: new Date("2026-01-15"),
+  observacoes: "Cliente prioritario - contrato anual",
+  documentos: [
+    {
+      id: "doc-001",
+      nome: "Contrato de Servico.pdf",
+      conteudo: "data:application/pdf;base64,JVBERi0xLjQK",
+      tamanho: "245 KB",
+      tipo: "application/pdf",
+    },
+    {
+      id: "doc-002",
+      nome: "Alvara de Funcionamento.pdf",
+      conteudo: "data:application/pdf;base64,JVBERi0xLjQK",
+      tamanho: "120 KB",
+      tipo: "application/pdf",
+    },
+    {
+      id: "doc-003",
+      nome: "CNPJ.pdf",
+      conteudo: "data:application/pdf;base64,JVBERi0xLjQK",
+      tamanho: "85 KB",
+      tipo: "application/pdf",
+    },
+    {
+      id: "doc-004",
+      nome: "Certificado Sanitario.pdf",
+      conteudo: "data:application/pdf;base64,JVBERi0xLjQK",
+      tamanho: "310 KB",
+      tipo: "application/pdf",
+    },
+    {
+      id: "doc-005",
+      nome: "Licenca Ambiental.pdf",
+      conteudo: "data:application/pdf;base64,JVBERi0xLjQK",
+      tamanho: "198 KB",
+      tipo: "application/pdf",
+    },
+    {
+      id: "doc-006",
+      nome: "Comprovante Endereco.pdf",
+      conteudo: "data:application/pdf;base64,JVBERi0xLjQK",
+      tamanho: "64 KB",
+      tipo: "application/pdf",
+    },
+    {
+      id: "doc-007",
+      nome: "ART Responsavel Tecnico.pdf",
+      conteudo: "data:application/pdf;base64,JVBERi0xLjQK",
+      tamanho: "142 KB",
+      tipo: "application/pdf",
+    },
+  ],
+};
 
 const ClienteDetalhes = () => {
-  const { id } = useParams();
   const navigate = useNavigate();
-  const [cliente, setCliente] = useState<ClienteDetalhesData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const cliente = MOCK_CLIENTE;
+  const [documentosPage, setDocumentosPage] = useState(0);
 
-  useEffect(() => {
-    const fetchCliente = async () => {
-      try {
-        setIsLoading(true);
-        const { data } = await api.get(`/admin/clientes/${id}`);
-        setCliente(data);
-      } catch (error) {
-        console.error("Erro ao buscar detalhes do cliente:", error);
-        toast.error("Erro ao carregar detalhes do cliente");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const documentos = cliente.documentos ?? [];
+  const totalDocumentosPages = Math.max(1, Math.ceil(documentos.length / DOCUMENTOS_PAGE_SIZE));
+  const paginatedDocumentos = documentos.slice(
+    documentosPage * DOCUMENTOS_PAGE_SIZE,
+    (documentosPage + 1) * DOCUMENTOS_PAGE_SIZE,
+  );
 
-    if (id) {
-      fetchCliente();
-    }
-  }, [id]);
+  const addressString = cliente.endereco
+    ? `${cliente.endereco}, ${formatCEP(cliente.cep)}, ${cliente.cidade} - ${cliente.estado}`
+    : "-";
 
-  const handleDownloadDocumento = (doc: Documento) => {
+  const handleDownloadDocumento = (doc: ClienteDocumento) => {
     if (doc.conteudo) {
       const dataUri = doc.conteudo.startsWith("data:")
         ? doc.conteudo
@@ -82,42 +114,17 @@ const ClienteDetalhes = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <MainLayout>
-        <div className="flex items-center justify-center h-full">
-          <p>Carregando...</p>
-        </div>
-      </MainLayout>
-    );
-  }
-
-  if (!cliente) {
-    return (
-      <MainLayout>
-        <div className="flex flex-col items-center justify-center h-full gap-4">
-          <p>Cliente não encontrado</p>
-          <Button onClick={() => navigate(ROUTES.CLIENT.BASE)}>Voltar para Clientes</Button>
-        </div>
-      </MainLayout>
-    );
-  }
-
-  const mainAddress = cliente.enderecos?.find((e) => e.principal) || cliente.enderecos?.[0];
-  const addressString = mainAddress
-    ? `${mainAddress.rua}, ${mainAddress.numero}${mainAddress.complemento ? `, ${mainAddress.complemento}` : ""}, ${formatCEP(mainAddress.cep)}, ${mainAddress.cidade} - ${mainAddress.estado}`
-    : "Endereço não cadastrado";
-
   return (
     <MainLayout>
-      <div className="space-y-6">
-        <div
-          className="flex items-center gap-2 text-grayscale-medium hover:text-brand-primary-medium transition-colors cursor-pointer w-fit"
+      <div className="flex flex-col gap-md">
+        <Button
+          variant="link"
+          className="self-start hover:no-underline"
           onClick={() => navigate(ROUTES.CLIENT.BASE)}
+          leftIcon={<ChevronLeft className="size-md" />}
         >
-          <ArrowLeft className="h-4 w-4" />
-          <span className="text-sm">Voltar para Clientes</span>
-        </div>
+          Voltar para Clientes
+        </Button>
 
         <div className="flex flex-col self-start gap-xs">
           <H1>Perfil do Cliente</H1>
@@ -126,68 +133,99 @@ const ClienteDetalhes = () => {
           </Body1>
         </div>
 
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-grayscale-light space-y-8">
-          <div className="space-y-2">
-            <h2 className="text-xl font-bold text-grayscale-dark">{cliente.nome}</h2>
-            <div className="flex flex-wrap items-center gap-4 text-grayscale-medium text-sm">
+        <div className="flex flex-col gap-sm p-lg bg-white rounded-lg shadow-sm border border-grayscale-light">
+          <div className="flex flex-col gap-xs">
+            <H2>{cliente.nome}</H2>
+            <div className="flex flex-wrap items-center gap-sm text-grayscale-dark text-sm">
               <div className="flex items-center gap-1">
-                <FileText className="h-4 w-4" />
-                <span>{formatCPFCNPJ(cliente.cpfCnpj)}</span>
+                <FileText className="size-lg" />
+                <Body2>{formatCPFCNPJ(cliente.cpfCnpj ?? "")}</Body2>
               </div>
               <div className="flex items-center gap-1">
-                <Phone className="h-4 w-4" />
-                <span>{formatPhone(cliente.telefone)}</span>
+                <Phone className="size-lg" />
+                <Body2>{formatPhone(cliente.telefone ?? "")}</Body2>
               </div>
               <div className="flex items-center gap-1">
-                <MapPin className="h-4 w-4" />
-                <span>{addressString}</span>
+                <MapPin className="size-lg" />
+                <Body2>{addressString}</Body2>
               </div>
             </div>
           </div>
 
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-grayscale-dark">Último Serviço</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12 p-4 bg-gray-50 rounded-lg">
-              <p className="text-sm text-grayscale-medium col-span-2">
-                Informações do último serviço indisponíveis.
-              </p>
-            </div>
-          </div>
+          <div className="w-full h-[1px] bg-grayscale-light mb-2xs" />
 
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-grayscale-dark">Documentação</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {cliente.documentos && cliente.documentos.length > 0 ? (
-                cliente.documentos.map((doc, index) => (
-                  <div
-                    key={doc.id || index}
-                    className="flex items-center justify-between p-4 border border-grayscale-light rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="bg-red-50 p-2 rounded">
-                        <FileText className="h-6 w-6 text-red-500" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-grayscale-dark text-sm">{doc.nome}</p>
-                        <p className="text-xs text-grayscale-medium">120 KB</p>
-                      </div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-green-600 hover:text-green-700 hover:bg-green-50"
-                      onClick={() => handleDownloadDocumento(doc)}
-                    >
-                      <Download className="h-5 w-5" />
-                    </Button>
-                  </div>
-                ))
+            <H3>Ultimo Servico</H3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-md bg-gray-50 rounded-lg">
+              {cliente.ultimoServico ? (
+                <>
+                  <DetailItem label="Tipo de serviço" value={["Serviço de limpeza"]} />
+                  <DetailItem label="Técnico Responsável" value={["João da Silva"]} />
+                  <DetailItem
+                    label="Data e horário"
+                    value={[
+                      `${format(cliente.ultimoServico, "dd/MM/yyyy", { locale: ptBR })} - ${format(cliente.ultimoServico, "HH:mm", { locale: ptBR })}`,
+                    ]}
+                  />
+                  <DetailItem
+                    label="Valor do serviço"
+                    value={[<b key="valor-servico">{formatCurrency(100)}</b>]}
+                    valueClassName="text-brand-cta-dark"
+                  />
+                </>
               ) : (
-                <p className="text-grayscale-medium text-sm col-span-2">
-                  Nenhum documento encontrado.
-                </p>
+                <Body2 className="text-grayscale-medium">
+                  Informações do último serviço indisponíveis.
+                </Body2>
               )}
             </div>
+          </div>
+
+          <div className="w-full h-[1px] bg-grayscale-light mb-2xs" />
+
+          <div className="space-y-4">
+            <H3>Documentação</H3>
+            {documentos.length > 0 ? (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-xs">
+                  {paginatedDocumentos.map((doc, index) => (
+                    <div
+                      key={doc.id || index}
+                      className="flex items-center justify-between p-md border border-grayscale-light rounded-small hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="flex items-center gap-sm">
+                        <PdfFile />
+                        <div className="flex flex-col gap-2xs">
+                          <H4>{doc.nome}</H4>
+                          <InputCaption className="text-grayscale-medium">
+                            {doc.tamanho ?? "-"}
+                          </InputCaption>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-brand-primary-medium hover:text-brand-primary-dark hover:bg-brand-primary-light/10"
+                        onClick={() => handleDownloadDocumento(doc)}
+                      >
+                        <Download className="size-[20px]" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+
+                {totalDocumentosPages > 1 && (
+                  <PaginationControl
+                    className="mt-xs"
+                    currentPage={documentosPage + 1}
+                    totalPages={totalDocumentosPages}
+                    onPageChange={(page) => setDocumentosPage(page - 1)}
+                  />
+                )}
+              </>
+            ) : (
+              <Body2 className="text-grayscale-medium">Nenhum documento encontrado.</Body2>
+            )}
           </div>
         </div>
       </div>

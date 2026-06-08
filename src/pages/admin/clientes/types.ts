@@ -14,3 +14,15 @@ export type Cliente = {
   ultimoServico?: Date;
   observacoes?: string;
 };
+
+export type ClienteDocumento = {
+  id: string;
+  nome: string;
+  conteudo: string;
+  tamanho?: string;
+  tipo?: string;
+};
+
+export type ClienteDetalhes = Cliente & {
+  documentos?: ClienteDocumento[];
+};
