@@ -58,7 +58,7 @@ export const ClientesTable = ({
             <TableRow
               key={cliente.id}
               className="cursor-pointer"
-              // onClick={() => navigate(ROUTES.CLIENT.DETAILS.replace(":id", cliente.id))}
+              onClick={() => navigate(ROUTES.CLIENT.DETAILS.replace(":id", cliente.id))}
             >
               <TableCell className="text-grayscale-x-dark">{cliente.nome}</TableCell>
               <TableCell>{cliente.cpfCnpj}</TableCell>

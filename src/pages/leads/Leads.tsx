@@ -10,6 +10,8 @@ import { CRMMetrics } from "@/atomic/obj.crmmetrics/crmmetrics.component";
 import { LeadKanban } from "@/atomic/obj.lead-kanban/lead-kanban.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
+import { cn } from "@/lib/utils";
+import { useSidebarStore } from "@/store/sidebar";
 import { MOCK_LEADS } from "./leads.mock";
 import type { Lead } from "./leads.types";
 
@@ -19,6 +21,7 @@ const createLeadId = () => `lead-${crypto.randomUUID()}`;
 
 const Leads = () => {
   const navigate = useNavigate();
+  const isMinimized = useSidebarStore((state) => state.isMinimized);
   const [leads, setLeads] = useState<Lead[]>(MOCK_LEADS);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [convertLeadDialogOpen, setConvertLeadDialogOpen] = useState(false);
@@ -80,8 +83,11 @@ const Leads = () => {
 
         <CRMMetrics leads={leads} />
 
-        {/* TODO: ver tamanho com nav minimizada */}
-        <div className="md:max-w-[calc(100dvw-320px)]">
+        <div
+          className={cn(
+            isMinimized ? "md:max-w-[calc(100dvw-180px)]" : "md:max-w-[calc(100dvw-320px)]",
+          )}
+        >
           <LeadKanban leads={leads} onUpdateStatus={handleUpdateLeadStatus} />
         </div>
 
