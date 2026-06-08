@@ -71,7 +71,7 @@ export const CRMMetrics = ({ leads }: CRMMetricsProps) => {
             <CardContent className="p-sm!">
               <div className="flex flex-col gap-xs">
                 <div className="flex items-start justify-between gap-xs">
-                  <div className="flex flex-col gap-xs flex-1">
+                  <div className="flex flex-1 flex-col gap-xs">
                     <Body2 className="text-xxs! text-grayscale-dark font-normal">
                       {metric.title}
                     </Body2>

@@ -1,15 +1,23 @@
-import { Header } from "@/atomic/obj.header/header.component";
 import { Sidebar } from "@/atomic/obj.sidebar/sidebar.component";
+import { cn } from "@/lib/utils";
+import { useSidebarStore } from "@/store/sidebar";
 
 interface MainLayoutProps {
   children: React.ReactNode;
 }
 
 export const MainLayout = ({ children }: MainLayoutProps) => {
+  const isMinimized = useSidebarStore((state) => state.isMinimized);
+
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[256px_1fr]">
+    <div className="min-h-screen w-full overflow-x-hidden">
       <Sidebar className="hidden md:block" />
-      <div className="flex flex-col">
+      <div
+        className={cn(
+          "flex flex-col transition-[margin-left] duration-300",
+          isMinimized ? "md:ml-[100px]" : "md:ml-[256px]",
+        )}
+      >
         <main className="flex-1 px-lg py-xl">{children}</main>
       </div>
     </div>

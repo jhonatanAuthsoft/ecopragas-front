@@ -4,7 +4,7 @@ export const style = tv({
   slots: {
     wrapper: "w-full",
     field: [
-      "overflow-hidden rounded-small transition duration-200",
+      "overflow-hidden rounded-small truncate transition duration-200",
       "w-full p-md text-xs text-grayscale-x-dark bg-grayscale-white",
       "placeholder:text-grayscale-medium",
       "border border-grayscale-light",
@@ -33,7 +33,7 @@ export const style = tv({
     },
     hasLeftIcon: {
       true: {
-        field: "pl-[40px]",
+        field: "pl-2xl",
         icon: "left-md",
       },
     },
