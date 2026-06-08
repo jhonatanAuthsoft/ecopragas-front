@@ -1,38 +1,39 @@
-import type { LucideIcon } from "lucide-react";
-import { Card, CardContent } from "@/atomic/mol.card/card.component";
-import { cn } from "@/lib/utils";
+import { H2 } from "@/atomic/atm.typography";
+import {
+  Card,
+  CardContent,
+  CardSubtitle,
+  CardTitleSecondary,
+} from "@/atomic/mol.card/card.component";
 
 interface MetricCardProps {
   title: string;
   value: string | number;
-  icon: LucideIcon;
+  icon: React.ElementType;
+  className?: string;
   trend?: {
     value: number;
     isPositive: boolean;
   };
-  className?: string;
 }
 
 export const MetricCard = ({ title, value, icon: Icon, trend, className }: MetricCardProps) => {
   return (
-    <Card className={cn("border-border hover:shadow-lg transition-shadow", className)}>
-      <CardContent className="p-6">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <p className="text-sm font-normal text-muted-foreground">{title}</p>
-            <p className="text-3xl font-bold text-foreground">{value}</p>
-            {trend && (
-              <p className={cn("text-sm font-normal text-grayscale-x-dark")}>
-                {trend.isPositive ? "+" : ""}
-                {trend.value}% vs mês anterior
-              </p>
-            )}
-          </div>
-          <div className="rounded-full bg-brand-cta-light p-md">
-            <Icon className="h-6 w-6 text-brand-primary-medium" />
-          </div>
-        </div>
+    <Card className={className}>
+      <CardContent>
+        <CardTitleSecondary>{title}</CardTitleSecondary>
+        <H2>{value}</H2>
+        {trend && (
+          <CardSubtitle>
+            {trend?.isPositive ? "+" : "-"}
+            {trend?.value}% vs mês anterior
+          </CardSubtitle>
+        )}
       </CardContent>
+
+      <div className="size-2xl flex items-center justify-center rounded-full bg-brand-cta-light p-sm">
+        <Icon className="size-lg text-brand-primary-medium" />
+      </div>
     </Card>
   );
 };

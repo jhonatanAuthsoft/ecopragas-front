@@ -1,8 +1,8 @@
 import type { IconProps } from "./types";
 
-export const ClipboardDocumentIcon = ({
+export const ClipboardDocumentCheckIcon = ({
   className,
-  title = "Documento em clipboard",
+  title = "Documento em clipboard com check",
 }: IconProps) => {
   return (
     <svg

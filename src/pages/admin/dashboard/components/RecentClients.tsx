@@ -1,5 +1,4 @@
 import { Badge } from "@/atomic/atm.badge/badge.component";
-import { Card, CardContent, CardHeader, CardTitle } from "@/atomic/mol.card/card.component";
 import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
 import { SearchInput } from "@/atomic/mol.search/search.component";
 import {
@@ -32,7 +31,7 @@ const recentClients = [
     id: 3,
     name: "Maria Silva",
     document: "123.456.789-00",
-    status: "Lead",
+    status: "Ativo",
     lastService: "-",
     type: "Esporádico",
   },
@@ -55,50 +54,37 @@ const recentClients = [
 ];
 
 export const RecentClients = () => {
-  const getTipoColor = (tipo: string) => {
-    switch (tipo) {
-      case "Fixo":
-        return "bg-brand-secondary-light/20 text-brand-secondary-medium hover:bg-brand-secondary-light/20 border border-brand-secondary-medium";
-      case "Esporádico":
-        return "bg-feedback-warning-light text-feedback-warning-dark border border-brand-accessory-orange";
-      default:
-        return "bg-grayscale-light text-grayscale-dark";
-    }
-  };
-
   return (
     <div className="flex flex-col gap-md">
-      <SearchInput />
-      <Card>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nome</TableHead>
-                <TableHead>CPF/CNPJ</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Tipo</TableHead>
-                <TableHead>Último Serviço</TableHead>
+      <SearchInput placeholder="Buscar clientes" />
+      <div className="rounded-xs border border-border p-lg">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nome</TableHead>
+              <TableHead>CPF/CNPJ</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Tipo</TableHead>
+              <TableHead>Último Serviço</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {recentClients.map((client) => (
+              <TableRow key={client.id}>
+                <TableCell className="text-grayscale-x-dark">{client.name}</TableCell>
+                <TableCell>{client.document}</TableCell>
+                <TableCell>{client.status}</TableCell>
+                <TableCell>
+                  <Badge color={client.type === "Fixo" ? "blue" : "orange"}>{client.type}</Badge>
+                </TableCell>
+                <TableCell>{client.lastService}</TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {recentClients.map((client) => (
-                <TableRow key={client.id} className="cursor-pointer hover:bg-muted/50">
-                  <TableCell className="font-medium">{client.name}</TableCell>
-                  <TableCell className="text-muted-foreground">{client.document}</TableCell>
-                  <TableCell>{client.status}</TableCell>
-                  <TableCell className="text-muted-foreground">
-                    <Badge className={getTipoColor(client.type)}>{client.type}</Badge>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">{client.lastService}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+            ))}
+          </TableBody>
+        </Table>
 
-          <PaginationControl className="mt-4" currentPage={1} totalPages={3} />
-        </CardContent>
-      </Card>
+        <PaginationControl className="mt-4" currentPage={1} totalPages={3} />
+      </div>
     </div>
   );
 };

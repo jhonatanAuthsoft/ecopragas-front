@@ -2,7 +2,7 @@ import { BuildingOffice2Icon } from "@/assets/icons/building-office-2";
 import { UserPlusIcon } from "@/assets/icons/user-plus";
 import { UsersIcon } from "@/assets/icons/users";
 import { Body2, H2 } from "@/atomic/atm.typography";
-import { Card, CardContent } from "@/atomic/mol.card/card.component";
+import { Card, CardContent, CardTitleSecondary } from "@/atomic/mol.card/card.component";
 import type { Cliente } from "../types";
 
 interface ClientesMetricsProps {
@@ -52,18 +52,15 @@ export const ClientesMetrics = ({ clientes, totalElements }: ClientesMetricsProp
       {stats.map((stat) => {
         const Icon = stat.icon;
         return (
-          <Card key={stat.title} className="border-border">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between gap-xs">
-                <div className="flex flex-col gap-xs">
-                  <Body2 className="text-xxs! text-grayscale-dark font-normal">{stat.title}</Body2>
-                  <H2>{stat.value}</H2>
-                </div>
-                <div className={`p-sm rounded-full ${stat.bgColor}`}>
-                  <Icon className={`size-lg ${stat.color}`} />
-                </div>
-              </div>
+          <Card key={stat.title}>
+            <CardContent>
+              <CardTitleSecondary>{stat.title}</CardTitleSecondary>
+              <H2>{stat.value}</H2>
             </CardContent>
+
+            <div className={`p-sm rounded-full ${stat.bgColor}`}>
+              <Icon className={`size-lg ${stat.color}`} />
+            </div>
           </Card>
         );
       })}
