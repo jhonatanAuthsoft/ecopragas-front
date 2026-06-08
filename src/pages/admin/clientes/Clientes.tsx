@@ -7,38 +7,16 @@ import { Body1, H1 } from "@/atomic/atm.typography";
 import { SearchInput } from "@/atomic/mol.search/search.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { MOCK_CLIENTES } from "./clientes.mock";
-import { AddClienteDialog } from "./components/AddClienteDialog";
+import {
+  AddClienteDialog,
+  type AddClientePayload,
+  type InitialClienteData,
+} from "./components/add-cliente-dialog";
 import { ClientesMetrics } from "./components/ClientesMetrics";
 import { ClientesTable } from "./components/ClientesTable";
 import type { Cliente } from "./types";
 
 const PAGE_SIZE = 5;
-
-type InitialClienteData = {
-  nome: string;
-  email: string;
-  telefone: string;
-  observacoes: string;
-};
-
-type AddClientePayload = {
-  dados: {
-    nome: string;
-    email: string;
-    cpfCnpj: string;
-    telefone: string;
-    tipoCliente: string;
-    observacoes?: string;
-    status: string;
-    enderecos?: Array<{
-      logradouro?: string;
-      cidade?: string;
-      estado?: string;
-      cep?: string;
-      principal?: boolean;
-    }>;
-  };
-};
 
 const createClienteId = () => `cliente-${crypto.randomUUID()}`;
 

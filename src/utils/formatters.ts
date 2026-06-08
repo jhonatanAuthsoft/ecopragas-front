@@ -52,3 +52,7 @@ export const formatCurrency = (value: string | number) => {
     currency: "BRL",
   });
 };
+
+export const formatNumber = (value: string) => {
+  return value.replace(/\D/g, "");
+};
