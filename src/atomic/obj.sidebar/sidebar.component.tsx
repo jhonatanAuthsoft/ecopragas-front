@@ -5,7 +5,7 @@ import { Button } from "@/atomic/atm.button/button.component";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/atomic/mol.tooltip/tooltip.component";
 import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
-import { SIDEBAR_WIDTH_COLLAPSED, SIDEBAR_WIDTH_EXPANDED, useSidebarStore } from "@/store/sidebar";
+import { useSidebarStore } from "@/store/sidebar";
 import { H4 } from "@/atomic/atm.typography";
 import { UserPlusIcon } from "@/assets/icons/user-plus";
 import { Squares2x2Icon } from "@/assets/icons/squares-2x2";
@@ -33,8 +33,8 @@ export const Sidebar = ({ className }: { className?: string }) => {
   return (
     <aside
       className={cn(
-        "h-screen border-r border-border bg-sidebar transition-all duration-300",
-        isMinimized ? `w-[${SIDEBAR_WIDTH_COLLAPSED}px]` : `w-[${SIDEBAR_WIDTH_EXPANDED}px]`,
+        "fixed inset-y-0 left-0 z-10 h-screen border-r border-border bg-sidebar transition-all duration-300",
+        isMinimized ? "w-[100px]" : "w-[256px]",
         className,
       )}
     >
