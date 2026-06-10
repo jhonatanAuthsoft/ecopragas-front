@@ -14,18 +14,11 @@ import {
 import { ROUTES } from "@/constants/routes";
 import type { OrdemServico } from "@/pages/admin/ordens-servico/OrdensServico";
 import { formatCurrency } from "@/utils/formatters";
+import { TIPO_SERVICO_LABELS } from "../OrdemServicoDetalhes";
 
 interface OrdensServicoTableProps {
   ordensServico: OrdemServico[];
 }
-
-const tipoServicoLabels: Record<OrdemServico["tipoServico"], string> = {
-  sanitizacao: "Sanitizacao",
-  controle_pragas_vetores: "Controle de Pragas e Vetores",
-  higienizacao: "Higienizacao",
-  monitoramento_insetos: "Monitoramento de insetos",
-  monitoramento_roedores: "Monitoramento de roedores",
-};
 
 export const OrdensServicoTable = ({ ordensServico }: OrdensServicoTableProps) => {
   const navigate = useNavigate();
@@ -63,7 +56,7 @@ export const OrdensServicoTable = ({ ordensServico }: OrdensServicoTableProps) =
             >
               <TableCell className="text-grayscale-x-dark">{os.numeroOS}</TableCell>
               <TableCell>{os.clienteNome}</TableCell>
-              <TableCell>{tipoServicoLabels[os.tipoServico]}</TableCell>
+              <TableCell>{TIPO_SERVICO_LABELS[os.tipoServico]}</TableCell>
               <TableCell className="text-muted-foreground">{os.tecnicoNome}</TableCell>
               <TableCell>{format(os.dataAgendamento, "dd/MM/yyyy", { locale: ptBR })}</TableCell>
               <TableCell>{os.horaAgendamento}</TableCell>

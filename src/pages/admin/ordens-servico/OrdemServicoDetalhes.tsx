@@ -1,165 +1,65 @@
-import {
-  ArrowLeft,
-  Calendar,
-  Camera,
-  CheckCircle2,
-  Clock,
-  MapPin,
-  QrCode,
-  User,
-} from "lucide-react";
-import { useState } from "react";
+import { ChevronLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { Badge } from "@/atomic/atm.badge/badge.component";
 import { Button } from "@/atomic/atm.button/button.component";
-import { Textarea } from "@/atomic/atm.textarea/textarea.component";
-import { Body1, H1 } from "@/atomic/atm.typography";
-import { Card } from "@/atomic/mol.card/card.component";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
+import { H1 } from "@/atomic/atm.typography";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
-import { PhotoUpload } from "./components/PhotoUpload";
-import { QRCodeScanner } from "./components/QRCodeScanner";
-import { ServiceChecklist } from "./components/ServiceChecklist";
+import {
+  getOrdemServicoDetalhesById,
+  OrdemServicoDetalhesCard,
+} from "./components/ordem-servico-detalhes";
+import type { OrdemServico } from "./OrdensServico";
+
+// TODO: organizar os labels na pasta de model/
+export const TIPO_SERVICO_LABELS: Record<OrdemServico["tipoServico"], string> = {
+  sanitizacao: "Sanitizacao",
+  controle_pragas_vetores: "Controle de Pragas e Vetores",
+  higienizacao: "Higienizacao",
+  monitoramento_insetos: "Monitoramento de insetos",
+  monitoramento_roedores: "Monitoramento de roedores",
+};
 
 export default function OrdemServicoDetalhes() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [observacoes, setObservacoes] = useState("");
+  const ordem = getOrdemServicoDetalhesById(id ?? "4");
 
-  const ordem = {
-    id: id || "1",
-    numeroOS: "OS-2024-001",
-    cliente: "João Silva",
-    tipoServico: "Dedetização Residencial",
-    endereco: "Rua das Flores, 123 - Centro",
-    dataAgendamento: "2024-01-15",
-    horaAgendamento: "14:00",
-    status: "Em Andamento",
-    valorServico: 350.0,
+  const handleDelete = () => {
+    toast.success("Ordem de serviço excluída com sucesso!");
+    navigate(ROUTES.SERVICE_ORDER.BASE);
   };
 
-  const handleConcluir = () => {
-    toast.success("Ordem de Serviço concluída com sucesso!");
-    navigate(ROUTES.SERVICE_ORDER.BASE);
+  const handleEdit = () => {
+    toast.info("Funcionalidade de edição em desenvolvimento.");
+  };
+
+  const handleDownload = () => {
+    toast.info("Funcionalidade de download em desenvolvimento.");
   };
 
   return (
     <MainLayout>
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-6">
+      <div className="flex flex-col gap-md">
+        <div className="flex flex-col self-start gap-xs">
           <Button
-            variant="ghost"
+            variant="link"
+            size="lg"
             onClick={() => navigate(ROUTES.SERVICE_ORDER.BASE)}
-            className="mb-4"
+            leftIcon={<ChevronLeft className="size-md" />}
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Voltar
+            Voltar para Ordens de Serviço
           </Button>
 
-          <div className="flex items-start justify-between gap-4 flex-wrap">
-            <div className="flex flex-col self-start gap-xs">
-              <H1>Detalhes do Serviço: {ordem.numeroOS}</H1>
-              <Body1 className="font-normal text-grayscale-dark">{ordem.cliente}</Body1>
-            </div>
-            <Badge className="text-sm">{ordem.status}</Badge>
-          </div>
+          <H1>Detalhes do Serviço</H1>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <Calendar className="h-5 w-5 text-primary" />
-              <div>
-                <p className="text-sm text-muted-foreground">Data</p>
-                <p className="font-medium">{ordem.dataAgendamento}</p>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <Clock className="h-5 w-5 text-primary" />
-              <div>
-                <p className="text-sm text-muted-foreground">Horário</p>
-                <p className="font-medium">{ordem.horaAgendamento}</p>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <MapPin className="h-5 w-5 text-primary" />
-              <div>
-                <p className="text-sm text-muted-foreground">Endereço</p>
-                <p className="font-medium">{ordem.endereco}</p>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <User className="h-5 w-5 text-primary" />
-              <div>
-                <p className="text-sm text-muted-foreground">Serviço</p>
-                <p className="font-medium">{ordem.tipoServico}</p>
-              </div>
-            </div>
-          </Card>
-        </div>
-
-        <Tabs defaultValue="checklist" className="mb-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="checklist">
-              <CheckCircle2 className="h-4 w-4 mr-2" />
-              Checklist
-            </TabsTrigger>
-            <TabsTrigger value="qrcode">
-              <QrCode className="h-4 w-4 mr-2" />
-              QR Code
-            </TabsTrigger>
-            <TabsTrigger value="fotos">
-              <Camera className="h-4 w-4 mr-2" />
-              Fotos
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="checklist" className="mt-6">
-            <ServiceChecklist tipoServico={ordem.tipoServico} />
-          </TabsContent>
-
-          <TabsContent value="qrcode" className="mt-6">
-            <QRCodeScanner ordemId={ordem.id} />
-          </TabsContent>
-
-          <TabsContent value="fotos" className="mt-6">
-            <PhotoUpload ordemId={ordem.id} />
-          </TabsContent>
-        </Tabs>
-
-        <Card className="p-6 mb-6">
-          <h3 className="text-lg font-semibold mb-4">Observações</h3>
-          <Textarea
-            placeholder="Adicione observações sobre o serviço realizado..."
-            value={observacoes}
-            onChange={(e) => setObservacoes(e.target.value)}
-            rows={4}
-          />
-        </Card>
-
-        <div className="flex gap-4">
-          <Button
-            variant="outline"
-            className="flex-1"
-            onClick={() => navigate(ROUTES.SERVICE_ORDER.BASE)}
-          >
-            Salvar Rascunho
-          </Button>
-          <Button className="flex-1" onClick={handleConcluir}>
-            Concluir Serviço
-          </Button>
-        </div>
+        <OrdemServicoDetalhesCard
+          ordem={ordem}
+          onDelete={handleDelete}
+          onEdit={handleEdit}
+          onDownload={handleDownload}
+        />
       </div>
     </MainLayout>
   );
