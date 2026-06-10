@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react";
 import { type FieldErrors, useForm } from "react-hook-form";
+import { H2 } from "@/atomic/atm.typography";
 import { Dialog, DialogContent, DialogHeader } from "@/atomic/mol.dialog/dialog.component";
 import { Tabs, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
-import { H2 } from "@/atomic/atm.typography";
 import { Form } from "@/atomic/obj.form";
-import { DadosBasicosTab } from "./tabs/DadosBasicosTab";
-import { DocumentacaoTab } from "./tabs/DocumentacaoTab";
-import { EnderecoTab } from "./tabs/EnderecoTab";
 import {
-  DEFAULT_VALUES,
   DADOS_FIELDS,
+  DEFAULT_VALUES,
   ENDERECO_FIELDS,
   TAB_TRIGGER_CLASS,
 } from "./add-cliente-dialog.data";
@@ -26,6 +23,9 @@ import {
   filesToBase64,
   getAddressValidationErrors,
 } from "./add-cliente-dialog.utils";
+import { DadosBasicosTab } from "./tabs/DadosBasicosTab";
+import { DocumentacaoTab } from "./tabs/DocumentacaoTab";
+import { EnderecoTab } from "./tabs/EnderecoTab";
 
 export const AddClienteDialog = ({
   open,

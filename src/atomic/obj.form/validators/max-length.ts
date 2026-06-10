@@ -3,15 +3,15 @@ import type { ValidatorReturnType } from "@/atomic/obj.form/form.types";
 import { strings } from "./validators.strings";
 
 export function MaxLengthValidator<T extends FieldValues>(
-	value: number,
-	message?: string,
+  value: number,
+  message?: string,
 ): ValidatorReturnType<T> {
-	const finalMessage = message ?? strings.maxLength(value);
+  const finalMessage = message ?? strings.maxLength(value);
 
-	return {
-		maxLength: {
-			value,
-			message: finalMessage,
-		},
-	};
+  return {
+    maxLength: {
+      value,
+      message: finalMessage,
+    },
+  };
 }

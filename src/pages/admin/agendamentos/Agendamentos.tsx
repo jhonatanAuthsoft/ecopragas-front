@@ -3,8 +3,8 @@ import { ptBR } from "date-fns/locale";
 import { Calendar as CalendarIcon, Plus, User, Wrench } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/atomic/atm.badge/badge.component";
-import { Body1, H1 } from "@/atomic/atm.typography";
 import { Button } from "@/atomic/atm.button/button.component";
+import { Body1, H1 } from "@/atomic/atm.typography";
 import { Calendar } from "@/atomic/mol.calendar/calendar.component";
 import { Card, CardContent, CardHeader, CardTitle } from "@/atomic/mol.card/card.component";
 import {
