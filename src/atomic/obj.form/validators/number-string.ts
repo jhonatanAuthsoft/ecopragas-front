@@ -6,13 +6,9 @@ import { strings } from "./validators.strings";
 import { ZodValidator } from "./zod-validator";
 
 export function NumberValidator<T extends FieldValues>(
-	message: string = strings.number,
+  message: string = strings.number,
 ): ValidatorReturnType<T> {
-	const numberSchema = z
-		.string()
-		.regex(/^\d+$/, { message })
-		.or(z.literal(""))
-		.optional();
+  const numberSchema = z.string().regex(/^\d+$/, { message }).or(z.literal("")).optional();
 
-	return ZodValidator(numberSchema);
+  return ZodValidator(numberSchema);
 }

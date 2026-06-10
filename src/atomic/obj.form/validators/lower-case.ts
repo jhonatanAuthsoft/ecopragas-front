@@ -5,11 +5,11 @@ import { strings } from "./validators.strings";
 import { ZodValidator } from "./zod-validator";
 
 export function LowerCaseValidator<T extends FieldValues>(
-	message: string = strings.lowercase,
+  message: string = strings.lowercase,
 ): ValidatorReturnType<T> {
-	const schema = z
-		.string()
-		.optional()
-		.refine((val) => !val || /[a-z]/.test(val), { message });
-	return ZodValidator(schema);
+  const schema = z
+    .string()
+    .optional()
+    .refine((val) => !val || /[a-z]/.test(val), { message });
+  return ZodValidator(schema);
 }

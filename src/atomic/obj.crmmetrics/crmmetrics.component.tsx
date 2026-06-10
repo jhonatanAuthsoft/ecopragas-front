@@ -1,8 +1,13 @@
 import { ArrowPathIcon } from "@/assets/icons/arrowpath";
 import { BankNotesIcon } from "@/assets/icons/banknotes";
 import { UsersIcon } from "@/assets/icons/users";
-import { Body2, H2 } from "@/atomic/atm.typography";
-import { Card, CardContent } from "@/atomic/mol.card/card.component";
+import { H2 } from "@/atomic/atm.typography";
+import {
+  Card,
+  CardContent,
+  CardSubtitle,
+  CardTitleSecondary,
+} from "@/atomic/mol.card/card.component";
 import type { Lead } from "@/pages/leads/Leads";
 
 interface CRMMetricsProps {
@@ -67,29 +72,19 @@ export const CRMMetrics = ({ leads }: CRMMetricsProps) => {
       {metrics.map((metric) => {
         const Icon = metric.icon;
         return (
-          <Card key={metric.title} className="border-border hover:shadow-lg transition-shadow">
-            <CardContent className="p-sm!">
-              <div className="flex flex-col gap-xs">
-                <div className="flex items-start justify-between gap-xs">
-                  <div className="flex flex-1 flex-col gap-xs">
-                    <Body2 className="text-xxs! text-grayscale-dark font-normal">
-                      {metric.title}
-                    </Body2>
-                    <H2>{metric.value}</H2>
-                  </div>
+          <Card key={metric.title}>
+            <CardContent>
+              <CardTitleSecondary>{metric.title}</CardTitleSecondary>
+              <H2>{metric.value}</H2>
 
-                  <div className="rounded-full bg-brand-cta-light p-2xs">
-                    <Icon className="size-5 text-brand-primary-medium" />
-                  </div>
-                </div>
-
-                {metric.subtitle && (
-                  <Body2 className="text-xxs! text-grayscale-dark font-normal">
-                    {metric.subtitle}
-                  </Body2>
-                )}
-              </div>
+              {metric.subtitle && (
+                <CardSubtitle className="text-grayscale-dark">{metric.subtitle}</CardSubtitle>
+              )}
             </CardContent>
+
+            <div className="self-start rounded-full bg-brand-cta-light p-2xs">
+              <Icon className="size-5 text-brand-primary-medium" />
+            </div>
           </Card>
         );
       })}

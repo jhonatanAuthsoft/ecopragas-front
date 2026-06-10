@@ -13,6 +13,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { Body1, H1 } from "@/atomic/atm.typography";
 import {
   Card,
   CardContent,
@@ -20,7 +21,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/atomic/mol.card/card.component";
-import { Body1, H1 } from "@/atomic/atm.typography";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 
 const Relatorios = () => {

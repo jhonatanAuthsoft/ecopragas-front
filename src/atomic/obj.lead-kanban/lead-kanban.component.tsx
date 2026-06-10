@@ -61,7 +61,10 @@ const DroppableColumn = ({ column, children, totalValue, count }: DroppableColum
   });
 
   return (
-    <Card ref={setNodeRef} className={`border-l-4 ${column.color} h-full w-full md:w-[250px]`}>
+    <Card
+      ref={setNodeRef}
+      className={`p-0! block border-l-4 ${column.color} h-full w-full md:w-[250px]`}
+    >
       <CardHeader className="p-3 pb-xs w-[250px]">
         <div className="flex items-center gap-xs">
           <H3 className="font-bold text-grayscale-dark">{column.title}</H3>
@@ -70,7 +73,7 @@ const DroppableColumn = ({ column, children, totalValue, count }: DroppableColum
         <InputCaption className="font-medium">Total: {formatCurrency(totalValue)}</InputCaption>
         <span className="w-full h-[1px] bg-grayscale-light"></span>
       </CardHeader>
-      <CardContent className="p-0 px-3 pb-3 h-[calc(100%-80px)]">
+      <CardContent className="p-0 pl-3 pb-3 h-[calc(100%-80px)]">
         <ScrollArea className="h-[600px] pr-3">
           <div className="space-y-2 min-h-[100px]">
             {children}

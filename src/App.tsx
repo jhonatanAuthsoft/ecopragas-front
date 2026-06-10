@@ -6,7 +6,7 @@ import { ROUTES } from "@/constants/routes";
 import Agendamentos from "./pages/admin/agendamentos/Agendamentos";
 import ClienteDetalhes from "./pages/admin/clientes/ClienteDetalhes";
 import Clientes from "./pages/admin/clientes/Clientes";
-import Index from "./pages/admin/dashboard/Index";
+import Dashboard from "./pages/admin/dashboard/Dashboard";
 import OrdemServicoDetalhes from "./pages/admin/ordens-servico/OrdemServicoDetalhes";
 import OrdensServico from "./pages/admin/ordens-servico/OrdensServico";
 import Relatorios from "./pages/admin/relatorios/Relatorios";
@@ -28,7 +28,7 @@ const App = () => (
         <Route path={ROUTES.AUTH.LOGIN.TECHNICIAN} element={<TechnicianAuth />} /> 
       */}
       <Route path={ROUTES.AUTH.FORGOT_PASSWORD} element={<ForgotPassword />} />
-      <Route path={ROUTES.HOME} element={<Index />} />
+      <Route path={ROUTES.HOME} element={<Dashboard />} />
       <Route path={ROUTES.LEADS} element={<Leads />} />
       <Route path={ROUTES.CLIENT.BASE} element={<Clientes />} />
       <Route path={ROUTES.CLIENT.DETAILS} element={<ClienteDetalhes />} />
