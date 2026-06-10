@@ -18,7 +18,7 @@ const buttonVariants = tv({
       "destructive-outline":
         "border-2 border-feedback-error-medium bg-transparent text-feedback-error-medium hover:bg-feedback-error-light/10",
       ghost: "hover:bg-accent hover:text-accent-foreground",
-      link: "text-primary underline-offset-4 hover:underline text-brand-primary-dark",
+      link: "text-primary underline-offset-4 text-brand-primary-dark",
     },
     size: {
       default: "h-10 px-4 py-2",

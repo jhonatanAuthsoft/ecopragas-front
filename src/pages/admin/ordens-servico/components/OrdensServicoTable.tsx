@@ -20,11 +20,11 @@ interface OrdensServicoTableProps {
 }
 
 const tipoServicoLabels: Record<OrdemServico["tipoServico"], string> = {
-  dedetizacao: "Dedetização",
-  limpeza_caixa: "Limpeza de Caixa D'água",
-  sanitizacao: "Sanitização",
-  desratizacao: "Desratização",
-  outro: "Outro",
+  sanitizacao: "Sanitizacao",
+  controle_pragas_vetores: "Controle de Pragas e Vetores",
+  higienizacao: "Higienizacao",
+  monitoramento_insetos: "Monitoramento de insetos",
+  monitoramento_roedores: "Monitoramento de roedores",
 };
 
 export const OrdensServicoTable = ({ ordensServico }: OrdensServicoTableProps) => {
@@ -67,7 +67,7 @@ export const OrdensServicoTable = ({ ordensServico }: OrdensServicoTableProps) =
               <TableCell className="text-muted-foreground">{os.tecnicoNome}</TableCell>
               <TableCell>{format(os.dataAgendamento, "dd/MM/yyyy", { locale: ptBR })}</TableCell>
               <TableCell>{os.horaAgendamento}</TableCell>
-              <TableCell className="max-w-[200px]" textClassName="truncate">
+              <TableCell className="max-w-[100px] xl:max-w-[200px]" textClassName="truncate">
                 {os.endereco}
               </TableCell>
               <TableCell className="text-brand-secondary-medium">
