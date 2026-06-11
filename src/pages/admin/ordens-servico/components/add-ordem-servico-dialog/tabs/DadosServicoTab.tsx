@@ -19,9 +19,10 @@ import { MonitoramentoRoedoresFields } from "./variations/MonitoramentoRoedoresF
 
 interface DadosServicoTabProps {
   onNext: () => void;
+  statusLabel?: string;
 }
 
-export const DadosServicoTab = ({ onNext }: DadosServicoTabProps) => {
+export const DadosServicoTab = ({ onNext, statusLabel = "Status inicial" }: DadosServicoTabProps) => {
   const { watch } = useFormContext<OrdemServicoFormValues>();
   const tipoServico = watch("tipoServico");
   const variacao = getTipoServicoVariacao(tipoServico);
@@ -67,7 +68,7 @@ export const DadosServicoTab = ({ onNext }: DadosServicoTabProps) => {
 
         <FormField name="status" validators={[RequiredValidator()]}>
           <SelectInput
-            label="Status inicial"
+            label={statusLabel}
             placeholder="Selecione o status"
             options={STATUS_OPTIONS}
           />

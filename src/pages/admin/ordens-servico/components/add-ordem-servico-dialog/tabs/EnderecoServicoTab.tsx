@@ -1,5 +1,5 @@
 import { Plus } from "lucide-react";
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { RadioButtonCheckedIcon } from "@/assets/icons/radio-button-checked";
 import { RadioButtonUncheckedIcon } from "@/assets/icons/radio-button-unchecked";
@@ -26,10 +26,12 @@ export type EnderecoServicoTabHandle = {
 
 interface EnderecoServicoTabProps {
   isSubmitting: boolean;
+  submitLabel?: string;
+  initialSelectedEnderecoId?: string | null;
 }
 
 export const EnderecoServicoTab = forwardRef<EnderecoServicoTabHandle, EnderecoServicoTabProps>(
-  ({ isSubmitting }, ref) => {
+  ({ isSubmitting, submitLabel = "Criar ordem de serviço", initialSelectedEnderecoId }, ref) => {
     const { setError, clearErrors, watch } = useFormContext<OrdemServicoFormValues>();
     const clienteId = watch("clienteId");
 
@@ -41,6 +43,14 @@ export const EnderecoServicoTab = forwardRef<EnderecoServicoTabHandle, EnderecoS
       MOCK_CLIENTES.find((cliente) => cliente.id === clienteId)?.enderecos ?? [];
 
     const isNewEnderecoSelected = selectedEnderecoId === NOVO_ENDERECO_ID;
+
+    useEffect(() => {
+      if (initialSelectedEnderecoId === undefined) return;
+
+      setSelectedEnderecoId(initialSelectedEnderecoId);
+      setIsNewEnderecoFormVisible(initialSelectedEnderecoId === NOVO_ENDERECO_ID);
+      setSelectionError(null);
+    }, [initialSelectedEnderecoId]);
 
     const applyAddressErrors = (values: OrdemServicoFormValues) => {
       const errors = getAddressValidationErrors(values);
@@ -145,7 +155,7 @@ export const EnderecoServicoTab = forwardRef<EnderecoServicoTabHandle, EnderecoS
 
         <div className="pt-xs flex justify-center">
           <Button type="submit" className="w-[400px] h-[43px]" disabled={isSubmitting}>
-            Criar ordem de serviço
+            {submitLabel}
           </Button>
         </div>
       </TabsContent>

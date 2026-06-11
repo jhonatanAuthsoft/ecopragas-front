@@ -1,4 +1,5 @@
 import { ChevronLeft } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
@@ -6,9 +7,11 @@ import { H1 } from "@/atomic/atm.typography";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
 import {
+  EditOrdemServicoDialog,
   getOrdemServicoDetalhesById,
   OrdemServicoDetalhesCard,
 } from "./components/ordem-servico-detalhes";
+import type { OrdemServicoDetalhesData } from "./components/ordem-servico-detalhes/ordem-servico-detalhes.types";
 import type { OrdemServico } from "./OrdensServico";
 
 // TODO: organizar os labels na pasta de model/
@@ -23,19 +26,28 @@ export const TIPO_SERVICO_LABELS: Record<OrdemServico["tipoServico"], string> = 
 export default function OrdemServicoDetalhes() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const ordem = getOrdemServicoDetalhesById(id ?? "4");
+  const [ordem, setOrdem] = useState<OrdemServicoDetalhesData>(() =>
+    getOrdemServicoDetalhesById(id ?? "4"),
+  );
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+  useEffect(() => {
+    setOrdem(getOrdemServicoDetalhesById(id ?? "4"));
+  }, [id]);
 
   const handleDelete = () => {
-    toast.success("Ordem de serviço excluída com sucesso!");
+    toast.info("Em desenvolvimento...");
     navigate(ROUTES.SERVICE_ORDER.BASE);
   };
 
-  const handleEdit = () => {
-    toast.info("Funcionalidade de edição em desenvolvimento.");
+  const handleEditSubmit = (updatedOrdem: OrdemServicoDetalhesData) => {
+    setOrdem(updatedOrdem);
+    setIsEditDialogOpen(false);
+    toast.info("Em desenvolvimento...");
   };
 
   const handleDownload = () => {
-    toast.info("Funcionalidade de download em desenvolvimento.");
+    toast.info("Em desenvolvimento...");
   };
 
   return (
@@ -57,8 +69,15 @@ export default function OrdemServicoDetalhes() {
         <OrdemServicoDetalhesCard
           ordem={ordem}
           onDelete={handleDelete}
-          onEdit={handleEdit}
+          onEdit={() => setIsEditDialogOpen(true)}
           onDownload={handleDownload}
+        />
+
+        <EditOrdemServicoDialog
+          open={isEditDialogOpen}
+          onOpenChange={setIsEditDialogOpen}
+          ordem={ordem}
+          onSubmit={handleEditSubmit}
         />
       </div>
     </MainLayout>
