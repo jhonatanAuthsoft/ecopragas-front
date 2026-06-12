@@ -20,4 +20,7 @@ export const ROUTES = {
   SCHEDULING: "/admin/scheduling",
   REPORT: "/admin/report",
   TECHNICIAN: "/admin/technician",
+  TECHNICIAN_SCHEDULING: "/technician/scheduling",
+  TECHNICIAN_SCHEDULING_DETAILS: "/technician/scheduling/:id",
+  TECHNICIAN_SERVICES: "/technician/services",
 };

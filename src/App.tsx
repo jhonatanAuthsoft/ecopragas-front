@@ -15,6 +15,9 @@ import Login from './pages/auth/Login';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import Leads from './pages/leads/Leads';
 import NotFound from './pages/not-found/NotFound';
+import TechAgendamentos from './pages/technician/agendamentos/Agendamentos';
+import TechAgendamentoDetalhes from './pages/technician/agendamentos/DetalhesAgendamento';
+import TechServicos from './pages/technician/servicos/Servicos';
 
 const App = () => (
   <TooltipProvider>
@@ -38,6 +41,18 @@ const App = () => (
       <Route path={ROUTES.REPORT} element={<Relatorios />} />
       <Route path={ROUTES.TECHNICIAN} element={<Tecnicos />} />
       <Route path='*' element={<NotFound />} />
+      <Route
+        path={ROUTES.TECHNICIAN_SCHEDULING}
+        element={<TechAgendamentos />}
+      />
+      <Route
+        path={ROUTES.TECHNICIAN_SCHEDULING_DETAILS}
+        element={<TechAgendamentoDetalhes />}
+      />
+      <Route
+        path={ROUTES.TECHNICIAN_SERVICES}
+        element={<TechServicos />}
+      />
     </Routes>
   </TooltipProvider>
 );

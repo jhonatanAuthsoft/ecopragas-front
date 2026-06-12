@@ -37,11 +37,15 @@ const ADMIN_MENU = [
 ];
 
 const TECHNICIAN_MENU = [
-  { icon: CalendarIcon, label: 'Agendamentos', path: ROUTES.SCHEDULING },
+  {
+    icon: CalendarIcon,
+    label: 'Agendamentos',
+    path: ROUTES.TECHNICIAN_SCHEDULING,
+  },
   {
     icon: WrenchScrewdriverIcon,
     label: 'Serviços',
-    path: ROUTES.SERVICE_ORDER.BASE,
+    path: ROUTES.TECHNICIAN_SERVICES,
   },
 ];
 

@@ -19,8 +19,14 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      token: null,
-      user: null,
+      // MOCK: Para testes, já iniciando com sessão de técnico
+      token: "mock-token",
+      user: {
+        id: "1",
+        name: "Técnico de Teste",
+        email: "tecnico@teste.com",
+        role: "TECHNICIAN",
+      },
       setSession: (token, user) => set({ token, user }),
       clearSession: () => set({ token: null, user: null }),
     }),

@@ -2,7 +2,7 @@ import { tv, type VariantProps } from "tailwind-variants";
 
 export const typographyStyle = tv({
   slots: {
-    base: "font-segoe text-foreground",
+    base: "font-lato text-foreground",
     display: ["text-xl md:text-2xl font-heavy leading-snug"],
     h1: ["text-lg md:text-xl font-bold leading-snug"],
     h2: ["text-md md:text-lg font-bold leading-snug"],
@@ -65,7 +65,7 @@ export const LinkSmall: Typography<{ href?: string; onClick?: () => void }> = ({
 );
 
 export const inputStyle = tv({
-  base: "text-xs font-medium text-foreground text-left leading-snug font-segoe",
+  base: "text-xs font-medium text-foreground text-left leading-snug font-lato",
   variants: {
     type: {
       label: "block",
