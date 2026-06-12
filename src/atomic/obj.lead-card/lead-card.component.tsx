@@ -10,8 +10,8 @@ interface LeadCardProps {
 
 export const LeadCard = ({ lead }: LeadCardProps) => {
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardContent className="flex flex-col gap-2xs p-sm!">
+    <Card className="block p-sm hover:shadow-md transition-shadow">
+      <CardContent className="flex flex-col gap-2xs">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <H4 className="truncate">{lead.name}</H4>

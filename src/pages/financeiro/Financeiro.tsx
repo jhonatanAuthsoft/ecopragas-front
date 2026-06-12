@@ -1,8 +1,8 @@
 import { AlertCircle, CheckCircle2, Clock, DollarSign, Plus, Search } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/atomic/atm.button/button.component";
-import { Body1, H1 } from "@/atomic/atm.typography";
 import { Input } from "@/atomic/atm.input/input.component";
+import { Body1, H1 } from "@/atomic/atm.typography";
 import { Card, CardContent, CardHeader, CardTitle } from "@/atomic/mol.card/card.component";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
 import { CobrancasTable } from "@/atomic/obj.cobrancas-table/cobrancas-table.component";
