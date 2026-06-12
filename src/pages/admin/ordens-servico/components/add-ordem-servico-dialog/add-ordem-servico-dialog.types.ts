@@ -1,4 +1,4 @@
-import type { OrdemServico } from "../../OrdensServico";
+import type { OrdemServico } from "@/model/rest/ordem-servico";
 
 export type OrdemServicoDialogTab = "dados" | "endereco";
 
@@ -53,6 +53,8 @@ export type ServicoEndereco = {
 export type MockCliente = {
   id: string;
   nome: string;
+  cpfCnpj: string;
+  telefone: string;
   enderecos: ServicoEndereco[];
 };
 

@@ -14,106 +14,10 @@ import {
 } from "@/atomic/mol.card/card.component";
 import { SearchInput } from "@/atomic/mol.search/search.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
+import type { OrdemServico } from "@/model/rest/ordem-servico";
 import { AddOrdemServicoDialog } from "./components/add-ordem-servico-dialog";
 import { OrdensServicoTable } from "./components/OrdensServicoTable";
-
-export type OrdemServico = {
-  id: string;
-  numeroOS: string;
-  clienteId: string;
-  clienteNome: string;
-  tipoServico:
-    | "sanitizacao"
-    | "controle_pragas_vetores"
-    | "higienizacao"
-    | "monitoramento_insetos"
-    | "monitoramento_roedores";
-  tecnicoId: string;
-  tecnicoNome: string;
-  dataAgendamento: Date;
-  horaAgendamento: string;
-  endereco: string;
-  status: "agendada" | "em_andamento" | "concluida" | "cancelada";
-  observacoes?: string;
-  dataConclusao?: Date;
-  valorServico: number;
-  fotosAntes?: string[];
-  fotosDepois?: string[];
-};
-
-const OS_MOCKS: OrdemServico[] = [
-  {
-    id: "1",
-    numeroOS: "OS-2025-001",
-    clienteId: "c1",
-    clienteNome: "Restaurante Bom Sabor",
-    tipoServico: "controle_pragas_vetores",
-    tecnicoId: "t1",
-    tecnicoNome: "Carlos Silva",
-    dataAgendamento: new Date("2025-01-15"),
-    horaAgendamento: "09:00",
-    endereco: "Rua das Flores, 123 - São Paulo/SP",
-    status: "concluida",
-    dataConclusao: new Date("2025-01-15"),
-    valorServico: 450,
-  },
-  {
-    id: "2",
-    numeroOS: "OS-2025-002",
-    clienteId: "c2",
-    clienteNome: "Padaria Pão Quente",
-    tipoServico: "higienizacao",
-    tecnicoId: "t2",
-    tecnicoNome: "João Santos",
-    dataAgendamento: new Date("2025-01-16"),
-    horaAgendamento: "14:00",
-    endereco: "Av. Principal, 456 - São Paulo/SP",
-    status: "em_andamento",
-    valorServico: 300,
-  },
-  {
-    id: "3",
-    numeroOS: "OS-2025-003",
-    clienteId: "c3",
-    clienteNome: "Supermercado Central",
-    tipoServico: "sanitizacao",
-    tecnicoId: "t1",
-    tecnicoNome: "Carlos Silva",
-    dataAgendamento: new Date("2025-01-17"),
-    horaAgendamento: "08:00",
-    endereco: "Rua do Comércio, 789 - São Paulo/SP",
-    status: "agendada",
-    valorServico: 1200,
-  },
-  {
-    id: "4",
-    numeroOS: "OS-2025-004",
-    clienteId: "c4",
-    clienteNome: "Ana Oliveira",
-    tipoServico: "monitoramento_roedores",
-    tecnicoId: "t3",
-    tecnicoNome: "Pedro Costa",
-    dataAgendamento: new Date("2025-01-18"),
-    horaAgendamento: "10:00",
-    endereco: "Rua das Palmeiras, 321 - São Paulo/SP",
-    status: "agendada",
-    valorServico: 350,
-  },
-  {
-    id: "5",
-    numeroOS: "OS-2025-005",
-    clienteId: "c5",
-    clienteNome: "Hotel Descanso",
-    tipoServico: "controle_pragas_vetores",
-    tecnicoId: "t2",
-    tecnicoNome: "João Santos",
-    dataAgendamento: new Date("2025-01-14"),
-    horaAgendamento: "15:00",
-    endereco: "Av. Turística, 999 - Guarujá/SP",
-    status: "cancelada",
-    valorServico: 800,
-  },
-];
+import { OS_MOCKS } from "./ordens-servico.mock";
 
 const OrdensServico = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -124,7 +28,7 @@ const OrdensServico = () => {
   const filteredOrdens = ordensServico.filter(
     (os) =>
       os.numeroOS.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      os.clienteNome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      os.cliente.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
       os.tecnicoNome.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 

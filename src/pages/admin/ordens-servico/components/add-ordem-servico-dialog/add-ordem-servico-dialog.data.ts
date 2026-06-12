@@ -98,6 +98,8 @@ export const MOCK_CLIENTES: MockCliente[] = [
   {
     id: "c1",
     nome: "Restaurante Bom Sabor",
+    cpfCnpj: "12.345.678/0001-90",
+    telefone: "11987654321",
     enderecos: [
       {
         id: "c1-e1",
@@ -125,6 +127,8 @@ export const MOCK_CLIENTES: MockCliente[] = [
   {
     id: "c2",
     nome: "Padaria Pao Quente",
+    cpfCnpj: "98.765.432/0001-10",
+    telefone: "11912345678",
     enderecos: [
       {
         id: "c2-e1",
@@ -142,6 +146,8 @@ export const MOCK_CLIENTES: MockCliente[] = [
   {
     id: "c3",
     nome: "Supermercado Central",
+    cpfCnpj: "11.222.333/0001-44",
+    telefone: "11999887766",
     enderecos: [
       {
         id: "c3-e1",
@@ -159,6 +165,8 @@ export const MOCK_CLIENTES: MockCliente[] = [
   {
     id: "c4",
     nome: "Ana Oliveira",
+    cpfCnpj: "00000000000",
+    telefone: "11000000000",
     enderecos: [
       {
         id: "c4-e1",
@@ -176,6 +184,8 @@ export const MOCK_CLIENTES: MockCliente[] = [
   {
     id: "c5",
     nome: "Hotel Descanso",
+    cpfCnpj: "55.666.777/0001-88",
+    telefone: "13988776655",
     enderecos: [
       {
         id: "c5-e1",

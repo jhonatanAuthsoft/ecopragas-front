@@ -1,6 +1,6 @@
 import type { SelectInputOption } from "@/atomic/atm.select-input";
-import { cleanDigits } from "@/utils/formatters";
-import type { OrdemServico } from "../../OrdensServico";
+import type { OrdemServico } from "@/model/rest/ordem-servico";
+import { cleanDigits, formatCurrencyNumber } from "@/utils/formatters";
 import { ENDERECO_FIELDS, MOCK_CLIENTES, MOCK_TECNICOS } from "./add-ordem-servico-dialog.data";
 import type {
   OrdemServicoFormValues,
@@ -18,7 +18,7 @@ const generateNumeroOS = (sequence: number) => {
   return `OS-${year}-${String(sequence).padStart(3, "0")}`;
 };
 
-const formatEnderecoLabel = (endereco: ServicoEndereco) => {
+export const formatEnderecoLabel = (endereco: ServicoEndereco) => {
   const complemento = endereco.complemento ? ` - ${endereco.complemento}` : "";
   return `${endereco.endereco}, ${endereco.numero}${complemento} - ${endereco.cidade}/${endereco.estado}`;
 };
@@ -106,8 +106,12 @@ export const buildOrdemServicoPayload = (
 
   return {
     numeroOS: generateNumeroOS(existingOsCount + 1),
-    clienteId: values.clienteId,
-    clienteNome: cliente?.nome ?? "",
+    cliente: {
+      id: values.clienteId,
+      nome: cliente?.nome ?? "",
+      cpfCnpj: cliente?.cpfCnpj ?? "",
+      telefone: cliente?.telefone ?? "",
+    },
     tipoServico: values.tipoServico as OrdemServico["tipoServico"],
     tecnicoId: values.tecnicoId,
     tecnicoNome: tecnico?.nome ?? "",
@@ -116,6 +120,6 @@ export const buildOrdemServicoPayload = (
     endereco: formatEnderecoLabel(selectedEndereco),
     status: (values.status || "agendada") as OrdemServico["status"],
     observacoes: values.observacoes || undefined,
-    valorServico: parseFloat(values.valorServico) || 0,
+    valorServico: formatCurrencyNumber(values.valorServico),
   };
 };

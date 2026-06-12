@@ -44,7 +44,7 @@ export const cleanDigits = (value: string) => {
   return value.replace(/\D/g, "");
 };
 
-export const formatCurrency = (value: string | number) => {
+export const formatCurrency = (value: string | number): string => {
   const numberValue = typeof value === "number" ? value : Number(value.replace(/\D/g, "")) / 100;
 
   return numberValue.toLocaleString("pt-BR", {
@@ -53,6 +53,20 @@ export const formatCurrency = (value: string | number) => {
   });
 };
 
+export const formatCurrencyNumber = (value: string | number): number => {
+  if (typeof value === "number") return value;
+
+  const digits = cleanDigits(value);
+  if (!digits) return 0;
+
+  return Number(digits) / 100;
+};
+
 export const formatNumber = (value: string) => {
   return value.replace(/\D/g, "");
+};
+
+export const formatYesNo = (value?: boolean) => {
+  if (value === undefined) return "-";
+  return value ? "Sim" : "Não";
 };

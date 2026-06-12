@@ -14,7 +14,7 @@ const buttonVariants = tv({
       tertiary: "bg-transparent text-brand-primary-medium hover:bg-brand-primary-light/10",
       outline:
         "font-bold border border-grayscale-light bg-transparent hover:bg-grayscale-light/50 text-grayscale-dark hover:text-grayscale-x-dark",
-      destructive: "bg-feedback-error-medium text-white hover:bg-feedback-error-dark",
+      destructive: "font-bold bg-feedback-error-medium text-white hover:bg-feedback-error-dark",
       "destructive-outline":
         "border-2 border-feedback-error-medium bg-transparent text-feedback-error-medium hover:bg-feedback-error-light/10",
       ghost: "hover:bg-accent hover:text-accent-foreground",
