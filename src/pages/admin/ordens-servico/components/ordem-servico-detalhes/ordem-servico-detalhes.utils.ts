@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import type { OrdemServico } from "../../OrdensServico";
+import type { OrdemServico } from "@/model/rest/ordem-servico";
 
 export const formatDataHorario = (ordem: OrdemServico): string => {
   if (ordem.dataAgendamento && ordem.horaAgendamento) {

@@ -6,13 +6,13 @@ import { Button } from "@/atomic/atm.button/button.component";
 import { H1 } from "@/atomic/atm.typography";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
+import type { OrdemServico } from "@/model/rest/ordem-servico";
 import {
   EditOrdemServicoDialog,
   getOrdemServicoDetalhesById,
   OrdemServicoDetalhesCard,
   OrdemServicoVariationsCards,
 } from "./components/ordem-servico-detalhes";
-import type { OrdemServico } from "./OrdensServico";
 
 export default function OrdemServicoDetalhes() {
   const { id } = useParams();

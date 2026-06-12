@@ -1,5 +1,5 @@
 import type { ComponentType } from "react";
-import type { OrdemServico } from "../../../OrdensServico";
+import type { OrdemServico } from "@/model/rest/ordem-servico";
 import type { OrdemServicoVariationsCardsProps } from "../ordem-servico-detalhes.types";
 import { ControlePragasDetalhesCards } from "./variations/controle-pragas-vetores/ControlePragasDetalhesCards";
 import { HigienizacaoDetalhesCards } from "./variations/higienizacao/HigienizacaoDetalhesCards";

@@ -12,7 +12,7 @@ import {
   TableRow,
 } from "@/atomic/mol.table/table.component";
 import { ROUTES } from "@/constants/routes";
-import type { OrdemServico } from "@/pages/admin/ordens-servico/OrdensServico";
+import type { OrdemServico } from "@/model/rest/ordem-servico";
 import { formatCurrency } from "@/utils/formatters";
 import { TIPO_SERVICO_LABELS } from "./ordem-servico-detalhes/ordem-servico-detalhes.labels";
 

@@ -7,7 +7,7 @@ import type {
   ArmadilhaAdesivaTypes,
   OrdemServico,
   PortaIscaRaticidaTypes,
-} from "@/pages/admin/ordens-servico/OrdensServico";
+} from "@/model/rest/ordem-servico";
 import { ControleTable } from "./ControleTable";
 import { PontosVariaveisTable } from "./PontosVariaveisTable";
 

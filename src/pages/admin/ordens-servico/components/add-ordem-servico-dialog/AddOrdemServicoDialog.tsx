@@ -4,7 +4,7 @@ import { H2 } from "@/atomic/atm.typography";
 import { Dialog, DialogContent, DialogHeader } from "@/atomic/mol.dialog/dialog.component";
 import { Tabs, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
 import { Form } from "@/atomic/obj.form";
-import type { OrdemServico } from "../../OrdensServico";
+import type { OrdemServico } from "@/model/rest/ordem-servico";
 import { DADOS_FIELDS, DEFAULT_VALUES, TAB_TRIGGER_CLASS } from "./add-ordem-servico-dialog.data";
 import type {
   OrdemServicoDialogTab,

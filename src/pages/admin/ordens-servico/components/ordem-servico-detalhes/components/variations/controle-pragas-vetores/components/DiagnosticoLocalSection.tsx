@@ -1,6 +1,6 @@
 import { DetailItem } from "@/atomic/atm.detail-item";
 import { SectionCard } from "@/atomic/mol.section-card";
-import type { OrdemServico } from "@/pages/admin/ordens-servico/OrdensServico";
+import type { OrdemServico } from "@/model/rest/ordem-servico";
 
 interface DiagnosticoLocalSectionProps {
   diagnosticoLocal?: OrdemServico["diagnosticoLocal"];

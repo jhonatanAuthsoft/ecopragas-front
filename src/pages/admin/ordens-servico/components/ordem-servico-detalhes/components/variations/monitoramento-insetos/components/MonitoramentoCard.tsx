@@ -6,7 +6,7 @@ import { DetailItem } from "@/atomic/atm.detail-item";
 import { Body1, Body2, H3, H4 } from "@/atomic/atm.typography";
 import { ImageCarousel } from "@/atomic/mol.image-carousel";
 import { cn } from "@/lib/utils";
-import type { OrdemServico } from "@/pages/admin/ordens-servico/OrdensServico";
+import type { OrdemServico } from "@/model/rest/ordem-servico";
 import { formatYesNo } from "@/utils/formatters";
 
 interface MonitoramentoCardProps {

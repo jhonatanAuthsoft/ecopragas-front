@@ -4,6 +4,7 @@ import { H2 } from "@/atomic/atm.typography";
 import { Dialog, DialogContent, DialogHeader } from "@/atomic/mol.dialog/dialog.component";
 import { Tabs, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
 import { Form } from "@/atomic/obj.form";
+import type { OrdemServico } from "@/model/rest/ordem-servico";
 import {
   DADOS_FIELDS,
   TAB_TRIGGER_CLASS,
@@ -17,7 +18,6 @@ import {
   EnderecoServicoTab,
   type EnderecoServicoTabHandle,
 } from "../../add-ordem-servico-dialog/tabs/EnderecoServicoTab";
-import type { OrdemServico } from "../../../OrdensServico";
 import {
   buildOrdemServicoUpdatePayload,
   mapOrdemToFormValues,

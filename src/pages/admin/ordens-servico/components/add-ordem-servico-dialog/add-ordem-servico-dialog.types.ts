@@ -1,4 +1,4 @@
-import type { OrdemServico } from "../../OrdensServico";
+import type { OrdemServico } from "@/model/rest/ordem-servico";
 
 export type OrdemServicoDialogTab = "dados" | "endereco";
 

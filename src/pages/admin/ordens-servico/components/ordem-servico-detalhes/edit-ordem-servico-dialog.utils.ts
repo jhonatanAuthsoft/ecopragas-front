@@ -1,5 +1,5 @@
+import type { OrdemServico } from "@/model/rest/ordem-servico";
 import { formatCurrency, formatCurrencyNumber } from "@/utils/formatters";
-import type { OrdemServico } from "../../OrdensServico";
 import {
   MOCK_CLIENTES,
   MOCK_TECNICOS,

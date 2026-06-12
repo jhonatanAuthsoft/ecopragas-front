@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/atomic/mol.table/table.component";
-import type { OrdemServico } from "@/pages/admin/ordens-servico/OrdensServico";
+import type { OrdemServico } from "@/model/rest/ordem-servico";
 
 interface ReservatoriosTableProps {
   reservatorios?: OrdemServico["reservatorios"];

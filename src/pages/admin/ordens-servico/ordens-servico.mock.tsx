@@ -1,4 +1,4 @@
-import type { OrdemServico } from "./OrdensServico";
+import type { OrdemServico } from "@/model/rest/ordem-servico";
 
 const PLACEHOLDER_FOTO = "https://placehold.co/300x200";
 

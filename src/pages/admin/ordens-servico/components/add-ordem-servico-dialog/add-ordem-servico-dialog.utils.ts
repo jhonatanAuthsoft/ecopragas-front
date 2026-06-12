@@ -1,6 +1,6 @@
 import type { SelectInputOption } from "@/atomic/atm.select-input";
+import type { OrdemServico } from "@/model/rest/ordem-servico";
 import { cleanDigits, formatCurrencyNumber } from "@/utils/formatters";
-import type { OrdemServico } from "../../OrdensServico";
 import { ENDERECO_FIELDS, MOCK_CLIENTES, MOCK_TECNICOS } from "./add-ordem-servico-dialog.data";
 import type {
   OrdemServicoFormValues,

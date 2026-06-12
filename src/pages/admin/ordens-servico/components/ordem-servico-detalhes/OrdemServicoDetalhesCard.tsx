@@ -9,8 +9,8 @@ import { Badge } from "@/atomic/atm.badge/badge.component";
 import { Button } from "@/atomic/atm.button/button.component";
 import { DetailItem } from "@/atomic/atm.detail-item";
 import { Body2, H2, H3 } from "@/atomic/atm.typography";
+import type { OrdemServico } from "@/model/rest/ordem-servico";
 import { formatCPFCNPJ, formatCurrency, formatPhone } from "@/utils/formatters";
-import type { OrdemServico } from "../../OrdensServico";
 import { DeleteOrdemServicoDialog } from "./components/DeleteOrdemServicoDialog";
 import {
   STATUS_BADGE_COLOR,
