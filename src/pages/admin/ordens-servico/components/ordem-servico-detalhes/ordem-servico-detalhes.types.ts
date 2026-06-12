@@ -1,7 +1,7 @@
 import type { OrdemServico } from "../../OrdensServico";
 
-// TODO: organizar tipos
-export type OrdemServicoDetalhesData = OrdemServico & {
-  clienteCpfCnpj: string;
-  clienteTelefone: string;
-};
+export type TipoServico = OrdemServico["tipoServico"];
+
+export interface OrdemServicoVariationsCardsProps {
+  ordem: OrdemServico;
+}

@@ -17,18 +17,18 @@ import {
   EnderecoServicoTab,
   type EnderecoServicoTabHandle,
 } from "../../add-ordem-servico-dialog/tabs/EnderecoServicoTab";
+import type { OrdemServico } from "../../../OrdensServico";
 import {
   buildOrdemServicoUpdatePayload,
   mapOrdemToFormValues,
   resolveInitialEnderecoId,
 } from "../edit-ordem-servico-dialog.utils";
-import type { OrdemServicoDetalhesData } from "../ordem-servico-detalhes.types";
 
 export interface EditOrdemServicoDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  ordem: OrdemServicoDetalhesData;
-  onSubmit: (ordem: OrdemServicoDetalhesData) => void;
+  ordem: OrdemServico;
+  onSubmit: (ordem: OrdemServico) => void;
 }
 
 export function EditOrdemServicoDialog({

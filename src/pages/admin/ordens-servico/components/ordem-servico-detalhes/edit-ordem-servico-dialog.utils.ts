@@ -9,10 +9,9 @@ import type {
   ServicoEndereco,
 } from "../add-ordem-servico-dialog/add-ordem-servico-dialog.types";
 import { formatEnderecoLabel } from "../add-ordem-servico-dialog/add-ordem-servico-dialog.utils";
-import type { OrdemServicoDetalhesData } from "./ordem-servico-detalhes.types";
 
-export const mapOrdemToFormValues = (ordem: OrdemServicoDetalhesData): OrdemServicoFormValues => ({
-  clienteId: ordem.clienteId,
+export const mapOrdemToFormValues = (ordem: OrdemServico): OrdemServicoFormValues => ({
+  clienteId: ordem.cliente.id,
   tipoServico: ordem.tipoServico,
   tecnicoId: ordem.tecnicoId,
   valorServico: formatCurrency(ordem.valorServico),
@@ -29,8 +28,8 @@ export const mapOrdemToFormValues = (ordem: OrdemServicoDetalhesData): OrdemServ
   complemento: "",
 });
 
-export const resolveInitialEnderecoId = (ordem: OrdemServicoDetalhesData): string | null => {
-  const cliente = MOCK_CLIENTES.find((item) => item.id === ordem.clienteId);
+export const resolveInitialEnderecoId = (ordem: OrdemServico): string | null => {
+  const cliente = MOCK_CLIENTES.find((item) => item.id === ordem.cliente.id);
   if (!cliente) return null;
 
   const matchedEndereco = cliente.enderecos.find(
@@ -41,17 +40,21 @@ export const resolveInitialEnderecoId = (ordem: OrdemServicoDetalhesData): strin
 };
 
 export const buildOrdemServicoUpdatePayload = (
-  ordem: OrdemServicoDetalhesData,
+  ordem: OrdemServico,
   values: OrdemServicoFormValues,
   selectedEndereco: ServicoEndereco,
-): OrdemServicoDetalhesData => {
+): OrdemServico => {
   const cliente = MOCK_CLIENTES.find((item) => item.id === values.clienteId);
   const tecnico = MOCK_TECNICOS.find((item) => item.id === values.tecnicoId);
 
   return {
     ...ordem,
-    clienteId: values.clienteId,
-    clienteNome: cliente?.nome ?? ordem.clienteNome,
+    cliente: {
+      id: values.clienteId,
+      nome: cliente?.nome ?? ordem.cliente.nome,
+      cpfCnpj: cliente?.cpfCnpj ?? ordem.cliente.cpfCnpj,
+      telefone: cliente?.telefone ?? ordem.cliente.telefone,
+    },
     tipoServico: values.tipoServico as OrdemServico["tipoServico"],
     tecnicoId: values.tecnicoId,
     tecnicoNome: tecnico?.nome ?? ordem.tecnicoNome,

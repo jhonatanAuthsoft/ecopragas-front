@@ -14,7 +14,7 @@ import {
 import { ROUTES } from "@/constants/routes";
 import type { OrdemServico } from "@/pages/admin/ordens-servico/OrdensServico";
 import { formatCurrency } from "@/utils/formatters";
-import { TIPO_SERVICO_LABELS } from "../OrdemServicoDetalhes";
+import { TIPO_SERVICO_LABELS } from "./ordem-servico-detalhes/ordem-servico-detalhes.labels";
 
 interface OrdensServicoTableProps {
   ordensServico: OrdemServico[];
@@ -55,7 +55,7 @@ export const OrdensServicoTable = ({ ordensServico }: OrdensServicoTableProps) =
               onClick={() => navigate(ROUTES.SERVICE_ORDER.DETAILS.replace(":id", os.id))}
             >
               <TableCell className="text-grayscale-x-dark">{os.numeroOS}</TableCell>
-              <TableCell>{os.clienteNome}</TableCell>
+              <TableCell>{os.cliente.nome}</TableCell>
               <TableCell>{TIPO_SERVICO_LABELS[os.tipoServico]}</TableCell>
               <TableCell className="text-muted-foreground">{os.tecnicoNome}</TableCell>
               <TableCell>{format(os.dataAgendamento, "dd/MM/yyyy", { locale: ptBR })}</TableCell>

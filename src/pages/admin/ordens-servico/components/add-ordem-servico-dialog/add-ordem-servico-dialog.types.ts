@@ -53,6 +53,8 @@ export type ServicoEndereco = {
 export type MockCliente = {
   id: string;
   nome: string;
+  cpfCnpj: string;
+  telefone: string;
   enderecos: ServicoEndereco[];
 };
 

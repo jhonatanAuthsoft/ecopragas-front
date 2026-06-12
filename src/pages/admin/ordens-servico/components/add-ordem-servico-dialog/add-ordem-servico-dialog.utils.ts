@@ -106,8 +106,12 @@ export const buildOrdemServicoPayload = (
 
   return {
     numeroOS: generateNumeroOS(existingOsCount + 1),
-    clienteId: values.clienteId,
-    clienteNome: cliente?.nome ?? "",
+    cliente: {
+      id: values.clienteId,
+      nome: cliente?.nome ?? "",
+      cpfCnpj: cliente?.cpfCnpj ?? "",
+      telefone: cliente?.telefone ?? "",
+    },
     tipoServico: values.tipoServico as OrdemServico["tipoServico"],
     tecnicoId: values.tecnicoId,
     tecnicoNome: tecnico?.nome ?? "",

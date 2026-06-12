@@ -1,8 +1,8 @@
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import type { OrdemServicoDetalhesData } from "./ordem-servico-detalhes.types";
+import type { OrdemServico } from "../../OrdensServico";
 
-export const formatDataHorario = (ordem: OrdemServicoDetalhesData): string => {
+export const formatDataHorario = (ordem: OrdemServico): string => {
   if (ordem.dataAgendamento && ordem.horaAgendamento) {
     return `${format(ordem.dataAgendamento, "dd/MM/yyyy", { locale: ptBR })} - ${ordem.horaAgendamento}`;
   }

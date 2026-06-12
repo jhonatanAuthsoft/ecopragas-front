@@ -10,25 +10,14 @@ import {
   EditOrdemServicoDialog,
   getOrdemServicoDetalhesById,
   OrdemServicoDetalhesCard,
+  OrdemServicoVariationsCards,
 } from "./components/ordem-servico-detalhes";
-import type { OrdemServicoDetalhesData } from "./components/ordem-servico-detalhes/ordem-servico-detalhes.types";
 import type { OrdemServico } from "./OrdensServico";
-
-// TODO: organizar os labels na pasta de model/
-export const TIPO_SERVICO_LABELS: Record<OrdemServico["tipoServico"], string> = {
-  sanitizacao: "Sanitizacao",
-  controle_pragas_vetores: "Controle de Pragas e Vetores",
-  higienizacao: "Higienizacao",
-  monitoramento_insetos: "Monitoramento de insetos",
-  monitoramento_roedores: "Monitoramento de roedores",
-};
 
 export default function OrdemServicoDetalhes() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [ordem, setOrdem] = useState<OrdemServicoDetalhesData>(() =>
-    getOrdemServicoDetalhesById(id ?? "4"),
-  );
+  const [ordem, setOrdem] = useState<OrdemServico>(() => getOrdemServicoDetalhesById(id ?? "4"));
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -40,7 +29,7 @@ export default function OrdemServicoDetalhes() {
     navigate(ROUTES.SERVICE_ORDER.BASE);
   };
 
-  const handleEditSubmit = (updatedOrdem: OrdemServicoDetalhesData) => {
+  const handleEditSubmit = (updatedOrdem: OrdemServico) => {
     setOrdem(updatedOrdem);
     setIsEditDialogOpen(false);
     toast.info("Em desenvolvimento...");
@@ -72,6 +61,9 @@ export default function OrdemServicoDetalhes() {
           onEdit={() => setIsEditDialogOpen(true)}
           onDownload={handleDownload}
         />
+
+        {/* TODO: Mostrar somente para os concluidos */}
+        <OrdemServicoVariationsCards ordem={ordem} />
 
         <EditOrdemServicoDialog
           open={isEditDialogOpen}

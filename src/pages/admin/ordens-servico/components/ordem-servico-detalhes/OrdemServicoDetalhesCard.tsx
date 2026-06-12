@@ -10,14 +10,17 @@ import { Button } from "@/atomic/atm.button/button.component";
 import { DetailItem } from "@/atomic/atm.detail-item";
 import { Body2, H2, H3 } from "@/atomic/atm.typography";
 import { formatCPFCNPJ, formatCurrency, formatPhone } from "@/utils/formatters";
-import { TIPO_SERVICO_LABELS } from "../../OrdemServicoDetalhes";
+import type { OrdemServico } from "../../OrdensServico";
 import { DeleteOrdemServicoDialog } from "./components/DeleteOrdemServicoDialog";
-import { STATUS_BADGE_COLOR, STATUS_LABELS } from "./ordem-servico-detalhes.labels";
-import type { OrdemServicoDetalhesData } from "./ordem-servico-detalhes.types";
+import {
+  STATUS_BADGE_COLOR,
+  STATUS_LABELS,
+  TIPO_SERVICO_LABELS,
+} from "./ordem-servico-detalhes.labels";
 import { formatDataHorario } from "./ordem-servico-detalhes.utils";
 
 interface OrdemServicoDetalhesCardProps {
-  ordem: OrdemServicoDetalhesData;
+  ordem: OrdemServico;
   onDelete: () => void;
   onEdit: () => void;
   onDownload: () => void;
@@ -34,14 +37,14 @@ export function OrdemServicoDetalhesCard({
 
   return (
     <>
-      <div className="flex flex-col gap-md p-lg bg-white rounded-lg shadow-sm border border-grayscale-light">
+      <div className="flex flex-col gap-md p-lg bg-white rounded-medium shadow-sm border border-grayscale-light">
         <div className="flex flex-col gap-sm">
           <div className="flex justify-between">
             <div className="flex flex-col gap-xs">
               <Badge color={STATUS_BADGE_COLOR[ordem.status]} className="self-start">
                 {STATUS_LABELS[ordem.status]} - <b>{ordem.numeroOS}</b>
               </Badge>
-              <H2>{ordem.clienteNome}</H2>
+              <H2>{ordem.cliente.nome}</H2>
             </div>
 
             {ordem.status !== "agendada" && (
@@ -63,11 +66,11 @@ export function OrdemServicoDetalhesCard({
           <div className="flex flex-wrap items-center gap-sm text-grayscale-dark text-sm">
             <div className="flex items-center gap-2xs">
               <IdentificationIcon className="size-lg" />
-              <Body2>{formatCPFCNPJ(ordem.clienteCpfCnpj)}</Body2>
+              <Body2>{formatCPFCNPJ(ordem.cliente.cpfCnpj)}</Body2>
             </div>
             <div className="flex items-center gap-2xs">
               <PhoneIcon className="size-lg" />
-              <Body2>{formatPhone(ordem.clienteTelefone)}</Body2>
+              <Body2>{formatPhone(ordem.cliente.telefone)}</Body2>
             </div>
             <div className="flex items-center gap-2xs">
               <MapPinIcon className="size-lg" />

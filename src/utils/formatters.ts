@@ -65,3 +65,8 @@ export const formatCurrencyNumber = (value: string | number): number => {
 export const formatNumber = (value: string) => {
   return value.replace(/\D/g, "");
 };
+
+export const formatYesNo = (value?: boolean) => {
+  if (value === undefined) return "-";
+  return value ? "Sim" : "Não";
+};
