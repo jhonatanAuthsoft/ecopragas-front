@@ -2,12 +2,8 @@ import { ChevronLeft } from "lucide-react";
 import { useCallback, useState } from "react";
 import Cropper from "react-easy-crop";
 import { Button } from "@/atomic/atm.button/button.component";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/atomic/mol.dialog/dialog.component";
+import { H2 } from "@/atomic/atm.typography";
+import { Dialog, DialogContent, DialogHeader } from "@/atomic/mol.dialog/dialog.component";
 import getCroppedImg from "@/utils/cropImage";
 
 interface ImageCropperDialogProps {
@@ -58,8 +54,8 @@ export const ImageCropperDialog = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden bg-[#101316] text-white border-none">
-        <DialogHeader className="p-4 bg-[#101316]">
-          <DialogTitle className="text-lg font-medium text-white">Crop</DialogTitle>
+        <DialogHeader className="my-md bg-[#101316]">
+          <H2>Crop</H2>
         </DialogHeader>
 
         <div className="relative h-[400px] w-full bg-grayscale-x-dark">
@@ -77,21 +73,20 @@ export const ImageCropperDialog = ({
         </div>
 
         <div className="p-4 space-y-4 bg-[#101316]">
-          <Button
-            onClick={handleSave}
-            className="w-full bg-green-600 hover:bg-green-700 text-white h-12 text-base font-medium rounded-md"
-          >
+          <Button size="lg" fullWidth onClick={handleSave}>
             Salvar foto de perfil
           </Button>
 
           <div className="flex justify-center">
-            <button
+            <Button
+              variant="link"
+              className="text-white"
+              size="lg"
               onClick={() => onOpenChange(false)}
-              className="flex items-center text-sm text-zinc-400 hover:text-white transition-colors"
+              leftIcon={<ChevronLeft className="size-md" />}
             >
-              <ChevronLeft className="h-4 w-4 mr-1" />
               Voltar
-            </button>
+            </Button>
           </div>
         </div>
       </DialogContent>
