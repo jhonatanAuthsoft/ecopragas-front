@@ -11,12 +11,6 @@ import { UsersIcon } from "@/assets/icons/users";
 import { WrenchScrewdriverIcon } from "@/assets/icons/wrench-screwdriver";
 import { Button } from "@/atomic/atm.button/button.component";
 import { H4 } from "@/atomic/atm.typography";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/atomic/mol.dropdown-menu/dropdown-menu.component";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/atomic/mol.tooltip/tooltip.component";
 import { ROLES } from "@/constants/roles";
 import { ROUTES } from "@/constants/routes";
@@ -24,6 +18,7 @@ import { useLogout } from "@/domain/auth";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth";
 import { useSidebarStore } from "@/store/sidebar";
+import { accountItemStyle } from "./sidebar.style";
 
 const ADMIN_MENU = [
   { icon: UserPlusIcon, label: "CRM / Leads", path: ROUTES.LEADS },
@@ -106,9 +101,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
           </ul>
         </nav>
 
-        <div className="border-t border-sidebar-border pt-2xs px-md pb-lg">
-          <AccountItem isMinimized={isMinimized} />
-        </div>
+        <AccountItem isMinimized={isMinimized} />
       </div>
     </aside>
   );
@@ -170,52 +163,55 @@ const AccountItem = ({ isMinimized }: AccountItemProps) => {
     },
   });
 
+  const styles = accountItemStyle({
+    isMinimized,
+    open,
+  });
+
   const trigger = (
     <button
       type="button"
-      className={cn(
-        "flex w-full cursor-pointer items-center gap-xs rounded-lg py-2xs transition-colors hover:bg-sidebar-accent/50",
-        isMinimized ? "justify-center" : "px-xs",
-      )}
+      aria-expanded={open}
+      onClick={() => setOpen((current) => !current)}
+      className={styles.trigger()}
     >
-      <div className="shrink-0 flex items-center justify-center size-[40px] bg-brand-accessory-green rounded-full">
-        <H4 className="text-white">{initials}</H4>
+      <div className={styles.avatar()}>
+        <H4 className={styles.avatarText()}>{initials}</H4>
       </div>
-      {!isMinimized && (
-        <H4 className="flex-1 truncate text-left text-grayscale-medium">{username}</H4>
-      )}
-      <ChevronDown
-        className={cn(
-          "size-[20px] shrink-0 text-grayscale-dark transition-transform",
-          open && "rotate-180",
-        )}
-      />
+      {!isMinimized && <H4 className={styles.username()}>{username}</H4>}
+      <ChevronDown className={styles.chevron()} />
     </button>
   );
 
   return (
-    <DropdownMenu open={open} onOpenChange={setOpen}>
-      {isMinimized ? (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
-          </TooltipTrigger>
-          <TooltipContent side="right">{username}</TooltipContent>
-        </Tooltip>
-      ) : (
-        <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
-      )}
-      <DropdownMenuContent side="top" align="start" sideOffset={6} className="w-[220px]">
-        <DropdownMenuItem
-          onClick={() => logout()}
-          disabled={isLogoutLoading}
-          className="cursor-pointer text-destructive hover:text-white hover:bg-destructive!"
-        >
-          <LogOut className="size-md mr-2xs" />
-          Sair
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div className={styles.wrapper()}>
+      <div className={styles.root()}>
+        {isMinimized ? (
+          <Tooltip>
+            <TooltipTrigger asChild>{trigger}</TooltipTrigger>
+            <TooltipContent side="right">{username}</TooltipContent>
+          </Tooltip>
+        ) : (
+          trigger
+        )}
+
+        {open && (
+          <div className={styles.expanded()}>
+            <Button
+              type="button"
+              variant="ghost"
+              fullWidth
+              disabled={isLogoutLoading}
+              onClick={() => logout()}
+              className={styles.logoutButton()}
+              leftIcon={<LogOut className={styles.logoutButtonIcon()} />}
+            >
+              {isMinimized ? "Sair" : "Sair da conta"}
+            </Button>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
