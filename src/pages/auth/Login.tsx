@@ -1,32 +1,25 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { ROUTES } from "@/constants/routes";
 import { useLogin } from "@/domain/auth";
 import type { LoginInput } from "@/model/rest/auth";
+import { getDefaultAuthenticatedRoute } from "@/router/get-default-authenticated-route";
 import { useAuthStore } from "@/store/auth";
 import { buildLoginRequest, LoginForm } from "./components/login-form";
 
 export default function Login() {
   const navigate = useNavigate();
-  const token = useAuthStore((s) => s.token);
   const setSession = useAuthStore((s) => s.setSession);
 
   const { login, isLoginLoading } = useLogin({
     onSuccess: (data) => {
       setSession(data.token, data.usuario);
-      navigate(ROUTES.HOME);
+      navigate(getDefaultAuthenticatedRoute(data.usuario?.perfil));
       toast.success("Login realizado com sucesso");
     },
     onError: () => {
       toast.error("Erro ao fazer login");
     },
   });
-
-  useEffect(() => {
-    if (!token) return;
-    navigate(ROUTES.HOME);
-  }, [navigate, token]);
 
   const handleSubmit = (values: LoginInput) => {
     login(buildLoginRequest(values));

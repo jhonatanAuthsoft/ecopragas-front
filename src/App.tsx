@@ -2,7 +2,9 @@ import { Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/atomic/mol.sonner/sonner.component";
 import { Toaster } from "@/atomic/mol.toaster/toaster.component";
 import { TooltipProvider } from "@/atomic/mol.tooltip/tooltip.component";
+import { ROLES } from "@/constants/roles";
 import { ROUTES } from "@/constants/routes";
+import { AuthGuard, GuestGuard } from "@/router/guards";
 import Agendamentos from "./pages/admin/agendamentos/Agendamentos";
 import ClienteDetalhes from "./pages/admin/clientes/ClienteDetalhes";
 import Clientes from "./pages/admin/clientes/Clientes";
@@ -21,17 +23,27 @@ const App = () => (
     <Toaster />
     <Sonner />
     <Routes>
-      <Route path={ROUTES.AUTH.LOGIN} element={<Login />} />
-      <Route path={ROUTES.AUTH.FORGOT_PASSWORD} element={<ForgotPassword />} />
-      <Route path={ROUTES.HOME} element={<Dashboard />} />
-      <Route path={ROUTES.LEADS} element={<Leads />} />
-      <Route path={ROUTES.CLIENT.BASE} element={<Clientes />} />
-      <Route path={ROUTES.CLIENT.DETAILS} element={<ClienteDetalhes />} />
-      <Route path={ROUTES.SERVICE_ORDER.BASE} element={<OrdensServico />} />
-      <Route path={ROUTES.SERVICE_ORDER.DETAILS} element={<OrdemServicoDetalhes />} />
-      <Route path={ROUTES.SCHEDULING} element={<Agendamentos />} />
-      <Route path={ROUTES.REPORT} element={<Relatorios />} />
-      <Route path={ROUTES.TECHNICIAN} element={<Tecnicos />} />
+      <Route element={<GuestGuard />}>
+        <Route path={ROUTES.AUTH.LOGIN} element={<Login />} />
+        <Route path={ROUTES.AUTH.FORGOT_PASSWORD} element={<ForgotPassword />} />
+      </Route>
+
+      {/* TODO: criar as rotas para o tecnico e cliente */}
+      <Route element={<AuthGuard roles={[ROLES.TECNICO]} />}></Route>
+      <Route element={<AuthGuard roles={[ROLES.CLIENTE]} />}></Route>
+
+      <Route element={<AuthGuard roles={[ROLES.ADMINISTRATIVO]} />}>
+        <Route path={ROUTES.HOME} element={<Dashboard />} />
+        <Route path={ROUTES.LEADS} element={<Leads />} />
+        <Route path={ROUTES.CLIENT.BASE} element={<Clientes />} />
+        <Route path={ROUTES.CLIENT.DETAILS} element={<ClienteDetalhes />} />
+        <Route path={ROUTES.SERVICE_ORDER.BASE} element={<OrdensServico />} />
+        <Route path={ROUTES.SERVICE_ORDER.DETAILS} element={<OrdemServicoDetalhes />} />
+        <Route path={ROUTES.SCHEDULING} element={<Agendamentos />} />
+        <Route path={ROUTES.REPORT} element={<Relatorios />} />
+        <Route path={ROUTES.TECHNICIAN} element={<Tecnicos />} />
+      </Route>
+
       <Route path="*" element={<NotFound />} />
     </Routes>
   </TooltipProvider>
