@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/atomic/atm.button/button.component";
 import { TextInput } from "@/atomic/atm.text-input";
 import { EmailValidator, Form, FormField, RequiredValidator } from "@/atomic/obj.form";
@@ -21,7 +21,7 @@ export default function ForgotPassword() {
         "bg-feedback-success-light border-feedback-success-medium text-feedback-success-dark",
     });
 
-    navigate(isTechnician ? ROUTES.AUTH.LOGIN.TECHNICIAN : ROUTES.AUTH.LOGIN.ADMIN);
+    navigate(ROUTES.AUTH.LOGIN);
   }
 
   return (
@@ -40,10 +40,7 @@ export default function ForgotPassword() {
 
             <Form onSubmit={handleSubmit} className="flex flex-col gap-lg mt-lg">
               <FormField name="email" validators={[RequiredValidator(), EmailValidator()]}>
-                <TextInput 
-                  label="Email" 
-                  placeholder="Digite seu email" 
-                />
+                <TextInput label="Email" placeholder="Digite seu email" />
               </FormField>
 
               <Button type="submit" className="h-12 w-full cursor-pointer">
