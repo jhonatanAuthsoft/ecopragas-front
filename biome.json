@@ -23,6 +23,9 @@
       },
       "suspicious": {
         "noExplicitAny": "error"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "off"
       }
     }
   },

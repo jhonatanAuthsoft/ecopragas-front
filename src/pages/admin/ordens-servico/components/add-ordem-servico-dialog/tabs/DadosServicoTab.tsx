@@ -22,7 +22,10 @@ interface DadosServicoTabProps {
   statusLabel?: string;
 }
 
-export const DadosServicoTab = ({ onNext, statusLabel = "Status inicial" }: DadosServicoTabProps) => {
+export const DadosServicoTab = ({
+  onNext,
+  statusLabel = "Status inicial",
+}: DadosServicoTabProps) => {
   const { watch } = useFormContext<OrdemServicoFormValues>();
   const tipoServico = watch("tipoServico");
   const variacao = getTipoServicoVariacao(tipoServico);

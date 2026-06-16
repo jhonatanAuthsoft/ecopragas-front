@@ -1,27 +1,27 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
 import { TextInput } from "@/atomic/atm.text-input";
 import { EmailValidator, Form, FormField, RequiredValidator } from "@/atomic/obj.form";
 import { ROUTES } from "@/constants/routes";
-import { useToast } from "@/hooks/use-toast";
+import { useRedefinirSenha } from "@/domain/auth";
+import type { RedefinirSenhaInput } from "@/model/rest/auth";
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { toast } = useToast();
 
-  const isTechnician = location.state?.isTechnician;
+  const { redefinirSenha, isRedefinirSenhaLoading } = useRedefinirSenha({
+    onSuccess: () => {
+      toast.success("E-mail enviado");
+      navigate(ROUTES.AUTH.LOGIN);
+    },
+    onError: () => {
+      toast.error("Erro ao enviar e-mail de recuperacao");
+    },
+  });
 
-  function handleSubmit() {
-    toast({
-      title: "E-mail enviado",
-      description: "Em desenvolvimento...",
-      variant: "default",
-      className:
-        "bg-feedback-success-light border-feedback-success-medium text-feedback-success-dark",
-    });
-
-    navigate(isTechnician ? ROUTES.AUTH.LOGIN.TECHNICIAN : ROUTES.AUTH.LOGIN.ADMIN);
+  function handleSubmit(values: RedefinirSenhaInput) {
+    redefinirSenha(values);
   }
 
   return (
@@ -40,14 +40,11 @@ export default function ForgotPassword() {
 
             <Form onSubmit={handleSubmit} className="flex flex-col gap-lg mt-lg">
               <FormField name="email" validators={[RequiredValidator(), EmailValidator()]}>
-                <TextInput 
-                  label="Email" 
-                  placeholder="Digite seu email" 
-                />
+                <TextInput label="Email" placeholder="Digite seu email" />
               </FormField>
 
-              <Button type="submit" className="h-12 w-full cursor-pointer">
-                Enviar e-mail de recuperação
+              <Button type="submit" size="lg" isLoading={isRedefinirSenhaLoading}>
+                {isRedefinirSenhaLoading ? "Enviando..." : "Enviar e-mail de recuperação"}
               </Button>
             </Form>
 
@@ -58,7 +55,7 @@ export default function ForgotPassword() {
         </div>
 
         <img
-          src={isTechnician ? "/presentation-tech.png" : "/presentation-frame.png"}
+          src="/presentation-frame.png"
           alt=""
           className="hidden object-cover rounded-2xl border-2 border-brand-primary-light lg:block"
         />

@@ -1,5 +1,5 @@
 import { useCustomMutation } from "@/domain/custom-mutation";
-import type { LoginRequest, LoginResponse } from "@/model/rest/auth";
+import type { LoginInput, LoginResponse } from "@/model/rest/auth";
 import type { UseCaseBaseParams } from "@/model/use-case.model";
 import { loginDatasource } from "@/rest/auth";
 
@@ -9,7 +9,7 @@ export function useLogin(params: UseCaseBaseParams<LoginResponse> = {}) {
     data,
     error,
     isLoading,
-  } = useCustomMutation<LoginResponse, LoginRequest>({
+  } = useCustomMutation<LoginResponse, LoginInput>({
     mutationFn: loginDatasource,
     ...params,
   });
