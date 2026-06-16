@@ -1,26 +1,18 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
 import { TextInput } from "@/atomic/atm.text-input";
 import { EmailValidator, Form, FormField, RequiredValidator } from "@/atomic/obj.form";
 import { ROUTES } from "@/constants/routes";
-import { useToast } from "@/hooks/use-toast";
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { toast } = useToast();
 
   const isTechnician = location.state?.isTechnician;
 
   function handleSubmit() {
-    toast({
-      title: "E-mail enviado",
-      description: "Em desenvolvimento...",
-      variant: "default",
-      className:
-        "bg-feedback-success-light border-feedback-success-medium text-feedback-success-dark",
-    });
-
+    toast.success("E-mail enviado");
     navigate(ROUTES.AUTH.LOGIN);
   }
 

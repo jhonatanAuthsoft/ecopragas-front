@@ -1,4 +1,6 @@
 import type { components } from "../api-types";
 
-export type LoginRequest = components["schemas"]["AuthenticateRequest"];
-export type LoginResponse = components["schemas"]["AuthenticateResponse"];
+export type AuthUser = components["schemas"]["UsuarioResponseDTO"];
+
+export type LoginInput = components["schemas"]["LoginUsuarioInputDTO"];
+export type LoginResponse = components["schemas"]["LoginUsuarioResponseDTO"];

@@ -1,7 +1,7 @@
 import * as z from "zod";
-import type { LoginRequest } from "@/model/rest/auth";
+import type { LoginInput } from "@/model/rest/auth";
 import { formatCPFCNPJ } from "@/utils/formatters";
-import type { LoginFormValues, LoginIdentifierType } from "./login-form.types";
+import type { LoginIdentifierType } from "./login-form.types";
 
 export function detectLoginIdentifierType(value: string): LoginIdentifierType {
   const trimmed = value.trim();
@@ -15,14 +15,14 @@ export function detectLoginIdentifierType(value: string): LoginIdentifierType {
   return "email";
 }
 
-export function formatLoginUsername(value: string): string {
+export function formatLoginEmail(value: string): string {
   if (detectLoginIdentifierType(value) === "cpf") {
     return formatCPFCNPJ(value);
   }
   return value;
 }
 
-export function validateLoginUsername(value: string): true | string {
+export function validateLoginEmail(value: string): true | string {
   if (!value?.trim()) return true;
 
   const type = detectLoginIdentifierType(value);
@@ -40,18 +40,18 @@ export function validateLoginUsername(value: string): true | string {
   return true;
 }
 
-function normalizeUsername(value: string, type: LoginIdentifierType): string {
+function normalizeEmail(value: string, type: LoginIdentifierType): string {
   if (type === "cpf") {
     return value.replace(/\D/g, "");
   }
   return value.trim();
 }
 
-export function buildLoginRequest(values: LoginFormValues): LoginRequest {
-  const identifierType = detectLoginIdentifierType(values.username);
+export function buildLoginRequest(values: LoginInput): LoginInput {
+  const identifierType = detectLoginIdentifierType(values.email);
 
   return {
-    username: normalizeUsername(values.username, identifierType),
-    password: values.password,
+    email: normalizeEmail(values.email, identifierType),
+    senha: values.senha,
   };
 }

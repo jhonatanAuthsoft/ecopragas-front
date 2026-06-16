@@ -46,7 +46,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
   const toggleMinimized = useSidebarStore((state) => state.toggleMinimized);
   const user = useAuthStore((state) => state.user);
 
-  const menuItems = user?.role === ROLES.TECHNICIAN ? TECHNICIAN_MENU : ADMIN_MENU;
+  const menuItems = user?.perfil === ROLES.TECNICO ? TECHNICIAN_MENU : ADMIN_MENU;
 
   return (
     <aside
@@ -149,7 +149,7 @@ interface AccountItemProps {
 
 const AccountItem = ({ isMinimized }: AccountItemProps) => {
   const user = useAuthStore((state) => state.user);
-  const username = user?.name || "Usuário";
+  const username = user?.nomeCompleto || "Usuário";
   const initials = username.slice(0, 2).toUpperCase();
 
   return (

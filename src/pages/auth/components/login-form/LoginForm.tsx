@@ -5,48 +5,48 @@ import { PasswordInput } from "@/atomic/atm.password-input";
 import { TextInput } from "@/atomic/atm.text-input";
 import { CustomValidator, Form, FormField, RequiredValidator } from "@/atomic/obj.form";
 import { ROUTES } from "@/constants/routes";
-import type { LoginFormValues } from "./login-form.types";
+import type { LoginInput } from "@/model/rest/auth";
 import {
   detectLoginIdentifierType,
-  formatLoginUsername,
-  validateLoginUsername,
+  formatLoginEmail,
+  validateLoginEmail,
 } from "./login-form.utils";
 
-const defaultValues: LoginFormValues = {
-  username: "",
-  password: "",
+const defaultValues: LoginInput = {
+  email: "",
+  senha: "",
 };
 
 interface LoginFormProps {
   isLoading: boolean;
-  onSubmit: (values: LoginFormValues) => void;
+  onSubmit: (values: LoginInput) => void;
 }
 
 export function LoginForm({ isLoading, onSubmit }: LoginFormProps) {
   const navigate = useNavigate();
-  const formMethods = useForm<LoginFormValues>({
+  const formMethods = useForm<LoginInput>({
     mode: "onChange",
     defaultValues,
   });
 
-  const username = formMethods.watch("username");
-  const identifierType = detectLoginIdentifierType(username);
+  const email = formMethods.watch("email");
+  const identifierType = detectLoginIdentifierType(email);
 
   return (
     <Form formMethods={formMethods} onSubmit={onSubmit} className="mt-10 space-y-5">
-      <FormField
-        name="username"
-        validators={[RequiredValidator(), CustomValidator(validateLoginUsername)]}
+      <FormField<LoginInput, "email">
+        name="email"
+        validators={[RequiredValidator(), CustomValidator(validateLoginEmail)]}
       >
         <TextInput
           label="Email ou CPF"
           placeholder="Digite seu email ou CPF"
-          formatter={formatLoginUsername}
+          formatter={formatLoginEmail}
           maxLength={identifierType === "cpf" ? 14 : undefined}
         />
       </FormField>
 
-      <FormField name="password" validators={[RequiredValidator()]}>
+      <FormField<LoginInput, "senha"> name="senha" validators={[RequiredValidator()]}>
         <PasswordInput label="Senha" placeholder="Digite sua senha" />
       </FormField>
 

@@ -1,37 +1,25 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { ROUTES } from "@/constants/routes";
 import { useLogin } from "@/domain/auth";
-import { useToast } from "@/hooks/use-toast";
-import { type AuthUser, useAuthStore } from "@/store/auth";
-import { buildLoginRequest, LoginForm, type LoginFormValues } from "./components/login-form";
+import type { LoginInput } from "@/model/rest/auth";
+import { useAuthStore } from "@/store/auth";
+import { buildLoginRequest, LoginForm } from "./components/login-form";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const token = useAuthStore((s) => s.token);
   const setSession = useAuthStore((s) => s.setSession);
 
   const { login, isLoginLoading } = useLogin({
     onSuccess: (data) => {
-      setSession(data.token, data.usuarioResponse as AuthUser);
-      toast({
-        title: "Login realizado com sucesso",
-        variant: "default",
-        className:
-          "bg-feedback-success-light border-feedback-success-medium text-feedback-success-dark",
-      });
+      setSession(data.token, data.usuario);
       navigate(ROUTES.HOME);
+      toast.success("Login realizado com sucesso");
     },
-    onError: (error) => {
-      toast({
-        title: "Erro ao fazer login",
-        description:
-          error.response?.data?.message ??
-          error.response?.data?.detail ??
-          "Verifique suas credenciais e tente novamente.",
-        variant: "destructive",
-      });
+    onError: () => {
+      toast.error("Erro ao fazer login");
     },
   });
 
@@ -40,7 +28,7 @@ export default function Login() {
     navigate(ROUTES.HOME);
   }, [navigate, token]);
 
-  const handleSubmit = (values: LoginFormValues) => {
+  const handleSubmit = (values: LoginInput) => {
     login(buildLoginRequest(values));
   };
 

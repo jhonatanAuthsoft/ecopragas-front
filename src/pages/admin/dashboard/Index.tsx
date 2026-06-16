@@ -5,7 +5,7 @@ import Dashboard from "./Dashboard";
 
 const Index = () => {
   const user = useAuthStore((state) => state.user);
-  const isTechnician = user?.role === ROLES.TECHNICIAN;
+  const isTechnician = user?.perfil === ROLES.TECNICO;
 
   return <MainLayout>{isTechnician ? <Dashboard /> : <Dashboard />}</MainLayout>;
 };
