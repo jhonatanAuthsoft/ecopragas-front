@@ -57,9 +57,9 @@ jobs:
           echo "### Build Summary :rocket:" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **Environment**: Staging" >> $GITHUB_STEP_SUMMARY
-          echo "- **Image**: \${{ env.DOCKER_IMAGE }}:staging-latest\" >> $GITHUB_STEP_SUMMARY
-          echo "- **Commit**: \${{ github.sha }}\" >> $GITHUB_STEP_SUMMARY
-          echo "- **Digest**: \${{ steps.build.outputs.digest }}\" >> $GITHUB_STEP_SUMMARY
+          echo "- **Image**: \`${{ env.DOCKER_IMAGE }}:staging-latest\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Digest**: \`${{ steps.build.outputs.digest }}\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Keel Automated Deployment :gear:" >> $GITHUB_STEP_SUMMARY
           echo "Keel will automatically detect and deploy this image to the staging cluster." >> $GITHUB_STEP_SUMMARY
