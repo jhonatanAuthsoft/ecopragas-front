@@ -5,13 +5,11 @@ import { Button } from "@/atomic/atm.button/button.component";
 import { Body1, H1 } from "@/atomic/atm.typography";
 import { SearchInput } from "@/atomic/mol.search/search.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
-import type { Cliente as ClienteDTO } from "@/model/rest/cliente";
-import { mapClienteDTotoCliente } from "./clientes.mapper";
+import type { Cliente } from "@/model/rest/cliente";
 import { MOCK_CLIENTES } from "./clientes.mock";
 import { AddClienteDialog, type InitialClienteData } from "./components/add-cliente-dialog";
 import { ClientesMetrics } from "./components/ClientesMetrics";
 import { ClientesTable } from "./components/ClientesTable";
-import type { Cliente } from "./types";
 
 const PAGE_SIZE = 5;
 
@@ -39,9 +37,9 @@ const Clientes = () => {
 
   const filteredClientes = clientes.filter(
     (cliente) =>
-      cliente.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      cliente.cpfCnpj.includes(searchTerm) ||
-      cliente.email.toLowerCase().includes(searchTerm.toLowerCase()),
+      (cliente.nomeRazaoSocial ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (cliente.cnpjCpf ?? "").includes(searchTerm) ||
+      (cliente.email ?? "").toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const totalElements = filteredClientes.length;
@@ -49,8 +47,8 @@ const Clientes = () => {
   const paginatedClientes = filteredClientes.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
   // TODO: apagar apos integrar listagem
-  const handleClienteCreated = (cliente: ClienteDTO) => {
-    setClientes((prev) => [mapClienteDTotoCliente(cliente), ...prev]);
+  const handleClienteCreated = (cliente: Cliente) => {
+    setClientes((prev) => [cliente, ...prev]);
   };
 
   return (
