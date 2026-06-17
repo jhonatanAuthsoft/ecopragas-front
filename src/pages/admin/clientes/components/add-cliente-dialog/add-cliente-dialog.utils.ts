@@ -18,7 +18,7 @@ const toApiEndereco = (endereco: ClienteEndereco): ClienteEndereco => {
   return sanitizeEndereco(apiEndereco);
 };
 
-// TODO: modificar
+// TODO: modificar ao ver documentos
 const buildClienteDocumentos = (files: File[], base64Urls: string[]): ClienteDocumento[] =>
   files.map((file, index) => ({
     nome: file.name,
@@ -26,7 +26,7 @@ const buildClienteDocumentos = (files: File[], base64Urls: string[]): ClienteDoc
     url: base64Urls[index] ?? "",
   }));
 
-// TODO: modificar, possivelmente excluir
+// TODO: modificar ao ver documentos, possivelmente excluir
 const filesToBase64 = (files: File[]): Promise<string[]> =>
   Promise.all(
     files.map(
@@ -46,7 +46,6 @@ const filesToBase64 = (files: File[]): Promise<string[]> =>
     ),
   );
 
-// TODO: tirar o async
 export const buildCadastrarClienteInput = async (
   values: ClienteFormValues,
 ): Promise<CadastrarClienteInput> => {

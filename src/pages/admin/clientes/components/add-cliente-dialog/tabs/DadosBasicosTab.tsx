@@ -3,7 +3,13 @@ import { SelectInput } from "@/atomic/atm.select-input";
 import { TextInput } from "@/atomic/atm.text-input";
 import { TextareaInput } from "@/atomic/atm.textarea-input";
 import { TabsContent } from "@/atomic/mol.tabs/tabs.component";
-import { EmailValidator, FormField, PhoneValidator, RequiredValidator } from "@/atomic/obj.form";
+import {
+  CpfCnpjValidator,
+  EmailValidator,
+  FormField,
+  PhoneValidator,
+  RequiredValidator,
+} from "@/atomic/obj.form";
 import { formatCPFCNPJ, formatPhone } from "@/utils/formatters";
 import { STATUS_OPTIONS, TIPO_CLIENTE_OPTIONS } from "../add-cliente-dialog.data";
 
@@ -18,8 +24,7 @@ export const DadosBasicosTab = ({ onNext }: DadosBasicosTabProps) => (
         <TextInput label="Nome/ Razão Social" placeholder="João Silva" />
       </FormField>
 
-      {/* TODO: adicionar o CnpjCpfValidator */}
-      <FormField name="cnpjCpf" validators={[RequiredValidator()]}>
+      <FormField name="cnpjCpf" validators={[RequiredValidator(), CpfCnpjValidator()]}>
         <TextInput
           label="CPF/CNPJ"
           placeholder="EX. 123.456.789/0001"
