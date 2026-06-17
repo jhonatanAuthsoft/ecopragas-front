@@ -64,12 +64,12 @@ jobs:
           echo "### Keel Automated Deployment :gear:" >> $GITHUB_STEP_SUMMARY
           echo "Keel will automatically detect and deploy this image to the staging cluster." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **Expected URL**: https://ecopragas-api-dev.authsoftsolutions.org" >> $GITHUB_STEP_SUMMARY
+          echo "- **Expected URL**: https://ecopragas-dev.authsoftsolutions.org" >> $GITHUB_STEP_SUMMARY
           echo "- **Polling**: Every 2 minutes" >> $GITHUB_STEP_SUMMARY
           echo "- **ETA**: 2-4 minutes" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Monitor deployment:**" >> $GITHUB_STEP_SUMMARY
           echo "\\\`bash" >> $GITHUB_STEP_SUMMARY
           echo "kubectl logs -n keel-system -l app=keel -f | grep ecopragas-front" >> $GITHUB_STEP_SUMMARY
-          echo "kubectl get pods -n ecopragas-staging -l app=ecopragas-front" >> $GITHUB_STEP_SUMMARY
+          echo "kubectl get pods -n ecopragas-dev -l app=ecopragas-front" >> $GITHUB_STEP_SUMMARY
           echo "\\\`" >> $GITHUB_STEP_SUMMARY
