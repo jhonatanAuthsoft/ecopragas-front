@@ -14,12 +14,12 @@ interface DadosBasicosTabProps {
 export const DadosBasicosTab = ({ onNext }: DadosBasicosTabProps) => (
   <TabsContent value="dados" forceMount className="space-y-6 data-[state=inactive]:hidden">
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <FormField name="nome" validators={[RequiredValidator()]}>
-        <TextInput label="Nome/ Razão Social" placeholder="João Silva" hasClearButton />
+      <FormField name="nomeRazaoSocial" validators={[RequiredValidator()]}>
+        <TextInput label="Nome/ Razão Social" placeholder="João Silva" />
       </FormField>
 
-      {/* TODO: adicionar o CnpjValidator */}
-      <FormField name="cpfCnpj" validators={[RequiredValidator()]}>
+      {/* TODO: adicionar o CnpjCpfValidator */}
+      <FormField name="cnpjCpf" validators={[RequiredValidator()]}>
         <TextInput
           label="CPF/CNPJ"
           placeholder="EX. 123.456.789/0001"
@@ -28,7 +28,7 @@ export const DadosBasicosTab = ({ onNext }: DadosBasicosTabProps) => (
         />
       </FormField>
 
-      <FormField name="tipoCliente" validators={[RequiredValidator()]}>
+      <FormField name="tipo" validators={[RequiredValidator()]}>
         <SelectInput
           label="Tipo de cliente"
           placeholder="Selecione o tipo de cliente"

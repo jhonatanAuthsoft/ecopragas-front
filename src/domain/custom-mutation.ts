@@ -11,6 +11,7 @@ export function useCustomMutation<TData, TVariables, TError = AxiosErrorResponse
 }) {
   const {
     mutate: mutateInternal,
+    mutateAsync: mutateAsyncInternal,
     data,
     error,
     isPending,
@@ -26,5 +27,12 @@ export function useCustomMutation<TData, TVariables, TError = AxiosErrorResponse
     mutateInternal(variables);
   };
 
-  return { mutate, data, error, isLoading: isPending };
+  const mutateAsync = (variables: TVariables) => {
+    if (isPending) {
+      return Promise.reject(new Error("Mutation already in progress"));
+    }
+    return mutateAsyncInternal(variables);
+  };
+
+  return { mutate, mutateAsync, data, error, isLoading: isPending };
 }
