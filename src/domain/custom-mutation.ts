@@ -1,12 +1,17 @@
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 import type { AxiosErrorResponse, UseCaseBaseParams } from "@/model/use-case.model";
 
-export function useCustomMutation<TData, TVariables, TError = AxiosErrorResponse>({
+function defaultOnError(error: AxiosErrorResponse) {
+  toast.error(error.response?.data?.message?.[0] || "Houve um erro, tente novamente mais tarde.");
+}
+
+export function useCustomMutation<TData, TVariables>({
   mutationFn,
   onSuccess,
-  onError,
+  onError = defaultOnError,
   onSettled,
-}: UseCaseBaseParams<TData, TError> & {
+}: UseCaseBaseParams<TData, AxiosErrorResponse> & {
   mutationFn: (variables: TVariables) => Promise<TData>;
 }) {
   const {
@@ -15,7 +20,7 @@ export function useCustomMutation<TData, TVariables, TError = AxiosErrorResponse
     data,
     error,
     isPending,
-  } = useMutation<TData, TError, TVariables>({
+  } = useMutation<TData, AxiosErrorResponse, TVariables>({
     mutationFn,
     onSuccess,
     onError,

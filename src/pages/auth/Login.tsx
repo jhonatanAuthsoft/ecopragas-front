@@ -16,9 +16,6 @@ export default function Login() {
       navigate(getDefaultAuthenticatedRoute(data.usuario?.perfil));
       toast.success("Login realizado com sucesso");
     },
-    onError: () => {
-      toast.error("Erro ao fazer login");
-    },
   });
 
   const handleSubmit = (values: LoginInput) => {

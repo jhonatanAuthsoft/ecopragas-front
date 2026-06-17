@@ -1,7 +1,9 @@
 import type { AxiosError } from "axios";
-import type { components } from "./rest/api-types";
 
-export type ErrorResponse = components["schemas"]["ErrorResponse"];
+// TODO: devia vir do back
+export type ErrorResponse = {
+  message?: string[];
+};
 
 export type AxiosErrorResponse = AxiosError<ErrorResponse>;
 
