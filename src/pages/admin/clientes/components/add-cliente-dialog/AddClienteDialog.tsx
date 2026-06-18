@@ -1,47 +1,56 @@
 import { useEffect, useState } from "react";
 import { type FieldErrors, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { H2 } from "@/atomic/atm.typography";
 import { Dialog, DialogContent, DialogHeader } from "@/atomic/mol.dialog/dialog.component";
 import { Tabs, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
 import { Form } from "@/atomic/obj.form";
+import { useCreateCliente } from "@/domain/cliente";
+import type { Cliente, ClienteFormValues } from "@/model/rest/cliente";
 import {
   DADOS_FIELDS,
   DEFAULT_VALUES,
-  ENDERECO_FIELDS,
+  ENDERECO_DRAFT_FIELDS,
   TAB_TRIGGER_CLASS,
 } from "./add-cliente-dialog.data";
-import type {
-  AddClienteDialogProps,
-  ClienteDialogTab,
-  ClienteEndereco,
-  ClienteFormValues,
-} from "./add-cliente-dialog.types";
+import type { ClienteDialogTab, InitialClienteData } from "./add-cliente-dialog.types";
 import {
-  buildClientePayload,
-  clearAddressFields,
-  createEnderecoFromForm,
-  filesToBase64,
-  getAddressValidationErrors,
+  buildCadastrarClienteInput,
+  clearEnderecoDraft,
+  shouldValidateEnderecoDraft,
 } from "./add-cliente-dialog.utils";
 import { DadosBasicosTab } from "./tabs/DadosBasicosTab";
 import { DocumentacaoTab } from "./tabs/DocumentacaoTab";
 import { EnderecoTab } from "./tabs/EnderecoTab";
 
+export interface AddClienteDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onClienteCreated?: (cliente: Cliente) => void;
+  initialData?: InitialClienteData | null;
+}
+
 export const AddClienteDialog = ({
   open,
   onOpenChange,
-  onAddCliente,
+  onClienteCreated,
   initialData,
 }: AddClienteDialogProps) => {
   const [activeTab, setActiveTab] = useState<ClienteDialogTab>("dados");
-  const [enderecos, setEnderecos] = useState<ClienteEndereco[]>([]);
-  const [files, setFiles] = useState<File[]>([]);
+
+  const { createCliente, isCreateClienteLoading } = useCreateCliente({
+    onSuccess: (cliente) => {
+      onClienteCreated?.(cliente.data);
+      toast.success("Cliente cadastrado com sucesso!");
+      resetDialog();
+      onOpenChange(false);
+    },
+  });
 
   const formMethods = useForm<ClienteFormValues>({
     mode: "onChange",
     defaultValues: DEFAULT_VALUES,
   });
-  const { isSubmitting } = formMethods.formState;
 
   useEffect(() => {
     if (initialData && open) {
@@ -51,8 +60,6 @@ export const AddClienteDialog = ({
 
   const resetDialog = () => {
     formMethods.reset(DEFAULT_VALUES);
-    setEnderecos([]);
-    setFiles([]);
     setActiveTab("dados");
   };
 
@@ -63,21 +70,15 @@ export const AddClienteDialog = ({
     onOpenChange(nextOpen);
   };
 
-  const applyAddressErrors = (values: ClienteFormValues) => {
-    const errors = getAddressValidationErrors(values, enderecos);
+  const validateEnderecoDraft = async () => {
+    const enderecos = formMethods.getValues("enderecos");
+    const enderecoDraft = formMethods.getValues("enderecoDraft");
 
-    for (const field of ENDERECO_FIELDS) {
-      formMethods.clearErrors(field);
+    if (!shouldValidateEnderecoDraft(enderecoDraft, enderecos.length)) {
+      return true;
     }
 
-    for (const field of ENDERECO_FIELDS) {
-      const message = errors[field];
-      if (message) {
-        formMethods.setError(field, { type: "manual", message });
-      }
-    }
-
-    return Object.keys(errors).length === 0;
+    return formMethods.trigger([...ENDERECO_DRAFT_FIELDS]);
   };
 
   const handleNextDados = async () => {
@@ -87,28 +88,34 @@ export const AddClienteDialog = ({
     }
   };
 
-  const handleNextEndereco = () => {
-    const values = formMethods.getValues();
-    if (applyAddressErrors(values)) {
+  const handleNextEndereco = async () => {
+    const isValid = await validateEnderecoDraft();
+    if (isValid) {
       setActiveTab("documentacao");
     }
   };
 
-  const handleAddEndereco = () => {
-    const values = formMethods.getValues();
-    const novoEndereco = createEnderecoFromForm(values);
-
-    if (!novoEndereco) {
-      applyAddressErrors(values);
+  const handleAddEndereco = async () => {
+    const isValid = await formMethods.trigger([...ENDERECO_DRAFT_FIELDS]);
+    if (!isValid) {
       return;
     }
 
-    setEnderecos((prev) => [...prev, novoEndereco]);
-    formMethods.reset({ ...values, ...clearAddressFields() });
+    const enderecos = formMethods.getValues("enderecos");
+    const enderecoDraft = formMethods.getValues("enderecoDraft");
+
+    formMethods.setValue("enderecos", [...enderecos, enderecoDraft], { shouldDirty: true });
+    formMethods.setValue("enderecoDraft", clearEnderecoDraft(), { shouldDirty: true });
+    formMethods.clearErrors([...ENDERECO_DRAFT_FIELDS]);
   };
 
   const handleRemoveEndereco = (index: number) => {
-    setEnderecos((prev) => prev.filter((_, enderecoIndex) => enderecoIndex !== index));
+    const enderecos = formMethods.getValues("enderecos");
+    formMethods.setValue(
+      "enderecos",
+      enderecos.filter((_, enderecoIndex) => enderecoIndex !== index),
+      { shouldDirty: true },
+    );
   };
 
   const handleInvalid = (errors: FieldErrors<ClienteFormValues>) => {
@@ -116,23 +123,30 @@ export const AddClienteDialog = ({
     const hasDadosError = errorFields.some((field) =>
       (DADOS_FIELDS as readonly string[]).includes(field),
     );
+    const hasEnderecoError = errorFields.some((field) => field.startsWith("enderecoDraft"));
 
-    setActiveTab(hasDadosError ? "dados" : "endereco");
-  };
+    if (hasDadosError) {
+      setActiveTab("dados");
+      return;
+    }
 
-  const handleSubmit = async (values: ClienteFormValues) => {
-    if (!applyAddressErrors(values)) {
+    if (hasEnderecoError) {
       setActiveTab("endereco");
       return;
     }
 
-    const arquivos = await filesToBase64(files);
-    const payload = buildClientePayload(values, enderecos, arquivos);
-    const success = await onAddCliente(payload);
+    setActiveTab("documentacao");
+  };
 
-    if (success) {
-      resetDialog();
+  const handleSubmit = async (values: ClienteFormValues) => {
+    const isEnderecoValid = await validateEnderecoDraft();
+    if (!isEnderecoValid) {
+      setActiveTab("endereco");
+      return;
     }
+
+    const input = await buildCadastrarClienteInput(values);
+    createCliente(input);
   };
 
   return (
@@ -158,12 +172,11 @@ export const AddClienteDialog = ({
 
             <DadosBasicosTab onNext={handleNextDados} />
             <EnderecoTab
-              enderecos={enderecos}
               onAddEndereco={handleAddEndereco}
               onRemoveEndereco={handleRemoveEndereco}
               onNext={handleNextEndereco}
             />
-            <DocumentacaoTab files={files} onFilesChange={setFiles} isSubmitting={isSubmitting} />
+            <DocumentacaoTab isSubmitting={isCreateClienteLoading} />
           </Tabs>
         </Form>
       </DialogContent>

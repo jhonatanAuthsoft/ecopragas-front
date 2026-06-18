@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/atomic/mol.table/table.component";
 import { ROUTES } from "@/constants/routes";
-import type { Cliente } from "../types";
+import type { Cliente } from "@/model/rest/cliente";
 
 interface ClientesTableProps {
   clientes: Cliente[];
@@ -58,23 +58,24 @@ export const ClientesTable = ({
             <TableRow
               key={cliente.id}
               className="cursor-pointer"
-              onClick={() => navigate(ROUTES.CLIENT.DETAILS.replace(":id", cliente.id))}
+              onClick={() => navigate(ROUTES.ADMIN.CLIENT.DETAILS.replace(":id", cliente.id ?? ""))}
             >
-              <TableCell className="text-grayscale-x-dark">{cliente.nome}</TableCell>
-              <TableCell>{cliente.cpfCnpj}</TableCell>
+              <TableCell className="text-grayscale-x-dark">{cliente.nomeRazaoSocial}</TableCell>
+              <TableCell>{cliente.cnpjCpf}</TableCell>
               <TableCell className="break-normal">
-                <Badge variant="outline" color={cliente.tipoCliente === "fixo" ? "blue" : "orange"}>
-                  {cliente.tipoCliente === "fixo" ? "Fixo" : "Esporádico"}
+                <Badge variant="outline" color={cliente.tipo === "RECORRENTE" ? "blue" : "orange"}>
+                  {cliente.tipo === "RECORRENTE" ? "Fixo" : "Esporadico"}
                 </Badge>
               </TableCell>
               <TableCell>{cliente.telefone}</TableCell>
               <TableCell>{cliente.email}</TableCell>
               <TableCell>
-                {cliente.cidade}/{cliente.estado}
+                {(cliente.cidade ?? cliente.enderecos?.[0]?.cidade) ?? "-"}/
+                {(cliente.estado ?? cliente.enderecos?.[0]?.estado) ?? "-"}
               </TableCell>
               <TableCell>
-                {cliente.ultimoServico
-                  ? format(cliente.ultimoServico, "dd/MM/yyyy", { locale: ptBR })
+                {cliente.dataUltimoServico
+                  ? format(new Date(cliente.dataUltimoServico), "dd/MM/yyyy", { locale: ptBR })
                   : "-"}
               </TableCell>
               <TableCell className="text-right">

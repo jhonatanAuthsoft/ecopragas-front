@@ -41,8 +41,8 @@ interface ErrorPlaceholderProps {
   title?: string;
   description?: string;
   error?: {
-    code: number;
-    message: string;
+    code?: number;
+    message?: string;
   };
   placeholder?: React.ReactNode;
   defaultPlaceholder?: DefaultPlaceholders;
@@ -67,7 +67,7 @@ export const ErrorPlaceholderUI = (props: ErrorPlaceholderProps) => {
     <div className="flex flex-col items-center justify-center gap-xl">
       <div className="flex flex-col items-center justify-center gap-2xs max-w-[500px] text-center">
         <Body1 className="font-normal text-grayscale-dark">
-          Erro {error.code} ({error.message})
+          {error?.code && error?.message && `Erro ${error?.code} (${error?.message})`}
         </Body1>
         <H1>{title}</H1>
         <Body1 className="font-normal text-grayscale-dark">{description}</Body1>

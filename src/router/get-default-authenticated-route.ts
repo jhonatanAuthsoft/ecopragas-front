@@ -1,9 +1,9 @@
-import { ROLES } from "@/constants/roles";
-import { ROUTES } from "@/constants/routes";
-import type { AuthUser } from "@/model/rest/auth";
+import { ROLES } from '@/constants/roles';
+import { ROUTES } from '@/constants/routes';
+import type { AuthUser } from '@/model/rest/auth';
 
-export function getDefaultAuthenticatedRoute(perfil?: AuthUser["perfil"]) {
+export function getDefaultAuthenticatedRoute(perfil?: AuthUser['perfil']) {
   if (perfil === ROLES.TECNICO) return ROUTES.TECHNICIAN_SCHEDULING;
-  if (perfil === ROLES.CLIENTE) return ROUTES.HOME;
-  return ROUTES.HOME;
+  if (perfil === ROLES.CLIENTE) return ROUTES.TEMPORARY_FALLBACK.CLIENTE;
+  return ROUTES.ADMIN.HOME;
 }

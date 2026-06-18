@@ -52,7 +52,7 @@ export const OrdensServicoTable = ({ ordensServico }: OrdensServicoTableProps) =
             <TableRow
               key={os.id}
               className="cursor-pointer"
-              onClick={() => navigate(ROUTES.SERVICE_ORDER.DETAILS.replace(":id", os.id))}
+              onClick={() => navigate(ROUTES.ADMIN.SERVICE_ORDER.DETAILS.replace(":id", os.id))}
             >
               <TableCell className="text-grayscale-x-dark">{os.numeroOS}</TableCell>
               <TableCell>{os.cliente.nome}</TableCell>

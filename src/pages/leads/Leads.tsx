@@ -56,7 +56,7 @@ const Leads = () => {
 
   const handleConfirmConvert = () => {
     if (leadToConvert) {
-      navigate(ROUTES.CLIENT.BASE, { state: { leadData: leadToConvert } });
+      navigate(ROUTES.ADMIN.CLIENT.BASE, { state: { leadData: leadToConvert } });
     }
     setConvertLeadDialogOpen(false);
   };

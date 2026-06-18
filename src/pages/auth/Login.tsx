@@ -11,13 +11,10 @@ export default function Login() {
   const setSession = useAuthStore((s) => s.setSession);
 
   const { login, isLoginLoading } = useLogin({
-    onSuccess: (data) => {
-      setSession(data.token, data.usuario);
-      navigate(getDefaultAuthenticatedRoute(data.usuario?.perfil));
-      toast.success("Login realizado com sucesso");
-    },
-    onError: () => {
-      toast.error("Erro ao fazer login");
+    onSuccess: (response) => {
+      setSession(response.data?.token, response.data?.usuario);
+      navigate(getDefaultAuthenticatedRoute(response.data?.usuario?.perfil));
+      toast.success(response.message);
     },
   });
 
