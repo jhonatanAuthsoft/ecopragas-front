@@ -19,13 +19,15 @@ const Clientes = () => {
   const [initialData, setInitialData] = useState<InitialClienteData | null>(null);
   const [page, setPage] = useState(0);
 
-  const { clientes, pagination, isListClientesLoading, refetchClientes } = useListClientes({
-    limit: PAGE_SIZE,
-    offset: page * PAGE_SIZE,
-    searchText: searchTerm.trim() || undefined,
-  });
+  const { clientes, pagination, listClientesError, isListClientesLoading, refetchClientes } =
+    useListClientes({
+      limit: PAGE_SIZE,
+      offset: page * PAGE_SIZE,
+      searchText: searchTerm.trim() || undefined,
+    });
 
-  const { dashboard, isDashboardLoading, refetchDashboard } = useGetClienteDashboard();
+  const { dashboard, dashboardError, isDashboardLoading, refetchDashboard } =
+    useGetClienteDashboard();
 
   useEffect(() => {
     if (location.state?.leadData) {
@@ -59,7 +61,11 @@ const Clientes = () => {
         </div>
 
         <div className="flex flex-col gap-md">
-          <ClientesMetrics dashboard={dashboard} isLoading={isDashboardLoading} />
+          <ClientesMetrics
+            dashboard={dashboard}
+            isLoading={isDashboardLoading}
+            error={!!dashboardError}
+          />
 
           <div className="flex flex-col gap-md">
             <div className="flex items-center justify-between">
@@ -85,6 +91,7 @@ const Clientes = () => {
               currentPage={currentPage}
               totalPages={pagination?.totalPages}
               isLoading={isListClientesLoading}
+              error={!!listClientesError}
               onPageChange={(nextPage) => setPage(nextPage - 1)}
             />
           </div>

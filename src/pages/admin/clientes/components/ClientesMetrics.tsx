@@ -4,14 +4,16 @@ import { UsersIcon } from "@/assets/icons/users";
 import { Skeleton } from "@/atomic/atm.skeleton/skeleton.component";
 import { H2 } from "@/atomic/atm.typography";
 import { Card, CardContent, CardTitleSecondary } from "@/atomic/mol.card/card.component";
+import { LoadingState } from "@/atomic/obj.loading-state";
 import type { ClienteDashboard } from "@/model/rest/cliente";
 
 interface ClientesMetricsProps {
   dashboard?: ClienteDashboard;
   isLoading?: boolean;
+  error?: boolean;
 }
 
-export const ClientesMetrics = ({ dashboard, isLoading }: ClientesMetricsProps) => {
+export const ClientesMetrics = ({ dashboard, isLoading, error }: ClientesMetricsProps) => {
   const stats = [
     {
       title: "Total de Clientes",
@@ -43,16 +45,19 @@ export const ClientesMetrics = ({ dashboard, isLoading }: ClientesMetricsProps) 
     },
   ];
 
-  return (
+  const renderCards = (showSkeleton: boolean) => (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       {stats.map((stat) => {
         const Icon = stat.icon;
         return (
-          // TODO: LoadingState
           <Card key={stat.title}>
             <CardContent>
               <CardTitleSecondary>{stat.title}</CardTitleSecondary>
-              {isLoading ? <Skeleton className="h-[32px] w-[48px] mt-xs" /> : <H2>{stat.value}</H2>}
+              {showSkeleton ? (
+                <Skeleton className="h-[31px] w-[54px] mt-xs" />
+              ) : (
+                <H2>{stat.value}</H2>
+              )}
             </CardContent>
 
             <div className={`p-sm rounded-full ${stat.bgColor}`}>
@@ -62,5 +67,20 @@ export const ClientesMetrics = ({ dashboard, isLoading }: ClientesMetricsProps) 
         );
       })}
     </div>
+  );
+
+  return (
+    <LoadingState loading={isLoading} error={error} data={!!dashboard}>
+      <LoadingState.Shimmer>{renderCards(true)}</LoadingState.Shimmer>
+
+      <LoadingState.Error>
+        <div className="text-center py-lg">
+          <p className="text-lg font-medium text-foreground">Erro ao carregar métricas</p>
+          <p className="text-sm text-muted-foreground mt-1">Tente recarregar a página</p>
+        </div>
+      </LoadingState.Error>
+
+      {renderCards(false)}
+    </LoadingState>
   );
 };
