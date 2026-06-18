@@ -34,8 +34,18 @@ const App = () => (
         />
       </Route>
 
-      {/* TODO: criar as rotas para o tecnico e cliente */}
-      <Route element={<AuthGuard roles={[ROLES.TECNICO]} />}></Route>
+      <Route element={<AuthGuard roles={[ROLES.TECNICO]} />}>
+        <Route
+          path={ROUTES.TECHNICIAN_SCHEDULING}
+          element={<TechAgendamentos />}
+        />
+        <Route
+          path={ROUTES.TECHNICIAN_SCHEDULING_DETAILS}
+          element={<TechAgendamentoDetalhes />}
+        />
+        <Route path={ROUTES.TECHNICIAN_SERVICES} element={<TechServicos />} />
+      </Route>
+
       <Route element={<AuthGuard roles={[ROLES.CLIENTE]} />}></Route>
 
       <Route element={<AuthGuard roles={[ROLES.ADMINISTRATIVO]} />}>
@@ -54,16 +64,6 @@ const App = () => (
       </Route>
 
       <Route path='*' element={<NotFound />} />
-
-      <Route
-        path={ROUTES.TECHNICIAN_SCHEDULING}
-        element={<TechAgendamentos />}
-      />
-      <Route
-        path={ROUTES.TECHNICIAN_SCHEDULING_DETAILS}
-        element={<TechAgendamentoDetalhes />}
-      />
-      <Route path={ROUTES.TECHNICIAN_SERVICES} element={<TechServicos />} />
     </Routes>
   </TooltipProvider>
 );

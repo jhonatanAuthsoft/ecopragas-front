@@ -4,6 +4,7 @@ import type { Role } from "@/constants/roles";
 import { ROUTES } from "@/constants/routes";
 import { useAuthHydration } from "@/hooks/use-auth-hydration";
 import { useAuthStore } from "@/store/auth";
+import { getDefaultAuthenticatedRoute } from "../get-default-authenticated-route";
 
 interface AuthGuardProps {
   roles?: Role[];
@@ -14,7 +15,7 @@ interface AuthGuardProps {
 export function AuthGuard({
   roles,
   redirectTo = ROUTES.AUTH.LOGIN,
-  unauthorizedRedirectTo = ROUTES.HOME,
+  unauthorizedRedirectTo,
 }: AuthGuardProps = {}) {
   const location = useLocation();
   const hydrated = useAuthHydration();
@@ -30,7 +31,19 @@ export function AuthGuard({
   }
 
   if (roles?.length && (!user?.perfil || !roles.includes(user.perfil))) {
-    return <Navigate to={unauthorizedRedirectTo} replace />;
+    const fallback = unauthorizedRedirectTo || getDefaultAuthenticatedRoute(user?.perfil);
+    
+    // Prevent infinite loop if fallback is the current path
+    if (location.pathname === fallback) {
+      return (
+        <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+          <h1 className="text-2xl font-bold">Acesso Negado</h1>
+          <p>Você não tem permissão para acessar esta página.</p>
+        </div>
+      );
+    }
+    
+    return <Navigate to={fallback} replace />;
   }
 
   return <Outlet />;
