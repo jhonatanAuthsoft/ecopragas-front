@@ -26,7 +26,7 @@ export default function OrdemServicoDetalhes() {
 
   const handleDelete = () => {
     toast.info("Em desenvolvimento...");
-    navigate(ROUTES.SERVICE_ORDER.BASE);
+    navigate(ROUTES.ADMIN.SERVICE_ORDER.BASE);
   };
 
   const handleEditSubmit = (updatedOrdem: OrdemServico) => {
@@ -46,7 +46,7 @@ export default function OrdemServicoDetalhes() {
           <Button
             variant="link"
             size="lg"
-            onClick={() => navigate(ROUTES.SERVICE_ORDER.BASE)}
+            onClick={() => navigate(ROUTES.ADMIN.SERVICE_ORDER.BASE)}
             leftIcon={<ChevronLeft className="size-md" />}
           >
             Voltar para Ordens de Serviço

@@ -41,15 +41,15 @@ const App = () => (
       </Route>
 
       <Route element={<AuthGuard roles={[ROLES.ADMINISTRATIVO]} />}>
-        <Route path={ROUTES.HOME} element={<Dashboard />} />
-        <Route path={ROUTES.LEADS} element={<Leads />} />
-        <Route path={ROUTES.CLIENT.BASE} element={<Clientes />} />
-        <Route path={ROUTES.CLIENT.DETAILS} element={<ClienteDetalhes />} />
-        <Route path={ROUTES.SERVICE_ORDER.BASE} element={<OrdensServico />} />
-        <Route path={ROUTES.SERVICE_ORDER.DETAILS} element={<OrdemServicoDetalhes />} />
-        <Route path={ROUTES.SCHEDULING} element={<Agendamentos />} />
-        <Route path={ROUTES.REPORT} element={<Relatorios />} />
-        <Route path={ROUTES.TECHNICIAN} element={<Tecnicos />} />
+        <Route path={ROUTES.ADMIN.HOME} element={<Dashboard />} />
+        <Route path={ROUTES.ADMIN.LEADS} element={<Leads />} />
+        <Route path={ROUTES.ADMIN.CLIENT.BASE} element={<Clientes />} />
+        <Route path={ROUTES.ADMIN.CLIENT.DETAILS} element={<ClienteDetalhes />} />
+        <Route path={ROUTES.ADMIN.SERVICE_ORDER.BASE} element={<OrdensServico />} />
+        <Route path={ROUTES.ADMIN.SERVICE_ORDER.DETAILS} element={<OrdemServicoDetalhes />} />
+        <Route path={ROUTES.ADMIN.SCHEDULING} element={<Agendamentos />} />
+        <Route path={ROUTES.ADMIN.REPORT} element={<Relatorios />} />
+        <Route path={ROUTES.ADMIN.TECHNICIAN} element={<Tecnicos />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />
