@@ -1,3 +1,4 @@
+import type { UseFormResetField } from "react-hook-form";
 import type {
   CadastrarClienteInput,
   ClienteDocumento,
@@ -5,7 +6,7 @@ import type {
   ClienteFormValues,
 } from "@/model/rest/cliente";
 import { cleanDigits } from "@/utils/formatters";
-import { ENDERECO_FIELDS } from "./add-cliente-dialog.data";
+import { ENDERECO_DRAFT_FIELDS, ENDERECO_FIELDS } from "./add-cliente-dialog.data";
 import type { ViaCepResponse } from "./add-cliente-dialog.types";
 
 const sanitizeEndereco = (endereco: ClienteEndereco): ClienteEndereco => ({
@@ -112,3 +113,14 @@ export const shouldValidateEnderecoDraft = (
   enderecoDraft: ClienteEndereco,
   enderecosCount: number,
 ) => enderecosCount === 0 || !isAddressEmpty(enderecoDraft);
+
+export const resetEnderecoDraftFields = (resetField: UseFormResetField<ClienteFormValues>) => {
+  const emptyDraft = clearEnderecoDraft();
+
+  for (const field of ENDERECO_DRAFT_FIELDS) {
+    const draftKey = field.replace("enderecoDraft.", "") as keyof ClienteEndereco;
+    resetField(field, { defaultValue: String(emptyDraft[draftKey]) });
+  }
+
+  resetField("enderecoDraft.padrao", { defaultValue: false });
+};

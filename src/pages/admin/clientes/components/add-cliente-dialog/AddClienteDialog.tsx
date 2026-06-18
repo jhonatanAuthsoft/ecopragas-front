@@ -16,7 +16,7 @@ import {
 import type { ClienteDialogTab, InitialClienteData } from "./add-cliente-dialog.types";
 import {
   buildCadastrarClienteInput,
-  clearEnderecoDraft,
+  resetEnderecoDraftFields,
   shouldValidateEnderecoDraft,
 } from "./add-cliente-dialog.utils";
 import { DadosBasicosTab } from "./tabs/DadosBasicosTab";
@@ -75,6 +75,7 @@ export const AddClienteDialog = ({
     const enderecoDraft = formMethods.getValues("enderecoDraft");
 
     if (!shouldValidateEnderecoDraft(enderecoDraft, enderecos.length)) {
+      formMethods.clearErrors([...ENDERECO_DRAFT_FIELDS]);
       return true;
     }
 
@@ -105,8 +106,7 @@ export const AddClienteDialog = ({
     const enderecoDraft = formMethods.getValues("enderecoDraft");
 
     formMethods.setValue("enderecos", [...enderecos, enderecoDraft], { shouldDirty: true });
-    formMethods.setValue("enderecoDraft", clearEnderecoDraft(), { shouldDirty: true });
-    formMethods.clearErrors([...ENDERECO_DRAFT_FIELDS]);
+    resetEnderecoDraftFields(formMethods.resetField);
   };
 
   const handleRemoveEndereco = (index: number) => {
