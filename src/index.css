@@ -3,6 +3,7 @@
 @theme inline {
   /* Design System Typography */
   --font-segoe: "Segoe UI", sans-serif;
+  --font-lato: "Lato", sans-serif;
 
   --text-xxs: 14px;
   --text-xs: 16px;
@@ -256,7 +257,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-segoe;
+    @apply bg-background text-foreground font-lato;
   }
 }
 

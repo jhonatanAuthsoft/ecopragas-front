@@ -1,26 +1,29 @@
 export const ROUTES = {
   AUTH: {
-    LOGIN: "/login",
-    FORGOT_PASSWORD: "/forgot-password",
+    LOGIN: '/login',
+    FORGOT_PASSWORD: '/forgot-password',
   },
   ADMIN: {
-    HOME: "/",
-    LEADS: "/leads",
+    HOME: '/',
+    LEADS: '/leads',
     CLIENT: {
-      BASE: "/admin/client",
-      DETAILS: "/admin/client/:id",
+      BASE: '/admin/client',
+      DETAILS: '/admin/client/:id',
     },
     SERVICE_ORDER: {
-      BASE: "/admin/service-order",
-      DETAILS: "/admin/service-order/:id",
+      BASE: '/admin/service-order',
+      DETAILS: '/admin/service-order/:id',
     },
-    SCHEDULING: "/admin/scheduling",
-    REPORT: "/admin/report",
-    TECHNICIAN: "/admin/technician",
+    SCHEDULING: '/admin/scheduling',
+    REPORT: '/admin/report',
+    TECHNICIAN: '/admin/technician',
   },
-  // TODO: apagar ao inserir as páginas de tecnico e cliente
+
   TEMPORARY_FALLBACK: {
-    TECNICO: "/temporary-fallback/technician",
-    CLIENTE: "/temporary-fallback/client",
+    TECNICO: '/temporary-fallback/technician',
+    CLIENTE: '/temporary-fallback/client',
   },
+  TECHNICIAN_SCHEDULING: '/technician/scheduling',
+  TECHNICIAN_SCHEDULING_DETAILS: '/technician/scheduling/:id',
+  TECHNICIAN_SERVICES: '/technician/services',
 };

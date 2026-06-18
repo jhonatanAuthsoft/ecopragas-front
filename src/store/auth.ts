@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import type { AuthUser } from "@/model/rest/auth";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import type { AuthUser } from '@/model/rest/auth';
 
 interface AuthState {
   token: string | null;
@@ -18,11 +18,11 @@ export const useAuthStore = create<AuthState>()(
       clearSession: () => set({ token: null, user: null }),
     }),
     {
-      name: "auth",
+      name: 'auth',
       partialize: (state) => ({
         token: state.token,
         user: state.user,
       }),
-    },
-  ),
+    }
+  )
 );

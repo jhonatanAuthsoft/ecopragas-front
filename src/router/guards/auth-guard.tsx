@@ -1,10 +1,10 @@
-import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { PageLoader } from "@/atomic/atm.page-loader";
-import type { Role } from "@/constants/roles";
-import { ROUTES } from "@/constants/routes";
-import { useAuthHydration } from "@/hooks/use-auth-hydration";
-import { useAuthStore } from "@/store/auth";
-import { getDefaultAuthenticatedRoute } from "../get-default-authenticated-route";
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { PageLoader } from '@/atomic/atm.page-loader';
+import type { Role } from '@/constants/roles';
+import { ROUTES } from '@/constants/routes';
+import { useAuthHydration } from '@/hooks/use-auth-hydration';
+import { useAuthStore } from '@/store/auth';
+import { getDefaultAuthenticatedRoute } from '../get-default-authenticated-route';
 
 interface AuthGuardProps {
   roles?: Role[];
@@ -32,7 +32,12 @@ export function AuthGuard({
 
   if (roles?.length && (!user?.perfil || !roles.includes(user.perfil))) {
     return (
-      <Navigate to={unauthorizedRedirectTo || getDefaultAuthenticatedRoute(user?.perfil)} replace />
+      <Navigate
+        to={
+          unauthorizedRedirectTo || getDefaultAuthenticatedRoute(user?.perfil)
+        }
+        replace
+      />
     );
   }
 
