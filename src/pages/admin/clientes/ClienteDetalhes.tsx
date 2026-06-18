@@ -115,7 +115,7 @@ const ClienteDetalhes = () => {
         <Button
           variant="link"
           className="self-start hover:no-underline"
-          onClick={() => navigate(ROUTES.CLIENT.BASE)}
+          onClick={() => navigate(ROUTES.ADMIN.CLIENT.BASE)}
           leftIcon={<ChevronLeft className="size-md" />}
         >
           Voltar para Clientes

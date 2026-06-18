@@ -21,25 +21,25 @@ import { useSidebarStore } from "@/store/sidebar";
 import { accountItemStyle } from "./sidebar.style";
 
 const ADMIN_MENU = [
-  { icon: UserPlusIcon, label: "CRM / Leads", path: ROUTES.LEADS },
-  { icon: Squares2x2Icon, label: "Dashboard", path: ROUTES.HOME },
-  { icon: UsersIcon, label: "Clientes", path: ROUTES.CLIENT.BASE },
+  { icon: UserPlusIcon, label: "CRM / Leads", path: ROUTES.ADMIN.LEADS },
+  { icon: Squares2x2Icon, label: "Dashboard", path: ROUTES.ADMIN.HOME },
+  { icon: UsersIcon, label: "Clientes", path: ROUTES.ADMIN.CLIENT.BASE },
   {
     icon: ClipboardDocumentListIcon,
     label: "Serviços",
-    path: ROUTES.SERVICE_ORDER.BASE,
+    path: ROUTES.ADMIN.SERVICE_ORDER.BASE,
   },
-  { icon: CalendarIcon, label: "Agendamentos", path: ROUTES.SCHEDULING },
-  { icon: ChartBarIcon, label: "Relatórios", path: ROUTES.REPORT },
-  { icon: WrenchScrewdriverIcon, label: "Técnicos", path: ROUTES.TECHNICIAN },
+  { icon: CalendarIcon, label: "Agendamentos", path: ROUTES.ADMIN.SCHEDULING },
+  { icon: ChartBarIcon, label: "Relatórios", path: ROUTES.ADMIN.REPORT },
+  { icon: WrenchScrewdriverIcon, label: "Técnicos", path: ROUTES.ADMIN.TECHNICIAN },
 ];
 
 const TECHNICIAN_MENU = [
-  { icon: CalendarIcon, label: "Agendamentos", path: ROUTES.SCHEDULING },
+  { icon: CalendarIcon, label: "Agendamentos", path: ROUTES.ADMIN.SCHEDULING },
   {
     icon: WrenchScrewdriverIcon,
     label: "Serviços",
-    path: ROUTES.SERVICE_ORDER.BASE,
+    path: ROUTES.ADMIN.SERVICE_ORDER.BASE,
   },
 ];
 
