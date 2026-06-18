@@ -10,9 +10,9 @@ export type ClienteTipo = CadastrarClienteInput["tipo"];
 export type ClienteStatus = CadastrarClienteInput["status"];
 
 export type CadastrarClienteInput =
-  operations["cadastrar_2"]["requestBody"]["content"]["application/json"];
+  operations["cadastrar_3"]["requestBody"]["content"]["application/json"];
 export type CadastrarClienteResponse =
-  operations["cadastrar_2"]["responses"][200]["content"]["*/*"];
+  operations["cadastrar_3"]["responses"][200]["content"]["*/*"];
 
 export type ClienteFormValues = Omit<CadastrarClienteInput, "documentos" | "enderecos"> & {
   documentos: File[];

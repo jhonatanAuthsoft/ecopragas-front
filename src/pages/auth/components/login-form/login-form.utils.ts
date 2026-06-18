@@ -15,14 +15,14 @@ export function detectLoginIdentifierType(value: string): LoginIdentifierType {
   return "email";
 }
 
-export function formatLoginEmail(value: string): string {
+export function formatLoginField(value: string): string {
   if (detectLoginIdentifierType(value) === "cpf") {
     return formatCPFCNPJ(value);
   }
   return value;
 }
 
-export function validateLoginEmail(value: string): true | string {
+export function validateLoginField(value: string): true | string {
   if (!value?.trim()) return true;
 
   const type = detectLoginIdentifierType(value);
@@ -32,6 +32,7 @@ export function validateLoginEmail(value: string): true | string {
     return result.success || "O e-mail deve ser valido.";
   }
 
+  // TODO: validar CPF
   const digits = value.replace(/\D/g, "");
   if (digits.length !== 11) {
     return "O CPF deve conter 11 digitos.";
@@ -40,7 +41,7 @@ export function validateLoginEmail(value: string): true | string {
   return true;
 }
 
-function normalizeEmail(value: string, type: LoginIdentifierType): string {
+function normalizeLogin(value: string, type: LoginIdentifierType): string {
   if (type === "cpf") {
     return value.replace(/\D/g, "");
   }
@@ -48,10 +49,10 @@ function normalizeEmail(value: string, type: LoginIdentifierType): string {
 }
 
 export function buildLoginRequest(values: LoginInput): LoginInput {
-  const identifierType = detectLoginIdentifierType(values.email);
+  const identifierType = detectLoginIdentifierType(values.login);
 
   return {
-    email: normalizeEmail(values.email, identifierType),
+    login: normalizeLogin(values.login, identifierType),
     senha: values.senha,
   };
 }

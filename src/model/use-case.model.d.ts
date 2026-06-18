@@ -1,11 +1,16 @@
 import type { AxiosError } from "axios";
 
-// TODO: devia vir do back
-export type ErrorResponse = {
-  message?: string[];
-};
+export type ErrorDetail = components["schemas"]["ErrorDetail"];
 
-export type AxiosErrorResponse = AxiosError<ErrorResponse>;
+export interface StandardResponse<T> {
+  success?: boolean;
+  timestamp?: string;
+  message?: string;
+  data?: T;
+  errors?: ErrorDetail[];
+}
+
+export type AxiosErrorResponse = AxiosError<StandardResponse<unknown>>;
 
 export interface UseCaseBaseParams<T = void, TError = AxiosErrorResponse> {
   onSuccess?: (data: T) => void;

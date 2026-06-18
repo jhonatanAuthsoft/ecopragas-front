@@ -1,9 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { AxiosErrorResponse, UseCaseBaseParams } from "@/model/use-case.model";
+import { getErrorMessages } from "@/utils/get-error-messa";
 
 function defaultOnError(error: AxiosErrorResponse) {
-  toast.error(error.response?.data?.message?.[0] || "Houve um erro, tente novamente mais tarde.");
+  toast.error(
+    getErrorMessages(error.response?.data) || "Houve um erro, tente novamente mais tarde.",
+  );
 }
 
 export function useCustomMutation<TData, TVariables>({

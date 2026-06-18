@@ -40,7 +40,7 @@ export const AddClienteDialog = ({
 
   const { createCliente, isCreateClienteLoading } = useCreateCliente({
     onSuccess: (cliente) => {
-      onClienteCreated?.(cliente);
+      onClienteCreated?.(cliente.data);
       toast.success("Cliente cadastrado com sucesso!");
       resetDialog();
       onOpenChange(false);

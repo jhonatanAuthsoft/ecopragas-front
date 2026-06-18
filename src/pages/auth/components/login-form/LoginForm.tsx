@@ -8,12 +8,12 @@ import { ROUTES } from "@/constants/routes";
 import type { LoginInput } from "@/model/rest/auth";
 import {
   detectLoginIdentifierType,
-  formatLoginEmail,
-  validateLoginEmail,
+  formatLoginField,
+  validateLoginField,
 } from "./login-form.utils";
 
 const defaultValues: LoginInput = {
-  email: "",
+  login: "",
   senha: "",
 };
 
@@ -29,19 +29,19 @@ export function LoginForm({ isLoading, onSubmit }: LoginFormProps) {
     defaultValues,
   });
 
-  const email = formMethods.watch("email");
-  const identifierType = detectLoginIdentifierType(email);
+  const login = formMethods.watch("login");
+  const identifierType = detectLoginIdentifierType(login);
 
   return (
     <Form formMethods={formMethods} onSubmit={onSubmit} className="mt-10 space-y-5">
-      <FormField<LoginInput, "email">
-        name="email"
-        validators={[RequiredValidator(), CustomValidator(validateLoginEmail)]}
+      <FormField<LoginInput, "login">
+        name="login"
+        validators={[RequiredValidator(), CustomValidator(validateLoginField)]}
       >
         <TextInput
           label="Email ou CPF"
           placeholder="Digite seu email ou CPF"
-          formatter={formatLoginEmail}
+          formatter={formatLoginField}
           maxLength={identifierType === "cpf" ? 14 : undefined}
         />
       </FormField>
