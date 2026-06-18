@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { AxiosErrorResponse, UseCaseBaseParams } from "@/model/use-case.model";
-import { getErrorMessages } from "@/utils/get-error-messa";
+import { getErrorMessages } from "@/utils/get-error-messages";
 
 function defaultOnError(error: AxiosErrorResponse) {
   toast.error(
