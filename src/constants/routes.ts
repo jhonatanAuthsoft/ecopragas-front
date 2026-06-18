@@ -1,10 +1,6 @@
 export const ROUTES = {
   AUTH: {
-    LOGIN: {
-      ADMIN: "/login",
-      TECHNICIAN: "/login/technician",
-      CLIENT: "/login/client",
-    },
+    LOGIN: "/login",
     FORGOT_PASSWORD: "/forgot-password",
   },
   HOME: "/",

@@ -1,166 +1,76 @@
-import {
-  ArrowLeft,
-  Calendar,
-  Camera,
-  CheckCircle2,
-  Clock,
-  MapPin,
-  QrCode,
-  User,
-} from "lucide-react";
-import { useState } from "react";
+import { ChevronLeft } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { Badge } from "@/atomic/atm.badge/badge.component";
-import { Body1, H1 } from "@/atomic/atm.typography";
 import { Button } from "@/atomic/atm.button/button.component";
-import { Checkbox } from "@/atomic/atm.checkbox/checkbox.component";
-import { Textarea } from "@/atomic/atm.textarea/textarea.component";
-import { Card } from "@/atomic/mol.card/card.component";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
+import { H1 } from "@/atomic/atm.typography";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
-import { PhotoUpload } from "./components/PhotoUpload";
-import { QRCodeScanner } from "./components/QRCodeScanner";
-import { ServiceChecklist } from "./components/ServiceChecklist";
+import type { OrdemServico } from "@/model/rest/ordem-servico";
+import {
+  EditOrdemServicoDialog,
+  getOrdemServicoDetalhesById,
+  OrdemServicoDetalhesCard,
+  OrdemServicoVariationsCards,
+} from "./components/ordem-servico-detalhes";
 
 export default function OrdemServicoDetalhes() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [observacoes, setObservacoes] = useState("");
+  const [ordem, setOrdem] = useState<OrdemServico>(() => getOrdemServicoDetalhesById(id ?? "4"));
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
-  const ordem = {
-    id: id || "1",
-    numeroOS: "OS-2024-001",
-    cliente: "João Silva",
-    tipoServico: "Dedetização Residencial",
-    endereco: "Rua das Flores, 123 - Centro",
-    dataAgendamento: "2024-01-15",
-    horaAgendamento: "14:00",
-    status: "Em Andamento",
-    valorServico: 350.0,
+  useEffect(() => {
+    setOrdem(getOrdemServicoDetalhesById(id ?? "4"));
+  }, [id]);
+
+  const handleDelete = () => {
+    toast.info("Em desenvolvimento...");
+    navigate(ROUTES.SERVICE_ORDER.BASE);
   };
 
-  const handleConcluir = () => {
-    toast.success("Ordem de Serviço concluída com sucesso!");
-    navigate(ROUTES.SERVICE_ORDER.BASE);
+  const handleEditSubmit = (updatedOrdem: OrdemServico) => {
+    setOrdem(updatedOrdem);
+    setIsEditDialogOpen(false);
+    toast.info("Em desenvolvimento...");
+  };
+
+  const handleDownload = () => {
+    toast.info("Em desenvolvimento...");
   };
 
   return (
     <MainLayout>
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-6">
+      <div className="flex flex-col gap-md">
+        <div className="flex flex-col self-start gap-xs">
           <Button
-            variant="ghost"
+            variant="link"
+            size="lg"
             onClick={() => navigate(ROUTES.SERVICE_ORDER.BASE)}
-            className="mb-4"
+            leftIcon={<ChevronLeft className="size-md" />}
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Voltar
+            Voltar para Ordens de Serviço
           </Button>
 
-          <div className="flex items-start justify-between gap-4 flex-wrap">
-            <div className="flex flex-col self-start gap-xs">
-              <H1>Detalhes do Serviço: {ordem.numeroOS}</H1>
-              <Body1 className="font-normal text-grayscale-dark">{ordem.cliente}</Body1>
-            </div>
-            <Badge className="text-sm">{ordem.status}</Badge>
-          </div>
+          <H1>Detalhes do Serviço</H1>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <Calendar className="h-5 w-5 text-primary" />
-              <div>
-                <p className="text-sm text-muted-foreground">Data</p>
-                <p className="font-medium">{ordem.dataAgendamento}</p>
-              </div>
-            </div>
-          </Card>
+        <OrdemServicoDetalhesCard
+          ordem={ordem}
+          onDelete={handleDelete}
+          onEdit={() => setIsEditDialogOpen(true)}
+          onDownload={handleDownload}
+        />
 
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <Clock className="h-5 w-5 text-primary" />
-              <div>
-                <p className="text-sm text-muted-foreground">Horário</p>
-                <p className="font-medium">{ordem.horaAgendamento}</p>
-              </div>
-            </div>
-          </Card>
+        {/* TODO: Mostrar somente para os concluidos */}
+        <OrdemServicoVariationsCards ordem={ordem} />
 
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <MapPin className="h-5 w-5 text-primary" />
-              <div>
-                <p className="text-sm text-muted-foreground">Endereço</p>
-                <p className="font-medium">{ordem.endereco}</p>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <User className="h-5 w-5 text-primary" />
-              <div>
-                <p className="text-sm text-muted-foreground">Serviço</p>
-                <p className="font-medium">{ordem.tipoServico}</p>
-              </div>
-            </div>
-          </Card>
-        </div>
-
-        <Tabs defaultValue="checklist" className="mb-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="checklist">
-              <CheckCircle2 className="h-4 w-4 mr-2" />
-              Checklist
-            </TabsTrigger>
-            <TabsTrigger value="qrcode">
-              <QrCode className="h-4 w-4 mr-2" />
-              QR Code
-            </TabsTrigger>
-            <TabsTrigger value="fotos">
-              <Camera className="h-4 w-4 mr-2" />
-              Fotos
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="checklist" className="mt-6">
-            <ServiceChecklist tipoServico={ordem.tipoServico} />
-          </TabsContent>
-
-          <TabsContent value="qrcode" className="mt-6">
-            <QRCodeScanner ordemId={ordem.id} />
-          </TabsContent>
-
-          <TabsContent value="fotos" className="mt-6">
-            <PhotoUpload ordemId={ordem.id} />
-          </TabsContent>
-        </Tabs>
-
-        <Card className="p-6 mb-6">
-          <h3 className="text-lg font-semibold mb-4">Observações</h3>
-          <Textarea
-            placeholder="Adicione observações sobre o serviço realizado..."
-            value={observacoes}
-            onChange={(e) => setObservacoes(e.target.value)}
-            rows={4}
-          />
-        </Card>
-
-        <div className="flex gap-4">
-          <Button
-            variant="outline"
-            className="flex-1"
-            onClick={() => navigate(ROUTES.SERVICE_ORDER.BASE)}
-          >
-            Salvar Rascunho
-          </Button>
-          <Button className="flex-1" onClick={handleConcluir}>
-            Concluir Serviço
-          </Button>
-        </div>
+        <EditOrdemServicoDialog
+          open={isEditDialogOpen}
+          onOpenChange={setIsEditDialogOpen}
+          ordem={ordem}
+          onSubmit={handleEditSubmit}
+        />
       </div>
     </MainLayout>
   );

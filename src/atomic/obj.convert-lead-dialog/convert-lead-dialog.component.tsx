@@ -1,4 +1,4 @@
-import { CheckBadgeIcon } from "@/assets/icons/check";
+import { CheckBadgeIcon } from "@/assets/icons/check-badge";
 import { Button } from "@/atomic/atm.button/button.component";
 import { Dialog, DialogContent } from "@/atomic/mol.dialog/dialog.component";
 import type { Lead } from "@/pages/leads/Leads";

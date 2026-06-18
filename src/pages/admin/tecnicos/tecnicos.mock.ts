@@ -1,0 +1,48 @@
+import type { Tecnico } from "@/model/rest/tecnico";
+
+export const MOCK_TECNICOS: Tecnico[] = [
+  {
+    id: "tecnico-1",
+    nome: "John Doe",
+    email: "john.doe@example.com",
+    cpfCnpj: "12345678900",
+    telefone: "11987654321",
+    foto: "https://github.com/teste.png",
+    observacoes: "Lorem ipsum dolor sit amet",
+    status: "ATIVO",
+    permissao: "ADMIN",
+  },
+  {
+    id: "tecnico-2",
+    nome: "John Smith",
+    email: "john.smith@example.com",
+    cpfCnpj: "12345678900",
+    telefone: "11999999999",
+    foto: "https://github.com/shadcn.png",
+    observacoes: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+    status: "INATIVO",
+    permissao: "TECNICO",
+  },
+  {
+    id: "tecnico-3",
+    nome: "John Doe",
+    email: "john.doe@example.com",
+    cpfCnpj: "12345678900",
+    telefone: "11987654321",
+    foto: "",
+    observacoes: "Lorem ipsum dolor sit amet",
+    status: "ATIVO",
+    permissao: "ADMIN",
+  },
+  {
+    id: "tecnico-4",
+    nome: "John Doe",
+    email: "john.doe@example.com",
+    cpfCnpj: "12345678900",
+    telefone: "11987654321",
+    foto: "https://github.com/shadcn.png",
+    observacoes: "Lorem ipsum dolor sit amet",
+    status: "ATIVO",
+    permissao: "ADMIN",
+  },
+];

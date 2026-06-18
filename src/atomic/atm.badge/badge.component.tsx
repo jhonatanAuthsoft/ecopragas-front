@@ -17,6 +17,7 @@ const badgeVariants = cva(
         blue: "bg-brand-secondary-light/20 text-brand-secondary-medium border border-brand-secondary-medium",
         orange:
           "bg-feedback-warning-light text-feedback-warning-dark border border-brand-accessory-orange",
+        neutral: "bg-grayscale-light text-grayscale-dark border border-grayscale-medium",
       },
     },
     defaultVariants: {

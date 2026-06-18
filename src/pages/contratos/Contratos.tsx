@@ -1,8 +1,8 @@
 import { CheckCircle2, Clock, FileText, Search, XCircle } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/atomic/atm.button/button.component";
-import { Body1, H1 } from "@/atomic/atm.typography";
 import { Input } from "@/atomic/atm.input/input.component";
+import { Body1, H1 } from "@/atomic/atm.typography";
 import { Card, CardContent } from "@/atomic/mol.card/card.component";
 import { ContratosTable } from "@/atomic/obj.contratos-table/contratos-table.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";

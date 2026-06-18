@@ -1,13 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-// TODO: atualizar conforme o backend
-export type AuthUser = {
-  id: string;
-  email: string;
-  name: string;
-  role: string;
-};
+import type { AuthUser } from "@/model/rest/auth";
 
 interface AuthState {
   token: string | null;

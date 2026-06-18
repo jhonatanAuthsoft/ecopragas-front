@@ -1,6 +1,7 @@
-import { Edit, Trash2 } from "lucide-react";
+import { PencilSquareIcon } from "@/assets/icons/pencil-square";
+import { TrashIcon } from "@/assets/icons/trash";
 import { Avatar, AvatarFallback, AvatarImage } from "@/atomic/atm.avatar/avatar.component";
-import { Button } from "@/atomic/atm.button/button.component";
+import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
 import {
   Table,
   TableBody,
@@ -9,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/atomic/mol.table/table.component";
-import type { Tecnico } from "@/services/tecnicos.service";
+import type { Tecnico } from "@/model/rest/tecnico";
 import { formatCPFCNPJ, formatPhone } from "@/utils/formatters";
 
 interface TecnicosTableProps {
@@ -29,7 +30,7 @@ export const TecnicosTable = ({ tecnicos, onEdit, onDelete }: TecnicosTableProps
   }
 
   return (
-    <div className="rounded-md border border-border p-md">
+    <div className="flex flex-col gap-xs rounded-md border border-border p-md">
       <Table>
         <TableHeader>
           <TableRow>
@@ -57,30 +58,36 @@ export const TecnicosTable = ({ tecnicos, onEdit, onDelete }: TecnicosTableProps
               </TableCell>
               <TableCell>{tecnico.telefone ? formatPhone(tecnico.telefone) : "-"}</TableCell>
               <TableCell className="text-muted-foreground">{tecnico.email}</TableCell>
-              <TableCell className="text-right">
-                <div className="flex justify-end gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-muted-foreground hover:text-foreground"
-                    onClick={() => onEdit(tecnico)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-feedback-error-medium hover:text-feedback-error-dark hover:bg-feedback-error-light/10"
+              <TableCell className="max-w-[70px] text-right">
+                <div className="flex justify-end gap-md">
+                  <button type="button" className="cursor-pointer" onClick={() => onEdit(tecnico)}>
+                    <PencilSquareIcon
+                      title="Editar"
+                      className="text-grayscale-dark hover:text-grayscale-x-dark"
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    className="cursor-pointer"
                     onClick={() => onDelete(tecnico)}
                   >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                    <TrashIcon
+                      title="Excluir"
+                      className="text-feedback-error-medium hover:text-feedback-error-dark"
+                    />
+                  </button>
                 </div>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+
+      <PaginationControl
+        currentPage={1}
+        totalPages={Math.ceil(tecnicos.length / 5)}
+        onPageChange={() => {}}
+      />
     </div>
   );
 };

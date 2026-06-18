@@ -1,26 +1,28 @@
-import { ChevronDown } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { ChevronDown, LogOut } from 'lucide-react';
+import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { CalendarIcon } from '@/assets/icons/calendar';
+import { ChartBarIcon } from '@/assets/icons/chart-bar';
 import { ChevronDoubleLeftIcon } from '@/assets/icons/chevron-double-left';
+import { ClipboardDocumentListIcon } from '@/assets/icons/clipboard-document-list';
+import { Squares2x2Icon } from '@/assets/icons/squares-2x2';
+import { UserPlusIcon } from '@/assets/icons/user-plus';
+import { UsersIcon } from '@/assets/icons/users';
+import { WrenchScrewdriverIcon } from '@/assets/icons/wrench-screwdriver';
 import { Button } from '@/atomic/atm.button/button.component';
+import { H4 } from '@/atomic/atm.typography';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/atomic/mol.tooltip/tooltip.component';
-import { ROUTES } from '@/constants/routes';
-import { cn } from '@/lib/utils';
-import { useSidebarStore } from '@/store/sidebar';
-import { H4 } from '@/atomic/atm.typography';
-import { UserPlusIcon } from '@/assets/icons/user-plus';
-import { Squares2x2Icon } from '@/assets/icons/squares-2x2';
-import { UsersIcon } from '@/assets/icons/users';
-import { ClipboardDocumentListIcon } from '@/assets/icons/clipboard-document-list';
-import { CalendarIcon } from '@/assets/icons/calendar';
-import { ChartBarIcon } from '@/assets/icons/chart-bar';
-import { WrenchScrewdriverIcon } from '@/assets/icons/wrench-screwdriver';
-
 import { ROLES } from '@/constants/roles';
+import { ROUTES } from '@/constants/routes';
+import { useLogout } from '@/domain/auth';
+import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth';
+import { useSidebarStore } from '@/store/sidebar';
+import { accountItemStyle } from './sidebar.style';
 
 const ADMIN_MENU = [
   { icon: UserPlusIcon, label: 'CRM / Leads', path: ROUTES.LEADS },
@@ -56,7 +58,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
   const user = useAuthStore((state) => state.user);
 
   const menuItems =
-    user?.role === ROLES.TECHNICIAN ? TECHNICIAN_MENU : ADMIN_MENU;
+    user?.perfil === ROLES.TECNICO ? TECHNICIAN_MENU : ADMIN_MENU;
 
   return (
     <aside
@@ -119,9 +121,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
           </ul>
         </nav>
 
-        <div className='border-t border-sidebar-border pt-2xs px-md pb-lg'>
-          <AccountItem isMinimized={isMinimized} />
-        </div>
+        <AccountItem isMinimized={isMinimized} />
       </div>
     </aside>
   );
@@ -175,21 +175,68 @@ interface AccountItemProps {
 }
 
 const AccountItem = ({ isMinimized }: AccountItemProps) => {
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
   const user = useAuthStore((state) => state.user);
-  const username = user?.name || 'Usuário';
+  const clearSession = useAuthStore((state) => state.clearSession);
+  const username = user?.nomeCompleto || 'Usuário';
   const initials = username.slice(0, 2).toUpperCase();
 
-  return (
-    <div
-      className={cn('flex items-center gap-xs py-2xs', !isMinimized && 'px-xs')}
+  const { logout, isLogoutLoading } = useLogout({
+    onSettled: () => {
+      clearSession();
+      navigate(ROUTES.AUTH.LOGIN);
+    },
+  });
+
+  const styles = accountItemStyle({
+    isMinimized,
+    open,
+  });
+
+  const trigger = (
+    <button
+      type='button'
+      aria-expanded={open}
+      onClick={() => setOpen((current) => !current)}
+      className={styles.trigger()}
     >
-      <div className='shrink-0 flex items-center justify-center size-[40px] bg-brand-accessory-green rounded-full'>
-        <H4 className='text-white'>{initials}</H4>
+      <div className={styles.avatar()}>
+        <H4 className={styles.avatarText()}>{initials}</H4>
       </div>
-      {!isMinimized && (
-        <H4 className='text-grayscale-medium truncate'>{username}</H4>
-      )}
-      <ChevronDown className='size-[20px] text-grayscale-dark' />
+      {!isMinimized && <H4 className={styles.username()}>{username}</H4>}
+      <ChevronDown className={styles.chevron()} />
+    </button>
+  );
+
+  return (
+    <div className={styles.wrapper()}>
+      <div className={styles.root()}>
+        {isMinimized ? (
+          <Tooltip>
+            <TooltipTrigger asChild>{trigger}</TooltipTrigger>
+            <TooltipContent side='right'>{username}</TooltipContent>
+          </Tooltip>
+        ) : (
+          trigger
+        )}
+
+        {open && (
+          <div className={styles.expanded()}>
+            <Button
+              type='button'
+              variant='ghost'
+              fullWidth
+              disabled={isLogoutLoading}
+              onClick={() => logout()}
+              className={styles.logoutButton()}
+              leftIcon={<LogOut className={styles.logoutButtonIcon()} />}
+            >
+              {isMinimized ? 'Sair' : 'Sair da conta'}
+            </Button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
