@@ -16,4 +16,8 @@ export const ROUTES = {
   SCHEDULING: "/admin/scheduling",
   REPORT: "/admin/report",
   TECHNICIAN: "/admin/technician",
+  TEMPORARY_FALLBACK: {
+    TECNICO: "/temporary-fallback/technician",
+    CLIENTE: "/temporary-fallback/client",
+  },
 };

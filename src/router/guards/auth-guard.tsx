@@ -4,6 +4,7 @@ import type { Role } from "@/constants/roles";
 import { ROUTES } from "@/constants/routes";
 import { useAuthHydration } from "@/hooks/use-auth-hydration";
 import { useAuthStore } from "@/store/auth";
+import { getDefaultAuthenticatedRoute } from "../get-default-authenticated-route";
 
 interface AuthGuardProps {
   roles?: Role[];
@@ -14,7 +15,7 @@ interface AuthGuardProps {
 export function AuthGuard({
   roles,
   redirectTo = ROUTES.AUTH.LOGIN,
-  unauthorizedRedirectTo = ROUTES.HOME,
+  unauthorizedRedirectTo,
 }: AuthGuardProps = {}) {
   const location = useLocation();
   const hydrated = useAuthHydration();
@@ -30,7 +31,9 @@ export function AuthGuard({
   }
 
   if (roles?.length && (!user?.perfil || !roles.includes(user.perfil))) {
-    return <Navigate to={unauthorizedRedirectTo} replace />;
+    return (
+      <Navigate to={unauthorizedRedirectTo || getDefaultAuthenticatedRoute(user?.perfil)} replace />
+    );
   }
 
   return <Outlet />;
