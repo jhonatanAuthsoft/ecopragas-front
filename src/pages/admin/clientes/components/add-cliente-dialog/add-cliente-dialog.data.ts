@@ -1,32 +1,49 @@
+import type { FieldPath } from "react-hook-form";
 import type { SelectInputOption } from "@/atomic/atm.select-input";
-import type { ClienteFormValues } from "./add-cliente-dialog.types";
+import type { ClienteEndereco, ClienteFormValues } from "@/model/rest/cliente";
 
-export const DEFAULT_VALUES: ClienteFormValues = {
-  nome: "",
-  cpfCnpj: "",
-  tipoCliente: "",
-  email: "",
-  telefone: "",
-  endereco: "",
+export const EMPTY_ENDERECO_DRAFT: ClienteEndereco = {
+  cep: "",
+  estado: "",
+  cidade: "",
   bairro: "",
+  rua: "",
   numero: "",
   complemento: "",
-  cidade: "",
-  estado: "",
-  cep: "",
-  status: "",
-  observacoes: "",
-  salvarEnderecoPadrao: false,
+  padrao: false,
 };
 
+export const DEFAULT_VALUES = {
+  nomeRazaoSocial: "",
+  cnpjCpf: "",
+  tipo: "RECORRENTE",
+  email: "",
+  telefone: "",
+  observacoes: "",
+  status: "ATIVO",
+  enderecos: [],
+  documentos: [],
+  enderecoDraft: EMPTY_ENDERECO_DRAFT,
+} as ClienteFormValues;
+
 export const DADOS_FIELDS = [
-  "nome",
-  "cpfCnpj",
-  "tipoCliente",
+  "nomeRazaoSocial",
+  "cnpjCpf",
+  "tipo",
   "status",
   "email",
   "telefone",
 ] as const satisfies ReadonlyArray<keyof ClienteFormValues>;
+
+export const ENDERECO_DRAFT_FIELDS = [
+  "enderecoDraft.cep",
+  "enderecoDraft.estado",
+  "enderecoDraft.cidade",
+  "enderecoDraft.bairro",
+  "enderecoDraft.rua",
+  "enderecoDraft.numero",
+  "enderecoDraft.complemento",
+] as const satisfies ReadonlyArray<FieldPath<ClienteFormValues>>;
 
 // TODO: ver se vale continuar com o numero e complemento como obrigatórios
 export const ENDERECO_FIELDS = [
@@ -34,19 +51,19 @@ export const ENDERECO_FIELDS = [
   "estado",
   "cidade",
   "bairro",
-  "endereco",
+  "rua",
   "numero",
   "complemento",
-] as const satisfies ReadonlyArray<keyof ClienteFormValues>;
+] as const satisfies ReadonlyArray<keyof ClienteEndereco>;
 
 export const TIPO_CLIENTE_OPTIONS: SelectInputOption[] = [
-  { value: "fixo", label: "Fixo" },
-  { value: "recorrente", label: "Recorrente" },
+  { value: "RECORRENTE", label: "Fixo" },
+  { value: "ESPORADICO", label: "Esporádico" },
 ];
 
 export const STATUS_OPTIONS: SelectInputOption[] = [
-  { value: "ativo", label: "Ativo" },
-  { value: "inativo", label: "Inativo" },
+  { value: "ATIVO", label: "Ativo" },
+  { value: "INATIVO", label: "Inativo" },
 ];
 
 export const ESTADO_OPTIONS: SelectInputOption[] = [

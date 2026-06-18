@@ -21,6 +21,34 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/ordens-servico/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Obtém detalhes de uma Ordem de Serviço pelo ID
+         * @description Obtém todos os dados cadastrais da OS
+         */
+        get: operations["obterPorId"];
+        /**
+         * Edita uma Ordem de Serviço existente
+         * @description Edita todas as informações cadastrais da OS
+         */
+        put: operations["editar_1"];
+        post?: never;
+        /**
+         * Exclui uma Ordem de Serviço
+         * @description Exclui uma OS permanentemente
+         */
+        delete: operations["excluir"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/leads/{id}": {
         parameters: {
             query?: never;
@@ -32,18 +60,18 @@ export interface paths {
          * Obtém detalhes de um lead pelo ID
          * @description Obtém detalhes de um lead específico
          */
-        get: operations["obterPorId"];
+        get: operations["obterPorId_1"];
         /**
          * Edita um lead existente
          * @description Edita todas as informações de um lead
          */
-        put: operations["editar_1"];
+        put: operations["editar_2"];
         post?: never;
         /**
          * Exclui um lead
          * @description Exclui um lead permanentemente
          */
-        delete: operations["excluir"];
+        delete: operations["excluir_1"];
         options?: never;
         head?: never;
         patch?: never;
@@ -60,18 +88,66 @@ export interface paths {
          * Obtém detalhes de um cliente pelo ID
          * @description Obtém todos os dados cadastrais do cliente
          */
-        get: operations["obterPorId_1"];
+        get: operations["obterPorId_2"];
         /**
          * Edita um cliente existente
          * @description Edita todas as informações cadastrais do cliente
          */
-        put: operations["editar_2"];
+        put: operations["editar_3"];
         post?: never;
         /**
          * Exclui um cliente
          * @description Exclui um cliente permanentemente
          */
-        delete: operations["excluir_1"];
+        delete: operations["excluir_2"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/agendamentos/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Obtém detalhes de um agendamento pelo ID
+         * @description Retorna todos os dados do agendamento, checklist e progresso
+         */
+        get: operations["obterPorId_3"];
+        /**
+         * Edita um agendamento existente
+         * @description Edita as informações de data, técnico, endereço ou observações do agendamento
+         */
+        put: operations["editar_4"];
+        post?: never;
+        /**
+         * Exclui um agendamento
+         * @description Exclui o agendamento permanentemente
+         */
+        delete: operations["excluir_3"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/agendamentos/{id}/checklist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Atualiza os itens do checklist do agendamento
+         * @description Marca as atividades como concluídas ou pendentes, recalculando o progresso do serviço
+         */
+        put: operations["atualizarChecklist"];
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -151,6 +227,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/ordens-servico": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Obtém uma lista paginada de Ordens de Serviço
+         * @description Retorna lista de OSs paginada e com filtros
+         */
+        get: operations["obterTodos"];
+        put?: never;
+        /**
+         * Cadastra uma nova Ordem de Serviço
+         * @description Cadastra uma nova OS associada a um cliente
+         */
+        post: operations["cadastrar_1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/leads": {
         parameters: {
             query?: never;
@@ -162,13 +262,13 @@ export interface paths {
          * Obtém lista paginada de leads
          * @description Retorna lista de leads paginada e com filtros
          */
-        get: operations["obterTodos"];
+        get: operations["obterTodos_1"];
         put?: never;
         /**
          * Cadastra um novo lead
          * @description Cadastra um novo lead no funil de vendas
          */
-        post: operations["cadastrar_1"];
+        post: operations["cadastrar_2"];
         delete?: never;
         options?: never;
         head?: never;
@@ -186,13 +286,37 @@ export interface paths {
          * Obtém uma lista paginada de clientes
          * @description Retorna lista de clientes paginada e com filtros
          */
-        get: operations["obterTodos_1"];
+        get: operations["obterTodos_2"];
         put?: never;
         /**
          * Cadastra um novo cliente
          * @description Cadastra um novo cliente e seus endereços e documentos
          */
-        post: operations["cadastrar_2"];
+        post: operations["cadastrar_3"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/agendamentos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Obtém uma lista paginada de agendamentos
+         * @description Retorna lista de agendamentos com paginação, busca por texto e filtro de datas
+         */
+        get: operations["obterTodos_3"];
+        put?: never;
+        /**
+         * Cadastra um novo agendamento
+         * @description Cadastra um agendamento e gera automaticamente o checklist de serviços
+         */
+        post: operations["cadastrar_4"];
         delete?: never;
         options?: never;
         head?: never;
@@ -253,6 +377,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/ordens-servico/{id}/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Baixa o PDF de uma Ordem de Serviço
+         * @description Gera e retorna o PDF da OS para download/impressão
+         */
+        get: operations["baixarPdf"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/leads/dashboard": {
         parameters: {
             query?: never;
@@ -304,7 +448,7 @@ export interface paths {
         put?: never;
         post?: never;
         /** Exclui um usuário. @ADMINISTRATIVO */
-        delete: operations["excluir_2"];
+        delete: operations["excluir_4"];
         options?: never;
         head?: never;
         patch?: never;
@@ -324,6 +468,29 @@ export interface components {
             /** @enum {string} */
             status: "ATIVO" | "INATIVO";
         };
+        ErrorDetail: {
+            code?: string;
+            field?: string;
+            detail?: string;
+        };
+        PaginationInfo: {
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+        };
+        StandardResponseUsuarioResponseDTO: {
+            success?: boolean;
+            timestamp?: string;
+            message?: string;
+            data?: components["schemas"]["UsuarioResponseDTO"];
+            errors?: components["schemas"]["ErrorDetail"][];
+            pagination?: components["schemas"]["PaginationInfo"];
+        };
         UsuarioResponseDTO: {
             /** Format: uuid */
             id: string;
@@ -334,6 +501,64 @@ export interface components {
             /** @enum {string} */
             perfil: "ADMINISTRATIVO" | "TECNICO" | "CLIENTE";
             cpf?: string;
+        };
+        EditarOrdemServicoInputDTO: {
+            /** Format: uuid */
+            clienteId: string;
+            /** @enum {string} */
+            tipoServico: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
+            tecnicoResponsavel?: string;
+            valor: number;
+            /** Format: date-time */
+            dataHoraServico: string;
+            rua?: string;
+            numero?: string;
+            complemento?: string;
+            bairro?: string;
+            cidade?: string;
+            estado?: string;
+            cep?: string;
+            /** @enum {string} */
+            status: "AGENDADA" | "EM_ANDAMENTO" | "CONCLUIDA" | "CANCELADA";
+            observacoes?: string;
+        };
+        OrdemServicoResponseDTO: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: int64 */
+            osNumero?: number;
+            /** Format: uuid */
+            clienteId?: string;
+            clienteNome?: string;
+            clienteCpfCnpj?: string;
+            /** @enum {string} */
+            tipoServico?: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
+            tecnicoResponsavel?: string;
+            valor?: number;
+            /** Format: date-time */
+            dataHoraServico?: string;
+            rua?: string;
+            numero?: string;
+            complemento?: string;
+            bairro?: string;
+            cidade?: string;
+            estado?: string;
+            cep?: string;
+            /** @enum {string} */
+            status?: "AGENDADA" | "EM_ANDAMENTO" | "CONCLUIDA" | "CANCELADA";
+            observacoes?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        StandardResponseOrdemServicoResponseDTO: {
+            success?: boolean;
+            timestamp?: string;
+            message?: string;
+            data?: components["schemas"]["OrdemServicoResponseDTO"];
+            errors?: components["schemas"]["ErrorDetail"][];
+            pagination?: components["schemas"]["PaginationInfo"];
         };
         EditarLeadInputDTO: {
             nome?: string;
@@ -364,6 +589,14 @@ export interface components {
             criadoEm?: string;
             /** Format: date-time */
             atualizadoEm?: string;
+        };
+        StandardResponseLeadResponseDTO: {
+            success?: boolean;
+            timestamp?: string;
+            message?: string;
+            data?: components["schemas"]["LeadResponseDTO"];
+            errors?: components["schemas"]["ErrorDetail"][];
+            pagination?: components["schemas"]["PaginationInfo"];
         };
         ClienteDocumentoInputDTO: {
             nome?: string;
@@ -431,16 +664,123 @@ export interface components {
             cidade?: string;
             estado?: string;
         };
+        StandardResponseClienteResponseDTO: {
+            success?: boolean;
+            timestamp?: string;
+            message?: string;
+            data?: components["schemas"]["ClienteResponseDTO"];
+            errors?: components["schemas"]["ErrorDetail"][];
+            pagination?: components["schemas"]["PaginationInfo"];
+        };
+        EditarAgendamentoInputDTO: {
+            /** Format: uuid */
+            clienteId: string;
+            tecnicoResponsavel?: string;
+            /** @enum {string} */
+            tipoServico: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
+            /** Format: date-time */
+            dataHoraServico: string;
+            rua?: string;
+            numero?: string;
+            complemento?: string;
+            bairro?: string;
+            cidade?: string;
+            estado?: string;
+            cep?: string;
+            /** @enum {string} */
+            recorrencia: "NENHUMA" | "SEMANAL" | "MENSAL" | "TRIMESTRAL" | "SEMESTRAL" | "ANUAL";
+            /** @enum {string} */
+            status: "AGENDADO" | "EM_ANDAMENTO" | "CONCLUIDO" | "CANCELADO";
+            qrCodePortaIsca?: string;
+            fotoAntesUrl?: string;
+            fotoDepoisUrl?: string;
+            observacoes?: string;
+            /** Format: uuid */
+            ordemServicoId?: string;
+        };
+        AgendamentoAtividadeResponseDTO: {
+            /** Format: uuid */
+            id?: string;
+            descricao?: string;
+            concluido?: boolean;
+        };
+        AgendamentoResponseDTO: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            clienteId?: string;
+            clienteNome?: string;
+            clienteCpfCnpj?: string;
+            tecnicoResponsavel?: string;
+            /** @enum {string} */
+            tipoServico?: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
+            /** Format: date-time */
+            dataHoraServico?: string;
+            rua?: string;
+            numero?: string;
+            complemento?: string;
+            bairro?: string;
+            cidade?: string;
+            estado?: string;
+            cep?: string;
+            /** @enum {string} */
+            recorrencia?: "NENHUMA" | "SEMANAL" | "MENSAL" | "TRIMESTRAL" | "SEMESTRAL" | "ANUAL";
+            /** @enum {string} */
+            status?: "AGENDADO" | "EM_ANDAMENTO" | "CONCLUIDO" | "CANCELADO";
+            /** Format: uuid */
+            ordemServicoId?: string;
+            qrCodePortaIsca?: string;
+            fotoAntesUrl?: string;
+            fotoDepoisUrl?: string;
+            observacoes?: string;
+            atividades?: components["schemas"]["AgendamentoAtividadeResponseDTO"][];
+            /** Format: double */
+            progresso?: number;
+            conflitoHorario?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        StandardResponseAgendamentoResponseDTO: {
+            success?: boolean;
+            timestamp?: string;
+            message?: string;
+            data?: components["schemas"]["AgendamentoResponseDTO"];
+            errors?: components["schemas"]["ErrorDetail"][];
+            pagination?: components["schemas"]["PaginationInfo"];
+        };
+        AtualizarAtividadeInputDTO: {
+            /** Format: uuid */
+            id: string;
+            concluido: boolean;
+        };
         RedefinirSenhaInputDTO: {
             email?: string;
         };
+        StandardResponseBoolean: {
+            success?: boolean;
+            timestamp?: string;
+            message?: string;
+            data?: boolean;
+            errors?: components["schemas"]["ErrorDetail"][];
+            pagination?: components["schemas"]["PaginationInfo"];
+        };
         LoginUsuarioInputDTO: {
-            email: string;
+            login: string;
             senha: string;
         };
         LoginUsuarioResponseDTO: {
             usuario?: components["schemas"]["UsuarioResponseDTO"];
             token: string;
+        };
+        StandardResponseLoginUsuarioResponseDTO: {
+            success?: boolean;
+            timestamp?: string;
+            message?: string;
+            data?: components["schemas"]["LoginUsuarioResponseDTO"];
+            errors?: components["schemas"]["ErrorDetail"][];
+            pagination?: components["schemas"]["PaginationInfo"];
         };
         CadastrarUsuarioInputDTO: {
             nomeCompleto?: string;
@@ -451,6 +791,26 @@ export interface components {
             perfil: "ADMINISTRATIVO" | "TECNICO" | "CLIENTE";
             /** @enum {string} */
             status?: "ATIVO" | "INATIVO";
+        };
+        CadastrarOrdemServicoInputDTO: {
+            /** Format: uuid */
+            clienteId: string;
+            /** @enum {string} */
+            tipoServico: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
+            tecnicoResponsavel?: string;
+            valor: number;
+            /** Format: date-time */
+            dataHoraServico: string;
+            rua?: string;
+            numero?: string;
+            complemento?: string;
+            bairro?: string;
+            cidade?: string;
+            estado?: string;
+            cep?: string;
+            /** @enum {string} */
+            status: "AGENDADA" | "EM_ANDAMENTO" | "CONCLUIDA" | "CANCELADA";
+            observacoes?: string;
         };
         CadastrarLeadInputDTO: {
             nome?: string;
@@ -477,27 +837,57 @@ export interface components {
             enderecos: components["schemas"]["ClienteEnderecoInputDTO"][];
             documentos?: components["schemas"]["ClienteDocumentoInputDTO"][];
         };
+        CadastrarAgendamentoInputDTO: {
+            /** Format: uuid */
+            clienteId: string;
+            tecnicoResponsavel?: string;
+            /** @enum {string} */
+            tipoServico: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
+            /** Format: date-time */
+            dataHoraServico: string;
+            rua?: string;
+            numero?: string;
+            complemento?: string;
+            bairro?: string;
+            cidade?: string;
+            estado?: string;
+            cep?: string;
+            /** @enum {string} */
+            recorrencia: "NENHUMA" | "SEMANAL" | "MENSAL" | "TRIMESTRAL" | "SEMESTRAL" | "ANUAL";
+            qrCodePortaIsca?: string;
+            fotoAntesUrl?: string;
+            fotoDepoisUrl?: string;
+            observacoes?: string;
+            /** Format: uuid */
+            ordemServicoId?: string;
+        };
         AtualizarLeadStatusInputDTO: {
             /** @enum {string} */
             status: "NOVO" | "EM_CONTATO" | "PROPOSTA_ENVIADA" | "EM_NEGOCIACAO" | "GANHO" | "PERDIDO";
         };
-        PaginatedResponseDTOUsuarioResponseDTO: {
-            nodes?: components["schemas"]["UsuarioResponseDTO"][];
-            hasNextPage?: boolean;
-            hasPreviousPage?: boolean;
-            /** Format: int32 */
-            totalCount?: number;
-            /** Format: int32 */
-            totalPages?: number;
+        StandardResponseListUsuarioResponseDTO: {
+            success?: boolean;
+            timestamp?: string;
+            message?: string;
+            data?: components["schemas"]["UsuarioResponseDTO"][];
+            errors?: components["schemas"]["ErrorDetail"][];
+            pagination?: components["schemas"]["PaginationInfo"];
         };
-        PaginatedResponseDTOLeadResponseDTO: {
-            nodes?: components["schemas"]["LeadResponseDTO"][];
-            hasNextPage?: boolean;
-            hasPreviousPage?: boolean;
-            /** Format: int32 */
-            totalCount?: number;
-            /** Format: int32 */
-            totalPages?: number;
+        StandardResponseListOrdemServicoResponseDTO: {
+            success?: boolean;
+            timestamp?: string;
+            message?: string;
+            data?: components["schemas"]["OrdemServicoResponseDTO"][];
+            errors?: components["schemas"]["ErrorDetail"][];
+            pagination?: components["schemas"]["PaginationInfo"];
+        };
+        StandardResponseListLeadResponseDTO: {
+            success?: boolean;
+            timestamp?: string;
+            message?: string;
+            data?: components["schemas"]["LeadResponseDTO"][];
+            errors?: components["schemas"]["ErrorDetail"][];
+            pagination?: components["schemas"]["PaginationInfo"];
         };
         LeadDashboardDTO: {
             /** Format: int64 */
@@ -509,14 +899,21 @@ export interface components {
             valorPotencial?: number;
             valorFechado?: number;
         };
-        PaginatedResponseDTOClienteResponseDTO: {
-            nodes?: components["schemas"]["ClienteResponseDTO"][];
-            hasNextPage?: boolean;
-            hasPreviousPage?: boolean;
-            /** Format: int32 */
-            totalCount?: number;
-            /** Format: int32 */
-            totalPages?: number;
+        StandardResponseLeadDashboardDTO: {
+            success?: boolean;
+            timestamp?: string;
+            message?: string;
+            data?: components["schemas"]["LeadDashboardDTO"];
+            errors?: components["schemas"]["ErrorDetail"][];
+            pagination?: components["schemas"]["PaginationInfo"];
+        };
+        StandardResponseListClienteResponseDTO: {
+            success?: boolean;
+            timestamp?: string;
+            message?: string;
+            data?: components["schemas"]["ClienteResponseDTO"][];
+            errors?: components["schemas"]["ErrorDetail"][];
+            pagination?: components["schemas"]["PaginationInfo"];
         };
         ClienteDashboardDTO: {
             /** Format: int64 */
@@ -527,6 +924,22 @@ export interface components {
             clientesEsporadicos?: number;
             /** Format: int64 */
             totalClientes?: number;
+        };
+        StandardResponseClienteDashboardDTO: {
+            success?: boolean;
+            timestamp?: string;
+            message?: string;
+            data?: components["schemas"]["ClienteDashboardDTO"];
+            errors?: components["schemas"]["ErrorDetail"][];
+            pagination?: components["schemas"]["PaginationInfo"];
+        };
+        StandardResponseListAgendamentoResponseDTO: {
+            success?: boolean;
+            timestamp?: string;
+            message?: string;
+            data?: components["schemas"]["AgendamentoResponseDTO"][];
+            errors?: components["schemas"]["ErrorDetail"][];
+            pagination?: components["schemas"]["PaginationInfo"];
         };
     };
     responses: never;
@@ -558,7 +971,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["UsuarioResponseDTO"];
+                    "*/*": components["schemas"]["StandardResponseUsuarioResponseDTO"];
                 };
             };
         };
@@ -580,7 +993,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["LeadResponseDTO"];
+                    "*/*": components["schemas"]["StandardResponseOrdemServicoResponseDTO"];
                 };
             };
         };
@@ -596,7 +1009,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["EditarLeadInputDTO"];
+                "application/json": components["schemas"]["EditarOrdemServicoInputDTO"];
             };
         };
         responses: {
@@ -606,7 +1019,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["LeadResponseDTO"];
+                    "*/*": components["schemas"]["StandardResponseOrdemServicoResponseDTO"];
                 };
             };
         };
@@ -648,7 +1061,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ClienteResponseDTO"];
+                    "*/*": components["schemas"]["StandardResponseLeadResponseDTO"];
                 };
             };
         };
@@ -664,7 +1077,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["EditarClienteInputDTO"];
+                "application/json": components["schemas"]["EditarLeadInputDTO"];
             };
         };
         responses: {
@@ -674,7 +1087,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ClienteResponseDTO"];
+                    "*/*": components["schemas"]["StandardResponseLeadResponseDTO"];
                 };
             };
         };
@@ -699,6 +1112,168 @@ export interface operations {
             };
         };
     };
+    obterPorId_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StandardResponseClienteResponseDTO"];
+                };
+            };
+        };
+    };
+    editar_3: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditarClienteInputDTO"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StandardResponseClienteResponseDTO"];
+                };
+            };
+        };
+    };
+    excluir_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    obterPorId_3: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
+                };
+            };
+        };
+    };
+    editar_4: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditarAgendamentoInputDTO"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
+                };
+            };
+        };
+    };
+    excluir_3: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    atualizarChecklist: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AtualizarAtividadeInputDTO"][];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
+                };
+            };
+        };
+    };
     redefinirSenha: {
         parameters: {
             query?: never;
@@ -718,7 +1293,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": boolean;
+                    "*/*": components["schemas"]["StandardResponseBoolean"];
                 };
             };
         };
@@ -738,7 +1313,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": boolean;
+                    "*/*": components["schemas"]["StandardResponseBoolean"];
                 };
             };
         };
@@ -762,7 +1337,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["LoginUsuarioResponseDTO"];
+                    "*/*": components["schemas"]["StandardResponseLoginUsuarioResponseDTO"];
                 };
             };
         };
@@ -786,12 +1361,60 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["UsuarioResponseDTO"];
+                    "*/*": components["schemas"]["StandardResponseUsuarioResponseDTO"];
                 };
             };
         };
     };
     obterTodos: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+                searchText?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StandardResponseListOrdemServicoResponseDTO"];
+                };
+            };
+        };
+    };
+    cadastrar_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CadastrarOrdemServicoInputDTO"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StandardResponseOrdemServicoResponseDTO"];
+                };
+            };
+        };
+    };
+    obterTodos_1: {
         parameters: {
             query?: {
                 limit?: number;
@@ -812,12 +1435,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["PaginatedResponseDTOLeadResponseDTO"];
+                    "*/*": components["schemas"]["StandardResponseListLeadResponseDTO"];
                 };
             };
         };
     };
-    cadastrar_1: {
+    cadastrar_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -836,12 +1459,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["LeadResponseDTO"];
+                    "*/*": components["schemas"]["StandardResponseLeadResponseDTO"];
                 };
             };
         };
     };
-    obterTodos_1: {
+    obterTodos_2: {
         parameters: {
             query?: {
                 limit?: number;
@@ -860,12 +1483,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["PaginatedResponseDTOClienteResponseDTO"];
+                    "*/*": components["schemas"]["StandardResponseListClienteResponseDTO"];
                 };
             };
         };
     };
-    cadastrar_2: {
+    cadastrar_3: {
         parameters: {
             query?: never;
             header?: never;
@@ -884,7 +1507,57 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ClienteResponseDTO"];
+                    "*/*": components["schemas"]["StandardResponseClienteResponseDTO"];
+                };
+            };
+        };
+    };
+    obterTodos_3: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+                searchText?: string;
+                dataInicio?: string;
+                dataFim?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StandardResponseListAgendamentoResponseDTO"];
+                };
+            };
+        };
+    };
+    cadastrar_4: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CadastrarAgendamentoInputDTO"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
                 };
             };
         };
@@ -910,7 +1583,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["LeadResponseDTO"];
+                    "*/*": components["schemas"]["StandardResponseLeadResponseDTO"];
                 };
             };
         };
@@ -936,7 +1609,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["PaginatedResponseDTOUsuarioResponseDTO"];
+                    "*/*": components["schemas"]["StandardResponseListUsuarioResponseDTO"];
                 };
             };
         };
@@ -958,7 +1631,29 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["UsuarioResponseDTO"];
+                    "*/*": components["schemas"]["StandardResponseUsuarioResponseDTO"];
+                };
+            };
+        };
+    };
+    baixarPdf: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
                 };
             };
         };
@@ -978,7 +1673,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["LeadDashboardDTO"];
+                    "*/*": components["schemas"]["StandardResponseLeadDashboardDTO"];
                 };
             };
         };
@@ -998,12 +1693,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ClienteDashboardDTO"];
+                    "*/*": components["schemas"]["StandardResponseClienteDashboardDTO"];
                 };
             };
         };
     };
-    excluir_2: {
+    excluir_4: {
         parameters: {
             query?: never;
             header?: never;

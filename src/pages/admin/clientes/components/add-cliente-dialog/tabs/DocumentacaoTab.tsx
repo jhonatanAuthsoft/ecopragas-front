@@ -1,17 +1,19 @@
 import { AlertTriangle, Trash2, Upload, X } from "lucide-react";
 import { useState } from "react";
+import { useFormContext } from "react-hook-form";
 import { Button } from "@/atomic/atm.button/button.component";
 import { TabsContent } from "@/atomic/mol.tabs/tabs.component";
 import { cn } from "@/lib/utils";
+import type { ClienteFormValues } from "@/model/rest/cliente";
 import { VALID_FILE_TYPES } from "../add-cliente-dialog.data";
 
 interface DocumentacaoTabProps {
-  files: File[];
-  onFilesChange: (files: File[]) => void;
   isSubmitting: boolean;
 }
 
-export const DocumentacaoTab = ({ files, onFilesChange, isSubmitting }: DocumentacaoTabProps) => {
+export const DocumentacaoTab = ({ isSubmitting }: DocumentacaoTabProps) => {
+  const { setValue, watch } = useFormContext<ClienteFormValues>();
+  const documentos = watch("documentos");
   const [fileError, setFileError] = useState<string | null>(null);
 
   const validateFileTypes = (selectedFiles: File[]) => {
@@ -28,15 +30,18 @@ export const DocumentacaoTab = ({ files, onFilesChange, isSubmitting }: Document
     return true;
   };
 
+  const handleFilesChange = (selectedFiles: File[]) => {
+    if (validateFileTypes(selectedFiles)) {
+      setValue("documentos", selectedFiles, { shouldDirty: true });
+    }
+  };
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files?.length) {
       return;
     }
 
-    const selectedFiles = Array.from(event.target.files);
-    if (validateFileTypes(selectedFiles)) {
-      onFilesChange(selectedFiles);
-    }
+    handleFilesChange(Array.from(event.target.files));
   };
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
@@ -46,14 +51,15 @@ export const DocumentacaoTab = ({ files, onFilesChange, isSubmitting }: Document
       return;
     }
 
-    const droppedFiles = Array.from(event.dataTransfer.files);
-    if (validateFileTypes(droppedFiles)) {
-      onFilesChange(droppedFiles);
-    }
+    handleFilesChange(Array.from(event.dataTransfer.files));
   };
 
   const handleRemoveFile = (index: number) => {
-    onFilesChange(files.filter((_, fileIndex) => fileIndex !== index));
+    setValue(
+      "documentos",
+      documentos.filter((_, fileIndex) => fileIndex !== index),
+      { shouldDirty: true },
+    );
   };
 
   return (
@@ -103,10 +109,10 @@ export const DocumentacaoTab = ({ files, onFilesChange, isSubmitting }: Document
         </div>
       )}
 
-      {files.length > 0 && (
+      {documentos.length > 0 && (
         <div className="space-y-2">
           <h4 className="text-sm font-medium text-grayscale-dark">Arquivos selecionados:</h4>
-          {files.map((file, index) => (
+          {documentos.map((file, index) => (
             <div
               key={`${file.name}-${file.size}-${index}`}
               className="flex items-center justify-between border border-grayscale-light rounded-lg p-3"

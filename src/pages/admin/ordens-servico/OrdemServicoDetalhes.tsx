@@ -62,8 +62,7 @@ export default function OrdemServicoDetalhes() {
           onDownload={handleDownload}
         />
 
-        {/* TODO: Mostrar somente para os concluidos */}
-        <OrdemServicoVariationsCards ordem={ordem} />
+        {ordem.status === "concluida" && <OrdemServicoVariationsCards ordem={ordem} />}
 
         <EditOrdemServicoDialog
           open={isEditDialogOpen}

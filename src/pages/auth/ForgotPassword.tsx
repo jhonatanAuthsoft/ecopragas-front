@@ -15,9 +15,6 @@ export default function ForgotPassword() {
       toast.success("E-mail enviado");
       navigate(ROUTES.AUTH.LOGIN);
     },
-    onError: () => {
-      toast.error("Erro ao enviar e-mail de recuperacao");
-    },
   });
 
   function handleSubmit(values: RedefinirSenhaInput) {

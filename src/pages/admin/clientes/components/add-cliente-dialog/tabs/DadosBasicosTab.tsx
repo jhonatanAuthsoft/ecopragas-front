@@ -3,7 +3,13 @@ import { SelectInput } from "@/atomic/atm.select-input";
 import { TextInput } from "@/atomic/atm.text-input";
 import { TextareaInput } from "@/atomic/atm.textarea-input";
 import { TabsContent } from "@/atomic/mol.tabs/tabs.component";
-import { EmailValidator, FormField, PhoneValidator, RequiredValidator } from "@/atomic/obj.form";
+import {
+  CpfCnpjValidator,
+  EmailValidator,
+  FormField,
+  PhoneValidator,
+  RequiredValidator,
+} from "@/atomic/obj.form";
 import { formatCPFCNPJ, formatPhone } from "@/utils/formatters";
 import { STATUS_OPTIONS, TIPO_CLIENTE_OPTIONS } from "../add-cliente-dialog.data";
 
@@ -14,12 +20,11 @@ interface DadosBasicosTabProps {
 export const DadosBasicosTab = ({ onNext }: DadosBasicosTabProps) => (
   <TabsContent value="dados" forceMount className="space-y-6 data-[state=inactive]:hidden">
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <FormField name="nome" validators={[RequiredValidator()]}>
-        <TextInput label="Nome/ Razão Social" placeholder="João Silva" hasClearButton />
+      <FormField name="nomeRazaoSocial" validators={[RequiredValidator()]}>
+        <TextInput label="Nome/ Razão Social" placeholder="João Silva" />
       </FormField>
 
-      {/* TODO: adicionar o CnpjValidator */}
-      <FormField name="cpfCnpj" validators={[RequiredValidator()]}>
+      <FormField name="cnpjCpf" validators={[RequiredValidator(), CpfCnpjValidator()]}>
         <TextInput
           label="CPF/CNPJ"
           placeholder="EX. 123.456.789/0001"
@@ -28,7 +33,7 @@ export const DadosBasicosTab = ({ onNext }: DadosBasicosTabProps) => (
         />
       </FormField>
 
-      <FormField name="tipoCliente" validators={[RequiredValidator()]}>
+      <FormField name="tipo" validators={[RequiredValidator()]}>
         <SelectInput
           label="Tipo de cliente"
           placeholder="Selecione o tipo de cliente"

@@ -10,75 +10,69 @@ import { Body1, Body2, H1, H2, H3, H4, InputCaption } from "@/atomic/atm.typogra
 import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
+import type { Cliente, ClienteDocumento } from "@/model/rest/cliente";
 import { formatCEP, formatCPFCNPJ, formatCurrency, formatPhone } from "@/utils/formatters";
-import type { ClienteDetalhes as ClienteDetalhesData, ClienteDocumento } from "./types";
 
 const DOCUMENTOS_PAGE_SIZE = 4;
 
-const MOCK_CLIENTE: ClienteDetalhesData = {
+const MOCK_CLIENTE: Cliente = {
   id: "mock-cliente-001",
-  nome: "Supermercado Bom Preco Ltda",
-  cpfCnpj: "12.345.678/0001-90",
-  tipoCliente: "fixo",
+  nomeRazaoSocial: "Supermercado Bom Preco Ltda",
+  cnpjCpf: "12.345.678/0001-90",
+  tipo: "RECORRENTE",
   telefone: "(11) 98765-4321",
   email: "contato@bompreco.com.br",
-  endereco: "Rua das Flores, 1500, Loja 3",
+  status: "ATIVO",
   cidade: "Sao Paulo",
   estado: "SP",
-  cep: "01310-100",
-  status: "ativo",
-  datacadastro: new Date("2024-06-15"),
-  ultimoServico: new Date("2026-01-15"),
+  dataUltimoServico: "2026-01-15",
   observacoes: "Cliente prioritario - contrato anual",
+  enderecos: [
+    {
+      rua: "Rua das Flores",
+      numero: "1500",
+      complemento: "Loja 3",
+      bairro: "",
+      cidade: "Sao Paulo",
+      estado: "SP",
+      cep: "01310-100",
+    },
+  ],
   documentos: [
     {
-      id: "doc-001",
       nome: "Contrato de Servico.pdf",
-      conteudo: "data:application/pdf;base64,JVBERi0xLjQK",
-      tamanho: "245 KB",
       tipo: "application/pdf",
+      url: "data:application/pdf;base64,JVBERi0xLjQK",
     },
     {
-      id: "doc-002",
       nome: "Alvara de Funcionamento.pdf",
-      conteudo: "data:application/pdf;base64,JVBERi0xLjQK",
-      tamanho: "120 KB",
       tipo: "application/pdf",
+      url: "data:application/pdf;base64,JVBERi0xLjQK",
     },
     {
-      id: "doc-003",
       nome: "CNPJ.pdf",
-      conteudo: "data:application/pdf;base64,JVBERi0xLjQK",
-      tamanho: "85 KB",
       tipo: "application/pdf",
+      url: "data:application/pdf;base64,JVBERi0xLjQK",
     },
     {
-      id: "doc-004",
       nome: "Certificado Sanitario.pdf",
-      conteudo: "data:application/pdf;base64,JVBERi0xLjQK",
-      tamanho: "310 KB",
       tipo: "application/pdf",
+      url: "data:application/pdf;base64,JVBERi0xLjQK",
     },
     {
-      id: "doc-005",
       nome: "Licenca Ambiental.pdf",
-      conteudo: "data:application/pdf;base64,JVBERi0xLjQK",
-      tamanho: "198 KB",
       tipo: "application/pdf",
+      url: "data:application/pdf;base64,JVBERi0xLjQK",
     },
     {
-      id: "doc-006",
       nome: "Comprovante Endereco.pdf",
-      conteudo: "data:application/pdf;base64,JVBERi0xLjQK",
-      tamanho: "64 KB",
       tipo: "application/pdf",
+      url: "data:application/pdf;base64,JVBERi0xLjQK",
     },
     {
-      id: "doc-007",
       nome: "ART Responsavel Tecnico.pdf",
-      conteudo: "data:application/pdf;base64,JVBERi0xLjQK",
-      tamanho: "142 KB",
       tipo: "application/pdf",
+      url: "data:application/pdf;base64,JVBERi0xLjQK",
     },
   ],
 };
@@ -95,15 +89,16 @@ const ClienteDetalhes = () => {
     (documentosPage + 1) * DOCUMENTOS_PAGE_SIZE,
   );
 
-  const addressString = cliente.endereco
-    ? `${cliente.endereco}, ${formatCEP(cliente.cep)}, ${cliente.cidade} - ${cliente.estado}`
+  const enderecoPrincipal = cliente.enderecos?.[0];
+  const addressString = enderecoPrincipal?.rua
+    ? `${enderecoPrincipal.rua}, ${enderecoPrincipal.numero ?? ""}, ${formatCEP(enderecoPrincipal.cep ?? "")}, ${enderecoPrincipal.cidade ?? "-"} - ${enderecoPrincipal.estado ?? "-"}`
     : "-";
 
   const handleDownloadDocumento = (doc: ClienteDocumento) => {
-    if (doc.conteudo) {
-      const dataUri = doc.conteudo.startsWith("data:")
-        ? doc.conteudo
-        : `data:${doc.tipo || "application/octet-stream"};base64,${doc.conteudo}`;
+    if (doc.url) {
+      const dataUri = doc.url.startsWith("data:")
+        ? doc.url
+        : `data:${doc.tipo || "application/octet-stream"};base64,${doc.url}`;
 
       const link = document.createElement("a");
       link.href = dataUri;
@@ -135,11 +130,11 @@ const ClienteDetalhes = () => {
 
         <div className="flex flex-col gap-sm p-lg bg-white rounded-lg shadow-sm border border-grayscale-light">
           <div className="flex flex-col gap-xs">
-            <H2>{cliente.nome}</H2>
+            <H2>{cliente.nomeRazaoSocial}</H2>
             <div className="flex flex-wrap items-center gap-sm text-grayscale-dark text-sm">
               <div className="flex items-center gap-1">
                 <FileText className="size-lg" />
-                <Body2>{formatCPFCNPJ(cliente.cpfCnpj ?? "")}</Body2>
+                <Body2>{formatCPFCNPJ(cliente.cnpjCpf ?? "")}</Body2>
               </div>
               <div className="flex items-center gap-1">
                 <Phone className="size-lg" />
@@ -157,14 +152,14 @@ const ClienteDetalhes = () => {
           <div className="space-y-4">
             <H3>Ultimo Servico</H3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-md bg-gray-50 rounded-lg">
-              {cliente.ultimoServico ? (
+              {cliente.dataUltimoServico ? (
                 <>
                   <DetailItem label="Tipo de serviço" value={["Serviço de limpeza"]} />
                   <DetailItem label="Técnico Responsável" value={["João da Silva"]} />
                   <DetailItem
                     label="Data e horário"
                     value={[
-                      `${format(cliente.ultimoServico, "dd/MM/yyyy", { locale: ptBR })} - ${format(cliente.ultimoServico, "HH:mm", { locale: ptBR })}`,
+                      `${format(new Date(cliente.dataUltimoServico), "dd/MM/yyyy", { locale: ptBR })} - ${format(new Date(cliente.dataUltimoServico), "HH:mm", { locale: ptBR })}`,
                     ]}
                   />
                   <DetailItem
@@ -190,16 +185,15 @@ const ClienteDetalhes = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-xs">
                   {paginatedDocumentos.map((doc, index) => (
                     <div
-                      key={doc.id || index}
+                      key={`${doc.nome ?? "doc"}-${index}`}
                       className="flex items-center justify-between p-md border border-grayscale-light rounded-small hover:bg-gray-50 transition-colors"
                     >
                       <div className="flex items-center gap-sm">
                         <PdfFile />
                         <div className="flex flex-col gap-2xs">
                           <H4>{doc.nome}</H4>
-                          <InputCaption className="text-grayscale-medium">
-                            {doc.tamanho ?? "-"}
-                          </InputCaption>
+                          {/* TODO: pedir tamanho ao back */}
+                          <InputCaption className="text-grayscale-medium">-</InputCaption>
                         </div>
                       </div>
                       <Button

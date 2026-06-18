@@ -1,9 +1,9 @@
 import { BuildingOffice2Icon } from "@/assets/icons/building-office-2";
 import { UserPlusIcon } from "@/assets/icons/user-plus";
 import { UsersIcon } from "@/assets/icons/users";
-import { Body2, H2 } from "@/atomic/atm.typography";
+import { H2 } from "@/atomic/atm.typography";
 import { Card, CardContent, CardTitleSecondary } from "@/atomic/mol.card/card.component";
-import type { Cliente } from "../types";
+import type { Cliente } from "@/model/rest/cliente";
 
 interface ClientesMetricsProps {
   clientes: Cliente[];
@@ -12,9 +12,9 @@ interface ClientesMetricsProps {
 
 export const ClientesMetrics = ({ clientes, totalElements }: ClientesMetricsProps) => {
   const totalClientes = totalElements || clientes.length;
-  const clientesAtivos = clientes.filter((c) => c.status === "ativo").length;
-  const clientesFixos = clientes.filter((c) => c.tipoCliente === "fixo").length;
-  const clientesEsporadicos = clientes.filter((c) => c.tipoCliente === "esporadico").length;
+  const clientesAtivos = clientes.filter((c) => c.status === "ATIVO").length;
+  const clientesFixos = clientes.filter((c) => c.tipo === "RECORRENTE").length;
+  const clientesEsporadicos = clientes.filter((c) => c.tipo === "ESPORADICO").length;
 
   const stats = [
     {

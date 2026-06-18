@@ -16,4 +16,9 @@ export const ROUTES = {
   SCHEDULING: "/admin/scheduling",
   REPORT: "/admin/report",
   TECHNICIAN: "/admin/technician",
+  // TODO: apagar ao inserir as páginas de tecnico e cliente
+  TEMPORARY_FALLBACK: {
+    TECNICO: "/temporary-fallback/technician",
+    CLIENTE: "/temporary-fallback/client",
+  },
 };

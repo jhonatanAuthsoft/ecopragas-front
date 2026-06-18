@@ -1,24 +1,17 @@
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
 import { Body1, H1 } from "@/atomic/atm.typography";
 import { SearchInput } from "@/atomic/mol.search/search.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
+import type { Cliente } from "@/model/rest/cliente";
 import { MOCK_CLIENTES } from "./clientes.mock";
-import {
-  AddClienteDialog,
-  type AddClientePayload,
-  type InitialClienteData,
-} from "./components/add-cliente-dialog";
+import { AddClienteDialog, type InitialClienteData } from "./components/add-cliente-dialog";
 import { ClientesMetrics } from "./components/ClientesMetrics";
 import { ClientesTable } from "./components/ClientesTable";
-import type { Cliente } from "./types";
 
 const PAGE_SIZE = 5;
-
-const createClienteId = () => `cliente-${crypto.randomUUID()}`;
 
 const Clientes = () => {
   const location = useLocation();
@@ -32,7 +25,7 @@ const Clientes = () => {
     if (location.state?.leadData) {
       const lead = location.state.leadData;
       setInitialData({
-        nome: lead.name,
+        nomeRazaoSocial: lead.name,
         email: lead.email || "",
         telefone: lead.phone,
         observacoes: lead.notes || "",
@@ -44,40 +37,18 @@ const Clientes = () => {
 
   const filteredClientes = clientes.filter(
     (cliente) =>
-      cliente.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      cliente.cpfCnpj.includes(searchTerm) ||
-      cliente.email.toLowerCase().includes(searchTerm.toLowerCase()),
+      (cliente.nomeRazaoSocial ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (cliente.cnpjCpf ?? "").includes(searchTerm) ||
+      (cliente.email ?? "").toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const totalElements = filteredClientes.length;
   const totalPages = Math.max(1, Math.ceil(totalElements / PAGE_SIZE));
   const paginatedClientes = filteredClientes.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
-  const handleAddCliente = async (payload: AddClientePayload) => {
-    const { dados } = payload;
-    const enderecoPrincipal = dados.enderecos?.find((e) => e.principal) ?? dados.enderecos?.[0];
-
-    const newCliente: Cliente = {
-      id: createClienteId(),
-      nome: dados.nome,
-      cpfCnpj: dados.cpfCnpj,
-      tipoCliente:
-        dados.tipoCliente === "FIXO" || dados.tipoCliente === "RECORRENTE" ? "fixo" : "esporadico",
-      email: dados.email,
-      telefone: dados.telefone,
-      endereco: enderecoPrincipal?.logradouro ?? "",
-      cidade: enderecoPrincipal?.cidade ?? "",
-      estado: enderecoPrincipal?.estado ?? "",
-      cep: enderecoPrincipal?.cep ?? "",
-      status: dados.status?.toLowerCase() === "inativo" ? "inativo" : "ativo",
-      datacadastro: new Date(),
-      observacoes: dados.observacoes,
-    };
-
-    setClientes((prev) => [newCliente, ...prev]);
-    toast.success("Cliente cadastrado com sucesso!");
-    setIsDialogOpen(false);
-    return true;
+  // TODO: apagar apos integrar listagem
+  const handleClienteCreated = (cliente: Cliente) => {
+    setClientes((prev) => [cliente, ...prev]);
   };
 
   return (
@@ -124,7 +95,7 @@ const Clientes = () => {
         <AddClienteDialog
           open={isDialogOpen}
           onOpenChange={setIsDialogOpen}
-          onAddCliente={handleAddCliente}
+          onClienteCreated={handleClienteCreated}
           initialData={initialData}
         />
       </div>
