@@ -9,9 +9,10 @@ import { VALID_FILE_TYPES } from "../add-cliente-dialog.data";
 
 interface DocumentacaoTabProps {
   isSubmitting: boolean;
+  submitLabel: string;
 }
 
-export const DocumentacaoTab = ({ isSubmitting }: DocumentacaoTabProps) => {
+export const DocumentacaoTab = ({ isSubmitting, submitLabel }: DocumentacaoTabProps) => {
   const { setValue, watch } = useFormContext<ClienteFormValues>();
   const documentos = watch("documentos");
   const [fileError, setFileError] = useState<string | null>(null);
@@ -147,7 +148,7 @@ export const DocumentacaoTab = ({ isSubmitting }: DocumentacaoTabProps) => {
 
       <div className="pt-6 flex justify-center">
         <Button type="submit" className="w-[400px] h-[43px]" disabled={isSubmitting}>
-          {isSubmitting ? "Cadastrando..." : "Cadastrar cliente"}
+          {submitLabel}
         </Button>
       </div>
     </TabsContent>

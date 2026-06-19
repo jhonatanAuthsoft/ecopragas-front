@@ -5,8 +5,9 @@ import { H2 } from "@/atomic/atm.typography";
 import { Dialog, DialogContent, DialogHeader } from "@/atomic/mol.dialog/dialog.component";
 import { Tabs, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
 import { Form } from "@/atomic/obj.form";
+import { useUploadManyArquivos } from "@/domain/arquivo";
 import { useCreateCliente } from "@/domain/cliente";
-import type { Cliente, ClienteFormValues } from "@/model/rest/cliente";
+import type { CadastrarClienteInput, Cliente, ClienteFormValues } from "@/model/rest/cliente";
 import {
   DADOS_FIELDS,
   DEFAULT_VALUES,
@@ -37,6 +38,8 @@ export const AddClienteDialog = ({
   initialData,
 }: AddClienteDialogProps) => {
   const [activeTab, setActiveTab] = useState<ClienteDialogTab>("dados");
+
+  const { uploadManyArquivosAsync, isUploadManyArquivosLoading } = useUploadManyArquivos();
 
   const { createCliente, isCreateClienteLoading } = useCreateCliente({
     onSuccess: (cliente) => {
@@ -145,9 +148,22 @@ export const AddClienteDialog = ({
       return;
     }
 
-    const input = await buildCadastrarClienteInput(values);
-    createCliente(input);
+    let documentos: CadastrarClienteInput["documentos"];
+
+    if (values.documentos.length > 0) {
+      documentos = await uploadManyArquivosAsync(values.documentos);
+    }
+
+    const input = buildCadastrarClienteInput(values, documentos);
+    await createCliente(input);
   };
+
+  const isSubmitting = isUploadManyArquivosLoading || isCreateClienteLoading;
+  const submitLabel = isUploadManyArquivosLoading
+    ? "Enviando documentos..."
+    : isCreateClienteLoading
+      ? "Cadastrando..."
+      : "Cadastrar cliente";
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -176,7 +192,7 @@ export const AddClienteDialog = ({
               onRemoveEndereco={handleRemoveEndereco}
               onNext={handleNextEndereco}
             />
-            <DocumentacaoTab isSubmitting={isCreateClienteLoading} />
+            <DocumentacaoTab isSubmitting={isSubmitting} submitLabel={submitLabel} />
           </Tabs>
         </Form>
       </DialogContent>

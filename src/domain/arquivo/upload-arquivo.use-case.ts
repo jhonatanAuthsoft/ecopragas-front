@@ -1,7 +1,12 @@
 import { useCustomMutation } from "@/domain/custom-mutation";
-import type { UploadArquivoInput, UploadArquivoResponse } from "@/model/rest/arquivo";
+import type {
+  UploadArquivoInput,
+  UploadArquivoResponse,
+  UploadManyArquivosInput,
+  UploadManyArquivosResponse,
+} from "@/model/rest/arquivo";
 import type { UseCaseBaseParams } from "@/model/use-case.model";
-import { uploadArquivoDatasource } from "@/rest/arquivo";
+import { uploadArquivoDatasource, uploadManyArquivosDatasource } from "@/rest/arquivo";
 
 export function useUploadArquivo(params: UseCaseBaseParams<UploadArquivoResponse> = {}) {
   const {
@@ -19,5 +24,24 @@ export function useUploadArquivo(params: UseCaseBaseParams<UploadArquivoResponse
     uploadArquivoData: data,
     uploadArquivoError: error,
     isUploadArquivoLoading: isLoading,
+  };
+}
+
+export function useUploadManyArquivos(params: UseCaseBaseParams<UploadManyArquivosResponse> = {}) {
+  const {
+    mutateAsync: uploadManyArquivosAsync,
+    data,
+    error,
+    isLoading,
+  } = useCustomMutation<UploadManyArquivosResponse, UploadManyArquivosInput>({
+    mutationFn: uploadManyArquivosDatasource,
+    ...params,
+  });
+
+  return {
+    uploadManyArquivosAsync,
+    uploadManyArquivosData: data,
+    uploadManyArquivosError: error,
+    isUploadManyArquivosLoading: isLoading,
   };
 }

@@ -19,37 +19,10 @@ const toApiEndereco = (endereco: ClienteEndereco): ClienteEndereco => {
   return sanitizeEndereco(apiEndereco);
 };
 
-// TODO: modificar ao ver documentos
-const buildClienteDocumentos = (files: File[], base64Urls: string[]): ClienteDocumento[] =>
-  files.map((file, index) => ({
-    nome: file.name,
-    tipo: file.type,
-    url: base64Urls[index] ?? "",
-  }));
-
-// TODO: modificar ao ver documentos, possivelmente excluir
-const filesToBase64 = (files: File[]): Promise<string[]> =>
-  Promise.all(
-    files.map(
-      (file) =>
-        new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => {
-            if (typeof reader.result === "string") {
-              resolve(reader.result);
-              return;
-            }
-            reject(new Error("Falha ao converter arquivo"));
-          };
-          reader.onerror = () => reject(reader.error);
-        }),
-    ),
-  );
-
-export const buildCadastrarClienteInput = async (
+export const buildCadastrarClienteInput = (
   values: ClienteFormValues,
-): Promise<CadastrarClienteInput> => {
+  documentos: ClienteDocumento[] = [],
+): CadastrarClienteInput => {
   const enderecosInput = values.enderecos.map(toApiEndereco);
 
   const hasDraftAddress =
@@ -63,9 +36,6 @@ export const buildCadastrarClienteInput = async (
   if (hasDraftAddress) {
     enderecosInput.push(toApiEndereco(values.enderecoDraft));
   }
-
-  const base64Urls = await filesToBase64(values.documentos);
-  const documentos = buildClienteDocumentos(values.documentos, base64Urls);
 
   return {
     nomeRazaoSocial: values.nomeRazaoSocial,
