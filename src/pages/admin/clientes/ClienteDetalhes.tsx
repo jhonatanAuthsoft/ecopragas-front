@@ -11,7 +11,7 @@ import {
 
 const ClienteDetalhes = () => {
   const { id } = useParams<{ id: string }>();
-  const { cliente, getClienteError, isGetClienteLoading } = useGetCliente({ id });
+  const { cliente, getClienteError, isGetClienteLoading, refetchCliente } = useGetCliente({ id });
 
   return (
     <MainLayout>
@@ -27,7 +27,9 @@ const ClienteDetalhes = () => {
             <ClienteDetalhesError />
           </LoadingState.Error>
 
-          {cliente && <ClienteDetalhesContent cliente={cliente} />}
+          {cliente && (
+            <ClienteDetalhesContent cliente={cliente} onClienteUpdated={refetchCliente} />
+          )}
         </LoadingState>
       </div>
     </MainLayout>

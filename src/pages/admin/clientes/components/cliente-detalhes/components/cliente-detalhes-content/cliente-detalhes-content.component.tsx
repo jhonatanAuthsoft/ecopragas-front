@@ -6,11 +6,15 @@ import { ClienteUltimoServicoSection } from "./components/cliente-ultimo-servico
 
 interface ClienteDetalhesContentProps {
   cliente: Cliente;
+  onClienteUpdated?: () => void;
 }
 
-export const ClienteDetalhesContent = ({ cliente }: ClienteDetalhesContentProps) => (
+export const ClienteDetalhesContent = ({
+  cliente,
+  onClienteUpdated,
+}: ClienteDetalhesContentProps) => (
   <div className="flex flex-col gap-sm p-lg bg-white rounded-lg shadow-sm border border-grayscale-light">
-    <ClientePerfilSection cliente={cliente} />
+    <ClientePerfilSection cliente={cliente} onClienteUpdated={onClienteUpdated} />
     <ClienteDetalhesDivider />
     <ClienteUltimoServicoSection cliente={cliente} />
     <ClienteDetalhesDivider />

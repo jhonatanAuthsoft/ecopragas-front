@@ -3,6 +3,8 @@ import type {
   CadastrarClienteResponse,
   ClienteDashboardResponse,
   DeleteClienteParams,
+  EditClienteMutationParams,
+  EditClienteResponse,
   GetClienteResponse,
   ListClientesParams,
   ListClientesResponse,
@@ -31,4 +33,9 @@ export async function getClienteDashboardDatasource() {
 
 export async function deleteClienteDatasource({ id }: DeleteClienteParams) {
   await serverRequest.delete(`/clientes/${id}`);
+}
+
+export async function editClienteDatasource({ id, body }: EditClienteMutationParams) {
+  const { data } = await serverRequest.put<EditClienteResponse>(`/clientes/${id}`, body);
+  return data;
 }

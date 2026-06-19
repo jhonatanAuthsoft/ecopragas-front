@@ -3,3 +3,4 @@ export * from "./delete-cliente.use-case";
 export * from "./get-cliente-by-id.use-case";
 export * from "./get-cliente-dashboard.use-case";
 export * from "./list-clientes.use-case";
+export * from "./update-cliente.use-case";

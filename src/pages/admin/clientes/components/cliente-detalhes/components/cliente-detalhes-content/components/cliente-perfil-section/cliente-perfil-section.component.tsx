@@ -13,14 +13,17 @@ import type { Cliente } from "@/model/rest/cliente";
 import { formatCPFCNPJ, formatPhone } from "@/utils/formatters";
 import { formatClienteEndereco } from "../../../../cliente-detalhes.utils";
 import { DeleteClienteDialog } from "./components/delete-cliente-dialog";
+import { EditClienteDialog } from "./components/edit-cliente-dialog";
 
 interface ClientePerfilSectionProps {
   cliente: Cliente;
+  onClienteUpdated?: () => void;
 }
 
-export const ClientePerfilSection = ({ cliente }: ClientePerfilSectionProps) => {
+export const ClientePerfilSection = ({ cliente, onClienteUpdated }: ClientePerfilSectionProps) => {
   const navigate = useNavigate();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const { deleteCliente, isDeleteClienteLoading } = useDeleteCliente({
     onSuccess: () => {
@@ -48,7 +51,11 @@ export const ClientePerfilSection = ({ cliente }: ClientePerfilSectionProps) => 
             >
               <TrashIcon className="size-lg text-feedback-error-medium" />
             </button>
-            <button type="button" className="cursor-pointer" onClick={() => {}}>
+            <button
+              type="button"
+              className="cursor-pointer"
+              onClick={() => setIsEditDialogOpen(true)}
+            >
               <PencilSquareIcon className="size-lg text-brand-primary-medium" />
             </button>
           </div>
@@ -74,6 +81,12 @@ export const ClientePerfilSection = ({ cliente }: ClientePerfilSectionProps) => 
         onOpenChange={setIsDeleteDialogOpen}
         onConfirm={handleDeleteConfirm}
         isLoading={isDeleteClienteLoading}
+      />
+      <EditClienteDialog
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        cliente={cliente}
+        onClienteUpdated={() => onClienteUpdated?.()}
       />
     </>
   );

@@ -41,3 +41,14 @@ export type GetClienteResponse = Omit<
 };
 
 export type DeleteClienteParams = operations["excluir_3"]["parameters"]["path"];
+
+export type EditClienteParams = operations["editar_4"]["parameters"]["path"];
+export type EditClienteInput = operations["editar_4"]["requestBody"]["content"]["application/json"];
+export type EditClienteResponse = operations["editar_4"]["responses"][200]["content"]["*/*"];
+export type EditClienteMutationParams = EditClienteParams & {
+  body: EditClienteInput;
+};
+
+export type EditClienteFormValues = ClienteFormValues & {
+  documentosExistentes: ClienteDocumentoResponse[];
+};

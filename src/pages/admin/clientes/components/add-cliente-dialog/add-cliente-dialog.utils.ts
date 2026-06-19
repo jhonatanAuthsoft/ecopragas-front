@@ -84,13 +84,16 @@ export const shouldValidateEnderecoDraft = (
   enderecosCount: number,
 ) => enderecosCount === 0 || !isAddressEmpty(enderecoDraft);
 
-export const resetEnderecoDraftFields = (resetField: UseFormResetField<ClienteFormValues>) => {
+export const resetEnderecoDraftFields = <T extends ClienteFormValues>(
+  resetField: UseFormResetField<T>,
+) => {
+  const reset = resetField as unknown as UseFormResetField<ClienteFormValues>;
   const emptyDraft = clearEnderecoDraft();
 
   for (const field of ENDERECO_DRAFT_FIELDS) {
     const draftKey = field.replace("enderecoDraft.", "") as keyof ClienteEndereco;
-    resetField(field, { defaultValue: String(emptyDraft[draftKey]) });
+    reset(field, { defaultValue: String(emptyDraft[draftKey]) });
   }
 
-  resetField("enderecoDraft.padrao", { defaultValue: false });
+  reset("enderecoDraft.padrao", { defaultValue: false });
 };
