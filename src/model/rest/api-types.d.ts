@@ -13,7 +13,7 @@ export interface paths {
         };
         get?: never;
         /** Edita um usuário existente. @ADMINISTRATIVO */
-        put: operations["editar"];
+        put: operations["usuario_editar"];
         post?: never;
         delete?: never;
         options?: never;
@@ -29,18 +29,18 @@ export interface paths {
             cookie?: never;
         };
         /** Obtém detalhes de um técnico pelo ID */
-        get: operations["obterPorId"];
+        get: operations["tecnico_obter_por_id"];
         /**
          * Edita as informações de um técnico
          * @description Atualiza os dados pessoais e profissionais do técnico cadastrado.
          */
-        put: operations["editar_1"];
+        put: operations["tecnico_editar"];
         post?: never;
         /**
          * Exclui um técnico permanentemente
          * @description Exclui o cadastro do técnico e seu usuário de acesso correspondente.
          */
-        delete: operations["excluir"];
+        delete: operations["tecnico_excluir"];
         options?: never;
         head?: never;
         patch?: never;
@@ -58,7 +58,7 @@ export interface paths {
          * Finaliza o agendamento
          * @description Conclui o serviço enviando fotos do antes/depois, observações, atualizando a OS e a data de último serviço do cliente.
          */
-        put: operations["concluirServico"];
+        put: operations["tecnico_agenda_concluir_servico"];
         post?: never;
         delete?: never;
         options?: never;
@@ -78,7 +78,7 @@ export interface paths {
          * Atualiza os itens do checklist do serviço
          * @description Marca tarefas como concluídas ou pendentes no dia da execução.
          */
-        put: operations["atualizarChecklist"];
+        put: operations["tecnico_agenda_atualizar_checklist"];
         post?: never;
         delete?: never;
         options?: never;
@@ -97,18 +97,18 @@ export interface paths {
          * Obtém detalhes de uma Ordem de Serviço pelo ID
          * @description Obtém todos os dados cadastrais da OS
          */
-        get: operations["obterPorId_1"];
+        get: operations["ordem_servico_obter_por_id"];
         /**
          * Edita uma Ordem de Serviço existente
          * @description Edita todas as informações cadastrais da OS
          */
-        put: operations["editar_2"];
+        put: operations["ordem_servico_editar"];
         post?: never;
         /**
          * Exclui uma Ordem de Serviço
          * @description Exclui uma OS permanentemente
          */
-        delete: operations["excluir_1"];
+        delete: operations["ordem_servico_excluir"];
         options?: never;
         head?: never;
         patch?: never;
@@ -125,18 +125,18 @@ export interface paths {
          * Obtém detalhes de um lead pelo ID
          * @description Obtém detalhes de um lead específico
          */
-        get: operations["obterPorId_2"];
+        get: operations["lead_obter_por_id"];
         /**
          * Edita um lead existente
          * @description Edita todas as informações de um lead
          */
-        put: operations["editar_3"];
+        put: operations["lead_editar"];
         post?: never;
         /**
          * Exclui um lead
          * @description Exclui um lead permanentemente
          */
-        delete: operations["excluir_2"];
+        delete: operations["lead_excluir"];
         options?: never;
         head?: never;
         patch?: never;
@@ -153,18 +153,18 @@ export interface paths {
          * Obtém detalhes de um cliente pelo ID
          * @description Obtém todos os dados cadastrais do cliente
          */
-        get: operations["obterPorId_3"];
+        get: operations["cliente_obter_por_id"];
         /**
          * Edita um cliente existente
          * @description Edita todas as informações cadastrais do cliente
          */
-        put: operations["editar_4"];
+        put: operations["cliente_editar"];
         post?: never;
         /**
          * Exclui um cliente
          * @description Exclui um cliente permanentemente
          */
-        delete: operations["excluir_3"];
+        delete: operations["cliente_excluir"];
         options?: never;
         head?: never;
         patch?: never;
@@ -181,18 +181,18 @@ export interface paths {
          * Obtém detalhes de um agendamento pelo ID
          * @description Retorna todos os dados do agendamento, checklist e progresso
          */
-        get: operations["obterPorId_4"];
+        get: operations["agendamento_obter_por_id"];
         /**
          * Edita um agendamento existente
          * @description Edita as informações de data, técnico, endereço ou observações do agendamento
          */
-        put: operations["editar_5"];
+        put: operations["agendamento_editar"];
         post?: never;
         /**
          * Exclui um agendamento
          * @description Exclui o agendamento permanentemente
          */
-        delete: operations["excluir_4"];
+        delete: operations["agendamento_excluir"];
         options?: never;
         head?: never;
         patch?: never;
@@ -210,7 +210,7 @@ export interface paths {
          * Atualiza os itens do checklist do agendamento
          * @description Marca as atividades como concluídas ou pendentes, recalculando o progresso do serviço
          */
-        put: operations["atualizarChecklist_1"];
+        put: operations["agendamento_atualizar_checklist"];
         post?: never;
         delete?: never;
         options?: never;
@@ -228,7 +228,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** Muda a senha do usuário */
-        post: operations["redefinirSenha"];
+        post: operations["usuario_redefinir_senha"];
         delete?: never;
         options?: never;
         head?: never;
@@ -248,7 +248,7 @@ export interface paths {
          * Logout do usuário
          * @description Revoga o token JWT atual
          */
-        post: operations["logout"];
+        post: operations["usuario_logout"];
         delete?: never;
         options?: never;
         head?: never;
@@ -268,7 +268,7 @@ export interface paths {
          * Chamada para usuário logar no sistema
          * @description Chamada para usuário logar no sistema
          */
-        post: operations["login"];
+        post: operations["usuario_login"];
         delete?: never;
         options?: never;
         head?: never;
@@ -285,7 +285,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** Cadastra um novo usuário. @ADMINISTRATIVO */
-        post: operations["cadastrar"];
+        post: operations["usuario_cadastrar"];
         delete?: never;
         options?: never;
         head?: never;
@@ -300,13 +300,13 @@ export interface paths {
             cookie?: never;
         };
         /** Lista todos os técnicos cadastrados de forma paginada */
-        get: operations["obterTodos"];
+        get: operations["tecnico_obter_todos"];
         put?: never;
         /**
          * Cadastra um novo técnico
          * @description Cria as credenciais de acesso do técnico, envia e-mail com a senha gerada e salva os dados no sistema.
          */
-        post: operations["cadastrar_1"];
+        post: operations["tecnico_cadastrar"];
         delete?: never;
         options?: never;
         head?: never;
@@ -326,7 +326,7 @@ export interface paths {
          * Registra um porta-isca no serviço
          * @description Lê e associa um código QR com coordenadas geográficas e estado de consumo no dia da execução.
          */
-        post: operations["registrarPortaIsca"];
+        post: operations["tecnico_agenda_registrar_porta_isca"];
         delete?: never;
         options?: never;
         head?: never;
@@ -344,13 +344,13 @@ export interface paths {
          * Obtém uma lista paginada de Ordens de Serviço
          * @description Retorna lista de OSs paginada e com filtros
          */
-        get: operations["obterTodos_1"];
+        get: operations["ordem_servico_obter_todos"];
         put?: never;
         /**
          * Cadastra uma nova Ordem de Serviço
          * @description Cadastra uma nova OS associada a um cliente
          */
-        post: operations["cadastrar_2"];
+        post: operations["ordem_servico_cadastrar"];
         delete?: never;
         options?: never;
         head?: never;
@@ -368,13 +368,13 @@ export interface paths {
          * Obtém lista paginada de leads
          * @description Retorna lista de leads paginada e com filtros
          */
-        get: operations["obterTodos_2"];
+        get: operations["lead_obter_todos"];
         put?: never;
         /**
          * Cadastra um novo lead
          * @description Cadastra um novo lead no funil de vendas
          */
-        post: operations["cadastrar_3"];
+        post: operations["lead_cadastrar"];
         delete?: never;
         options?: never;
         head?: never;
@@ -392,13 +392,13 @@ export interface paths {
          * Obtém uma lista paginada de clientes
          * @description Retorna lista de clientes paginada e com filtros
          */
-        get: operations["obterTodos_3"];
+        get: operations["cliente_obter_todos"];
         put?: never;
         /**
          * Cadastra um novo cliente
          * @description Cadastra um novo cliente e seus endereços e documentos
          */
-        post: operations["cadastrar_4"];
+        post: operations["cliente_cadastrar"];
         delete?: never;
         options?: never;
         head?: never;
@@ -418,7 +418,7 @@ export interface paths {
          * Realiza o upload de um arquivo para o S3
          * @description Recebe um arquivo binário e retorna a URL pública correspondente
          */
-        post: operations["upload"];
+        post: operations["upload_upload"];
         delete?: never;
         options?: never;
         head?: never;
@@ -436,13 +436,13 @@ export interface paths {
          * Obtém uma lista paginada de agendamentos
          * @description Retorna lista de agendamentos com paginação, busca por texto e filtro de datas
          */
-        get: operations["obterTodos_4"];
+        get: operations["agendamento_obter_todos"];
         put?: never;
         /**
          * Cadastra um novo agendamento
          * @description Cadastra um agendamento e gera automaticamente o checklist de serviços
          */
-        post: operations["cadastrar_5"];
+        post: operations["agendamento_cadastrar"];
         delete?: never;
         options?: never;
         head?: never;
@@ -466,7 +466,7 @@ export interface paths {
          * Atualiza o status do lead
          * @description Atualiza o status na esteira do Kanban
          */
-        patch: operations["atualizarStatus"];
+        patch: operations["lead_atualizar_status"];
         trace?: never;
     };
     "/usuarios": {
@@ -477,7 +477,7 @@ export interface paths {
             cookie?: never;
         };
         /** Obtém uma lista paginada de usuários. @ADMINISTRATIVO */
-        get: operations["obterTodosUsuarios"];
+        get: operations["usuario_obter_todos_usuarios"];
         put?: never;
         post?: never;
         delete?: never;
@@ -494,7 +494,7 @@ export interface paths {
             cookie?: never;
         };
         /** Obtém detalhes de um usuário pelo ID. @ADMINISTRATIVO */
-        get: operations["obterUsuarioPorId"];
+        get: operations["usuario_obter_usuario_por_id"];
         put?: never;
         post?: never;
         delete?: never;
@@ -514,7 +514,7 @@ export interface paths {
          * Consulta a agenda do técnico logado
          * @description Retorna os agendamentos do técnico para o período especificado ('dia' ou 'semana').
          */
-        get: operations["obterAgenda"];
+        get: operations["tecnico_agenda_obter_agenda"];
         put?: never;
         post?: never;
         delete?: never;
@@ -534,7 +534,7 @@ export interface paths {
          * Obtém todos os detalhes de um agendamento designado
          * @description Retorna detalhes completos se o técnico logado for o responsável e se o dia do agendamento tiver chegado.
          */
-        get: operations["obterDetalhes"];
+        get: operations["tecnico_agenda_obter_detalhes"];
         put?: never;
         post?: never;
         delete?: never;
@@ -554,7 +554,7 @@ export interface paths {
          * Baixa o PDF de uma Ordem de Serviço
          * @description Gera e retorna o PDF da OS para download/impressão
          */
-        get: operations["baixarPdf"];
+        get: operations["ordem_servico_baixar_pdf"];
         put?: never;
         post?: never;
         delete?: never;
@@ -574,7 +574,7 @@ export interface paths {
          * Obtém as métricas gerais dos leads
          * @description Retorna os dados numéricos consolidados do dashboard
          */
-        get: operations["obterDashboard"];
+        get: operations["lead_obter_dashboard"];
         put?: never;
         post?: never;
         delete?: never;
@@ -594,7 +594,7 @@ export interface paths {
          * Obtém os dados numéricos de desempenho
          * @description Retorna clientes ativos, total de serviços, faturamento, taxa de conversão e taxa de conclusão comparando com o período anterior.
          */
-        get: operations["obterVisaoGeral"];
+        get: operations["dashboard_obter_visao_geral"];
         put?: never;
         post?: never;
         delete?: never;
@@ -614,7 +614,7 @@ export interface paths {
          * Obtém as métricas detalhadas para gráficos e listagem recente
          * @description Retorna histórico de serviços realizados, faturamento mensal, serviços solicitados, status das OSs e clientes recentes.
          */
-        get: operations["obterMetricas"];
+        get: operations["dashboard_obter_metricas"];
         put?: never;
         post?: never;
         delete?: never;
@@ -634,7 +634,7 @@ export interface paths {
          * Obtém as métricas gerais do dashboard de clientes
          * @description Retorna dados numéricos de clientes ativos, fixos, esporádicos e total
          */
-        get: operations["obterDashboard_1"];
+        get: operations["cliente_obter_dashboard"];
         put?: never;
         post?: never;
         delete?: never;
@@ -654,7 +654,7 @@ export interface paths {
          * Recupera um arquivo do S3 por proxy
          * @description Baixa o arquivo do S3 e o envia diretamente ao cliente com o Content-Type apropriado
          */
-        get: operations["download"];
+        get: operations["upload_download"];
         put?: never;
         post?: never;
         delete?: never;
@@ -674,7 +674,7 @@ export interface paths {
         put?: never;
         post?: never;
         /** Exclui um usuário. @ADMINISTRATIVO */
-        delete: operations["excluir_5"];
+        delete: operations["usuario_excluir"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1325,7 +1325,7 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    editar: {
+    usuario_editar: {
         parameters: {
             query?: never;
             header?: never;
@@ -1346,12 +1346,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseUsuarioResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseUsuarioResponseDTO"];
                 };
             };
         };
     };
-    obterPorId: {
+    tecnico_obter_por_id: {
         parameters: {
             query?: never;
             header?: never;
@@ -1368,12 +1368,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseTecnicoResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseTecnicoResponseDTO"];
                 };
             };
         };
     };
-    editar_1: {
+    tecnico_editar: {
         parameters: {
             query?: never;
             header?: never;
@@ -1394,12 +1394,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseTecnicoResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseTecnicoResponseDTO"];
                 };
             };
         };
     };
-    excluir: {
+    tecnico_excluir: {
         parameters: {
             query?: never;
             header?: never;
@@ -1419,7 +1419,7 @@ export interface operations {
             };
         };
     };
-    concluirServico: {
+    tecnico_agenda_concluir_servico: {
         parameters: {
             query?: never;
             header?: never;
@@ -1440,12 +1440,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
                 };
             };
         };
     };
-    atualizarChecklist: {
+    tecnico_agenda_atualizar_checklist: {
         parameters: {
             query?: never;
             header?: never;
@@ -1466,12 +1466,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
                 };
             };
         };
     };
-    obterPorId_1: {
+    ordem_servico_obter_por_id: {
         parameters: {
             query?: never;
             header?: never;
@@ -1488,12 +1488,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseOrdemServicoResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseOrdemServicoResponseDTO"];
                 };
             };
         };
     };
-    editar_2: {
+    ordem_servico_editar: {
         parameters: {
             query?: never;
             header?: never;
@@ -1514,12 +1514,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseOrdemServicoResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseOrdemServicoResponseDTO"];
                 };
             };
         };
     };
-    excluir_1: {
+    ordem_servico_excluir: {
         parameters: {
             query?: never;
             header?: never;
@@ -1539,7 +1539,7 @@ export interface operations {
             };
         };
     };
-    obterPorId_2: {
+    lead_obter_por_id: {
         parameters: {
             query?: never;
             header?: never;
@@ -1556,12 +1556,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseLeadResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseLeadResponseDTO"];
                 };
             };
         };
     };
-    editar_3: {
+    lead_editar: {
         parameters: {
             query?: never;
             header?: never;
@@ -1582,12 +1582,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseLeadResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseLeadResponseDTO"];
                 };
             };
         };
     };
-    excluir_2: {
+    lead_excluir: {
         parameters: {
             query?: never;
             header?: never;
@@ -1607,7 +1607,7 @@ export interface operations {
             };
         };
     };
-    obterPorId_3: {
+    cliente_obter_por_id: {
         parameters: {
             query?: never;
             header?: never;
@@ -1624,12 +1624,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseClienteResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseClienteResponseDTO"];
                 };
             };
         };
     };
-    editar_4: {
+    cliente_editar: {
         parameters: {
             query?: never;
             header?: never;
@@ -1650,12 +1650,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseClienteResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseClienteResponseDTO"];
                 };
             };
         };
     };
-    excluir_3: {
+    cliente_excluir: {
         parameters: {
             query?: never;
             header?: never;
@@ -1675,7 +1675,7 @@ export interface operations {
             };
         };
     };
-    obterPorId_4: {
+    agendamento_obter_por_id: {
         parameters: {
             query?: never;
             header?: never;
@@ -1692,12 +1692,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
                 };
             };
         };
     };
-    editar_5: {
+    agendamento_editar: {
         parameters: {
             query?: never;
             header?: never;
@@ -1718,12 +1718,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
                 };
             };
         };
     };
-    excluir_4: {
+    agendamento_excluir: {
         parameters: {
             query?: never;
             header?: never;
@@ -1743,7 +1743,7 @@ export interface operations {
             };
         };
     };
-    atualizarChecklist_1: {
+    agendamento_atualizar_checklist: {
         parameters: {
             query?: never;
             header?: never;
@@ -1764,12 +1764,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
                 };
             };
         };
     };
-    redefinirSenha: {
+    usuario_redefinir_senha: {
         parameters: {
             query?: never;
             header?: never;
@@ -1788,12 +1788,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseBoolean"];
+                    "application/json": components["schemas"]["StandardResponseBoolean"];
                 };
             };
         };
     };
-    logout: {
+    usuario_logout: {
         parameters: {
             query?: never;
             header?: never;
@@ -1808,12 +1808,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseBoolean"];
+                    "application/json": components["schemas"]["StandardResponseBoolean"];
                 };
             };
         };
     };
-    login: {
+    usuario_login: {
         parameters: {
             query?: never;
             header?: never;
@@ -1832,12 +1832,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseLoginUsuarioResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseLoginUsuarioResponseDTO"];
                 };
             };
         };
     };
-    cadastrar: {
+    usuario_cadastrar: {
         parameters: {
             query?: never;
             header?: never;
@@ -1856,12 +1856,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseUsuarioResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseUsuarioResponseDTO"];
                 };
             };
         };
     };
-    obterTodos: {
+    tecnico_obter_todos: {
         parameters: {
             query?: {
                 limit?: number;
@@ -1880,12 +1880,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseListTecnicoResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseListTecnicoResponseDTO"];
                 };
             };
         };
     };
-    cadastrar_1: {
+    tecnico_cadastrar: {
         parameters: {
             query?: never;
             header?: never;
@@ -1904,12 +1904,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseTecnicoResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseTecnicoResponseDTO"];
                 };
             };
         };
     };
-    registrarPortaIsca: {
+    tecnico_agenda_registrar_porta_isca: {
         parameters: {
             query?: never;
             header?: never;
@@ -1930,12 +1930,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
                 };
             };
         };
     };
-    obterTodos_1: {
+    ordem_servico_obter_todos: {
         parameters: {
             query?: {
                 limit?: number;
@@ -1954,12 +1954,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseListOrdemServicoResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseListOrdemServicoResponseDTO"];
                 };
             };
         };
     };
-    cadastrar_2: {
+    ordem_servico_cadastrar: {
         parameters: {
             query?: never;
             header?: never;
@@ -1978,12 +1978,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseOrdemServicoResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseOrdemServicoResponseDTO"];
                 };
             };
         };
     };
-    obterTodos_2: {
+    lead_obter_todos: {
         parameters: {
             query?: {
                 limit?: number;
@@ -2004,12 +2004,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseListLeadResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseListLeadResponseDTO"];
                 };
             };
         };
     };
-    cadastrar_3: {
+    lead_cadastrar: {
         parameters: {
             query?: never;
             header?: never;
@@ -2028,12 +2028,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseLeadResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseLeadResponseDTO"];
                 };
             };
         };
     };
-    obterTodos_3: {
+    cliente_obter_todos: {
         parameters: {
             query?: {
                 limit?: number;
@@ -2052,12 +2052,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseListClienteResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseListClienteResponseDTO"];
                 };
             };
         };
     };
-    cadastrar_4: {
+    cliente_cadastrar: {
         parameters: {
             query?: never;
             header?: never;
@@ -2076,12 +2076,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseClienteResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseClienteResponseDTO"];
                 };
             };
         };
     };
-    upload: {
+    upload_upload: {
         parameters: {
             query?: never;
             header?: never;
@@ -2103,12 +2103,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseString"];
+                    "application/json": components["schemas"]["StandardResponseString"];
                 };
             };
         };
     };
-    obterTodos_4: {
+    agendamento_obter_todos: {
         parameters: {
             query?: {
                 limit?: number;
@@ -2129,12 +2129,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseListAgendamentoResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseListAgendamentoResponseDTO"];
                 };
             };
         };
     };
-    cadastrar_5: {
+    agendamento_cadastrar: {
         parameters: {
             query?: never;
             header?: never;
@@ -2153,12 +2153,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
                 };
             };
         };
     };
-    atualizarStatus: {
+    lead_atualizar_status: {
         parameters: {
             query?: never;
             header?: never;
@@ -2179,12 +2179,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseLeadResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseLeadResponseDTO"];
                 };
             };
         };
     };
-    obterTodosUsuarios: {
+    usuario_obter_todos_usuarios: {
         parameters: {
             query?: {
                 limit?: number;
@@ -2205,12 +2205,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseListUsuarioResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseListUsuarioResponseDTO"];
                 };
             };
         };
     };
-    obterUsuarioPorId: {
+    usuario_obter_usuario_por_id: {
         parameters: {
             query?: never;
             header?: never;
@@ -2227,12 +2227,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseUsuarioResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseUsuarioResponseDTO"];
                 };
             };
         };
     };
-    obterAgenda: {
+    tecnico_agenda_obter_agenda: {
         parameters: {
             query?: {
                 periodo?: string;
@@ -2249,12 +2249,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseListAgendamentoResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseListAgendamentoResponseDTO"];
                 };
             };
         };
     };
-    obterDetalhes: {
+    tecnico_agenda_obter_detalhes: {
         parameters: {
             query?: never;
             header?: never;
@@ -2271,12 +2271,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
                 };
             };
         };
     };
-    baixarPdf: {
+    ordem_servico_baixar_pdf: {
         parameters: {
             query?: never;
             header?: never;
@@ -2293,12 +2293,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": string;
+                    "application/json": string;
                 };
             };
         };
     };
-    obterDashboard: {
+    lead_obter_dashboard: {
         parameters: {
             query?: never;
             header?: never;
@@ -2313,12 +2313,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseLeadDashboardDTO"];
+                    "application/json": components["schemas"]["StandardResponseLeadDashboardDTO"];
                 };
             };
         };
     };
-    obterVisaoGeral: {
+    dashboard_obter_visao_geral: {
         parameters: {
             query?: {
                 meses?: number;
@@ -2335,12 +2335,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseDashboardVisaoGeralDTO"];
+                    "application/json": components["schemas"]["StandardResponseDashboardVisaoGeralDTO"];
                 };
             };
         };
     };
-    obterMetricas: {
+    dashboard_obter_metricas: {
         parameters: {
             query?: never;
             header?: never;
@@ -2355,12 +2355,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseDashboardMetricasDTO"];
+                    "application/json": components["schemas"]["StandardResponseDashboardMetricasDTO"];
                 };
             };
         };
     };
-    obterDashboard_1: {
+    cliente_obter_dashboard: {
         parameters: {
             query?: never;
             header?: never;
@@ -2375,12 +2375,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StandardResponseClienteDashboardDTO"];
+                    "application/json": components["schemas"]["StandardResponseClienteDashboardDTO"];
                 };
             };
         };
     };
-    download: {
+    upload_download: {
         parameters: {
             query?: never;
             header?: never;
@@ -2397,12 +2397,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": string;
+                    "application/json": string;
                 };
             };
         };
     };
-    excluir_5: {
+    usuario_excluir: {
         parameters: {
             query?: never;
             header?: never;
