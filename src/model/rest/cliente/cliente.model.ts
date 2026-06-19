@@ -17,9 +17,9 @@ export type ClienteEndereco = components["schemas"]["ClienteEnderecoInputDTO"] &
 export type ClienteDashboard = components["schemas"]["ClienteDashboardDTO"];
 
 export type CadastrarClienteInput =
-  operations["cadastrar_4"]["requestBody"]["content"]["application/json"];
+  operations["cliente_cadastrar"]["requestBody"]["content"]["application/json"];
 export type CadastrarClienteResponse =
-  operations["cadastrar_4"]["responses"][200]["content"]["*/*"];
+  operations["cliente_cadastrar"]["responses"][200]["content"]["application/json"];
 
 export type ClienteFormValues = Omit<CadastrarClienteInput, "documentos" | "enderecos"> & {
   documentos: File[];
@@ -27,12 +27,14 @@ export type ClienteFormValues = Omit<CadastrarClienteInput, "documentos" | "ende
   enderecoDraft: ClienteEndereco;
 };
 
-export type ListClientesParams = NonNullable<operations["obterTodos_3"]["parameters"]["query"]>;
+export type ListClientesParams = NonNullable<
+  operations["cliente_obter_todos"]["parameters"]["query"]
+>;
 export type ListClientesResponse = components["schemas"]["StandardResponseListClienteResponseDTO"];
 
 export type ClienteDashboardResponse = components["schemas"]["StandardResponseClienteDashboardDTO"];
 
-export type GetClienteParams = operations["obterPorId_3"]["parameters"]["path"];
+export type GetClienteParams = operations["cliente_obter_por_id"]["parameters"]["path"];
 export type GetClienteResponse = Omit<
   components["schemas"]["StandardResponseClienteResponseDTO"],
   "data"
@@ -40,11 +42,13 @@ export type GetClienteResponse = Omit<
   data?: Cliente;
 };
 
-export type DeleteClienteParams = operations["excluir_3"]["parameters"]["path"];
+export type DeleteClienteParams = operations["cliente_excluir"]["parameters"]["path"];
 
-export type EditClienteParams = operations["editar_4"]["parameters"]["path"];
-export type EditClienteInput = operations["editar_4"]["requestBody"]["content"]["application/json"];
-export type EditClienteResponse = operations["editar_4"]["responses"][200]["content"]["*/*"];
+export type EditClienteParams = operations["cliente_editar"]["parameters"]["path"];
+export type EditClienteInput =
+  operations["cliente_editar"]["requestBody"]["content"]["application/json"];
+export type EditClienteResponse =
+  operations["cliente_editar"]["responses"][200]["content"]["application/json"];
 export type EditClienteMutationParams = EditClienteParams & {
   body: EditClienteInput;
 };
