@@ -2,6 +2,7 @@ import type {
   CadastrarClienteInput,
   CadastrarClienteResponse,
   ClienteDashboardResponse,
+  GetClienteResponse,
   ListClientesParams,
   ListClientesResponse,
 } from "@/model/rest/cliente";
@@ -14,6 +15,11 @@ export async function cadastrarClienteDatasource(body: CadastrarClienteInput) {
 
 export async function listClientesDatasource(params: ListClientesParams) {
   const { data } = await serverRequest.get<ListClientesResponse>("/clientes", { params });
+  return data;
+}
+
+export async function getClienteDatasource(id: string) {
+  const { data } = await serverRequest.get<GetClienteResponse>(`/clientes/${id}`);
   return data;
 }
 

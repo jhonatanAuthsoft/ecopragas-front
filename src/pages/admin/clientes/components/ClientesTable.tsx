@@ -21,7 +21,7 @@ import { formatCPFCNPJ, formatPhone } from "@/utils/formatters";
 interface ClientesTableProps {
   clientes: Cliente[];
   currentPage: number;
-  totalPages: number;
+  totalPages?: number;
   isLoading?: boolean;
   error?: boolean;
   onPageChange: (page: number) => void;
@@ -47,6 +47,7 @@ export const ClientesTable = ({
   onPageChange,
 }: ClientesTableProps) => {
   const navigate = useNavigate();
+  const resolvedTotalPages = totalPages ?? 1;
 
   return (
     <LoadingState loading={isLoading} error={error} data={clientes.length > 0}>
@@ -120,12 +121,14 @@ export const ClientesTable = ({
           </TableBody>
         </Table>
 
-        <PaginationControl
-          className="mt-xs"
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={onPageChange}
-        />
+        {resolvedTotalPages > 1 && (
+          <PaginationControl
+            className="mt-xs"
+            currentPage={currentPage}
+            totalPages={resolvedTotalPages}
+            onPageChange={onPageChange}
+          />
+        )}
       </div>
     </LoadingState>
   );

@@ -1,113 +1,53 @@
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { ChevronLeft, Download, FileText, MapPin, Phone } from "lucide-react";
+import { ChevronLeft, Download } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
+import { IdentificationIcon } from "@/assets/icons/identification";
+import { MapPinIcon } from "@/assets/icons/map-pin";
+import { PhoneIcon } from "@/assets/icons/phone";
 import { PdfFile } from "@/assets/vectors/pdf-file";
 import { Button } from "@/atomic/atm.button/button.component";
 import { DetailItem } from "@/atomic/atm.detail-item";
+import { Skeleton } from "@/atomic/atm.skeleton/skeleton.component";
 import { Body1, Body2, H1, H2, H3, H4, InputCaption } from "@/atomic/atm.typography";
 import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
+import { LoadingState } from "@/atomic/obj.loading-state";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
-import type { Cliente, ClienteDocumento } from "@/model/rest/cliente";
-import { formatCEP, formatCPFCNPJ, formatCurrency, formatPhone } from "@/utils/formatters";
+import { useGetCliente } from "@/domain/cliente";
+import type { ClienteDocumentoResponse } from "@/model/rest/cliente";
+import { triggerDownload } from "@/utils/download-file";
+import { formatCPFCNPJ, formatCurrency, formatPhone } from "@/utils/formatters";
+import { TIPO_SERVICO_LABELS } from "../ordens-servico/components/ordem-servico-detalhes/ordem-servico-detalhes.labels";
+import {
+  formatClienteEndereco,
+  formatUltimoServicoDataHora,
+  hasUltimoServico,
+} from "./cliente-detalhes.utils";
 
 const DOCUMENTOS_PAGE_SIZE = 4;
 
-const MOCK_CLIENTE: Cliente = {
-  id: "mock-cliente-001",
-  nomeRazaoSocial: "Supermercado Bom Preco Ltda",
-  cnpjCpf: "12.345.678/0001-90",
-  tipo: "RECORRENTE",
-  telefone: "(11) 98765-4321",
-  email: "contato@bompreco.com.br",
-  status: "ATIVO",
-  cidade: "Sao Paulo",
-  estado: "SP",
-  dataUltimoServico: "2026-01-15",
-  observacoes: "Cliente prioritario - contrato anual",
-  enderecos: [
-    {
-      rua: "Rua das Flores",
-      numero: "1500",
-      complemento: "Loja 3",
-      bairro: "",
-      cidade: "Sao Paulo",
-      estado: "SP",
-      cep: "01310-100",
-    },
-  ],
-  documentos: [
-    {
-      nome: "Contrato de Servico.pdf",
-      tipo: "application/pdf",
-      url: "data:application/pdf;base64,JVBERi0xLjQK",
-    },
-    {
-      nome: "Alvara de Funcionamento.pdf",
-      tipo: "application/pdf",
-      url: "data:application/pdf;base64,JVBERi0xLjQK",
-    },
-    {
-      nome: "CNPJ.pdf",
-      tipo: "application/pdf",
-      url: "data:application/pdf;base64,JVBERi0xLjQK",
-    },
-    {
-      nome: "Certificado Sanitario.pdf",
-      tipo: "application/pdf",
-      url: "data:application/pdf;base64,JVBERi0xLjQK",
-    },
-    {
-      nome: "Licenca Ambiental.pdf",
-      tipo: "application/pdf",
-      url: "data:application/pdf;base64,JVBERi0xLjQK",
-    },
-    {
-      nome: "Comprovante Endereco.pdf",
-      tipo: "application/pdf",
-      url: "data:application/pdf;base64,JVBERi0xLjQK",
-    },
-    {
-      nome: "ART Responsavel Tecnico.pdf",
-      tipo: "application/pdf",
-      url: "data:application/pdf;base64,JVBERi0xLjQK",
-    },
-  ],
-};
-
 const ClienteDetalhes = () => {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const cliente = MOCK_CLIENTE;
   const [documentosPage, setDocumentosPage] = useState(0);
 
-  const documentos = cliente.documentos ?? [];
+  const { cliente, getClienteError, isGetClienteLoading } = useGetCliente({ id });
+
+  const documentos = cliente?.documentos ?? [];
   const totalDocumentosPages = Math.max(1, Math.ceil(documentos.length / DOCUMENTOS_PAGE_SIZE));
   const paginatedDocumentos = documentos.slice(
     documentosPage * DOCUMENTOS_PAGE_SIZE,
     (documentosPage + 1) * DOCUMENTOS_PAGE_SIZE,
   );
 
-  const enderecoPrincipal = cliente.enderecos?.[0];
-  const addressString = enderecoPrincipal?.rua
-    ? `${enderecoPrincipal.rua}, ${enderecoPrincipal.numero ?? ""}, ${formatCEP(enderecoPrincipal.cep ?? "")}, ${enderecoPrincipal.cidade ?? "-"} - ${enderecoPrincipal.estado ?? "-"}`
-    : "-";
-
-  const handleDownloadDocumento = (doc: ClienteDocumento) => {
-    if (doc.url) {
-      const dataUri = doc.url.startsWith("data:")
-        ? doc.url
-        : `data:${doc.tipo || "application/octet-stream"};base64,${doc.url}`;
-
-      const link = document.createElement("a");
-      link.href = dataUri;
-      link.download = doc.nome;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+  function handleDownloadDocumento(doc: ClienteDocumentoResponse) {
+    if (!doc.url) {
+      toast.error("Documento sem referencia para download.");
+      return;
     }
-  };
+    triggerDownload(doc.url, doc.nome ?? doc.id);
+  }
 
   return (
     <MainLayout>
@@ -128,103 +68,154 @@ const ClienteDetalhes = () => {
           </Body1>
         </div>
 
-        <div className="flex flex-col gap-sm p-lg bg-white rounded-lg shadow-sm border border-grayscale-light">
-          <div className="flex flex-col gap-xs">
-            <H2>{cliente.nomeRazaoSocial}</H2>
-            <div className="flex flex-wrap items-center gap-sm text-grayscale-dark text-sm">
-              <div className="flex items-center gap-1">
-                <FileText className="size-lg" />
-                <Body2>{formatCPFCNPJ(cliente.cnpjCpf ?? "")}</Body2>
-              </div>
-              <div className="flex items-center gap-1">
-                <Phone className="size-lg" />
-                <Body2>{formatPhone(cliente.telefone ?? "")}</Body2>
-              </div>
-              <div className="flex items-center gap-1">
-                <MapPin className="size-lg" />
-                <Body2>{addressString}</Body2>
-              </div>
+        <LoadingState loading={isGetClienteLoading} error={!!getClienteError} data={!!cliente}>
+          <LoadingState.Shimmer>
+            <ClienteDetalhesSkeleton />
+          </LoadingState.Shimmer>
+
+          <LoadingState.Error>
+            <div className="text-center py-12">
+              <p className="text-lg font-medium text-foreground">Erro ao carregar cliente</p>
+              <p className="text-sm text-muted-foreground mt-1">Tente recarregar a página</p>
             </div>
-          </div>
+          </LoadingState.Error>
 
-          <div className="w-full h-[1px] bg-grayscale-light mb-2xs" />
-
-          <div className="space-y-4">
-            <H3>Ultimo Servico</H3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-md bg-gray-50 rounded-lg">
-              {cliente.dataUltimoServico ? (
-                <>
-                  <DetailItem label="Tipo de serviço" value={["Serviço de limpeza"]} />
-                  <DetailItem label="Técnico Responsável" value={["João da Silva"]} />
-                  <DetailItem
-                    label="Data e horário"
-                    value={[
-                      `${format(new Date(cliente.dataUltimoServico), "dd/MM/yyyy", { locale: ptBR })} - ${format(new Date(cliente.dataUltimoServico), "HH:mm", { locale: ptBR })}`,
-                    ]}
-                  />
-                  <DetailItem
-                    label="Valor do serviço"
-                    value={[<b key="valor-servico">{formatCurrency(100)}</b>]}
-                    valueClassName="text-brand-cta-dark"
-                  />
-                </>
-              ) : (
-                <Body2 className="text-grayscale-medium">
-                  Informações do último serviço indisponíveis.
-                </Body2>
-              )}
-            </div>
-          </div>
-
-          <div className="w-full h-[1px] bg-grayscale-light mb-2xs" />
-
-          <div className="space-y-4">
-            <H3>Documentação</H3>
-            {documentos.length > 0 ? (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-xs">
-                  {paginatedDocumentos.map((doc, index) => (
-                    <div
-                      key={`${doc.nome ?? "doc"}-${index}`}
-                      className="flex items-center justify-between p-md border border-grayscale-light rounded-small hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="flex items-center gap-sm">
-                        <PdfFile />
-                        <div className="flex flex-col gap-2xs">
-                          <H4>{doc.nome}</H4>
-                          {/* TODO: pedir tamanho ao back */}
-                          <InputCaption className="text-grayscale-medium">-</InputCaption>
-                        </div>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-brand-primary-medium hover:text-brand-primary-dark hover:bg-brand-primary-light/10"
-                        onClick={() => handleDownloadDocumento(doc)}
-                      >
-                        <Download className="size-[20px]" />
-                      </Button>
-                    </div>
-                  ))}
+          {cliente && (
+            <div className="flex flex-col gap-sm p-lg bg-white rounded-lg shadow-sm border border-grayscale-light">
+              <div className="flex flex-col gap-xs">
+                <H2>{cliente.nomeRazaoSocial}</H2>
+                <div className="flex flex-wrap items-center gap-sm text-grayscale-dark text-sm">
+                  <div className="flex items-center gap-1">
+                    <IdentificationIcon className="size-lg" />
+                    <Body2>{cliente.cnpjCpf ? formatCPFCNPJ(cliente.cnpjCpf) : "-"}</Body2>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <PhoneIcon className="size-lg" />
+                    <Body2>{cliente.telefone ? formatPhone(cliente.telefone) : "-"}</Body2>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <MapPinIcon className="size-lg" />
+                    <Body2>{formatClienteEndereco(cliente)}</Body2>
+                  </div>
                 </div>
+              </div>
 
-                {totalDocumentosPages > 1 && (
-                  <PaginationControl
-                    className="mt-xs"
-                    currentPage={documentosPage + 1}
-                    totalPages={totalDocumentosPages}
-                    onPageChange={(page) => setDocumentosPage(page - 1)}
-                  />
+              <div className="w-full h-[1px] bg-grayscale-light mb-2xs" />
+
+              <div className="space-y-4">
+                <H3>Ultimo Servico</H3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-md bg-gray-50 rounded-lg">
+                  {hasUltimoServico(cliente) ? (
+                    <>
+                      <DetailItem
+                        label="Tipo de servico"
+                        value={[TIPO_SERVICO_LABELS[cliente.tipoDeServico]]}
+                      />
+                      <DetailItem
+                        label="Tecnico Responsavel"
+                        value={[cliente.tecnicoResponsavel]}
+                      />
+                      <DetailItem
+                        label="Data e horario"
+                        value={[formatUltimoServicoDataHora(cliente.dataUltimoServico)]}
+                      />
+                      <DetailItem
+                        label="Valor do servico"
+                        value={[
+                          cliente.valor != null ? (
+                            <b key="valor-servico">{formatCurrency(cliente.valor)}</b>
+                          ) : (
+                            "-"
+                          ),
+                        ]}
+                        valueClassName="text-brand-cta-dark"
+                      />
+                    </>
+                  ) : (
+                    <Body2 className="text-grayscale-medium">
+                      Informações do último serviço indisponíveis.
+                    </Body2>
+                  )}
+                </div>
+              </div>
+
+              <div className="w-full h-[1px] bg-grayscale-light mb-2xs" />
+
+              <div className="space-y-4">
+                <H3>Documentação</H3>
+                {documentos.length > 0 ? (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-xs">
+                      {paginatedDocumentos.map((doc, index) => {
+                        const documentoKey = doc.id ?? `${doc.nome ?? "doc"}-${index}`;
+
+                        return (
+                          <div
+                            key={documentoKey}
+                            className="flex items-center justify-between p-md border border-grayscale-light rounded-small hover:bg-gray-50 transition-colors"
+                          >
+                            <div className="flex items-center gap-sm">
+                              <PdfFile />
+                              <div className="flex flex-col gap-2xs">
+                                <H4>{doc.nome}</H4>
+                                <InputCaption className="text-grayscale-medium">
+                                  {/* TODO: colocar o tamanho */}
+                                  {doc.tipo ?? "-"}
+                                </InputCaption>
+                              </div>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-brand-primary-medium hover:text-brand-primary-dark hover:bg-brand-primary-light/10"
+                              onClick={() => handleDownloadDocumento(doc)}
+                            >
+                              <Download className="size-[20px]" />
+                            </Button>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {totalDocumentosPages > 1 && (
+                      <PaginationControl
+                        className="mt-xs"
+                        currentPage={documentosPage + 1}
+                        totalPages={totalDocumentosPages}
+                        onPageChange={(page) => setDocumentosPage(page - 1)}
+                      />
+                    )}
+                  </>
+                ) : (
+                  <Body2 className="text-grayscale-medium">Nenhum documento encontrado.</Body2>
                 )}
-              </>
-            ) : (
-              <Body2 className="text-grayscale-medium">Nenhum documento encontrado.</Body2>
-            )}
-          </div>
-        </div>
+              </div>
+            </div>
+          )}
+        </LoadingState>
       </div>
     </MainLayout>
   );
 };
 
 export default ClienteDetalhes;
+
+const ClienteDetalhesSkeleton = () => (
+  <div className="flex flex-col gap-sm p-lg bg-white rounded-lg shadow-sm border border-grayscale-light">
+    <Skeleton className="h-[32px] w-[280px]" />
+    <div className="flex flex-wrap gap-sm">
+      <Skeleton className="h-[20px] w-[160px]" />
+      <Skeleton className="h-[20px] w-[140px]" />
+      <Skeleton className="h-[20px] w-[240px]" />
+    </div>
+    <Skeleton className="h-[1px] w-full" />
+    <Skeleton className="h-[24px] w-[140px]" />
+    <Skeleton className="h-[80px] w-full" />
+    <Skeleton className="h-[1px] w-full" />
+    <Skeleton className="h-[24px] w-[140px]" />
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-xs">
+      <Skeleton className="h-[72px] w-full" />
+      <Skeleton className="h-[72px] w-full" />
+    </div>
+  </div>
+);

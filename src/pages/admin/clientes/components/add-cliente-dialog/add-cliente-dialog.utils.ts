@@ -1,7 +1,7 @@
 import type { UseFormResetField } from "react-hook-form";
 import type {
   CadastrarClienteInput,
-  ClienteDocumento,
+  ClienteDocumentoInput,
   ClienteEndereco,
   ClienteFormValues,
 } from "@/model/rest/cliente";
@@ -21,7 +21,7 @@ const toApiEndereco = (endereco: ClienteEndereco): ClienteEndereco => {
 
 export const buildCadastrarClienteInput = (
   values: ClienteFormValues,
-  documentos: ClienteDocumento[] = [],
+  documentos: ClienteDocumentoInput[] = [],
 ): CadastrarClienteInput => {
   const enderecosInput = values.enderecos.map(toApiEndereco);
 

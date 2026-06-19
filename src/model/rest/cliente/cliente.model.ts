@@ -1,7 +1,13 @@
 import type { components, operations } from "../api-types";
 
-export type Cliente = components["schemas"]["ClienteResponseDTO"];
-export type ClienteDocumento = components["schemas"]["ClienteDocumentoInputDTO"];
+// TODO: excluir essa tipagem no front quando for adicionado a parte de ultimo serviço no back
+export type Cliente = components["schemas"]["ClienteResponseDTO"] & {
+  tipoDeServico?: string;
+  tecnicoResponsavel?: string;
+  valor?: number;
+};
+export type ClienteDocumentoInput = components["schemas"]["ClienteDocumentoInputDTO"];
+export type ClienteDocumentoResponse = components["schemas"]["ClienteDocumentoResponseDTO"];
 export type ClienteTipo = CadastrarClienteInput["tipo"];
 export type ClienteStatus = CadastrarClienteInput["status"];
 // TODO: o padrao devia vir do back
@@ -21,7 +27,15 @@ export type ClienteFormValues = Omit<CadastrarClienteInput, "documentos" | "ende
   enderecoDraft: ClienteEndereco;
 };
 
-export type ListClientesParams = NonNullable<operations["obterTodos_2"]["parameters"]["query"]>;
+export type ListClientesParams = NonNullable<operations["obterTodos_3"]["parameters"]["query"]>;
 export type ListClientesResponse = components["schemas"]["StandardResponseListClienteResponseDTO"];
 
 export type ClienteDashboardResponse = components["schemas"]["StandardResponseClienteDashboardDTO"];
+
+export type GetClienteParams = operations["obterPorId_3"]["parameters"]["path"];
+export type GetClienteResponse = Omit<
+  components["schemas"]["StandardResponseClienteResponseDTO"],
+  "data"
+> & {
+  data?: Cliente;
+};

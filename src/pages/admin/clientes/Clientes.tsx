@@ -6,6 +6,7 @@ import { Body1, H1 } from "@/atomic/atm.typography";
 import { SearchInput } from "@/atomic/mol.search/search.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { useGetClienteDashboard, useListClientes } from "@/domain/cliente";
+import { useDebounce } from "@/hooks/use-debounce";
 import { AddClienteDialog, type InitialClienteData } from "./components/add-cliente-dialog";
 import { ClientesMetrics } from "./components/ClientesMetrics";
 import { ClientesTable } from "./components/ClientesTable";
@@ -15,6 +16,7 @@ const PAGE_SIZE = 5;
 const Clientes = () => {
   const location = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearch = useDebounce(searchTerm);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [initialData, setInitialData] = useState<InitialClienteData | null>(null);
   const [page, setPage] = useState(0);
@@ -23,7 +25,7 @@ const Clientes = () => {
     useListClientes({
       limit: PAGE_SIZE,
       offset: page * PAGE_SIZE,
-      searchText: searchTerm.trim() || undefined,
+      searchText: debouncedSearch.trim() || undefined,
     });
 
   const { dashboard, dashboardError, isDashboardLoading, refetchDashboard } =
@@ -46,6 +48,7 @@ const Clientes = () => {
   const currentPage = page + 1;
 
   const handleClienteCreated = () => {
+    setPage(0);
     refetchClientes();
     refetchDashboard();
   };
@@ -89,7 +92,7 @@ const Clientes = () => {
             <ClientesTable
               clientes={clientes}
               currentPage={currentPage}
-              totalPages={pagination?.totalPages}
+              totalPages={pagination?.totalPages ?? 1}
               isLoading={isListClientesLoading}
               error={!!listClientesError}
               onPageChange={(nextPage) => setPage(nextPage - 1)}
