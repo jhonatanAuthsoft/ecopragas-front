@@ -2,6 +2,7 @@ import type {
   CadastrarClienteInput,
   CadastrarClienteResponse,
   ClienteDashboardResponse,
+  DeleteClienteParams,
   GetClienteResponse,
   ListClientesParams,
   ListClientesResponse,
@@ -26,4 +27,8 @@ export async function getClienteDatasource(id: string) {
 export async function getClienteDashboardDatasource() {
   const { data } = await serverRequest.get<ClienteDashboardResponse>("/clientes/dashboard");
   return data;
+}
+
+export async function deleteClienteDatasource({ id }: DeleteClienteParams) {
+  await serverRequest.delete(`/clientes/${id}`);
 }

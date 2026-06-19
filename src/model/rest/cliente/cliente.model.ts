@@ -39,3 +39,5 @@ export type GetClienteResponse = Omit<
 > & {
   data?: Cliente;
 };
+
+export type DeleteClienteParams = operations["excluir_3"]["parameters"]["path"];
