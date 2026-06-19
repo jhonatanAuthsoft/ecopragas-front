@@ -4,14 +4,22 @@ import { useFormContext } from "react-hook-form";
 import { Button } from "@/atomic/atm.button/button.component";
 import { TabsContent } from "@/atomic/mol.tabs/tabs.component";
 import { cn } from "@/lib/utils";
-import type { ClienteFormValues } from "@/model/rest/cliente";
+import type { ClienteDocumentoResponse, ClienteFormValues } from "@/model/rest/cliente";
 import { VALID_FILE_TYPES } from "../add-cliente-dialog.data";
 
 interface DocumentacaoTabProps {
   isSubmitting: boolean;
+  submitLabel: string;
+  existingDocumentos?: ClienteDocumentoResponse[];
+  onRemoveExistingDocumento?: (index: number) => void;
 }
 
-export const DocumentacaoTab = ({ isSubmitting }: DocumentacaoTabProps) => {
+export const DocumentacaoTab = ({
+  isSubmitting,
+  submitLabel,
+  existingDocumentos = [],
+  onRemoveExistingDocumento,
+}: DocumentacaoTabProps) => {
   const { setValue, watch } = useFormContext<ClienteFormValues>();
   const documentos = watch("documentos");
   const [fileError, setFileError] = useState<string | null>(null);
@@ -109,6 +117,44 @@ export const DocumentacaoTab = ({ isSubmitting }: DocumentacaoTabProps) => {
         </div>
       )}
 
+      {existingDocumentos.length > 0 && (
+        <div className="space-y-2">
+          <h4 className="text-sm font-medium text-grayscale-dark">Documentos cadastrados:</h4>
+          {existingDocumentos.map((documento, index) => (
+            <div
+              key={documento.id ?? `${documento.nome ?? "doc"}-${index}`}
+              className="flex items-center justify-between border border-grayscale-light rounded-lg p-3"
+            >
+              <div className="flex items-center space-x-3 overflow-hidden">
+                <div className="bg-gray-100 p-2 rounded">
+                  <Upload className="h-4 w-4 text-gray-500" />
+                </div>
+                <div className="truncate">
+                  <p className="text-sm font-medium text-grayscale-dark truncate max-w-[200px]">
+                    {documento.nome ?? "Documento"}
+                  </p>
+                  {documento.tipo && (
+                    <p className="text-xs text-grayscale-medium">{documento.tipo}</p>
+                  )}
+                </div>
+              </div>
+              {onRemoveExistingDocumento && (
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onRemoveExistingDocumento(index);
+                  }}
+                  className="text-feedback-error-medium hover:text-feedback-error-dark p-1"
+                >
+                  <Trash2 className="h-4 w-4 cursor-pointer" />
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
       {documentos.length > 0 && (
         <div className="space-y-2">
           <h4 className="text-sm font-medium text-grayscale-dark">Arquivos selecionados:</h4>
@@ -147,7 +193,7 @@ export const DocumentacaoTab = ({ isSubmitting }: DocumentacaoTabProps) => {
 
       <div className="pt-6 flex justify-center">
         <Button type="submit" className="w-[400px] h-[43px]" disabled={isSubmitting}>
-          {isSubmitting ? "Cadastrando..." : "Cadastrar cliente"}
+          {submitLabel}
         </Button>
       </div>
     </TabsContent>

@@ -1,53 +1,51 @@
 import { BuildingOffice2Icon } from "@/assets/icons/building-office-2";
 import { UserPlusIcon } from "@/assets/icons/user-plus";
 import { UsersIcon } from "@/assets/icons/users";
+import { Skeleton } from "@/atomic/atm.skeleton/skeleton.component";
 import { H2 } from "@/atomic/atm.typography";
 import { Card, CardContent, CardTitleSecondary } from "@/atomic/mol.card/card.component";
-import type { Cliente } from "@/model/rest/cliente";
+import { LoadingState } from "@/atomic/obj.loading-state";
+import type { ClienteDashboard } from "@/model/rest/cliente";
 
 interface ClientesMetricsProps {
-  clientes: Cliente[];
-  totalElements: number;
+  dashboard?: ClienteDashboard;
+  isLoading?: boolean;
+  error?: boolean;
 }
 
-export const ClientesMetrics = ({ clientes, totalElements }: ClientesMetricsProps) => {
-  const totalClientes = totalElements || clientes.length;
-  const clientesAtivos = clientes.filter((c) => c.status === "ATIVO").length;
-  const clientesFixos = clientes.filter((c) => c.tipo === "RECORRENTE").length;
-  const clientesEsporadicos = clientes.filter((c) => c.tipo === "ESPORADICO").length;
-
+export const ClientesMetrics = ({ dashboard, isLoading, error }: ClientesMetricsProps) => {
   const stats = [
     {
       title: "Total de Clientes",
-      value: totalClientes,
+      value: dashboard?.totalClientes ?? 0,
       icon: UsersIcon,
       color: "text-brand-primary-medium",
       bgColor: "bg-brand-cta-light",
     },
     {
       title: "Clientes Ativos",
-      value: clientesAtivos,
+      value: dashboard?.clientesAtivos ?? 0,
       icon: UserPlusIcon,
       color: "text-brand-primary-medium",
       bgColor: "bg-brand-cta-light",
     },
     {
       title: "Clientes Fixos",
-      value: clientesFixos,
+      value: dashboard?.clientesFixos ?? 0,
       icon: BuildingOffice2Icon,
       color: "text-brand-primary-medium",
       bgColor: "bg-brand-cta-light",
     },
     {
       title: "Clientes Esporadicos",
-      value: clientesEsporadicos,
+      value: dashboard?.clientesEsporadicos ?? 0,
       icon: UsersIcon,
       color: "text-brand-primary-medium",
       bgColor: "bg-brand-cta-light",
     },
   ];
 
-  return (
+  const renderCards = (showSkeleton: boolean) => (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       {stats.map((stat) => {
         const Icon = stat.icon;
@@ -55,7 +53,11 @@ export const ClientesMetrics = ({ clientes, totalElements }: ClientesMetricsProp
           <Card key={stat.title}>
             <CardContent>
               <CardTitleSecondary>{stat.title}</CardTitleSecondary>
-              <H2>{stat.value}</H2>
+              {showSkeleton ? (
+                <Skeleton className="h-[31px] w-[54px] mt-xs" />
+              ) : (
+                <H2>{stat.value}</H2>
+              )}
             </CardContent>
 
             <div className={`p-sm rounded-full ${stat.bgColor}`}>
@@ -65,5 +67,20 @@ export const ClientesMetrics = ({ clientes, totalElements }: ClientesMetricsProp
         );
       })}
     </div>
+  );
+
+  return (
+    <LoadingState loading={isLoading} error={error} data={!!dashboard}>
+      <LoadingState.Shimmer>{renderCards(true)}</LoadingState.Shimmer>
+
+      <LoadingState.Error>
+        <div className="text-center py-lg">
+          <p className="text-lg font-medium text-foreground">Erro ao carregar métricas</p>
+          <p className="text-sm text-muted-foreground mt-1">Tente recarregar a página</p>
+        </div>
+      </LoadingState.Error>
+
+      {renderCards(false)}
+    </LoadingState>
   );
 };

@@ -5,8 +5,8 @@ import { Button } from "@/atomic/atm.button/button.component";
 import { Body1, H1 } from "@/atomic/atm.typography";
 import { SearchInput } from "@/atomic/mol.search/search.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
-import type { Cliente } from "@/model/rest/cliente";
-import { MOCK_CLIENTES } from "./clientes.mock";
+import { useGetClienteDashboard, useListClientes } from "@/domain/cliente";
+import { useDebounce } from "@/hooks/use-debounce";
 import { AddClienteDialog, type InitialClienteData } from "./components/add-cliente-dialog";
 import { ClientesMetrics } from "./components/ClientesMetrics";
 import { ClientesTable } from "./components/ClientesTable";
@@ -16,10 +16,20 @@ const PAGE_SIZE = 5;
 const Clientes = () => {
   const location = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearch = useDebounce(searchTerm);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [clientes, setClientes] = useState<Cliente[]>(MOCK_CLIENTES);
   const [initialData, setInitialData] = useState<InitialClienteData | null>(null);
   const [page, setPage] = useState(0);
+
+  const { clientes, pagination, listClientesError, isListClientesLoading, refetchClientes } =
+    useListClientes({
+      limit: PAGE_SIZE,
+      offset: page * PAGE_SIZE,
+      searchText: debouncedSearch.trim() || undefined,
+    });
+
+  const { dashboard, dashboardError, isDashboardLoading, refetchDashboard } =
+    useGetClienteDashboard();
 
   useEffect(() => {
     if (location.state?.leadData) {
@@ -35,20 +45,12 @@ const Clientes = () => {
     }
   }, [location]);
 
-  const filteredClientes = clientes.filter(
-    (cliente) =>
-      (cliente.nomeRazaoSocial ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (cliente.cnpjCpf ?? "").includes(searchTerm) ||
-      (cliente.email ?? "").toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const currentPage = page + 1;
 
-  const totalElements = filteredClientes.length;
-  const totalPages = Math.max(1, Math.ceil(totalElements / PAGE_SIZE));
-  const paginatedClientes = filteredClientes.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
-
-  // TODO: apagar apos integrar listagem
-  const handleClienteCreated = (cliente: Cliente) => {
-    setClientes((prev) => [cliente, ...prev]);
+  const handleClienteCreated = () => {
+    setPage(0);
+    refetchClientes();
+    refetchDashboard();
   };
 
   return (
@@ -62,7 +64,11 @@ const Clientes = () => {
         </div>
 
         <div className="flex flex-col gap-md">
-          <ClientesMetrics clientes={clientes} totalElements={clientes.length} />
+          <ClientesMetrics
+            dashboard={dashboard}
+            isLoading={isDashboardLoading}
+            error={!!dashboardError}
+          />
 
           <div className="flex flex-col gap-md">
             <div className="flex items-center justify-between">
@@ -84,10 +90,12 @@ const Clientes = () => {
             </div>
 
             <ClientesTable
-              clientes={paginatedClientes}
-              currentPage={page + 1}
-              totalPages={totalPages}
-              onPageChange={(p) => setPage(p - 1)}
+              clientes={clientes}
+              currentPage={currentPage}
+              totalPages={pagination?.totalPages ?? 1}
+              isLoading={isListClientesLoading}
+              error={!!listClientesError}
+              onPageChange={(nextPage) => setPage(nextPage - 1)}
             />
           </div>
         </div>

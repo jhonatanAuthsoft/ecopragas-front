@@ -1,11 +1,12 @@
+import type { UseFormResetField } from "react-hook-form";
 import type {
   CadastrarClienteInput,
-  ClienteDocumento,
+  ClienteDocumentoInput,
   ClienteEndereco,
   ClienteFormValues,
 } from "@/model/rest/cliente";
 import { cleanDigits } from "@/utils/formatters";
-import { ENDERECO_FIELDS } from "./add-cliente-dialog.data";
+import { ENDERECO_DRAFT_FIELDS, ENDERECO_FIELDS } from "./add-cliente-dialog.data";
 import type { ViaCepResponse } from "./add-cliente-dialog.types";
 
 const sanitizeEndereco = (endereco: ClienteEndereco): ClienteEndereco => ({
@@ -18,37 +19,10 @@ const toApiEndereco = (endereco: ClienteEndereco): ClienteEndereco => {
   return sanitizeEndereco(apiEndereco);
 };
 
-// TODO: modificar ao ver documentos
-const buildClienteDocumentos = (files: File[], base64Urls: string[]): ClienteDocumento[] =>
-  files.map((file, index) => ({
-    nome: file.name,
-    tipo: file.type,
-    url: base64Urls[index] ?? "",
-  }));
-
-// TODO: modificar ao ver documentos, possivelmente excluir
-const filesToBase64 = (files: File[]): Promise<string[]> =>
-  Promise.all(
-    files.map(
-      (file) =>
-        new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => {
-            if (typeof reader.result === "string") {
-              resolve(reader.result);
-              return;
-            }
-            reject(new Error("Falha ao converter arquivo"));
-          };
-          reader.onerror = () => reject(reader.error);
-        }),
-    ),
-  );
-
-export const buildCadastrarClienteInput = async (
+export const buildCadastrarClienteInput = (
   values: ClienteFormValues,
-): Promise<CadastrarClienteInput> => {
+  documentos: ClienteDocumentoInput[] = [],
+): CadastrarClienteInput => {
   const enderecosInput = values.enderecos.map(toApiEndereco);
 
   const hasDraftAddress =
@@ -62,9 +36,6 @@ export const buildCadastrarClienteInput = async (
   if (hasDraftAddress) {
     enderecosInput.push(toApiEndereco(values.enderecoDraft));
   }
-
-  const base64Urls = await filesToBase64(values.documentos);
-  const documentos = buildClienteDocumentos(values.documentos, base64Urls);
 
   return {
     nomeRazaoSocial: values.nomeRazaoSocial,
@@ -112,3 +83,17 @@ export const shouldValidateEnderecoDraft = (
   enderecoDraft: ClienteEndereco,
   enderecosCount: number,
 ) => enderecosCount === 0 || !isAddressEmpty(enderecoDraft);
+
+export const resetEnderecoDraftFields = <T extends ClienteFormValues>(
+  resetField: UseFormResetField<T>,
+) => {
+  const reset = resetField as unknown as UseFormResetField<ClienteFormValues>;
+  const emptyDraft = clearEnderecoDraft();
+
+  for (const field of ENDERECO_DRAFT_FIELDS) {
+    const draftKey = field.replace("enderecoDraft.", "") as keyof ClienteEndereco;
+    reset(field, { defaultValue: String(emptyDraft[draftKey]) });
+  }
+
+  reset("enderecoDraft.padrao", { defaultValue: false });
+};
