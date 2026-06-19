@@ -11,9 +11,9 @@ export type ClienteEndereco = components["schemas"]["ClienteEnderecoInputDTO"] &
 export type ClienteDashboard = components["schemas"]["ClienteDashboardDTO"];
 
 export type CadastrarClienteInput =
-  operations["cadastrar_3"]["requestBody"]["content"]["application/json"];
+  operations["cadastrar_4"]["requestBody"]["content"]["application/json"];
 export type CadastrarClienteResponse =
-  operations["cadastrar_3"]["responses"][200]["content"]["*/*"];
+  operations["cadastrar_4"]["responses"][200]["content"]["*/*"];
 
 export type ClienteFormValues = Omit<CadastrarClienteInput, "documentos" | "enderecos"> & {
   documentos: File[];
