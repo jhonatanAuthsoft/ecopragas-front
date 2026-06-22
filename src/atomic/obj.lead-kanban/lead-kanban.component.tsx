@@ -27,6 +27,16 @@ const columns: { status: LeadStatus; title: string; color: string }[] = [
   { status: "PERDIDO", title: "Perdido", color: "border-l-feedback-error-medium" },
 ];
 
+const COLUMN_STATUSES = columns.map((column) => column.status);
+
+const resolveDropStatus = (overId: string | number, leads: Lead[]): LeadStatus | undefined => {
+  if (COLUMN_STATUSES.includes(overId as LeadStatus)) {
+    return overId as LeadStatus;
+  }
+
+  return leads.find((lead) => lead.id === overId)?.status;
+};
+
 interface DraggableLeadProps {
   lead: Lead;
 }
@@ -117,11 +127,11 @@ export const LeadKanban = ({ leads, onUpdateStatus }: LeadKanbanProps) => {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (over && active.id !== over.id) {
-      const lead = active.data.current?.lead as Lead;
-      const newStatus = over.id as LeadStatus;
+    if (over) {
+      const lead = active.data.current?.lead;
+      const newStatus = resolveDropStatus(over.id, leads);
 
-      if (lead?.id && lead.status !== newStatus) {
+      if (lead?.id && newStatus && lead.status !== newStatus) {
         onUpdateStatus(lead.id, newStatus);
       }
     }

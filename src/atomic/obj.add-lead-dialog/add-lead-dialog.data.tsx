@@ -1,13 +1,14 @@
 import type { CadastrarLeadRequest } from "@/model/rest/lead";
 import type { SelectInputOption } from "../atm.select-input";
 
-export const DEFAULT_VALUES: Omit<CadastrarLeadRequest, "origem" | "status"> = {
+export const DEFAULT_VALUES: Omit<CadastrarLeadRequest, "origem"> = {
   nome: "",
   empresa: "",
   email: "",
   telefone: "",
   valorEstimado: undefined,
   observacoes: "",
+  status: "NOVO",
 };
 
 export const ORIGIN_OPTIONS: SelectInputOption[] = [
