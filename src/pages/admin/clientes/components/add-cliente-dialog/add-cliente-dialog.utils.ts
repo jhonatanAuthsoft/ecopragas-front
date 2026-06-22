@@ -3,6 +3,7 @@ import type {
   CadastrarClienteInput,
   ClienteDocumentoInput,
   ClienteEndereco,
+  ClienteEnderecoInput,
   ClienteFormValues,
 } from "@/model/rest/cliente";
 import { cleanDigits } from "@/utils/formatters";
@@ -14,16 +15,32 @@ const sanitizeEndereco = (endereco: ClienteEndereco): ClienteEndereco => ({
   cep: endereco.cep ? cleanDigits(endereco.cep) : endereco.cep,
 });
 
-const toApiEndereco = (endereco: ClienteEndereco): ClienteEndereco => {
-  const { padrao: _padrao, ...apiEndereco } = endereco;
-  return sanitizeEndereco(apiEndereco);
+const toApiEndereco = (endereco: ClienteEndereco): ClienteEnderecoInput => ({
+  ...sanitizeEndereco(endereco),
+  padrao: endereco.padrao ?? false,
+});
+
+export const appendEndereco = (
+  enderecos: ClienteEndereco[],
+  novoEndereco: ClienteEndereco,
+): ClienteEndereco[] => {
+  const enderecoFormatted: ClienteEndereco = {
+    ...novoEndereco,
+    padrao: novoEndereco.padrao ?? false,
+  };
+
+  if (!enderecoFormatted.padrao) {
+    return [...enderecos, enderecoFormatted];
+  }
+
+  return [...enderecos.map((endereco) => ({ ...endereco, padrao: false })), enderecoFormatted];
 };
 
 export const buildCadastrarClienteInput = (
   values: ClienteFormValues,
   documentos: ClienteDocumentoInput[] = [],
 ): CadastrarClienteInput => {
-  const enderecosInput = values.enderecos.map(toApiEndereco);
+  let enderecosInput = values.enderecos.map(toApiEndereco);
 
   const hasDraftAddress =
     values.enderecoDraft.cep &&
@@ -34,7 +51,12 @@ export const buildCadastrarClienteInput = (
     values.enderecoDraft.numero;
 
   if (hasDraftAddress) {
-    enderecosInput.push(toApiEndereco(values.enderecoDraft));
+    const draft = toApiEndereco(values.enderecoDraft);
+
+    if (draft.padrao) {
+      enderecosInput = enderecosInput.map((endereco) => ({ ...endereco, padrao: false }));
+    }
+    enderecosInput.push(draft);
   }
 
   return {

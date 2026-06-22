@@ -3,6 +3,7 @@ import type {
   ClienteDocumentoInput,
   ClienteDocumentoResponse,
   ClienteEndereco,
+  ClienteEnderecoResponse,
   EditClienteFormValues,
   EditClienteInput,
 } from "@/model/rest/cliente";
@@ -13,7 +14,7 @@ import {
   clearEnderecoDraft,
 } from "../../../../../../../add-cliente-dialog/add-cliente-dialog.utils";
 
-const mapEnderecoResponseToForm = (endereco: ClienteEndereco): ClienteEndereco => ({
+const mapEnderecoResponseToForm = (endereco: ClienteEnderecoResponse): ClienteEndereco => ({
   cep: endereco.cep ? formatCEP(endereco.cep) : "",
   estado: endereco.estado ?? "",
   cidade: endereco.cidade ?? "",
@@ -21,7 +22,7 @@ const mapEnderecoResponseToForm = (endereco: ClienteEndereco): ClienteEndereco =
   rua: endereco.rua ?? "",
   numero: endereco.numero ?? "",
   complemento: endereco.complemento ?? "",
-  padrao: false,
+  padrao: endereco.padrao ?? false,
 });
 
 const mapDocumentoToInput = (documento: ClienteDocumentoResponse): ClienteDocumentoInput => ({
