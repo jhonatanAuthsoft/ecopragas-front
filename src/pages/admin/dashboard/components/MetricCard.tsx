@@ -1,3 +1,4 @@
+import { Skeleton } from "@/atomic/atm.skeleton/skeleton.component";
 import { H2 } from "@/atomic/atm.typography";
 import {
   Card,
@@ -11,22 +12,30 @@ interface MetricCardProps {
   value: string | number;
   icon: React.ElementType;
   className?: string;
+  isLoading?: boolean;
   trend?: {
     value: number;
     isPositive: boolean;
   };
 }
 
-export const MetricCard = ({ title, value, icon: Icon, trend, className }: MetricCardProps) => {
+export const MetricCard = ({
+  title,
+  value,
+  icon: Icon,
+  trend,
+  className,
+  isLoading,
+}: MetricCardProps) => {
   return (
     <Card className={className}>
       <CardContent>
         <CardTitleSecondary>{title}</CardTitleSecondary>
-        <H2>{value}</H2>
-        {trend && (
+        {isLoading ? <Skeleton className="h-[31px] w-[54px] mt-xs" /> : <H2>{value}</H2>}
+        {trend && !isLoading && (
           <CardSubtitle>
-            {trend?.isPositive ? "+" : "-"}
-            {trend?.value}% vs mês anterior
+            {trend.isPositive ? "+" : "-"}
+            {trend.value}% vs mês anterior
           </CardSubtitle>
         )}
       </CardContent>
