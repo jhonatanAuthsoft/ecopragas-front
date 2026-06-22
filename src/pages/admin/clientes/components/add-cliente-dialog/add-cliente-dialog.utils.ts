@@ -20,6 +20,19 @@ const toApiEndereco = (endereco: ClienteEndereco): ClienteEnderecoInput => ({
   padrao: endereco.padrao ?? false,
 });
 
+export const hasDefaultEndereco = (enderecos: Array<{ padrao?: boolean }>) =>
+  enderecos.some((endereco) => endereco.padrao);
+
+export const ensureDefaultEndereco = <T extends { padrao?: boolean }>(enderecos: T[]): T[] => {
+  if (enderecos.length === 0 || hasDefaultEndereco(enderecos)) {
+    return enderecos;
+  }
+
+  return enderecos.map((endereco, index) =>
+    index === 0 ? { ...endereco, padrao: true } : endereco,
+  );
+};
+
 export const appendEndereco = (
   enderecos: ClienteEndereco[],
   novoEndereco: ClienteEndereco,
@@ -29,11 +42,18 @@ export const appendEndereco = (
     padrao: novoEndereco.padrao ?? false,
   };
 
+  let updatedEnderecos: ClienteEndereco[];
+
   if (!enderecoFormatted.padrao) {
-    return [...enderecos, enderecoFormatted];
+    updatedEnderecos = [...enderecos, enderecoFormatted];
+  } else {
+    updatedEnderecos = [
+      ...enderecos.map((endereco) => ({ ...endereco, padrao: false })),
+      enderecoFormatted,
+    ];
   }
 
-  return [...enderecos.map((endereco) => ({ ...endereco, padrao: false })), enderecoFormatted];
+  return ensureDefaultEndereco(updatedEnderecos);
 };
 
 export const buildCadastrarClienteInput = (
@@ -58,6 +78,8 @@ export const buildCadastrarClienteInput = (
     }
     enderecosInput.push(draft);
   }
+
+  enderecosInput = ensureDefaultEndereco(enderecosInput);
 
   return {
     nomeRazaoSocial: values.nomeRazaoSocial,
