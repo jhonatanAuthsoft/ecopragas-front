@@ -10,45 +10,31 @@ import { CRMMetrics } from "@/atomic/obj.crmmetrics/crmmetrics.component";
 import { LeadKanban } from "@/atomic/obj.lead-kanban/lead-kanban.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
+import { useListLeads } from "@/domain/lead";
 import { cn } from "@/lib/utils";
+import type { Lead, LeadStatus, ListLeadsParams } from "@/model/rest/lead";
 import { useSidebarStore } from "@/store/sidebar";
-import { MOCK_LEADS } from "./leads.mock";
-import type { Lead } from "./leads.types";
 
-export type { Lead } from "./leads.types";
-
-const createLeadId = () => `lead-${crypto.randomUUID()}`;
+export const LIST_LEADS_PARAMS: ListLeadsParams = { limit: 100, offset: 0 };
 
 const Leads = () => {
   const navigate = useNavigate();
   const isMinimized = useSidebarStore((state) => state.isMinimized);
-  const [leads, setLeads] = useState<Lead[]>(MOCK_LEADS);
+  const { leads } = useListLeads(LIST_LEADS_PARAMS);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [convertLeadDialogOpen, setConvertLeadDialogOpen] = useState(false);
   const [leadToConvert, setLeadToConvert] = useState<Lead | null>(null);
 
-  const handleAddLead = (lead: Omit<Lead, "id" | "createdAt">) => {
-    const newLead: Lead = {
-      ...lead,
-      id: createLeadId(),
-      createdAt: new Date(),
-    };
-
-    setLeads((prev) => [newLead, ...prev]);
-    toast.success("Lead criado com sucesso!");
-    setIsDialogOpen(false);
-  };
-
-  const handleUpdateLeadStatus = (leadId: string, newStatus: Lead["status"]) => {
+  const handleUpdateLeadStatus = (leadId: string, newStatus: LeadStatus) => {
     const leadToUpdate = leads.find((l) => l.id === leadId);
     if (!leadToUpdate) return;
 
-    setLeads((prev) =>
-      prev.map((lead) => (lead.id === leadId ? { ...lead, status: newStatus } : lead)),
-    );
+    // setLeads((prev) =>
+    //   prev.map((lead) => (lead.id === leadId ? { ...lead, status: newStatus } : lead)),
+    // );
     toast.success("Status atualizado!");
 
-    if (newStatus === "ganho") {
+    if (newStatus === "GANHO") {
       setLeadToConvert({ ...leadToUpdate, status: newStatus });
       setConvertLeadDialogOpen(true);
     }
@@ -91,11 +77,7 @@ const Leads = () => {
           <LeadKanban leads={leads} onUpdateStatus={handleUpdateLeadStatus} />
         </div>
 
-        <AddLeadDialog
-          open={isDialogOpen}
-          onOpenChange={setIsDialogOpen}
-          onAddLead={handleAddLead}
-        />
+        <AddLeadDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
 
         <ConvertLeadDialog
           open={convertLeadDialogOpen}

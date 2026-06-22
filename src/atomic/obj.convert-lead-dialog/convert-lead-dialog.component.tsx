@@ -1,7 +1,7 @@
 import { CheckBadgeIcon } from "@/assets/icons/check-badge";
 import { Button } from "@/atomic/atm.button/button.component";
 import { Dialog, DialogContent } from "@/atomic/mol.dialog/dialog.component";
-import type { Lead } from "@/pages/leads/Leads";
+import type { Lead } from "@/model/rest/lead";
 import { Body1, H2 } from "../atm.typography";
 
 interface ConvertLeadDialogProps {

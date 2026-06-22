@@ -1,27 +1,27 @@
-import type { AddLeadFormValues } from "./add-lead-dialog.component";
+import type { CadastrarLeadRequest } from "@/model/rest/lead";
+import type { SelectInputOption } from "../atm.select-input";
 
-export const DEFAULT_VALUES: AddLeadFormValues = {
-  name: "",
-  company: "",
-  phone: "",
-  origin: "",
-  value: "",
-  status: "",
-  notes: "",
+export const DEFAULT_VALUES: Omit<CadastrarLeadRequest, "origem" | "status"> = {
+  nome: "",
+  empresa: "",
+  email: "",
+  telefone: "",
+  valorEstimado: undefined,
+  observacoes: "",
 };
 
-export const ORIGIN_OPTIONS = [
-  { value: "google", label: "Google" },
-  { value: "instagram", label: "Instagram" },
-  { value: "facebook", label: "Facebook" },
-  { value: "indicacao", label: "Indicação" },
-  { value: "website", label: "Website" },
-  { value: "outro", label: "Outro" },
+export const ORIGIN_OPTIONS: SelectInputOption[] = [
+  { value: "GOOGLE", label: "Google" },
+  { value: "INSTAGRAM", label: "Instagram" },
+  { value: "FACEBOOK", label: "Facebook" },
+  { value: "INDICACAO", label: "Indicação" },
+  { value: "WEBSITE", label: "Website" },
+  { value: "OUTRO", label: "Outro" },
 ];
 
-export const STATUS_OPTIONS = [
-  { value: "novo", label: "Novo" },
-  { value: "em_contato", label: "Em Contato" },
-  { value: "proposta_enviada", label: "Proposta Enviada" },
-  { value: "negociacao", label: "Negociação" },
+export const STATUS_OPTIONS: SelectInputOption[] = [
+  { value: "NOVO", label: "Novo" },
+  { value: "EM_CONTATO", label: "Em Contato" },
+  { value: "PROPOSTA_ENVIADA", label: "Proposta Enviada" },
+  { value: "EM_NEGOCIACAO", label: "Negociação" },
 ];

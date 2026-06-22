@@ -35,10 +35,10 @@ const Clientes = () => {
     if (location.state?.leadData) {
       const lead = location.state.leadData;
       setInitialData({
-        nomeRazaoSocial: lead.name,
-        email: lead.email || "",
-        telefone: lead.phone,
-        observacoes: lead.notes || "",
+        nomeRazaoSocial: lead.nome ?? "",
+        email: lead.email ?? "",
+        telefone: lead.telefone ?? "",
+        observacoes: lead.observacoes ?? "",
       });
       setIsDialogOpen(true);
       window.history.replaceState({}, document.title);
