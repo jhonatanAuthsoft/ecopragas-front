@@ -31,6 +31,7 @@ const KANBAN_SKELETON_COLUMNS = [
 const Leads = () => {
   const navigate = useNavigate();
   const isMinimized = useSidebarStore((state) => state.isMinimized);
+  // TODO: otimizar (ideia: fazer listagens individuais em cada coluna, com paginação infinita, e ao atualizar fazer refetch)
   const { leads, listLeadsError, isListLeadsLoading } = useListLeads(LIST_LEADS_PARAMS);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [convertLeadDialogOpen, setConvertLeadDialogOpen] = useState(false);
