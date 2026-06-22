@@ -81,7 +81,7 @@ const Leads = () => {
           </Button>
         </div>
 
-        <CRMMetrics leads={leads} />
+        <CRMMetrics />
 
         <div
           className={cn(

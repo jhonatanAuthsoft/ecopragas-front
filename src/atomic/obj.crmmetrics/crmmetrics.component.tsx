@@ -1,6 +1,7 @@
 import { ArrowPathIcon } from "@/assets/icons/arrowpath";
 import { BankNotesIcon } from "@/assets/icons/banknotes";
 import { UsersIcon } from "@/assets/icons/users";
+import { Skeleton } from "@/atomic/atm.skeleton/skeleton.component";
 import { H2 } from "@/atomic/atm.typography";
 import {
   Card,
@@ -8,66 +9,57 @@ import {
   CardSubtitle,
   CardTitleSecondary,
 } from "@/atomic/mol.card/card.component";
-import type { Lead } from "@/pages/leads/Leads";
+import { LoadingState } from "@/atomic/obj.loading-state";
+import { useGetLeadDashboard } from "@/domain/lead";
+import { formatCurrency } from "@/utils/formatters";
 
-interface CRMMetricsProps {
-  leads: Lead[];
-}
+// TODO: pegar esses valores do back
+const MOCK_LEADS_GANHOS = 0;
+const MOCK_LEADS_PERDIDOS = 0;
+const MOCK_CAC_CUSTO_MARKETING = 5000;
 
-export const CRMMetrics = ({ leads }: CRMMetricsProps) => {
-  const totalLeads = leads.length;
-  const leadsGanhos = leads.filter((l) => l.status === "ganho").length;
-  const leadsPerdidos = leads.filter((l) => l.status === "perdido").length;
-  const leadsAtivos = leads.filter((l) => !["ganho", "perdido"].includes(l.status)).length;
+export const CRMMetrics = () => {
+  const { dashboard, dashboardError, isDashboardLoading } = useGetLeadDashboard();
 
-  const valorTotal = leads
-    .filter((l) => l.status === "ganho")
-    .reduce((sum, lead) => sum + lead.value, 0);
-
-  const valorPotencial = leads
-    .filter((l) => !["ganho", "perdido"].includes(l.status))
-    .reduce((sum, lead) => sum + lead.value, 0);
-
-  const taxaConversao = totalLeads > 0 ? ((leadsGanhos / totalLeads) * 100).toFixed(1) : "0";
-
-  const cacSimulado = leadsGanhos > 0 ? (5000 / leadsGanhos).toFixed(2) : "0";
+  const taxaConversao = (dashboard?.taxaConversao ?? 0).toFixed(2);
+  const cacMedio = MOCK_LEADS_GANHOS > 0 ? MOCK_CAC_CUSTO_MARKETING / MOCK_LEADS_GANHOS : 0;
 
   const metrics = [
     {
       title: "Total de Leads",
-      value: totalLeads,
+      value: dashboard?.totalLeads ?? 0,
       icon: UsersIcon,
     },
     {
       title: "Leads Ativos",
-      value: leadsAtivos,
+      value: dashboard?.leadsAtivos ?? 0,
       icon: UsersIcon,
     },
     {
       title: "Valor Fechado",
-      value: `R$ ${valorTotal.toLocaleString("pt-BR")}`,
+      value: formatCurrency(dashboard?.valorFechado ?? 0),
       icon: BankNotesIcon,
     },
     {
       title: "Valor Potencial",
-      value: `R$ ${valorPotencial.toLocaleString("pt-BR")}`,
+      value: formatCurrency(dashboard?.valorPotencial ?? 0),
       icon: BankNotesIcon,
     },
     {
       title: "Taxa de Conversão",
       value: `${taxaConversao}%`,
       icon: ArrowPathIcon,
-      subtitle: `${leadsGanhos} ganhos / ${leadsPerdidos} perdidos`,
+      subtitle: `${MOCK_LEADS_GANHOS} ganhos / ${MOCK_LEADS_PERDIDOS} perdidos`,
     },
     {
       title: "CAC Médio",
-      value: `R$ ${Number(cacSimulado).toLocaleString("pt-BR")}`,
+      value: formatCurrency(cacMedio),
       icon: BankNotesIcon,
       subtitle: "Custo de Aquisição por Cliente",
     },
   ];
 
-  return (
+  const renderCards = (showSkeleton: boolean) => (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
       {metrics.map((metric) => {
         const Icon = metric.icon;
@@ -75,9 +67,13 @@ export const CRMMetrics = ({ leads }: CRMMetricsProps) => {
           <Card key={metric.title}>
             <CardContent>
               <CardTitleSecondary>{metric.title}</CardTitleSecondary>
-              <H2>{metric.value}</H2>
+              {showSkeleton ? (
+                <Skeleton className="h-[31px] w-[54px] mt-xs" />
+              ) : (
+                <H2>{metric.value}</H2>
+              )}
 
-              {metric.subtitle && (
+              {metric.subtitle && !showSkeleton && (
                 <CardSubtitle className="text-grayscale-dark">{metric.subtitle}</CardSubtitle>
               )}
             </CardContent>
@@ -89,5 +85,20 @@ export const CRMMetrics = ({ leads }: CRMMetricsProps) => {
         );
       })}
     </div>
+  );
+
+  return (
+    <LoadingState loading={isDashboardLoading} error={!!dashboardError} data={!!dashboard}>
+      <LoadingState.Shimmer>{renderCards(true)}</LoadingState.Shimmer>
+
+      <LoadingState.Error>
+        <div className="text-center py-lg">
+          <p className="text-lg font-medium text-foreground">Erro ao carregar métricas</p>
+          <p className="text-sm text-muted-foreground mt-1">Tente recarregar a página</p>
+        </div>
+      </LoadingState.Error>
+
+      {renderCards(false)}
+    </LoadingState>
   );
 };
