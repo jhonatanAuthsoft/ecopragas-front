@@ -12,6 +12,7 @@ import {
   DADOS_FIELDS,
   DEFAULT_VALUES,
   ENDERECO_DRAFT_FIELDS,
+  ENDERECO_DRAFT_REQUIRED_FIELDS,
   TAB_TRIGGER_CLASS,
 } from "./add-cliente-dialog.data";
 import type { ClienteDialogTab, InitialClienteData } from "./add-cliente-dialog.types";
@@ -84,7 +85,7 @@ export const AddClienteDialog = ({
       return true;
     }
 
-    return formMethods.trigger([...ENDERECO_DRAFT_FIELDS]);
+    return formMethods.trigger([...ENDERECO_DRAFT_REQUIRED_FIELDS]);
   };
 
   const handleNextDados = async () => {
@@ -102,7 +103,7 @@ export const AddClienteDialog = ({
   };
 
   const handleAddEndereco = async () => {
-    const isValid = await formMethods.trigger([...ENDERECO_DRAFT_FIELDS]);
+    const isValid = await formMethods.trigger([...ENDERECO_DRAFT_REQUIRED_FIELDS]);
     if (!isValid) {
       return;
     }

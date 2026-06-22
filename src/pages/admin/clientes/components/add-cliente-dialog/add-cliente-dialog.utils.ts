@@ -7,7 +7,10 @@ import type {
   ClienteFormValues,
 } from "@/model/rest/cliente";
 import { cleanDigits } from "@/utils/formatters";
-import { ENDERECO_DRAFT_FIELDS, ENDERECO_FIELDS } from "./add-cliente-dialog.data";
+import {
+  ENDERECO_DRAFT_FIELDS,
+  ENDERECO_REQUIRED_FIELDS,
+} from "./add-cliente-dialog.data";
 import type { ViaCepResponse } from "./add-cliente-dialog.types";
 
 const sanitizeEndereco = (endereco: ClienteEndereco): ClienteEndereco => ({
@@ -62,13 +65,9 @@ export const buildCadastrarClienteInput = (
 ): CadastrarClienteInput => {
   let enderecosInput = values.enderecos.map(toApiEndereco);
 
-  const hasDraftAddress =
-    values.enderecoDraft.cep &&
-    values.enderecoDraft.estado &&
-    values.enderecoDraft.cidade &&
-    values.enderecoDraft.bairro &&
-    values.enderecoDraft.rua &&
-    values.enderecoDraft.numero;
+  const hasDraftAddress = ENDERECO_REQUIRED_FIELDS.every(
+    (field) => String(values.enderecoDraft[field] ?? "").trim() !== "",
+  );
 
   if (hasDraftAddress) {
     const draft = toApiEndereco(values.enderecoDraft);
@@ -95,7 +94,7 @@ export const buildCadastrarClienteInput = (
 };
 
 export const isAddressEmpty = (endereco: ClienteEndereco) =>
-  ENDERECO_FIELDS.every((field) => !endereco[field]);
+  ENDERECO_REQUIRED_FIELDS.every((field) => !endereco[field]);
 
 export const fetchAddressByCep = async (cep: string): Promise<ViaCepResponse | null> => {
   const cleanCep = cleanDigits(cep);
