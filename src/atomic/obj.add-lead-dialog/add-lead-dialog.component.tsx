@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
 import { SelectInput } from "@/atomic/atm.select-input";
 import { TextInput } from "@/atomic/atm.text-input";
@@ -6,53 +7,43 @@ import { TextareaInput } from "@/atomic/atm.textarea-input";
 import { H2 } from "@/atomic/atm.typography";
 import { Dialog, DialogContent, DialogHeader } from "@/atomic/mol.dialog/dialog.component";
 import { Form, FormField, PhoneValidator, RequiredValidator } from "@/atomic/obj.form";
-import type { Lead } from "@/pages/leads/leads.types";
-import { cleanDigits, formatCurrency, formatPhone } from "@/utils/formatters";
+import { useCreateLead } from "@/domain/lead";
+import type { CadastrarLeadRequest } from "@/model/rest/lead";
+import { formatCurrency, formatPhone } from "@/utils/formatters";
 import { DEFAULT_VALUES, ORIGIN_OPTIONS, STATUS_OPTIONS } from "./add-lead-dialog.data";
-
-export type AddLeadFormValues = {
-  name: string;
-  company: string;
-  phone: string;
-  origin: Lead["origin"] | "";
-  value: string;
-  status: Lead["status"] | "";
-  notes: string;
-};
+import { buildCadastrarLeadInput } from "./add-lead-dialog.utils";
 
 interface AddLeadDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddLead: (lead: Omit<Lead, "id" | "createdAt">) => Promise<void> | void;
 }
 
-export const AddLeadDialog = (props: AddLeadDialogProps) => {
-  const formMethods = useForm<AddLeadFormValues>();
-  const { isSubmitting } = formMethods.formState;
+export const AddLeadDialog = ({ open, onOpenChange }: AddLeadDialogProps) => {
+  const { createLead, isCreateLeadLoading } = useCreateLead({
+    onSuccess: () => {
+      toast.success("Lead criado com sucesso!");
+      formMethods.reset(DEFAULT_VALUES);
+      onOpenChange(false);
+    },
+  });
+
+  const formMethods = useForm<CadastrarLeadRequest>({
+    defaultValues: DEFAULT_VALUES,
+  });
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
       formMethods.reset(DEFAULT_VALUES);
     }
-    props.onOpenChange(nextOpen);
+    onOpenChange(nextOpen);
   };
 
-  const handleSubmit = async (data: AddLeadFormValues) => {
-    await props.onAddLead({
-      name: data.name,
-      company: data.company,
-      phone: data.phone,
-      origin: data.origin as Lead["origin"],
-      value: Number(cleanDigits(data.value)) / 100 || 0,
-      status: data.status as Lead["status"],
-      notes: data.notes || undefined,
-    });
-
-    formMethods.reset(DEFAULT_VALUES);
+  const handleSubmit = (data: CadastrarLeadRequest) => {
+    createLead(buildCadastrarLeadInput(data));
   };
 
   return (
-    <Dialog open={props.open} onOpenChange={handleOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[800px] p-6">
         <DialogHeader className="mb-4">
           <div className="flex items-center justify-between">
@@ -62,15 +53,15 @@ export const AddLeadDialog = (props: AddLeadDialogProps) => {
 
         <Form formMethods={formMethods} onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormField name="name" validators={[RequiredValidator()]}>
-              <TextInput label="Nome" placeholder="Ex. João Silva" hasClearButton />
+            <FormField name="nome" validators={[RequiredValidator()]}>
+              <TextInput label="Nome" placeholder="Ex. Joao Silva" />
             </FormField>
 
-            <FormField name="company" validators={[RequiredValidator()]}>
+            <FormField name="empresa" validators={[RequiredValidator()]}>
               <TextInput label="Empresa" placeholder="Ex. Empresa ABC" />
             </FormField>
 
-            <FormField name="phone" validators={[RequiredValidator(), PhoneValidator()]}>
+            <FormField name="telefone" validators={[RequiredValidator(), PhoneValidator()]}>
               <TextInput
                 label="Telefone"
                 placeholder="Ex. (11) 90076-0010"
@@ -79,7 +70,7 @@ export const AddLeadDialog = (props: AddLeadDialogProps) => {
               />
             </FormField>
 
-            <FormField name="origin" validators={[RequiredValidator()]}>
+            <FormField name="origem" validators={[RequiredValidator()]}>
               <SelectInput label="Origem" placeholder="Ex. Google Ads" options={ORIGIN_OPTIONS} />
             </FormField>
 
@@ -87,7 +78,7 @@ export const AddLeadDialog = (props: AddLeadDialogProps) => {
               <SelectInput label="Status Inicial" placeholder="Ex. Novo" options={STATUS_OPTIONS} />
             </FormField>
 
-            <FormField name="value" validators={[RequiredValidator()]}>
+            <FormField name="valorEstimado" validators={[RequiredValidator()]}>
               <TextInput
                 label="Valor Estimado (R$)"
                 placeholder="Ex. 2.000,00"
@@ -96,16 +87,20 @@ export const AddLeadDialog = (props: AddLeadDialogProps) => {
             </FormField>
           </div>
 
-          <FormField name="notes">
+          <FormField name="observacoes">
             <TextareaInput
-              label="Observações"
+              label="Observacoes"
               placeholder="Informacoes adicionais sobre o lead..."
             />
           </FormField>
 
           <div className="pt-6 flex justify-center">
-            <Button type="submit" className="h-11 w-full md:w-[400px]" disabled={isSubmitting}>
-              {isSubmitting ? "Adicionando..." : "Adicionar Lead"}
+            <Button
+              type="submit"
+              className="h-11 w-full md:w-[400px]"
+              disabled={isCreateLeadLoading}
+            >
+              {isCreateLeadLoading ? "Adicionando..." : "Adicionar Lead"}
             </Button>
           </div>
         </Form>

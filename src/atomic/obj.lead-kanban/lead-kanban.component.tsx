@@ -15,24 +15,35 @@ import { H3, InputCaption } from "@/atomic/atm.typography";
 import { Card, CardContent, CardHeader } from "@/atomic/mol.card/card.component";
 import { ScrollArea } from "@/atomic/mol.scroll-area/scroll-area.component";
 import { LeadCard } from "@/atomic/obj.lead-card/lead-card.component";
-import type { Lead } from "@/pages/leads/Leads";
+import type { Lead, LeadStatus } from "@/model/rest/lead";
 import { formatCurrency } from "@/utils/formatters";
 
-const columns: { status: Lead["status"]; title: string; color: string }[] = [
-  { status: "novo", title: "Novo", color: "border-l-brand-primary-medium" },
-  { status: "em_contato", title: "Em Contato", color: "border-l-brand-secondary-medium" },
-  { status: "proposta_enviada", title: "Proposta Enviada", color: "border-l-brand-secondary-dark" },
-  { status: "negociacao", title: "Negociação", color: "border-l-feedback-warning-medium" },
-  { status: "ganho", title: "Ganho", color: "border-l-feedback-success-medium" },
-  { status: "perdido", title: "Perdido", color: "border-l-feedback-error-medium" },
+const columns: { status: LeadStatus; title: string; color: string }[] = [
+  { status: "NOVO", title: "Novo", color: "border-l-brand-primary-medium" },
+  { status: "EM_CONTATO", title: "Em Contato", color: "border-l-brand-secondary-medium" },
+  { status: "PROPOSTA_ENVIADA", title: "Proposta Enviada", color: "border-l-brand-secondary-dark" },
+  { status: "EM_NEGOCIACAO", title: "Negociação", color: "border-l-feedback-warning-medium" },
+  { status: "GANHO", title: "Ganho", color: "border-l-feedback-success-medium" },
+  { status: "PERDIDO", title: "Perdido", color: "border-l-feedback-error-medium" },
 ];
+
+const COLUMN_STATUSES = columns.map((column) => column.status);
+
+const resolveDropStatus = (overId: string | number, leads: Lead[]): LeadStatus | undefined => {
+  if (COLUMN_STATUSES.includes(overId as LeadStatus)) {
+    return overId as LeadStatus;
+  }
+
+  return leads.find((lead) => lead.id === overId)?.status;
+};
 
 interface DraggableLeadProps {
   lead: Lead;
 }
+
 const DraggableLead = ({ lead }: DraggableLeadProps) => {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
-    id: lead.id,
+    id: lead.id ?? "",
     data: { lead },
   });
 
@@ -91,7 +102,7 @@ const DroppableColumn = ({ column, children, totalValue, count }: DroppableColum
 
 interface LeadKanbanProps {
   leads: Lead[];
-  onUpdateStatus: (leadId: string, newStatus: Lead["status"]) => void;
+  onUpdateStatus: (leadId: string, newStatus: LeadStatus) => void;
 }
 
 export const LeadKanban = ({ leads, onUpdateStatus }: LeadKanbanProps) => {
@@ -105,7 +116,7 @@ export const LeadKanban = ({ leads, onUpdateStatus }: LeadKanbanProps) => {
     }),
   );
 
-  const getLeadsByStatus = (status: Lead["status"]) => {
+  const getLeadsByStatus = (status: LeadStatus) => {
     return leads.filter((lead) => lead.status === status);
   };
 
@@ -116,12 +127,12 @@ export const LeadKanban = ({ leads, onUpdateStatus }: LeadKanbanProps) => {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (over && active.id !== over.id) {
-      const lead = active.data.current?.lead as Lead;
-      const newStatus = over.id as Lead["status"];
+    if (over) {
+      const lead = active.data.current?.lead;
+      const newStatus = resolveDropStatus(over.id, leads);
 
-      if (lead && lead.status !== newStatus) {
-        onUpdateStatus(active.id as string, newStatus);
+      if (lead?.id && newStatus && lead.status !== newStatus) {
+        onUpdateStatus(lead.id, newStatus);
       }
     }
     setActiveLead(null);
@@ -132,7 +143,7 @@ export const LeadKanban = ({ leads, onUpdateStatus }: LeadKanbanProps) => {
       <div className="flex flex-col md:flex-row gap-md overflow-x-auto custom-scrollbar pb-xs">
         {columns.map((column) => {
           const columnLeads = getLeadsByStatus(column.status);
-          const totalValue = columnLeads.reduce((sum, lead) => sum + lead.value, 0);
+          const totalValue = columnLeads.reduce((sum, lead) => sum + (lead.valorEstimado ?? 0), 0);
 
           return (
             <DroppableColumn
@@ -141,9 +152,9 @@ export const LeadKanban = ({ leads, onUpdateStatus }: LeadKanbanProps) => {
               totalValue={totalValue}
               count={columnLeads.length}
             >
-              {columnLeads.map((lead) => (
-                <DraggableLead key={lead.id} lead={lead} />
-              ))}
+              {columnLeads.map((lead) =>
+                lead.id ? <DraggableLead key={lead.id} lead={lead} /> : null,
+              )}
             </DroppableColumn>
           );
         })}
