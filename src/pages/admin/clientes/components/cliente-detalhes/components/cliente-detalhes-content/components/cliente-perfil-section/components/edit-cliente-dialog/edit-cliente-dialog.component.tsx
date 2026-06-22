@@ -15,6 +15,7 @@ import {
 } from "../../../../../../../add-cliente-dialog/add-cliente-dialog.data";
 import type { ClienteDialogTab } from "../../../../../../../add-cliente-dialog/add-cliente-dialog.types";
 import {
+  appendEndereco,
   resetEnderecoDraftFields,
   shouldValidateEnderecoDraft,
 } from "../../../../../../../add-cliente-dialog/add-cliente-dialog.utils";
@@ -105,7 +106,9 @@ export const EditClienteDialog = ({
     const enderecos = formMethods.getValues("enderecos");
     const enderecoDraft = formMethods.getValues("enderecoDraft");
 
-    formMethods.setValue("enderecos", [...enderecos, enderecoDraft], { shouldDirty: true });
+    formMethods.setValue("enderecos", appendEndereco(enderecos, enderecoDraft), {
+      shouldDirty: true,
+    });
     resetEnderecoDraftFields(formMethods.resetField);
   };
 

@@ -623,6 +623,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/clientes/portal/ultimos-servicos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Últimos serviços realizados para o cliente logado
+         * @description Retorna o resumo dos últimos serviços do cliente logado com fotos, laudos e certificados.
+         */
+        get: operations["cliente_obter_ultimos_servicos"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/clientes/portal/ordens-servico": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Histórico de Ordens de Serviço do cliente logado
+         * @description Retorna lista de OSs paginada do cliente logado com possibilidade de filtrar por período.
+         */
+        get: operations["cliente_obter_historico_os"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/clientes/portal/ordens-servico/{id}/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Baixa o PDF de uma Ordem de Serviço
+         * @description Gera e retorna o PDF da OS para download/impressão.
+         */
+        get: operations["cliente_visualizar_pdf"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/clientes/portal/agendamentos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Listagem de agendamentos do cliente logado
+         * @description Retorna a listagem de agendamentos do cliente logado divididos entre concluídos e em aguardo.
+         */
+        get: operations["cliente_obter_agendamentos"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/clientes/dashboard": {
         parameters: {
             query?: never;
@@ -940,6 +1020,7 @@ export interface components {
             cidade?: string;
             estado?: string;
             cep?: string;
+            padrao: boolean;
         };
         EditarClienteInputDTO: {
             cnpjCpf?: string;
@@ -973,6 +1054,7 @@ export interface components {
             cidade?: string;
             estado?: string;
             cep?: string;
+            padrao?: boolean;
         };
         ClienteResponseDTO: {
             /** Format: uuid */
@@ -1295,6 +1377,48 @@ export interface components {
             timestamp?: string;
             message?: string;
             data?: components["schemas"]["ClienteResponseDTO"][];
+            errors?: components["schemas"]["ErrorDetail"][];
+            pagination?: components["schemas"]["PaginationInfo"];
+        };
+        StandardResponseListUltimoServicoResponseDTO: {
+            success?: boolean;
+            timestamp?: string;
+            message?: string;
+            data?: components["schemas"]["UltimoServicoResponseDTO"][];
+            errors?: components["schemas"]["ErrorDetail"][];
+            pagination?: components["schemas"]["PaginationInfo"];
+        };
+        UltimoServicoResponseDTO: {
+            /** Format: uuid */
+            id?: string;
+            tecnicoResponsavel?: string;
+            /** @enum {string} */
+            tipoServico?: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
+            valor?: number;
+            /** Format: date-time */
+            dataHoraServico?: string;
+            rua?: string;
+            numero?: string;
+            complemento?: string;
+            bairro?: string;
+            cidade?: string;
+            estado?: string;
+            cep?: string;
+            /** @enum {string} */
+            recorrencia?: "NENHUMA" | "SEMANAL" | "MENSAL" | "TRIMESTRAL" | "SEMESTRAL" | "ANUAL";
+            fotos?: string[];
+            laudos?: components["schemas"]["ClienteDocumentoResponseDTO"][];
+            certificados?: components["schemas"]["ClienteDocumentoResponseDTO"][];
+        };
+        ClienteAgendamentosResponseDTO: {
+            concluidos?: components["schemas"]["AgendamentoResponseDTO"][];
+            emAguardo?: components["schemas"]["AgendamentoResponseDTO"][];
+        };
+        StandardResponseClienteAgendamentosResponseDTO: {
+            success?: boolean;
+            timestamp?: string;
+            message?: string;
+            data?: components["schemas"]["ClienteAgendamentosResponseDTO"];
             errors?: components["schemas"]["ErrorDetail"][];
             pagination?: components["schemas"]["PaginationInfo"];
         };
@@ -2356,6 +2480,92 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StandardResponseDashboardMetricasDTO"];
+                };
+            };
+        };
+    };
+    cliente_obter_ultimos_servicos: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StandardResponseListUltimoServicoResponseDTO"];
+                };
+            };
+        };
+    };
+    cliente_obter_historico_os: {
+        parameters: {
+            query?: {
+                periodo?: string;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StandardResponseListOrdemServicoResponseDTO"];
+                };
+            };
+        };
+    };
+    cliente_visualizar_pdf: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+        };
+    };
+    cliente_obter_agendamentos: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StandardResponseClienteAgendamentosResponseDTO"];
                 };
             };
         };

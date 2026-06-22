@@ -1,10 +1,14 @@
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import type { Cliente } from "@/model/rest/cliente";
+import type { Cliente, ClienteEnderecoResponse } from "@/model/rest/cliente";
 import { formatCEP } from "@/utils/formatters";
 
+export function getPrimaryAddress(cliente: Cliente): ClienteEnderecoResponse | undefined {
+  return cliente.enderecos?.find((endereco) => endereco.padrao) ?? cliente.enderecos?.[0];
+}
+
 export function formatClienteEndereco(cliente: Cliente): string {
-  const endereco = cliente.enderecos?.[0];
+  const endereco = getPrimaryAddress(cliente);
 
   if (!endereco?.rua) {
     if (cliente.cidade && cliente.estado) {

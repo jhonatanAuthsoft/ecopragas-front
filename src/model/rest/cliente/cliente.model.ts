@@ -10,10 +10,9 @@ export type ClienteDocumentoInput = components["schemas"]["ClienteDocumentoInput
 export type ClienteDocumentoResponse = components["schemas"]["ClienteDocumentoResponseDTO"];
 export type ClienteTipo = CadastrarClienteInput["tipo"];
 export type ClienteStatus = CadastrarClienteInput["status"];
-// TODO: o padrao devia vir do back
-export type ClienteEndereco = components["schemas"]["ClienteEnderecoInputDTO"] & {
-  padrao?: boolean;
-};
+export type ClienteEnderecoInput = components["schemas"]["ClienteEnderecoInputDTO"];
+export type ClienteEnderecoResponse = components["schemas"]["ClienteEnderecoResponseDTO"];
+export type ClienteEndereco = ClienteEnderecoInput;
 export type ClienteDashboard = components["schemas"]["ClienteDashboardDTO"];
 
 export type CadastrarClienteInput =
