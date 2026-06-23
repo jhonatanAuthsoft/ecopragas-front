@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { SearchInput } from '@/atomic/mol.search/search.component';
-import { Body2, H1 } from '@/atomic/atm.typography';
-import { MainLayout } from '@/atomic/tpl.main-layout/main-layout.component';
-import { OrdensServicoTable } from '@/pages/admin/ordens-servico/components/OrdensServicoTable';
-import type { OrdemServico } from '@/pages/admin/ordens-servico/OrdensServico';
+import { useState } from "react";
+import { Body2, H1 } from "@/atomic/atm.typography";
+import { SearchInput } from "@/atomic/mol.search/search.component";
+import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
+import { OrdensServicoTable } from "@/pages/admin/ordens-servico/components/OrdensServicoTable";
+import type { OrdemServico } from "@/pages/admin/ordens-servico/OrdensServico";
 
 const Servicos = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   // MOCK: Dados idênticos ao do admin para manter a consistência
   const [ordensServico] = useState<OrdemServico[]>([
@@ -58,27 +58,25 @@ const Servicos = () => {
   const filteredOrdens = ordensServico.filter(
     (os) =>
       os.numeroOS.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      os.clienteNome.toLowerCase().includes(searchTerm.toLowerCase())
+      os.clienteNome.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
     <MainLayout>
-      <div className='flex flex-col gap-xl'>
+      <div className="flex flex-col gap-xl">
         {/* Header Section */}
-        <div className='flex flex-col gap-xs'>
+        <div className="flex flex-col gap-xs">
           <H1>Serviços</H1>
-          <Body2 className='text-muted-foreground'>
-            Serviços executados por você
-          </Body2>
+          <Body2 className="text-muted-foreground">Serviços executados por você</Body2>
         </div>
 
         {/* Filters Section */}
-        <div className='flex justify-start'>
+        <div className="flex justify-start">
           <SearchInput
-            placeholder='Buscar por cliente ou OS...'
+            placeholder="Buscar por cliente ou OS..."
             value={searchTerm}
             onChange={setSearchTerm}
-            className='w-full md:max-w-[400px]'
+            className="w-full md:max-w-[400px]"
           />
         </div>
 

@@ -70,8 +70,8 @@ export const ClientesTable = ({
               <TableCell>{cliente.telefone}</TableCell>
               <TableCell>{cliente.email}</TableCell>
               <TableCell>
-                {(cliente.cidade ?? cliente.enderecos?.[0]?.cidade) ?? "-"}/
-                {(cliente.estado ?? cliente.enderecos?.[0]?.estado) ?? "-"}
+                {cliente.cidade ?? cliente.enderecos?.[0]?.cidade ?? "-"}/
+                {cliente.estado ?? cliente.enderecos?.[0]?.estado ?? "-"}
               </TableCell>
               <TableCell>
                 {cliente.dataUltimoServico

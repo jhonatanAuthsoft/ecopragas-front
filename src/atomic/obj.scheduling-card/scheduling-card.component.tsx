@@ -1,5 +1,5 @@
-import type React from "react";
 import { ChevronRight, MapPin, Phone, User } from "lucide-react";
+import type React from "react";
 import { Badge } from "@/atomic/atm.badge/badge.component";
 import { Separator } from "@/atomic/atm.separator/separator.component";
 import { Body1, Body2, H3 } from "@/atomic/atm.typography";
@@ -10,7 +10,7 @@ export interface SchedulingCardProps {
   id: string;
   time: string;
   title: string;
-  status: "Em Andamento" | "Agendado" | "Concluído";
+  status: "Em Andamento" | "Agendada" | "Concluída";
   clientName: string;
   phone: string;
   address: string;

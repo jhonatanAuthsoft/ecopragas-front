@@ -1,10 +1,11 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { TextInput } from '@/atomic/atm.text-input';
-import { Switch } from '@/atomic/atm.switch/switch.component';
-import { Separator } from '@/atomic/atm.separator/separator.component';
-import { H2, Body1, Body2 } from '@/atomic/atm.typography';
-import { cn } from '@/lib/utils';
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import type React from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Separator } from "@/atomic/atm.separator/separator.component";
+import { Switch } from "@/atomic/atm.switch/switch.component";
+import { TextInput } from "@/atomic/atm.text-input";
+import { Body1, Body2, H2 } from "@/atomic/atm.typography";
+import { cn } from "@/lib/utils";
 
 interface DateRange {
   start: Date | null;
@@ -12,31 +13,31 @@ interface DateRange {
 }
 
 interface CalendarPickerProps {
-  type?: 'single' | 'range';
+  type?: "single" | "range";
   value?: Date | DateRange;
   onChange?: (value: Date | DateRange | null) => void;
   className?: string;
   maxDate?: Date;
 }
 
-const DAYS_OF_WEEK = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+const DAYS_OF_WEEK = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 const MONTHS = [
-  'Janeiro',
-  'Fevereiro',
-  'Março',
-  'Abril',
-  'Maio',
-  'Junho',
-  'Julho',
-  'Agosto',
-  'Setembro',
-  'Outubro',
-  'Novembro',
-  'Dezembro',
+  "Janeiro",
+  "Fevereiro",
+  "Março",
+  "Abril",
+  "Maio",
+  "Junho",
+  "Julho",
+  "Agosto",
+  "Setembro",
+  "Outubro",
+  "Novembro",
+  "Dezembro",
 ];
 
 export const CalendarPicker: React.FC<CalendarPickerProps> = ({
-  type = 'single',
+  type = "single",
   value,
   onChange,
   className,
@@ -44,8 +45,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
 }) => {
   const [currentDate, setCurrentDate] = useState(() => {
     if (value instanceof Date) return value;
-    if (value && (value as DateRange).start)
-      return (value as DateRange).start as Date;
+    if (value && (value as DateRange).start) return (value as DateRange).start as Date;
     return new Date();
   });
   const [selectedDate, setSelectedDate] = useState<Date | null>(() => {
@@ -58,22 +58,22 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
   const [hoverDate, setHoverDate] = useState<Date | null>(null);
   const [isRange, setIsRange] = useState(() => {
     if (value && !(value instanceof Date)) return true;
-    return type === 'range';
+    return type === "range";
   });
 
   // Estados para controlar o texto digitado nos inputs
   const [inputDate, setInputDate] = useState(() => {
-    return value instanceof Date ? value.toLocaleDateString('pt-BR') : '';
+    return value instanceof Date ? value.toLocaleDateString("pt-BR") : "";
   });
   const [inputRange, setInputRange] = useState(() => {
     if (value && !(value instanceof Date)) {
       const r = value as DateRange;
       return {
-        start: r.start ? r.start.toLocaleDateString('pt-BR') : '',
-        end: r.end ? r.end.toLocaleDateString('pt-BR') : '',
+        start: r.start ? r.start.toLocaleDateString("pt-BR") : "",
+        end: r.end ? r.end.toLocaleDateString("pt-BR") : "",
       };
     }
-    return { start: '', end: '' };
+    return { start: "", end: "" };
   });
 
   // Estados de erro para os inputs
@@ -84,21 +84,21 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
   });
 
   useEffect(() => {
-    setIsRange(type === 'range');
+    setIsRange(type === "range");
   }, [type]);
 
   // Sincroniza os inputs quando as datas mudam via clique no calendário
   useEffect(() => {
     if (selectedDate) {
-      setInputDate(selectedDate.toLocaleDateString('pt-BR'));
+      setInputDate(selectedDate.toLocaleDateString("pt-BR"));
       setInputError(false);
     }
   }, [selectedDate]);
 
   useEffect(() => {
     setInputRange({
-      start: range.start ? range.start.toLocaleDateString('pt-BR') : '',
-      end: range.end ? range.end.toLocaleDateString('pt-BR') : '',
+      start: range.start ? range.start.toLocaleDateString("pt-BR") : "",
+      end: range.end ? range.end.toLocaleDateString("pt-BR") : "",
     });
     setInputRangeError({ start: false, end: false });
   }, [range]);
@@ -136,10 +136,8 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
     return days;
   }, [viewMonth, viewYear]);
 
-  const handlePrevMonth = () =>
-    setCurrentDate(new Date(viewYear, viewMonth - 1, 1));
-  const handleNextMonth = () =>
-    setCurrentDate(new Date(viewYear, viewMonth + 1, 1));
+  const handlePrevMonth = () => setCurrentDate(new Date(viewYear, viewMonth - 1, 1));
+  const handleNextMonth = () => setCurrentDate(new Date(viewYear, viewMonth + 1, 1));
 
   const isSameDay = (d1: Date, d2: Date | null) => {
     if (!d2) return false;
@@ -160,7 +158,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
 
   const handleDayClick = (date: Date, isCurrentMonth: boolean) => {
     if (!isCurrentMonth) return;
-    
+
     if (maxDate && date > maxDate) return;
 
     if (!isRange) {
@@ -182,8 +180,8 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
   const parseDate = (value: string): Date | null => {
     let day, month, year;
 
-    if (value.includes('/')) {
-      const parts = value.split('/');
+    if (value.includes("/")) {
+      const parts = value.split("/");
       if (parts.length !== 3) return null;
       day = parseInt(parts[0], 10);
       month = parseInt(parts[1], 10) - 1;
@@ -198,22 +196,18 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
 
     if (isNaN(day) || isNaN(month) || isNaN(year)) return null;
     const date = new Date(year, month, day);
-    if (
-      date.getFullYear() === year &&
-      date.getMonth() === month &&
-      date.getDate() === day
-    ) {
+    if (date.getFullYear() === year && date.getMonth() === month && date.getDate() === day) {
       return date;
     }
     return null;
   };
 
-  const handleBlur = (rangePart?: 'start' | 'end') => {
+  const handleBlur = (rangePart?: "start" | "end") => {
     const valueStr = !isRange
       ? inputDate
-      : rangePart === 'start'
-      ? inputRange.start
-      : inputRange.end;
+      : rangePart === "start"
+        ? inputRange.start
+        : inputRange.end;
 
     if (!valueStr) {
       if (!isRange) {
@@ -222,7 +216,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
         onChange?.(null);
       } else {
         const newRange = { ...range };
-        if (rangePart === 'start') {
+        if (rangePart === "start") {
           newRange.start = null;
           setInputRangeError((prev) => ({ ...prev, start: false }));
         } else {
@@ -240,8 +234,8 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
     if (newDate) {
       if (maxDate && newDate > maxDate) {
         if (!isRange) setInputError(true);
-        else if (rangePart === 'start') setInputRangeError(prev => ({ ...prev, start: true }));
-        else setInputRangeError(prev => ({ ...prev, end: true }));
+        else if (rangePart === "start") setInputRangeError((prev) => ({ ...prev, start: true }));
+        else setInputRangeError((prev) => ({ ...prev, end: true }));
         return;
       }
 
@@ -250,18 +244,18 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
         setCurrentDate(newDate);
         setInputError(false);
         onChange?.(newDate);
-        setInputDate(newDate.toLocaleDateString('pt-BR'));
+        setInputDate(newDate.toLocaleDateString("pt-BR"));
       } else {
         const newRange = { ...range };
-        if (rangePart === 'start') {
+        if (rangePart === "start") {
           if (newRange.end && newDate > newRange.end) {
             newRange.end = null;
           }
           newRange.start = newDate;
           setInputRange((prev) => ({
             ...prev,
-            start: newDate.toLocaleDateString('pt-BR'),
-            end: newRange.end ? newRange.end.toLocaleDateString('pt-BR') : '',
+            start: newDate.toLocaleDateString("pt-BR"),
+            end: newRange.end ? newRange.end.toLocaleDateString("pt-BR") : "",
           }));
           setInputRangeError((prev) => ({ ...prev, start: false }));
         } else {
@@ -272,7 +266,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
           newRange.end = newDate;
           setInputRange((prev) => ({
             ...prev,
-            end: newDate.toLocaleDateString('pt-BR'),
+            end: newDate.toLocaleDateString("pt-BR"),
           }));
           setInputRangeError((prev) => ({ ...prev, end: false }));
         }
@@ -286,7 +280,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
       if (!isRange) {
         setInputError(true);
       } else {
-        if (rangePart === 'start') {
+        if (rangePart === "start") {
           setInputRangeError((prev) => ({ ...prev, start: true }));
         } else {
           setInputRangeError((prev) => ({ ...prev, end: true }));
@@ -296,13 +290,18 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       (e.target as HTMLInputElement).blur();
     }
   };
 
   return (
-    <div className={cn('flex flex-col items-center w-[366px] bg-background rounded-small px-md pb-md pt-xs gap-2 shadow-dropshadow border border-grayscale-light', className)}>
+    <div
+      className={cn(
+        "flex flex-col items-center w-[366px] bg-background rounded-small px-md pb-md pt-xs gap-2 shadow-dropshadow border border-grayscale-light",
+        className,
+      )}
+    >
       {!isRange ? (
         <TextInput
           value={inputDate}
@@ -313,78 +312,76 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
           onBlur={() => handleBlur()}
           onKeyDown={handleKeyDown}
           invalid={inputError}
-          error={inputError ? 'Data inválida' : undefined}
-          placeholder='DD/MM/AAAA'
-          className='bg-background! rounded-xl! px-md! py-sm! h-auto!'
+          error={inputError ? "Data inválida" : undefined}
+          placeholder="DD/MM/AAAA"
+          className="bg-background! rounded-xl! px-md! py-sm! h-auto!"
           id="calendar-single-input"
         />
       ) : (
-        <div className='flex gap-xs self-stretch'>
+        <div className="flex gap-xs self-stretch">
           <TextInput
             value={inputRange.start}
             onChange={(val) => {
               setInputRange((prev) => ({ ...prev, start: val }));
-              if (inputRangeError.start)
-                setInputRangeError((prev) => ({ ...prev, start: false }));
+              if (inputRangeError.start) setInputRangeError((prev) => ({ ...prev, start: false }));
             }}
-            onBlur={() => handleBlur('start')}
+            onBlur={() => handleBlur("start")}
             onKeyDown={handleKeyDown}
             invalid={inputRangeError.start}
-            error={inputRangeError.start ? 'Data inválida' : undefined}
-            placeholder='DD/MM/AAAA'
-            className='bg-transparent! rounded-xl! px-md! py-sm! h-auto!'
+            error={inputRangeError.start ? "Data inválida" : undefined}
+            placeholder="DD/MM/AAAA"
+            className="bg-transparent! rounded-xl! px-md! py-sm! h-auto!"
             id="calendar-range-start"
           />
           <TextInput
             value={inputRange.end}
             onChange={(val) => {
               setInputRange((prev) => ({ ...prev, end: val }));
-              if (inputRangeError.end)
-                setInputRangeError((prev) => ({ ...prev, end: false }));
+              if (inputRangeError.end) setInputRangeError((prev) => ({ ...prev, end: false }));
             }}
-            onBlur={() => handleBlur('end')}
+            onBlur={() => handleBlur("end")}
             onKeyDown={handleKeyDown}
             invalid={inputRangeError.end}
-            error={inputRangeError.end ? 'Data inválida' : undefined}
-            placeholder='DD/MM/AAAA'
-            className='bg-transparent! rounded-xl! px-md! py-sm! h-auto!'
+            error={inputRangeError.end ? "Data inválida" : undefined}
+            placeholder="DD/MM/AAAA"
+            className="bg-transparent! rounded-xl! px-md! py-sm! h-auto!"
             id="calendar-range-end"
           />
         </div>
       )}
 
-      <div className='flex items-center justify-between w-full px-1'>
-        <H2 className='text-grayscale-dark! leading-snug'>
+      <div className="flex items-center justify-between w-full px-1">
+        <H2 className="text-grayscale-dark! leading-snug">
           {MONTHS[viewMonth]}, {viewYear}
         </H2>
-        <div className='flex items-center gap-[12px]'>
+        <div className="flex items-center gap-[12px]">
           <button
             onClick={handlePrevMonth}
-            className='flex items-center justify-center text-grayscale-dark hover:text-brand-primary-medium transition-colors'
+            className="flex items-center justify-center text-grayscale-dark hover:text-brand-primary-medium transition-colors"
           >
             <ChevronLeft size={20} />
           </button>
           <button
             onClick={handleNextMonth}
-            className='flex items-center justify-center text-grayscale-dark hover:text-brand-primary-medium transition-colors'
+            className="flex items-center justify-center text-grayscale-dark hover:text-brand-primary-medium transition-colors"
           >
             <ChevronRight size={20} />
           </button>
         </div>
       </div>
 
-      <div className='grid grid-cols-7 w-full'>
+      <div className="grid grid-cols-7 w-full">
         {DAYS_OF_WEEK.map((day) => (
-          <div key={day} className='flex justify-center'>
-            <Body2 className='text-grayscale-medium'>{day}</Body2>
+          <div key={day} className="flex justify-center">
+            <Body2 className="text-grayscale-medium">{day}</Body2>
           </div>
         ))}
       </div>
 
-      <div className='grid grid-cols-7 gap-y-0.5 w-full'>
+      <div className="grid grid-cols-7 gap-y-0.5 w-full">
         {calendarDays.map((item, idx) => {
           if (!item.isCurrentMonth) {
-            return <div key={idx} className='h-9' />;
+            return <div key={idx} className="h-9" />;
           }
 
           const isSelected =
@@ -399,10 +396,9 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
                 hoverDate &&
                 isBetween(item.date, range.start, hoverDate)));
 
-          const isStart =
-            isRange && range.start && isSameDay(item.date, range.start);
+          const isStart = isRange && range.start && isSameDay(item.date, range.start);
           const isEnd = isRange && range.end && isSameDay(item.date, range.end);
-          
+
           const isDisabled = maxDate && item.date > maxDate;
 
           return (
@@ -412,19 +408,23 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
               onMouseEnter={() => !isDisabled && setHoverDate(item.date)}
               onMouseLeave={() => setHoverDate(null)}
               className={cn(
-                'relative h-9 flex items-center justify-center transition-all',
-                !isDisabled && 'cursor-pointer',
-                isDisabled && 'cursor-not-allowed opacity-30',
-                inRange && 'bg-brand-primary-light/20 text-brand-primary-dark',
-                isSelected && 'bg-brand-primary-medium text-grayscale-white rounded-small z-10',
-                !isSelected && !isDisabled && 'hover:bg-grayscale-x-light hover:rounded-small',
-                isStart && range.end && 'rounded-r-none',
-                isEnd && 'rounded-l-none'
+                "relative h-9 flex items-center justify-center transition-all",
+                !isDisabled && "cursor-pointer",
+                isDisabled && "cursor-not-allowed opacity-30",
+                inRange && "bg-brand-primary-light/20 text-brand-primary-dark",
+                isSelected && "bg-brand-primary-medium text-grayscale-white rounded-small z-10",
+                !isSelected && !isDisabled && "hover:bg-grayscale-x-light hover:rounded-small",
+                isStart && range.end && "rounded-r-none",
+                isEnd && "rounded-l-none",
               )}
             >
               <Body1
                 className={cn(
-                  isSelected ? 'text-grayscale-white!' : inRange ? 'text-brand-primary-dark' : 'text-grayscale-dark'
+                  isSelected
+                    ? "text-grayscale-white!"
+                    : inRange
+                      ? "text-brand-primary-dark"
+                      : "text-grayscale-dark",
                 )}
               >
                 {item.date.getDate()}
@@ -436,12 +436,9 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
 
       <Separator />
 
-      <div className='flex items-center justify-between w-full px-1'>
-        <Body2 className='text-grayscale-dark'>Data de término</Body2>
-        <Switch
-          checked={isRange}
-          onCheckedChange={(checked) => setIsRange(checked)}
-        />
+      <div className="flex items-center justify-between w-full px-1">
+        <Body2 className="text-grayscale-dark">Data de término</Body2>
+        <Switch checked={isRange} onCheckedChange={(checked) => setIsRange(checked)} />
       </div>
     </div>
   );

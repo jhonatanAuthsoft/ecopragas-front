@@ -4,1718 +4,1728 @@
  */
 
 export interface paths {
-    "/usuarios/editar/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Edita um usuário existente. @ADMINISTRATIVO */
-        put: operations["editar"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+  "/usuarios/editar/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/ordens-servico/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Obtém detalhes de uma Ordem de Serviço pelo ID
-         * @description Obtém todos os dados cadastrais da OS
-         */
-        get: operations["obterPorId"];
-        /**
-         * Edita uma Ordem de Serviço existente
-         * @description Edita todas as informações cadastrais da OS
-         */
-        put: operations["editar_1"];
-        post?: never;
-        /**
-         * Exclui uma Ordem de Serviço
-         * @description Exclui uma OS permanentemente
-         */
-        delete: operations["excluir"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    /** Edita um usuário existente. @ADMINISTRATIVO */
+    put: operations["editar"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/ordens-servico/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/leads/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Obtém detalhes de um lead pelo ID
-         * @description Obtém detalhes de um lead específico
-         */
-        get: operations["obterPorId_1"];
-        /**
-         * Edita um lead existente
-         * @description Edita todas as informações de um lead
-         */
-        put: operations["editar_2"];
-        post?: never;
-        /**
-         * Exclui um lead
-         * @description Exclui um lead permanentemente
-         */
-        delete: operations["excluir_1"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * Obtém detalhes de uma Ordem de Serviço pelo ID
+     * @description Obtém todos os dados cadastrais da OS
+     */
+    get: operations["obterPorId"];
+    /**
+     * Edita uma Ordem de Serviço existente
+     * @description Edita todas as informações cadastrais da OS
+     */
+    put: operations["editar_1"];
+    post?: never;
+    /**
+     * Exclui uma Ordem de Serviço
+     * @description Exclui uma OS permanentemente
+     */
+    delete: operations["excluir"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/leads/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/clientes/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Obtém detalhes de um cliente pelo ID
-         * @description Obtém todos os dados cadastrais do cliente
-         */
-        get: operations["obterPorId_2"];
-        /**
-         * Edita um cliente existente
-         * @description Edita todas as informações cadastrais do cliente
-         */
-        put: operations["editar_3"];
-        post?: never;
-        /**
-         * Exclui um cliente
-         * @description Exclui um cliente permanentemente
-         */
-        delete: operations["excluir_2"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * Obtém detalhes de um lead pelo ID
+     * @description Obtém detalhes de um lead específico
+     */
+    get: operations["obterPorId_1"];
+    /**
+     * Edita um lead existente
+     * @description Edita todas as informações de um lead
+     */
+    put: operations["editar_2"];
+    post?: never;
+    /**
+     * Exclui um lead
+     * @description Exclui um lead permanentemente
+     */
+    delete: operations["excluir_1"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/clientes/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/agendamentos/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Obtém detalhes de um agendamento pelo ID
-         * @description Retorna todos os dados do agendamento, checklist e progresso
-         */
-        get: operations["obterPorId_3"];
-        /**
-         * Edita um agendamento existente
-         * @description Edita as informações de data, técnico, endereço ou observações do agendamento
-         */
-        put: operations["editar_4"];
-        post?: never;
-        /**
-         * Exclui um agendamento
-         * @description Exclui o agendamento permanentemente
-         */
-        delete: operations["excluir_3"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * Obtém detalhes de um cliente pelo ID
+     * @description Obtém todos os dados cadastrais do cliente
+     */
+    get: operations["obterPorId_2"];
+    /**
+     * Edita um cliente existente
+     * @description Edita todas as informações cadastrais do cliente
+     */
+    put: operations["editar_3"];
+    post?: never;
+    /**
+     * Exclui um cliente
+     * @description Exclui um cliente permanentemente
+     */
+    delete: operations["excluir_2"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/agendamentos/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/agendamentos/{id}/checklist": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /**
-         * Atualiza os itens do checklist do agendamento
-         * @description Marca as atividades como concluídas ou pendentes, recalculando o progresso do serviço
-         */
-        put: operations["atualizarChecklist"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * Obtém detalhes de um agendamento pelo ID
+     * @description Retorna todos os dados do agendamento, checklist e progresso
+     */
+    get: operations["obterPorId_3"];
+    /**
+     * Edita um agendamento existente
+     * @description Edita as informações de data, técnico, endereço ou observações do agendamento
+     */
+    put: operations["editar_4"];
+    post?: never;
+    /**
+     * Exclui um agendamento
+     * @description Exclui o agendamento permanentemente
+     */
+    delete: operations["excluir_3"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/agendamentos/{id}/checklist": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/usuarios/redefinir-senha": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Muda a senha do usuário */
-        post: operations["redefinirSenha"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    /**
+     * Atualiza os itens do checklist do agendamento
+     * @description Marca as atividades como concluídas ou pendentes, recalculando o progresso do serviço
+     */
+    put: operations["atualizarChecklist"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/usuarios/redefinir-senha": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/usuarios/logout": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Logout do usuário
-         * @description Revoga o token JWT atual
-         */
-        post: operations["logout"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Muda a senha do usuário */
+    post: operations["redefinirSenha"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/usuarios/logout": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/usuarios/login": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Chamada para usuário logar no sistema
-         * @description Chamada para usuário logar no sistema
-         */
-        post: operations["login"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * Logout do usuário
+     * @description Revoga o token JWT atual
+     */
+    post: operations["logout"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/usuarios/login": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/usuarios/cadastrar": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Cadastra um novo usuário. @ADMINISTRATIVO */
-        post: operations["cadastrar"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * Chamada para usuário logar no sistema
+     * @description Chamada para usuário logar no sistema
+     */
+    post: operations["login"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/usuarios/cadastrar": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/ordens-servico": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Obtém uma lista paginada de Ordens de Serviço
-         * @description Retorna lista de OSs paginada e com filtros
-         */
-        get: operations["obterTodos"];
-        put?: never;
-        /**
-         * Cadastra uma nova Ordem de Serviço
-         * @description Cadastra uma nova OS associada a um cliente
-         */
-        post: operations["cadastrar_1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Cadastra um novo usuário. @ADMINISTRATIVO */
+    post: operations["cadastrar"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/ordens-servico": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/leads": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Obtém lista paginada de leads
-         * @description Retorna lista de leads paginada e com filtros
-         */
-        get: operations["obterTodos_1"];
-        put?: never;
-        /**
-         * Cadastra um novo lead
-         * @description Cadastra um novo lead no funil de vendas
-         */
-        post: operations["cadastrar_2"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * Obtém uma lista paginada de Ordens de Serviço
+     * @description Retorna lista de OSs paginada e com filtros
+     */
+    get: operations["obterTodos"];
+    put?: never;
+    /**
+     * Cadastra uma nova Ordem de Serviço
+     * @description Cadastra uma nova OS associada a um cliente
+     */
+    post: operations["cadastrar_1"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/leads": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/clientes": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Obtém uma lista paginada de clientes
-         * @description Retorna lista de clientes paginada e com filtros
-         */
-        get: operations["obterTodos_2"];
-        put?: never;
-        /**
-         * Cadastra um novo cliente
-         * @description Cadastra um novo cliente e seus endereços e documentos
-         */
-        post: operations["cadastrar_3"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * Obtém lista paginada de leads
+     * @description Retorna lista de leads paginada e com filtros
+     */
+    get: operations["obterTodos_1"];
+    put?: never;
+    /**
+     * Cadastra um novo lead
+     * @description Cadastra um novo lead no funil de vendas
+     */
+    post: operations["cadastrar_2"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/clientes": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/agendamentos": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Obtém uma lista paginada de agendamentos
-         * @description Retorna lista de agendamentos com paginação, busca por texto e filtro de datas
-         */
-        get: operations["obterTodos_3"];
-        put?: never;
-        /**
-         * Cadastra um novo agendamento
-         * @description Cadastra um agendamento e gera automaticamente o checklist de serviços
-         */
-        post: operations["cadastrar_4"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * Obtém uma lista paginada de clientes
+     * @description Retorna lista de clientes paginada e com filtros
+     */
+    get: operations["obterTodos_2"];
+    put?: never;
+    /**
+     * Cadastra um novo cliente
+     * @description Cadastra um novo cliente e seus endereços e documentos
+     */
+    post: operations["cadastrar_3"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/agendamentos": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/leads/{id}/status": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /**
-         * Atualiza o status do lead
-         * @description Atualiza o status na esteira do Kanban
-         */
-        patch: operations["atualizarStatus"];
-        trace?: never;
+    /**
+     * Obtém uma lista paginada de agendamentos
+     * @description Retorna lista de agendamentos com paginação, busca por texto e filtro de datas
+     */
+    get: operations["obterTodos_3"];
+    put?: never;
+    /**
+     * Cadastra um novo agendamento
+     * @description Cadastra um agendamento e gera automaticamente o checklist de serviços
+     */
+    post: operations["cadastrar_4"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/leads/{id}/status": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/usuarios": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Obtém uma lista paginada de usuários. @ADMINISTRATIVO */
-        get: operations["obterTodosUsuarios"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * Atualiza o status do lead
+     * @description Atualiza o status na esteira do Kanban
+     */
+    patch: operations["atualizarStatus"];
+    trace?: never;
+  };
+  "/usuarios": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/usuarios/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Obtém detalhes de um usuário pelo ID. @ADMINISTRATIVO */
-        get: operations["obterUsuarioPorId"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Obtém uma lista paginada de usuários. @ADMINISTRATIVO */
+    get: operations["obterTodosUsuarios"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/usuarios/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/ordens-servico/{id}/pdf": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Baixa o PDF de uma Ordem de Serviço
-         * @description Gera e retorna o PDF da OS para download/impressão
-         */
-        get: operations["baixarPdf"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Obtém detalhes de um usuário pelo ID. @ADMINISTRATIVO */
+    get: operations["obterUsuarioPorId"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/ordens-servico/{id}/pdf": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/leads/dashboard": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Obtém as métricas gerais dos leads
-         * @description Retorna os dados numéricos consolidados do dashboard
-         */
-        get: operations["obterDashboard"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * Baixa o PDF de uma Ordem de Serviço
+     * @description Gera e retorna o PDF da OS para download/impressão
+     */
+    get: operations["baixarPdf"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/leads/dashboard": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/clientes/dashboard": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Obtém as métricas gerais do dashboard de clientes
-         * @description Retorna dados numéricos de clientes ativos, fixos, esporádicos e total
-         */
-        get: operations["obterDashboard_1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * Obtém as métricas gerais dos leads
+     * @description Retorna os dados numéricos consolidados do dashboard
+     */
+    get: operations["obterDashboard"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/clientes/dashboard": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/usuarios/excluir/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** Exclui um usuário. @ADMINISTRATIVO */
-        delete: operations["excluir_4"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * Obtém as métricas gerais do dashboard de clientes
+     * @description Retorna dados numéricos de clientes ativos, fixos, esporádicos e total
+     */
+    get: operations["obterDashboard_1"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/usuarios/excluir/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Exclui um usuário. @ADMINISTRATIVO */
+    delete: operations["excluir_4"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: {
-        EditarUsuarioInputDTO: {
-            nomeCompleto?: string;
-            email?: string;
-            cpf?: string;
-            senha?: string;
-            /** @enum {string} */
-            perfil: "ADMINISTRATIVO" | "TECNICO" | "CLIENTE";
-            /** @enum {string} */
-            status: "ATIVO" | "INATIVO";
-        };
-        ErrorDetail: {
-            code?: string;
-            field?: string;
-            detail?: string;
-        };
-        PaginationInfo: {
-            /** Format: int32 */
-            page?: number;
-            /** Format: int32 */
-            size?: number;
-            /** Format: int64 */
-            totalElements?: number;
-            /** Format: int32 */
-            totalPages?: number;
-        };
-        StandardResponseUsuarioResponseDTO: {
-            success?: boolean;
-            timestamp?: string;
-            message?: string;
-            data?: components["schemas"]["UsuarioResponseDTO"];
-            errors?: components["schemas"]["ErrorDetail"][];
-            pagination?: components["schemas"]["PaginationInfo"];
-        };
-        UsuarioResponseDTO: {
-            /** Format: uuid */
-            id: string;
-            nomeCompleto: string;
-            email: string;
-            /** @enum {string} */
-            status: "ATIVO" | "INATIVO";
-            /** @enum {string} */
-            perfil: "ADMINISTRATIVO" | "TECNICO" | "CLIENTE";
-            cpf?: string;
-        };
-        EditarOrdemServicoInputDTO: {
-            /** Format: uuid */
-            clienteId: string;
-            /** @enum {string} */
-            tipoServico: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
-            tecnicoResponsavel?: string;
-            valor: number;
-            /** Format: date-time */
-            dataHoraServico: string;
-            rua?: string;
-            numero?: string;
-            complemento?: string;
-            bairro?: string;
-            cidade?: string;
-            estado?: string;
-            cep?: string;
-            /** @enum {string} */
-            status: "AGENDADA" | "EM_ANDAMENTO" | "CONCLUIDA" | "CANCELADA";
-            observacoes?: string;
-        };
-        OrdemServicoResponseDTO: {
-            /** Format: uuid */
-            id?: string;
-            /** Format: int64 */
-            osNumero?: number;
-            /** Format: uuid */
-            clienteId?: string;
-            clienteNome?: string;
-            clienteCpfCnpj?: string;
-            /** @enum {string} */
-            tipoServico?: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
-            tecnicoResponsavel?: string;
-            valor?: number;
-            /** Format: date-time */
-            dataHoraServico?: string;
-            rua?: string;
-            numero?: string;
-            complemento?: string;
-            bairro?: string;
-            cidade?: string;
-            estado?: string;
-            cep?: string;
-            /** @enum {string} */
-            status?: "AGENDADA" | "EM_ANDAMENTO" | "CONCLUIDA" | "CANCELADA";
-            observacoes?: string;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: date-time */
-            updatedAt?: string;
-        };
-        StandardResponseOrdemServicoResponseDTO: {
-            success?: boolean;
-            timestamp?: string;
-            message?: string;
-            data?: components["schemas"]["OrdemServicoResponseDTO"];
-            errors?: components["schemas"]["ErrorDetail"][];
-            pagination?: components["schemas"]["PaginationInfo"];
-        };
-        EditarLeadInputDTO: {
-            nome?: string;
-            empresa?: string;
-            email?: string;
-            telefone?: string;
-            /** @enum {string} */
-            origem: "GOOGLE" | "FACEBOOK" | "INSTAGRAM" | "WEBSITE" | "INDICACAO" | "OUTRO";
-            valorEstimado: number;
-            /** @enum {string} */
-            status: "NOVO" | "EM_CONTATO" | "PROPOSTA_ENVIADA" | "EM_NEGOCIACAO" | "GANHO" | "PERDIDO";
-            observacoes?: string;
-        };
-        LeadResponseDTO: {
-            /** Format: uuid */
-            id?: string;
-            nome?: string;
-            empresa?: string;
-            email?: string;
-            telefone?: string;
-            /** @enum {string} */
-            origem?: "GOOGLE" | "FACEBOOK" | "INSTAGRAM" | "WEBSITE" | "INDICACAO" | "OUTRO";
-            valorEstimado?: number;
-            /** @enum {string} */
-            status?: "NOVO" | "EM_CONTATO" | "PROPOSTA_ENVIADA" | "EM_NEGOCIACAO" | "GANHO" | "PERDIDO";
-            observacoes?: string;
-            /** Format: date-time */
-            criadoEm?: string;
-            /** Format: date-time */
-            atualizadoEm?: string;
-        };
-        StandardResponseLeadResponseDTO: {
-            success?: boolean;
-            timestamp?: string;
-            message?: string;
-            data?: components["schemas"]["LeadResponseDTO"];
-            errors?: components["schemas"]["ErrorDetail"][];
-            pagination?: components["schemas"]["PaginationInfo"];
-        };
-        ClienteDocumentoInputDTO: {
-            nome?: string;
-            tipo?: string;
-            url?: string;
-        };
-        ClienteEnderecoInputDTO: {
-            rua?: string;
-            numero?: string;
-            complemento?: string;
-            bairro?: string;
-            cidade?: string;
-            estado?: string;
-            cep?: string;
-        };
-        EditarClienteInputDTO: {
-            cnpjCpf?: string;
-            nomeRazaoSocial?: string;
-            /** @enum {string} */
-            tipo: "ESPORADICO" | "RECORRENTE";
-            telefone?: string;
-            email?: string;
-            observacoes?: string;
-            /** @enum {string} */
-            status: "ATIVO" | "INATIVO";
-            /** Format: date */
-            dataUltimoServico?: string;
-            enderecos: components["schemas"]["ClienteEnderecoInputDTO"][];
-            documentos?: components["schemas"]["ClienteDocumentoInputDTO"][];
-        };
-        ClienteDocumentoResponseDTO: {
-            /** Format: uuid */
-            id?: string;
-            nome?: string;
-            tipo?: string;
-            url?: string;
-        };
-        ClienteEnderecoResponseDTO: {
-            /** Format: uuid */
-            id?: string;
-            rua?: string;
-            numero?: string;
-            complemento?: string;
-            bairro?: string;
-            cidade?: string;
-            estado?: string;
-            cep?: string;
-        };
-        ClienteResponseDTO: {
-            /** Format: uuid */
-            id?: string;
-            cnpjCpf?: string;
-            nomeRazaoSocial?: string;
-            /** @enum {string} */
-            tipo?: "ESPORADICO" | "RECORRENTE";
-            telefone?: string;
-            email?: string;
-            observacoes?: string;
-            /** @enum {string} */
-            status?: "ATIVO" | "INATIVO";
-            /** Format: date */
-            dataUltimoServico?: string;
-            enderecos?: components["schemas"]["ClienteEnderecoResponseDTO"][];
-            documentos?: components["schemas"]["ClienteDocumentoResponseDTO"][];
-            cidade?: string;
-            estado?: string;
-        };
-        StandardResponseClienteResponseDTO: {
-            success?: boolean;
-            timestamp?: string;
-            message?: string;
-            data?: components["schemas"]["ClienteResponseDTO"];
-            errors?: components["schemas"]["ErrorDetail"][];
-            pagination?: components["schemas"]["PaginationInfo"];
-        };
-        EditarAgendamentoInputDTO: {
-            /** Format: uuid */
-            clienteId: string;
-            tecnicoResponsavel?: string;
-            /** @enum {string} */
-            tipoServico: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
-            /** Format: date-time */
-            dataHoraServico: string;
-            rua?: string;
-            numero?: string;
-            complemento?: string;
-            bairro?: string;
-            cidade?: string;
-            estado?: string;
-            cep?: string;
-            /** @enum {string} */
-            recorrencia: "NENHUMA" | "SEMANAL" | "MENSAL" | "TRIMESTRAL" | "SEMESTRAL" | "ANUAL";
-            /** @enum {string} */
-            status: "AGENDADO" | "EM_ANDAMENTO" | "CONCLUIDO" | "CANCELADO";
-            qrCodePortaIsca?: string;
-            fotoAntesUrl?: string;
-            fotoDepoisUrl?: string;
-            observacoes?: string;
-            /** Format: uuid */
-            ordemServicoId?: string;
-        };
-        AgendamentoAtividadeResponseDTO: {
-            /** Format: uuid */
-            id?: string;
-            descricao?: string;
-            concluido?: boolean;
-        };
-        AgendamentoResponseDTO: {
-            /** Format: uuid */
-            id?: string;
-            /** Format: uuid */
-            clienteId?: string;
-            clienteNome?: string;
-            clienteCpfCnpj?: string;
-            tecnicoResponsavel?: string;
-            /** @enum {string} */
-            tipoServico?: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
-            /** Format: date-time */
-            dataHoraServico?: string;
-            rua?: string;
-            numero?: string;
-            complemento?: string;
-            bairro?: string;
-            cidade?: string;
-            estado?: string;
-            cep?: string;
-            /** @enum {string} */
-            recorrencia?: "NENHUMA" | "SEMANAL" | "MENSAL" | "TRIMESTRAL" | "SEMESTRAL" | "ANUAL";
-            /** @enum {string} */
-            status?: "AGENDADO" | "EM_ANDAMENTO" | "CONCLUIDO" | "CANCELADO";
-            /** Format: uuid */
-            ordemServicoId?: string;
-            qrCodePortaIsca?: string;
-            fotoAntesUrl?: string;
-            fotoDepoisUrl?: string;
-            observacoes?: string;
-            atividades?: components["schemas"]["AgendamentoAtividadeResponseDTO"][];
-            /** Format: double */
-            progresso?: number;
-            conflitoHorario?: boolean;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: date-time */
-            updatedAt?: string;
-        };
-        StandardResponseAgendamentoResponseDTO: {
-            success?: boolean;
-            timestamp?: string;
-            message?: string;
-            data?: components["schemas"]["AgendamentoResponseDTO"];
-            errors?: components["schemas"]["ErrorDetail"][];
-            pagination?: components["schemas"]["PaginationInfo"];
-        };
-        AtualizarAtividadeInputDTO: {
-            /** Format: uuid */
-            id: string;
-            concluido: boolean;
-        };
-        RedefinirSenhaInputDTO: {
-            email?: string;
-        };
-        StandardResponseBoolean: {
-            success?: boolean;
-            timestamp?: string;
-            message?: string;
-            data?: boolean;
-            errors?: components["schemas"]["ErrorDetail"][];
-            pagination?: components["schemas"]["PaginationInfo"];
-        };
-        LoginUsuarioInputDTO: {
-            login: string;
-            senha: string;
-        };
-        LoginUsuarioResponseDTO: {
-            usuario?: components["schemas"]["UsuarioResponseDTO"];
-            token: string;
-        };
-        StandardResponseLoginUsuarioResponseDTO: {
-            success?: boolean;
-            timestamp?: string;
-            message?: string;
-            data?: components["schemas"]["LoginUsuarioResponseDTO"];
-            errors?: components["schemas"]["ErrorDetail"][];
-            pagination?: components["schemas"]["PaginationInfo"];
-        };
-        CadastrarUsuarioInputDTO: {
-            nomeCompleto?: string;
-            email?: string;
-            cpf?: string;
-            senha?: string;
-            /** @enum {string} */
-            perfil: "ADMINISTRATIVO" | "TECNICO" | "CLIENTE";
-            /** @enum {string} */
-            status?: "ATIVO" | "INATIVO";
-        };
-        CadastrarOrdemServicoInputDTO: {
-            /** Format: uuid */
-            clienteId: string;
-            /** @enum {string} */
-            tipoServico: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
-            tecnicoResponsavel?: string;
-            valor: number;
-            /** Format: date-time */
-            dataHoraServico: string;
-            rua?: string;
-            numero?: string;
-            complemento?: string;
-            bairro?: string;
-            cidade?: string;
-            estado?: string;
-            cep?: string;
-            /** @enum {string} */
-            status: "AGENDADA" | "EM_ANDAMENTO" | "CONCLUIDA" | "CANCELADA";
-            observacoes?: string;
-        };
-        CadastrarLeadInputDTO: {
-            nome?: string;
-            empresa?: string;
-            email?: string;
-            telefone?: string;
-            /** @enum {string} */
-            origem: "GOOGLE" | "FACEBOOK" | "INSTAGRAM" | "WEBSITE" | "INDICACAO" | "OUTRO";
-            valorEstimado: number;
-            /** @enum {string} */
-            status?: "NOVO" | "EM_CONTATO" | "PROPOSTA_ENVIADA" | "EM_NEGOCIACAO" | "GANHO" | "PERDIDO";
-            observacoes?: string;
-        };
-        CadastrarClienteInputDTO: {
-            cnpjCpf?: string;
-            nomeRazaoSocial?: string;
-            /** @enum {string} */
-            tipo: "ESPORADICO" | "RECORRENTE";
-            telefone?: string;
-            email?: string;
-            observacoes?: string;
-            /** @enum {string} */
-            status: "ATIVO" | "INATIVO";
-            enderecos: components["schemas"]["ClienteEnderecoInputDTO"][];
-            documentos?: components["schemas"]["ClienteDocumentoInputDTO"][];
-        };
-        CadastrarAgendamentoInputDTO: {
-            /** Format: uuid */
-            clienteId: string;
-            tecnicoResponsavel?: string;
-            /** @enum {string} */
-            tipoServico: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
-            /** Format: date-time */
-            dataHoraServico: string;
-            rua?: string;
-            numero?: string;
-            complemento?: string;
-            bairro?: string;
-            cidade?: string;
-            estado?: string;
-            cep?: string;
-            /** @enum {string} */
-            recorrencia: "NENHUMA" | "SEMANAL" | "MENSAL" | "TRIMESTRAL" | "SEMESTRAL" | "ANUAL";
-            qrCodePortaIsca?: string;
-            fotoAntesUrl?: string;
-            fotoDepoisUrl?: string;
-            observacoes?: string;
-            /** Format: uuid */
-            ordemServicoId?: string;
-        };
-        AtualizarLeadStatusInputDTO: {
-            /** @enum {string} */
-            status: "NOVO" | "EM_CONTATO" | "PROPOSTA_ENVIADA" | "EM_NEGOCIACAO" | "GANHO" | "PERDIDO";
-        };
-        StandardResponseListUsuarioResponseDTO: {
-            success?: boolean;
-            timestamp?: string;
-            message?: string;
-            data?: components["schemas"]["UsuarioResponseDTO"][];
-            errors?: components["schemas"]["ErrorDetail"][];
-            pagination?: components["schemas"]["PaginationInfo"];
-        };
-        StandardResponseListOrdemServicoResponseDTO: {
-            success?: boolean;
-            timestamp?: string;
-            message?: string;
-            data?: components["schemas"]["OrdemServicoResponseDTO"][];
-            errors?: components["schemas"]["ErrorDetail"][];
-            pagination?: components["schemas"]["PaginationInfo"];
-        };
-        StandardResponseListLeadResponseDTO: {
-            success?: boolean;
-            timestamp?: string;
-            message?: string;
-            data?: components["schemas"]["LeadResponseDTO"][];
-            errors?: components["schemas"]["ErrorDetail"][];
-            pagination?: components["schemas"]["PaginationInfo"];
-        };
-        LeadDashboardDTO: {
-            /** Format: int64 */
-            totalLeads?: number;
-            /** Format: int64 */
-            leadsAtivos?: number;
-            /** Format: double */
-            taxaConversao?: number;
-            valorPotencial?: number;
-            valorFechado?: number;
-        };
-        StandardResponseLeadDashboardDTO: {
-            success?: boolean;
-            timestamp?: string;
-            message?: string;
-            data?: components["schemas"]["LeadDashboardDTO"];
-            errors?: components["schemas"]["ErrorDetail"][];
-            pagination?: components["schemas"]["PaginationInfo"];
-        };
-        StandardResponseListClienteResponseDTO: {
-            success?: boolean;
-            timestamp?: string;
-            message?: string;
-            data?: components["schemas"]["ClienteResponseDTO"][];
-            errors?: components["schemas"]["ErrorDetail"][];
-            pagination?: components["schemas"]["PaginationInfo"];
-        };
-        ClienteDashboardDTO: {
-            /** Format: int64 */
-            clientesAtivos?: number;
-            /** Format: int64 */
-            clientesFixos?: number;
-            /** Format: int64 */
-            clientesEsporadicos?: number;
-            /** Format: int64 */
-            totalClientes?: number;
-        };
-        StandardResponseClienteDashboardDTO: {
-            success?: boolean;
-            timestamp?: string;
-            message?: string;
-            data?: components["schemas"]["ClienteDashboardDTO"];
-            errors?: components["schemas"]["ErrorDetail"][];
-            pagination?: components["schemas"]["PaginationInfo"];
-        };
-        StandardResponseListAgendamentoResponseDTO: {
-            success?: boolean;
-            timestamp?: string;
-            message?: string;
-            data?: components["schemas"]["AgendamentoResponseDTO"][];
-            errors?: components["schemas"]["ErrorDetail"][];
-            pagination?: components["schemas"]["PaginationInfo"];
-        };
+  schemas: {
+    EditarUsuarioInputDTO: {
+      nomeCompleto?: string;
+      email?: string;
+      cpf?: string;
+      senha?: string;
+      /** @enum {string} */
+      perfil: "ADMINISTRATIVO" | "TECNICO" | "CLIENTE";
+      /** @enum {string} */
+      status: "ATIVO" | "INATIVO";
     };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+    ErrorDetail: {
+      code?: string;
+      field?: string;
+      detail?: string;
+    };
+    PaginationInfo: {
+      /** Format: int32 */
+      page?: number;
+      /** Format: int32 */
+      size?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+    };
+    StandardResponseUsuarioResponseDTO: {
+      success?: boolean;
+      timestamp?: string;
+      message?: string;
+      data?: components["schemas"]["UsuarioResponseDTO"];
+      errors?: components["schemas"]["ErrorDetail"][];
+      pagination?: components["schemas"]["PaginationInfo"];
+    };
+    UsuarioResponseDTO: {
+      /** Format: uuid */
+      id: string;
+      nomeCompleto: string;
+      email: string;
+      /** @enum {string} */
+      status: "ATIVO" | "INATIVO";
+      /** @enum {string} */
+      perfil: "ADMINISTRATIVO" | "TECNICO" | "CLIENTE";
+      cpf?: string;
+    };
+    EditarOrdemServicoInputDTO: {
+      /** Format: uuid */
+      clienteId: string;
+      /** @enum {string} */
+      tipoServico: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
+      tecnicoResponsavel?: string;
+      valor: number;
+      /** Format: date-time */
+      dataHoraServico: string;
+      rua?: string;
+      numero?: string;
+      complemento?: string;
+      bairro?: string;
+      cidade?: string;
+      estado?: string;
+      cep?: string;
+      /** @enum {string} */
+      status: "AGENDADA" | "EM_ANDAMENTO" | "CONCLUIDA" | "CANCELADA";
+      observacoes?: string;
+    };
+    OrdemServicoResponseDTO: {
+      /** Format: uuid */
+      id?: string;
+      /** Format: int64 */
+      osNumero?: number;
+      /** Format: uuid */
+      clienteId?: string;
+      clienteNome?: string;
+      clienteCpfCnpj?: string;
+      /** @enum {string} */
+      tipoServico?:
+        | "DEDETIZACAO"
+        | "LIMPEZA_CAIXA_AGUA"
+        | "SANITIZACAO"
+        | "DESRATIZACAO"
+        | "OUTROS";
+      tecnicoResponsavel?: string;
+      valor?: number;
+      /** Format: date-time */
+      dataHoraServico?: string;
+      rua?: string;
+      numero?: string;
+      complemento?: string;
+      bairro?: string;
+      cidade?: string;
+      estado?: string;
+      cep?: string;
+      /** @enum {string} */
+      status?: "AGENDADA" | "EM_ANDAMENTO" | "CONCLUIDA" | "CANCELADA";
+      observacoes?: string;
+      /** Format: date-time */
+      createdAt?: string;
+      /** Format: date-time */
+      updatedAt?: string;
+    };
+    StandardResponseOrdemServicoResponseDTO: {
+      success?: boolean;
+      timestamp?: string;
+      message?: string;
+      data?: components["schemas"]["OrdemServicoResponseDTO"];
+      errors?: components["schemas"]["ErrorDetail"][];
+      pagination?: components["schemas"]["PaginationInfo"];
+    };
+    EditarLeadInputDTO: {
+      nome?: string;
+      empresa?: string;
+      email?: string;
+      telefone?: string;
+      /** @enum {string} */
+      origem: "GOOGLE" | "FACEBOOK" | "INSTAGRAM" | "WEBSITE" | "INDICACAO" | "OUTRO";
+      valorEstimado: number;
+      /** @enum {string} */
+      status: "NOVO" | "EM_CONTATO" | "PROPOSTA_ENVIADA" | "EM_NEGOCIACAO" | "GANHO" | "PERDIDO";
+      observacoes?: string;
+    };
+    LeadResponseDTO: {
+      /** Format: uuid */
+      id?: string;
+      nome?: string;
+      empresa?: string;
+      email?: string;
+      telefone?: string;
+      /** @enum {string} */
+      origem?: "GOOGLE" | "FACEBOOK" | "INSTAGRAM" | "WEBSITE" | "INDICACAO" | "OUTRO";
+      valorEstimado?: number;
+      /** @enum {string} */
+      status?: "NOVO" | "EM_CONTATO" | "PROPOSTA_ENVIADA" | "EM_NEGOCIACAO" | "GANHO" | "PERDIDO";
+      observacoes?: string;
+      /** Format: date-time */
+      criadoEm?: string;
+      /** Format: date-time */
+      atualizadoEm?: string;
+    };
+    StandardResponseLeadResponseDTO: {
+      success?: boolean;
+      timestamp?: string;
+      message?: string;
+      data?: components["schemas"]["LeadResponseDTO"];
+      errors?: components["schemas"]["ErrorDetail"][];
+      pagination?: components["schemas"]["PaginationInfo"];
+    };
+    ClienteDocumentoInputDTO: {
+      nome?: string;
+      tipo?: string;
+      url?: string;
+    };
+    ClienteEnderecoInputDTO: {
+      rua?: string;
+      numero?: string;
+      complemento?: string;
+      bairro?: string;
+      cidade?: string;
+      estado?: string;
+      cep?: string;
+    };
+    EditarClienteInputDTO: {
+      cnpjCpf?: string;
+      nomeRazaoSocial?: string;
+      /** @enum {string} */
+      tipo: "ESPORADICO" | "RECORRENTE";
+      telefone?: string;
+      email?: string;
+      observacoes?: string;
+      /** @enum {string} */
+      status: "ATIVO" | "INATIVO";
+      /** Format: date */
+      dataUltimoServico?: string;
+      enderecos: components["schemas"]["ClienteEnderecoInputDTO"][];
+      documentos?: components["schemas"]["ClienteDocumentoInputDTO"][];
+    };
+    ClienteDocumentoResponseDTO: {
+      /** Format: uuid */
+      id?: string;
+      nome?: string;
+      tipo?: string;
+      url?: string;
+    };
+    ClienteEnderecoResponseDTO: {
+      /** Format: uuid */
+      id?: string;
+      rua?: string;
+      numero?: string;
+      complemento?: string;
+      bairro?: string;
+      cidade?: string;
+      estado?: string;
+      cep?: string;
+    };
+    ClienteResponseDTO: {
+      /** Format: uuid */
+      id?: string;
+      cnpjCpf?: string;
+      nomeRazaoSocial?: string;
+      /** @enum {string} */
+      tipo?: "ESPORADICO" | "RECORRENTE";
+      telefone?: string;
+      email?: string;
+      observacoes?: string;
+      /** @enum {string} */
+      status?: "ATIVO" | "INATIVO";
+      /** Format: date */
+      dataUltimoServico?: string;
+      enderecos?: components["schemas"]["ClienteEnderecoResponseDTO"][];
+      documentos?: components["schemas"]["ClienteDocumentoResponseDTO"][];
+      cidade?: string;
+      estado?: string;
+    };
+    StandardResponseClienteResponseDTO: {
+      success?: boolean;
+      timestamp?: string;
+      message?: string;
+      data?: components["schemas"]["ClienteResponseDTO"];
+      errors?: components["schemas"]["ErrorDetail"][];
+      pagination?: components["schemas"]["PaginationInfo"];
+    };
+    EditarAgendamentoInputDTO: {
+      /** Format: uuid */
+      clienteId: string;
+      tecnicoResponsavel?: string;
+      /** @enum {string} */
+      tipoServico: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
+      /** Format: date-time */
+      dataHoraServico: string;
+      rua?: string;
+      numero?: string;
+      complemento?: string;
+      bairro?: string;
+      cidade?: string;
+      estado?: string;
+      cep?: string;
+      /** @enum {string} */
+      recorrencia: "NENHUMA" | "SEMANAL" | "MENSAL" | "TRIMESTRAL" | "SEMESTRAL" | "ANUAL";
+      /** @enum {string} */
+      status: "AGENDADO" | "EM_ANDAMENTO" | "CONCLUIDO" | "CANCELADO";
+      qrCodePortaIsca?: string;
+      fotoAntesUrl?: string;
+      fotoDepoisUrl?: string;
+      observacoes?: string;
+      /** Format: uuid */
+      ordemServicoId?: string;
+    };
+    AgendamentoAtividadeResponseDTO: {
+      /** Format: uuid */
+      id?: string;
+      descricao?: string;
+      concluido?: boolean;
+    };
+    AgendamentoResponseDTO: {
+      /** Format: uuid */
+      id?: string;
+      /** Format: uuid */
+      clienteId?: string;
+      clienteNome?: string;
+      clienteCpfCnpj?: string;
+      tecnicoResponsavel?: string;
+      /** @enum {string} */
+      tipoServico?:
+        | "DEDETIZACAO"
+        | "LIMPEZA_CAIXA_AGUA"
+        | "SANITIZACAO"
+        | "DESRATIZACAO"
+        | "OUTROS";
+      /** Format: date-time */
+      dataHoraServico?: string;
+      rua?: string;
+      numero?: string;
+      complemento?: string;
+      bairro?: string;
+      cidade?: string;
+      estado?: string;
+      cep?: string;
+      /** @enum {string} */
+      recorrencia?: "NENHUMA" | "SEMANAL" | "MENSAL" | "TRIMESTRAL" | "SEMESTRAL" | "ANUAL";
+      /** @enum {string} */
+      status?: "AGENDADO" | "EM_ANDAMENTO" | "CONCLUIDO" | "CANCELADO";
+      /** Format: uuid */
+      ordemServicoId?: string;
+      qrCodePortaIsca?: string;
+      fotoAntesUrl?: string;
+      fotoDepoisUrl?: string;
+      observacoes?: string;
+      atividades?: components["schemas"]["AgendamentoAtividadeResponseDTO"][];
+      /** Format: double */
+      progresso?: number;
+      conflitoHorario?: boolean;
+      /** Format: date-time */
+      createdAt?: string;
+      /** Format: date-time */
+      updatedAt?: string;
+    };
+    StandardResponseAgendamentoResponseDTO: {
+      success?: boolean;
+      timestamp?: string;
+      message?: string;
+      data?: components["schemas"]["AgendamentoResponseDTO"];
+      errors?: components["schemas"]["ErrorDetail"][];
+      pagination?: components["schemas"]["PaginationInfo"];
+    };
+    AtualizarAtividadeInputDTO: {
+      /** Format: uuid */
+      id: string;
+      concluido: boolean;
+    };
+    RedefinirSenhaInputDTO: {
+      email?: string;
+    };
+    StandardResponseBoolean: {
+      success?: boolean;
+      timestamp?: string;
+      message?: string;
+      data?: boolean;
+      errors?: components["schemas"]["ErrorDetail"][];
+      pagination?: components["schemas"]["PaginationInfo"];
+    };
+    LoginUsuarioInputDTO: {
+      login: string;
+      senha: string;
+    };
+    LoginUsuarioResponseDTO: {
+      usuario?: components["schemas"]["UsuarioResponseDTO"];
+      token: string;
+    };
+    StandardResponseLoginUsuarioResponseDTO: {
+      success?: boolean;
+      timestamp?: string;
+      message?: string;
+      data?: components["schemas"]["LoginUsuarioResponseDTO"];
+      errors?: components["schemas"]["ErrorDetail"][];
+      pagination?: components["schemas"]["PaginationInfo"];
+    };
+    CadastrarUsuarioInputDTO: {
+      nomeCompleto?: string;
+      email?: string;
+      cpf?: string;
+      senha?: string;
+      /** @enum {string} */
+      perfil: "ADMINISTRATIVO" | "TECNICO" | "CLIENTE";
+      /** @enum {string} */
+      status?: "ATIVO" | "INATIVO";
+    };
+    CadastrarOrdemServicoInputDTO: {
+      /** Format: uuid */
+      clienteId: string;
+      /** @enum {string} */
+      tipoServico: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
+      tecnicoResponsavel?: string;
+      valor: number;
+      /** Format: date-time */
+      dataHoraServico: string;
+      rua?: string;
+      numero?: string;
+      complemento?: string;
+      bairro?: string;
+      cidade?: string;
+      estado?: string;
+      cep?: string;
+      /** @enum {string} */
+      status: "AGENDADA" | "EM_ANDAMENTO" | "CONCLUIDA" | "CANCELADA";
+      observacoes?: string;
+    };
+    CadastrarLeadInputDTO: {
+      nome?: string;
+      empresa?: string;
+      email?: string;
+      telefone?: string;
+      /** @enum {string} */
+      origem: "GOOGLE" | "FACEBOOK" | "INSTAGRAM" | "WEBSITE" | "INDICACAO" | "OUTRO";
+      valorEstimado: number;
+      /** @enum {string} */
+      status?: "NOVO" | "EM_CONTATO" | "PROPOSTA_ENVIADA" | "EM_NEGOCIACAO" | "GANHO" | "PERDIDO";
+      observacoes?: string;
+    };
+    CadastrarClienteInputDTO: {
+      cnpjCpf?: string;
+      nomeRazaoSocial?: string;
+      /** @enum {string} */
+      tipo: "ESPORADICO" | "RECORRENTE";
+      telefone?: string;
+      email?: string;
+      observacoes?: string;
+      /** @enum {string} */
+      status: "ATIVO" | "INATIVO";
+      enderecos: components["schemas"]["ClienteEnderecoInputDTO"][];
+      documentos?: components["schemas"]["ClienteDocumentoInputDTO"][];
+    };
+    CadastrarAgendamentoInputDTO: {
+      /** Format: uuid */
+      clienteId: string;
+      tecnicoResponsavel?: string;
+      /** @enum {string} */
+      tipoServico: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
+      /** Format: date-time */
+      dataHoraServico: string;
+      rua?: string;
+      numero?: string;
+      complemento?: string;
+      bairro?: string;
+      cidade?: string;
+      estado?: string;
+      cep?: string;
+      /** @enum {string} */
+      recorrencia: "NENHUMA" | "SEMANAL" | "MENSAL" | "TRIMESTRAL" | "SEMESTRAL" | "ANUAL";
+      qrCodePortaIsca?: string;
+      fotoAntesUrl?: string;
+      fotoDepoisUrl?: string;
+      observacoes?: string;
+      /** Format: uuid */
+      ordemServicoId?: string;
+    };
+    AtualizarLeadStatusInputDTO: {
+      /** @enum {string} */
+      status: "NOVO" | "EM_CONTATO" | "PROPOSTA_ENVIADA" | "EM_NEGOCIACAO" | "GANHO" | "PERDIDO";
+    };
+    StandardResponseListUsuarioResponseDTO: {
+      success?: boolean;
+      timestamp?: string;
+      message?: string;
+      data?: components["schemas"]["UsuarioResponseDTO"][];
+      errors?: components["schemas"]["ErrorDetail"][];
+      pagination?: components["schemas"]["PaginationInfo"];
+    };
+    StandardResponseListOrdemServicoResponseDTO: {
+      success?: boolean;
+      timestamp?: string;
+      message?: string;
+      data?: components["schemas"]["OrdemServicoResponseDTO"][];
+      errors?: components["schemas"]["ErrorDetail"][];
+      pagination?: components["schemas"]["PaginationInfo"];
+    };
+    StandardResponseListLeadResponseDTO: {
+      success?: boolean;
+      timestamp?: string;
+      message?: string;
+      data?: components["schemas"]["LeadResponseDTO"][];
+      errors?: components["schemas"]["ErrorDetail"][];
+      pagination?: components["schemas"]["PaginationInfo"];
+    };
+    LeadDashboardDTO: {
+      /** Format: int64 */
+      totalLeads?: number;
+      /** Format: int64 */
+      leadsAtivos?: number;
+      /** Format: double */
+      taxaConversao?: number;
+      valorPotencial?: number;
+      valorFechado?: number;
+    };
+    StandardResponseLeadDashboardDTO: {
+      success?: boolean;
+      timestamp?: string;
+      message?: string;
+      data?: components["schemas"]["LeadDashboardDTO"];
+      errors?: components["schemas"]["ErrorDetail"][];
+      pagination?: components["schemas"]["PaginationInfo"];
+    };
+    StandardResponseListClienteResponseDTO: {
+      success?: boolean;
+      timestamp?: string;
+      message?: string;
+      data?: components["schemas"]["ClienteResponseDTO"][];
+      errors?: components["schemas"]["ErrorDetail"][];
+      pagination?: components["schemas"]["PaginationInfo"];
+    };
+    ClienteDashboardDTO: {
+      /** Format: int64 */
+      clientesAtivos?: number;
+      /** Format: int64 */
+      clientesFixos?: number;
+      /** Format: int64 */
+      clientesEsporadicos?: number;
+      /** Format: int64 */
+      totalClientes?: number;
+    };
+    StandardResponseClienteDashboardDTO: {
+      success?: boolean;
+      timestamp?: string;
+      message?: string;
+      data?: components["schemas"]["ClienteDashboardDTO"];
+      errors?: components["schemas"]["ErrorDetail"][];
+      pagination?: components["schemas"]["PaginationInfo"];
+    };
+    StandardResponseListAgendamentoResponseDTO: {
+      success?: boolean;
+      timestamp?: string;
+      message?: string;
+      data?: components["schemas"]["AgendamentoResponseDTO"][];
+      errors?: components["schemas"]["ErrorDetail"][];
+      pagination?: components["schemas"]["PaginationInfo"];
+    };
+  };
+  responses: never;
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    editar: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditarUsuarioInputDTO"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseUsuarioResponseDTO"];
-                };
-            };
-        };
+  editar: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    obterPorId: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseOrdemServicoResponseDTO"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["EditarUsuarioInputDTO"];
+      };
     };
-    editar_1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditarOrdemServicoInputDTO"];
-            };
+        content: {
+          "*/*": components["schemas"]["StandardResponseUsuarioResponseDTO"];
         };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseOrdemServicoResponseDTO"];
-                };
-            };
-        };
+      };
     };
-    excluir: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  obterPorId: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    obterPorId_1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseLeadResponseDTO"];
-                };
-            };
+        content: {
+          "*/*": components["schemas"]["StandardResponseOrdemServicoResponseDTO"];
         };
+      };
     };
-    editar_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditarLeadInputDTO"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseLeadResponseDTO"];
-                };
-            };
-        };
+  };
+  editar_1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    excluir_1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["EditarOrdemServicoInputDTO"];
+      };
     };
-    obterPorId_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseClienteResponseDTO"];
-                };
-            };
+        content: {
+          "*/*": components["schemas"]["StandardResponseOrdemServicoResponseDTO"];
         };
+      };
     };
-    editar_3: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditarClienteInputDTO"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseClienteResponseDTO"];
-                };
-            };
-        };
+  };
+  excluir: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    excluir_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+        content?: never;
+      };
     };
-    obterPorId_3: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
-                };
-            };
-        };
+  };
+  obterPorId_1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    editar_4: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditarAgendamentoInputDTO"];
-            };
+        content: {
+          "*/*": components["schemas"]["StandardResponseLeadResponseDTO"];
         };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
-                };
-            };
-        };
+      };
     };
-    excluir_3: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  editar_2: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    atualizarChecklist: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AtualizarAtividadeInputDTO"][];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["EditarLeadInputDTO"];
+      };
     };
-    redefinirSenha: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RedefinirSenhaInputDTO"];
-            };
+        content: {
+          "*/*": components["schemas"]["StandardResponseLeadResponseDTO"];
         };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseBoolean"];
-                };
-            };
-        };
+      };
     };
-    logout: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseBoolean"];
-                };
-            };
-        };
+  };
+  excluir_1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    login: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LoginUsuarioInputDTO"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseLoginUsuarioResponseDTO"];
-                };
-            };
-        };
+        content?: never;
+      };
     };
-    cadastrar: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CadastrarUsuarioInputDTO"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseUsuarioResponseDTO"];
-                };
-            };
-        };
+  };
+  obterPorId_2: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    obterTodos: {
-        parameters: {
-            query?: {
-                limit?: number;
-                offset?: number;
-                searchText?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseListOrdemServicoResponseDTO"];
-                };
-            };
+        content: {
+          "*/*": components["schemas"]["StandardResponseClienteResponseDTO"];
         };
+      };
     };
-    cadastrar_1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CadastrarOrdemServicoInputDTO"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseOrdemServicoResponseDTO"];
-                };
-            };
-        };
+  };
+  editar_3: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    obterTodos_1: {
-        parameters: {
-            query?: {
-                limit?: number;
-                offset?: number;
-                searchText?: string;
-                status?: "NOVO" | "EM_CONTATO" | "PROPOSTA_ENVIADA" | "EM_NEGOCIACAO" | "GANHO" | "PERDIDO";
-                origem?: "GOOGLE" | "FACEBOOK" | "INSTAGRAM" | "WEBSITE" | "INDICACAO" | "OUTRO";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseListLeadResponseDTO"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["EditarClienteInputDTO"];
+      };
     };
-    cadastrar_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CadastrarLeadInputDTO"];
-            };
+        content: {
+          "*/*": components["schemas"]["StandardResponseClienteResponseDTO"];
         };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseLeadResponseDTO"];
-                };
-            };
-        };
+      };
     };
-    obterTodos_2: {
-        parameters: {
-            query?: {
-                limit?: number;
-                offset?: number;
-                searchText?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseListClienteResponseDTO"];
-                };
-            };
-        };
+  };
+  excluir_2: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    cadastrar_3: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CadastrarClienteInputDTO"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseClienteResponseDTO"];
-                };
-            };
-        };
+        content?: never;
+      };
     };
-    obterTodos_3: {
-        parameters: {
-            query?: {
-                limit?: number;
-                offset?: number;
-                searchText?: string;
-                dataInicio?: string;
-                dataFim?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseListAgendamentoResponseDTO"];
-                };
-            };
-        };
+  };
+  obterPorId_3: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    cadastrar_4: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CadastrarAgendamentoInputDTO"];
-            };
+        content: {
+          "*/*": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
         };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
-                };
-            };
-        };
+      };
     };
-    atualizarStatus: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AtualizarLeadStatusInputDTO"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseLeadResponseDTO"];
-                };
-            };
-        };
+  };
+  editar_4: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    obterTodosUsuarios: {
-        parameters: {
-            query?: {
-                limit?: number;
-                offset?: number;
-                searchText?: string;
-                perfil?: "ADMINISTRATIVO" | "TECNICO" | "CLIENTE";
-                status?: "ATIVO" | "INATIVO";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseListUsuarioResponseDTO"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["EditarAgendamentoInputDTO"];
+      };
     };
-    obterUsuarioPorId: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseUsuarioResponseDTO"];
-                };
-            };
+        content: {
+          "*/*": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
         };
+      };
     };
-    baixarPdf: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": string;
-                };
-            };
-        };
+  };
+  excluir_3: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    obterDashboard: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseLeadDashboardDTO"];
-                };
-            };
-        };
+        content?: never;
+      };
     };
-    obterDashboard_1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["StandardResponseClienteDashboardDTO"];
-                };
-            };
-        };
+  };
+  atualizarChecklist: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    excluir_4: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AtualizarAtividadeInputDTO"][];
+      };
     };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
+        };
+      };
+    };
+  };
+  redefinirSenha: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RedefinirSenhaInputDTO"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["StandardResponseBoolean"];
+        };
+      };
+    };
+  };
+  logout: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["StandardResponseBoolean"];
+        };
+      };
+    };
+  };
+  login: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["LoginUsuarioInputDTO"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["StandardResponseLoginUsuarioResponseDTO"];
+        };
+      };
+    };
+  };
+  cadastrar: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CadastrarUsuarioInputDTO"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["StandardResponseUsuarioResponseDTO"];
+        };
+      };
+    };
+  };
+  obterTodos: {
+    parameters: {
+      query?: {
+        limit?: number;
+        offset?: number;
+        searchText?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["StandardResponseListOrdemServicoResponseDTO"];
+        };
+      };
+    };
+  };
+  cadastrar_1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CadastrarOrdemServicoInputDTO"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["StandardResponseOrdemServicoResponseDTO"];
+        };
+      };
+    };
+  };
+  obterTodos_1: {
+    parameters: {
+      query?: {
+        limit?: number;
+        offset?: number;
+        searchText?: string;
+        status?: "NOVO" | "EM_CONTATO" | "PROPOSTA_ENVIADA" | "EM_NEGOCIACAO" | "GANHO" | "PERDIDO";
+        origem?: "GOOGLE" | "FACEBOOK" | "INSTAGRAM" | "WEBSITE" | "INDICACAO" | "OUTRO";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["StandardResponseListLeadResponseDTO"];
+        };
+      };
+    };
+  };
+  cadastrar_2: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CadastrarLeadInputDTO"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["StandardResponseLeadResponseDTO"];
+        };
+      };
+    };
+  };
+  obterTodos_2: {
+    parameters: {
+      query?: {
+        limit?: number;
+        offset?: number;
+        searchText?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["StandardResponseListClienteResponseDTO"];
+        };
+      };
+    };
+  };
+  cadastrar_3: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CadastrarClienteInputDTO"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["StandardResponseClienteResponseDTO"];
+        };
+      };
+    };
+  };
+  obterTodos_3: {
+    parameters: {
+      query?: {
+        limit?: number;
+        offset?: number;
+        searchText?: string;
+        dataInicio?: string;
+        dataFim?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["StandardResponseListAgendamentoResponseDTO"];
+        };
+      };
+    };
+  };
+  cadastrar_4: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CadastrarAgendamentoInputDTO"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["StandardResponseAgendamentoResponseDTO"];
+        };
+      };
+    };
+  };
+  atualizarStatus: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AtualizarLeadStatusInputDTO"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["StandardResponseLeadResponseDTO"];
+        };
+      };
+    };
+  };
+  obterTodosUsuarios: {
+    parameters: {
+      query?: {
+        limit?: number;
+        offset?: number;
+        searchText?: string;
+        perfil?: "ADMINISTRATIVO" | "TECNICO" | "CLIENTE";
+        status?: "ATIVO" | "INATIVO";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["StandardResponseListUsuarioResponseDTO"];
+        };
+      };
+    };
+  };
+  obterUsuarioPorId: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["StandardResponseUsuarioResponseDTO"];
+        };
+      };
+    };
+  };
+  baixarPdf: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  obterDashboard: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["StandardResponseLeadDashboardDTO"];
+        };
+      };
+    };
+  };
+  obterDashboard_1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "*/*": components["schemas"]["StandardResponseClienteDashboardDTO"];
+        };
+      };
+    };
+  };
+  excluir_4: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
 }
