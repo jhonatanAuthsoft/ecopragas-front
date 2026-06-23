@@ -1,7 +1,14 @@
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { MoreVertical, Eye, Edit } from "lucide-react";
+import { Edit, Eye, MoreVertical } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/atomic/atm.button/button.component";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/atomic/mol.dropdown-menu/dropdown-menu.component";
 import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
 import {
   Table,
@@ -11,8 +18,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/atomic/mol.table/table.component";
-import { Button } from "@/atomic/atm.button/button.component";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/atomic/mol.dropdown-menu/dropdown-menu.component";
 import { ROUTES } from "@/constants/routes";
 import type { OrdemServico } from "@/model/rest/ordem-servico";
 
@@ -28,7 +33,9 @@ const tipoServicoLabels: Record<OrdemServico["tipoServico"], string> = {
   outro: "Outro",
 };
 
-export const OrdensServicoTableTechnician = ({ ordensServico }: OrdensServicoTableTechnicianProps) => {
+export const OrdensServicoTableTechnician = ({
+  ordensServico,
+}: OrdensServicoTableTechnicianProps) => {
   const navigate = useNavigate();
 
   if (ordensServico.length === 0) {
@@ -57,7 +64,7 @@ export const OrdensServicoTableTechnician = ({ ordensServico }: OrdensServicoTab
           </TableHeader>
           <TableBody>
             {ordensServico.map((os) => (
-              <TableRow 
+              <TableRow
                 key={os.id}
                 className="cursor-pointer"
                 onClick={() => navigate(ROUTES.TECHNICIAN_SCHEDULING_DETAILS.replace(":id", os.id))}
@@ -79,8 +86,8 @@ export const OrdensServicoTableTechnician = ({ ordensServico }: OrdensServicoTab
       {/* View Mobile: Cards Empilhados */}
       <div className="flex flex-col gap-md md:hidden">
         {ordensServico.map((os) => (
-          <div 
-            key={os.id} 
+          <div
+            key={os.id}
             className="p-md border border-grayscale-light rounded-small bg-background flex flex-col gap-2 cursor-pointer active:scale-[0.98] transition-transform"
             onClick={() => navigate(ROUTES.TECHNICIAN_SCHEDULING_DETAILS.replace(":id", os.id))}
           >
@@ -99,8 +106,12 @@ export const OrdensServicoTableTechnician = ({ ordensServico }: OrdensServicoTab
                 <span className="text-sm">{tipoServicoLabels[os.tipoServico]}</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-xxs text-grayscale-medium uppercase font-bold">Data/Hora</span>
-                <span className="text-sm">{format(os.dataAgendamento, "dd/MM", { locale: ptBR })} - {os.horaAgendamento}</span>
+                <span className="text-xxs text-grayscale-medium uppercase font-bold">
+                  Data/Hora
+                </span>
+                <span className="text-sm">
+                  {format(os.dataAgendamento, "dd/MM", { locale: ptBR })} - {os.horaAgendamento}
+                </span>
               </div>
             </div>
 

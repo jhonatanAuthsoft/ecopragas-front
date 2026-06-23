@@ -1,1 +1,1 @@
-export * from './agendamento-header.component';
+export * from "./agendamento-header.component";

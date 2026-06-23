@@ -1,1 +1,1 @@
-export * from './servico-header.component';
+export * from "./servico-header.component";

@@ -14,7 +14,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       <Sidebar className="hidden md:block" />
       <div
         className={cn(
-          "flex flex-col transition-[margin-left] duration-300",
+          "flex flex-col min-h-screen transition-[margin-left] duration-300 bg-grayscale-x-light",
           isMinimized ? "md:ml-[100px]" : "md:ml-[256px]",
         )}
       >

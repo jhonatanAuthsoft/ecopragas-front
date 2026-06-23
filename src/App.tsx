@@ -18,12 +18,17 @@ import Relatorios from "./pages/admin/relatorios/Relatorios";
 import Tecnicos from "./pages/admin/tecnicos/Tecnicos";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import Login from "./pages/auth/Login";
+import ClientAgendamentos from "./pages/client/agendamentos/Agendamentos";
+import ClientDetalhesAgendamento from "./pages/client/agendamentos/DetalhesAgendamento";
+import ClientOrdensServico from "./pages/client/ordens-servico/OrdensServico";
+import Services from "./pages/client/services/Services";
+import ServicosClienteDetalhes from "./pages/client/services/ServicosClienteDetalhes";
 import Leads from "./pages/leads/Leads";
 import NotFound from "./pages/not-found/NotFound";
-import { useAuthStore } from "./store/auth";
 import TechAgendamentos from "./pages/technician/agendamentos/Agendamentos";
 import TechAgendamentoDetalhes from "./pages/technician/agendamentos/DetalhesAgendamento";
 import TechServicos from "./pages/technician/servicos/Servicos";
+import { useAuthStore } from "./store/auth";
 
 const App = () => (
   <TooltipProvider>
@@ -41,9 +46,17 @@ const App = () => (
         <Route path={ROUTES.TECHNICIAN_SERVICES} element={<TechServicos />} />
       </Route>
 
-      {/* TODO: criar as rotas para cliente */}
+      {/* TODO: criar as rotas para o tecnico e cliente */}
+      <Route element={<AuthGuard roles={[ROLES.TECNICO]} />}>
+        <Route path={ROUTES.TEMPORARY_FALLBACK.TECNICO} element={<TemporaryFallback />} />
+      </Route>
       <Route element={<AuthGuard roles={[ROLES.CLIENTE]} />}>
         <Route path={ROUTES.TEMPORARY_FALLBACK.CLIENTE} element={<TemporaryFallback />} />
+        <Route path={ROUTES.CLIENT_SERVICES} element={<Services />} />
+        <Route path={ROUTES.CLIENT_SERVICES_DETAILS} element={<ServicosClienteDetalhes />} />
+        <Route path={ROUTES.CLIENT_SERVICE_ORDER} element={<ClientOrdensServico />} />
+        <Route path={ROUTES.CLIENT_SCHEDULING} element={<ClientAgendamentos />} />
+        <Route path={ROUTES.CLIENT_SCHEDULING_DETAILS} element={<ClientDetalhesAgendamento />} />
       </Route>
 
       <Route element={<AuthGuard roles={[ROLES.ADMINISTRATIVO]} />}>

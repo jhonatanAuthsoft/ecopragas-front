@@ -1,43 +1,39 @@
-import { ChevronDown, LogOut } from 'lucide-react';
-import { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { CalendarIcon } from '@/assets/icons/calendar';
-import { ChartBarIcon } from '@/assets/icons/chart-bar';
-import { ChevronDoubleLeftIcon } from '@/assets/icons/chevron-double-left';
-import { ClipboardDocumentListIcon } from '@/assets/icons/clipboard-document-list';
-import { Squares2x2Icon } from '@/assets/icons/squares-2x2';
-import { UserPlusIcon } from '@/assets/icons/user-plus';
-import { UsersIcon } from '@/assets/icons/users';
-import { WrenchScrewdriverIcon } from '@/assets/icons/wrench-screwdriver';
-import { Button } from '@/atomic/atm.button/button.component';
-import { H4 } from '@/atomic/atm.typography';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/atomic/mol.tooltip/tooltip.component';
-import { ROLES } from '@/constants/roles';
-import { ROUTES } from '@/constants/routes';
-import { useLogout } from '@/domain/auth';
-import { cn } from '@/lib/utils';
-import { useAuthStore } from '@/store/auth';
-import { useSidebarStore } from '@/store/sidebar';
-import { accountItemStyle } from './sidebar.style';
+import { ChevronDown, LogOut } from "lucide-react";
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { CalendarIcon } from "@/assets/icons/calendar";
+import { ChartBarIcon } from "@/assets/icons/chart-bar";
+import { ChevronDoubleLeftIcon } from "@/assets/icons/chevron-double-left";
+import { ClipboardDocumentListIcon } from "@/assets/icons/clipboard-document-list";
+import { Squares2x2Icon } from "@/assets/icons/squares-2x2";
+import { UserPlusIcon } from "@/assets/icons/user-plus";
+import { UsersIcon } from "@/assets/icons/users";
+import { WrenchScrewdriverIcon } from "@/assets/icons/wrench-screwdriver";
+import { Button } from "@/atomic/atm.button/button.component";
+import { H4 } from "@/atomic/atm.typography";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/atomic/mol.tooltip/tooltip.component";
+import { ROLES } from "@/constants/roles";
+import { ROUTES } from "@/constants/routes";
+import { useLogout } from "@/domain/auth";
+import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/auth";
+import { useSidebarStore } from "@/store/sidebar";
+import { accountItemStyle } from "./sidebar.style";
 
 const ADMIN_MENU = [
-  { icon: UserPlusIcon, label: 'CRM / Leads', path: ROUTES.ADMIN.LEADS },
-  { icon: Squares2x2Icon, label: 'Dashboard', path: ROUTES.ADMIN.HOME },
-  { icon: UsersIcon, label: 'Clientes', path: ROUTES.ADMIN.CLIENT.BASE },
+  { icon: UserPlusIcon, label: "CRM / Leads", path: ROUTES.ADMIN.LEADS },
+  { icon: Squares2x2Icon, label: "Dashboard", path: ROUTES.ADMIN.HOME },
+  { icon: UsersIcon, label: "Clientes", path: ROUTES.ADMIN.CLIENT.BASE },
   {
     icon: ClipboardDocumentListIcon,
-    label: 'Serviços',
+    label: "Serviços",
     path: ROUTES.ADMIN.SERVICE_ORDER.BASE,
   },
-  { icon: CalendarIcon, label: 'Agendamentos', path: ROUTES.ADMIN.SCHEDULING },
-  { icon: ChartBarIcon, label: 'Relatórios', path: ROUTES.ADMIN.REPORT },
+  { icon: CalendarIcon, label: "Agendamentos", path: ROUTES.ADMIN.SCHEDULING },
+  { icon: ChartBarIcon, label: "Relatórios", path: ROUTES.ADMIN.REPORT },
   {
     icon: WrenchScrewdriverIcon,
-    label: 'Técnicos',
+    label: "Técnicos",
     path: ROUTES.ADMIN.TECHNICIAN,
   },
 ];
@@ -45,13 +41,31 @@ const ADMIN_MENU = [
 const TECHNICIAN_MENU = [
   {
     icon: CalendarIcon,
-    label: 'Agendamentos',
+    label: "Agendamentos",
     path: ROUTES.TECHNICIAN_SCHEDULING,
   },
   {
     icon: WrenchScrewdriverIcon,
-    label: 'Serviços',
+    label: "Serviços",
     path: ROUTES.TECHNICIAN_SERVICES,
+  },
+];
+
+const CLIENT_MENU = [
+  {
+    icon: WrenchScrewdriverIcon,
+    label: "Serviços",
+    path: ROUTES.CLIENT_SERVICES,
+  },
+  {
+    icon: ClipboardDocumentListIcon,
+    label: "Ordens de Serviço",
+    path: ROUTES.CLIENT_SERVICE_ORDER,
+  },
+  {
+    icon: CalendarIcon,
+    label: "Agendamentos",
+    path: ROUTES.CLIENT_SCHEDULING,
   },
 ];
 
@@ -61,54 +75,48 @@ export const Sidebar = ({ className }: { className?: string }) => {
   const toggleMinimized = useSidebarStore((state) => state.toggleMinimized);
   const user = useAuthStore((state) => state.user);
 
-  const menuItems =
-    user?.perfil === ROLES.TECNICO ? TECHNICIAN_MENU : ADMIN_MENU;
+  const menuByRole = {
+    [ROLES.TECNICO]: TECHNICIAN_MENU,
+    [ROLES.CLIENTE]: CLIENT_MENU,
+    [ROLES.ADMINISTRATIVO]: ADMIN_MENU,
+  };
+
+  const menuItems = menuByRole[user?.perfil] ?? ADMIN_MENU;
 
   return (
     <aside
       className={cn(
-        'fixed inset-y-0 left-0 z-10 h-screen border-r border-border bg-sidebar transition-all duration-300',
-        isMinimized ? 'w-[100px]' : 'w-[256px]',
-        className
+        "fixed inset-y-0 left-0 z-10 h-screen border-r border-border bg-sidebar transition-all duration-300",
+        isMinimized ? "w-[100px]" : "w-[256px]",
+        className,
       )}
     >
-      <div className='flex h-full flex-col'>
+      <div className="flex h-full flex-col">
         <div
           className={cn(
-            'flex h-16 items-center border-sidebar-border pt-lg',
-            isMinimized ? 'justify-center px-2' : 'gap-2 px-lg'
+            "flex h-16 items-center border-sidebar-border pt-lg",
+            isMinimized ? "justify-center px-2" : "gap-2 px-lg",
           )}
         >
           <img
-            src={isMinimized ? '/mini-logo.png' : '/logo.png'}
-            alt=''
-            className={cn(isMinimized ? 'pt-md' : 'w-full pt-sm')}
+            src={isMinimized ? "/mini-logo.png" : "/logo.png"}
+            alt=""
+            className={cn(isMinimized ? "pt-md" : "w-full pt-sm")}
           />
         </div>
 
-        <nav
-          className={cn(
-            'flex-1 overflow-hidden py-xl',
-            isMinimized ? 'px-2' : 'px-md'
-          )}
-        >
-          <ul className='flex flex-col gap-md'>
+        <nav className={cn("flex-1 overflow-hidden py-xl", isMinimized ? "px-2" : "px-md")}>
+          <ul className="flex flex-col gap-md">
             <li>
               {isMinimized ? (
                 <Tooltip>
-                  <TooltipTrigger className='w-full'>
-                    <ToggleButton
-                      isMinimized={isMinimized}
-                      toggleMinimized={toggleMinimized}
-                    />
+                  <TooltipTrigger className="w-full">
+                    <ToggleButton isMinimized={isMinimized} toggleMinimized={toggleMinimized} />
                   </TooltipTrigger>
-                  <TooltipContent side='right'>Expandir</TooltipContent>
+                  <TooltipContent side="right">Expandir</TooltipContent>
                 </Tooltip>
               ) : (
-                <ToggleButton
-                  isMinimized={isMinimized}
-                  toggleMinimized={toggleMinimized}
-                />
+                <ToggleButton isMinimized={isMinimized} toggleMinimized={toggleMinimized} />
               )}
             </li>
             {menuItems.map((item) => (
@@ -139,25 +147,19 @@ type NavItemProps = {
   isMinimized: boolean;
 };
 
-const NavItem = ({
-  icon: Icon,
-  label,
-  path,
-  isActive,
-  isMinimized,
-}: NavItemProps) => {
+const NavItem = ({ icon: Icon, label, path, isActive, isMinimized }: NavItemProps) => {
   const link = (
     <Link
       to={path}
       className={cn(
-        'flex items-center rounded-lg text-sm transition-all whitespace-nowrap',
-        isMinimized ? 'justify-center p-2.5' : 'gap-[10px] px-3 py-2.5',
+        "flex items-center rounded-lg text-sm transition-all whitespace-nowrap",
+        isMinimized ? "justify-center p-2.5" : "gap-[10px] px-3 py-2.5",
         isActive
-          ? 'font-bold bg-sidebar-accent text-brand-cta-dark'
-          : 'font-medium text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-grayscale-black'
+          ? "font-bold bg-sidebar-accent text-brand-cta-dark"
+          : "font-medium text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-grayscale-black",
       )}
     >
-      <Icon className='size-lg shrink-0' title={label} />
+      <Icon className="size-lg shrink-0" title={label} />
       {!isMinimized && <span>{label}</span>}
     </Link>
   );
@@ -166,7 +168,7 @@ const NavItem = ({
     return (
       <Tooltip>
         <TooltipTrigger asChild>{link}</TooltipTrigger>
-        <TooltipContent side='right'>{label}</TooltipContent>
+        <TooltipContent side="right">{label}</TooltipContent>
       </Tooltip>
     );
   }
@@ -183,7 +185,7 @@ const AccountItem = ({ isMinimized }: AccountItemProps) => {
   const [open, setOpen] = useState(false);
   const user = useAuthStore((state) => state.user);
   const clearSession = useAuthStore((state) => state.clearSession);
-  const username = user?.nomeCompleto || 'Usuário';
+  const username = user?.nomeCompleto || "Usuário";
   const initials = username.slice(0, 2).toUpperCase();
 
   const { logout, isLogoutLoading } = useLogout({
@@ -200,7 +202,7 @@ const AccountItem = ({ isMinimized }: AccountItemProps) => {
 
   const trigger = (
     <button
-      type='button'
+      type="button"
       aria-expanded={open}
       onClick={() => setOpen((current) => !current)}
       className={styles.trigger()}
@@ -219,7 +221,7 @@ const AccountItem = ({ isMinimized }: AccountItemProps) => {
         {isMinimized ? (
           <Tooltip>
             <TooltipTrigger asChild>{trigger}</TooltipTrigger>
-            <TooltipContent side='right'>{username}</TooltipContent>
+            <TooltipContent side="right">{username}</TooltipContent>
           </Tooltip>
         ) : (
           trigger
@@ -228,15 +230,15 @@ const AccountItem = ({ isMinimized }: AccountItemProps) => {
         {open && (
           <div className={styles.expanded()}>
             <Button
-              type='button'
-              variant='ghost'
+              type="button"
+              variant="ghost"
               fullWidth
               disabled={isLogoutLoading}
               onClick={() => logout()}
               className={styles.logoutButton()}
               leftIcon={<LogOut className={styles.logoutButtonIcon()} />}
             >
-              {isMinimized ? 'Sair' : 'Sair da conta'}
+              {isMinimized ? "Sair" : "Sair da conta"}
             </Button>
           </div>
         )}
@@ -254,23 +256,18 @@ const ToggleButton = ({ isMinimized, toggleMinimized }: ToggleButtonProps) => {
   return (
     <Button
       className={cn(
-        'hover:no-underline',
-        isMinimized
-          ? 'w-full justify-center p-2xs'
-          : 'w-full justify-start pl-2xs py-2xs'
+        "hover:no-underline",
+        isMinimized ? "w-full justify-center p-2xs" : "w-full justify-start pl-2xs py-2xs",
       )}
-      variant='link'
+      variant="link"
       leftIcon={
         <ChevronDoubleLeftIcon
-          className={cn(
-            'size-md transition-transform',
-            isMinimized && 'rotate-180'
-          )}
+          className={cn("size-md transition-transform", isMinimized && "rotate-180")}
         />
       }
       onClick={toggleMinimized}
     >
-      {!isMinimized && 'Minimizar'}
+      {!isMinimized && "Minimizar"}
     </Button>
   );
 };

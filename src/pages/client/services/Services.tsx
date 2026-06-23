@@ -1,16 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Label } from "@/atomic/atm.label/label.component";
 import { Body2, H1 } from "@/atomic/atm.typography";
-import { CalendarDropdown } from "@/atomic/mol.calendar-dropdown";
 import { SearchInput } from "@/atomic/mol.search/search.component";
 import { SchedulingList } from "@/atomic/obj.scheduling-list";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
 
-const Agendamentos = () => {
+const Services = () => {
   const navigate = useNavigate();
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [_selectedDate, _setSelectedDate] = useState<Date | undefined>(new Date());
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -19,7 +17,7 @@ const Agendamentos = () => {
       id: "1",
       time: "08:00",
       title: "Controle de Pragas e Vetores",
-      status: "Em Andamento" as const,
+      status: "Concluída" as const,
       clientName: "João Silva de Jesus da Souza",
       phone: "(11) 0000-0000",
       address: "Rio da Dona, 139, 44380-00, Cruz das Almas - Ba",
@@ -28,7 +26,7 @@ const Agendamentos = () => {
       id: "2",
       time: "10:30",
       title: "Limpeza de caixa d'água",
-      status: "Agendada" as const,
+      status: "Em Andamento" as const,
       clientName: "Maria Santos",
       phone: "(11) 9999-9999",
       address: "Av. Principal, 123 - Centro",
@@ -82,11 +80,10 @@ const Agendamentos = () => {
       <div className="flex flex-col gap-xl">
         {/* Header Section */}
         <div className="flex flex-col gap-xs">
-          <H1>Agendamentos</H1>
-          <Body2 className="text-muted-foreground">Gerencie a agenda de serviços</Body2>
+          <H1>Últimos Serviços</H1>
+          <Body2 className="text-muted-foreground">Visualize todos os seus agendamentos</Body2>
         </div>
 
-        {/* Filters Section */}
         <div className="flex flex-col md:flex-row items-end justify-between gap-md">
           <SearchInput
             placeholder="Buscar por nome do serviço..."
@@ -95,24 +92,17 @@ const Agendamentos = () => {
             className="w-full md:max-w-[400px]"
           />
 
-          <div className="space-y-2 w-full md:w-auto">
-            <CalendarDropdown
-              value={selectedDate}
-              onChange={setSelectedDate}
-              label="Selecione uma data"
-              maxDate={new Date()}
-            />
-          </div>
+          <div className="space-y-2 w-full md:w-auto">{/* Criar componente de filtro*/}</div>
         </div>
 
         {/* List Section */}
         <SchedulingList
           items={filteredSchedulings}
-          onItemClick={(id) => navigate(ROUTES.TECHNICIAN_SCHEDULING_DETAILS.replace(":id", id))}
+          onItemClick={(id) => navigate(ROUTES.CLIENT_SERVICES_DETAILS.replace(":id", id))}
         />
       </div>
     </MainLayout>
   );
 };
 
-export default Agendamentos;
+export default Services;

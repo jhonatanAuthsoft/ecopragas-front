@@ -1,1 +1,1 @@
-export * from './monitoring-point.component';
+export * from "./monitoring-point.component";
