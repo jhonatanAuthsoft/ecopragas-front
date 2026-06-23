@@ -33,28 +33,32 @@ export const DADOS_FIELDS = [
   "status",
   "email",
   "telefone",
-] as const satisfies ReadonlyArray<keyof ClienteFormValues>;
+] as ReadonlyArray<keyof ClienteFormValues>;
 
-export const ENDERECO_DRAFT_FIELDS = [
-  "enderecoDraft.cep",
-  "enderecoDraft.estado",
-  "enderecoDraft.cidade",
-  "enderecoDraft.bairro",
-  "enderecoDraft.rua",
-  "enderecoDraft.numero",
-  "enderecoDraft.complemento",
-] as const satisfies ReadonlyArray<FieldPath<ClienteFormValues>>;
-
-// TODO: ver se vale continuar com o numero e complemento como obrigatórios
-export const ENDERECO_FIELDS = [
+export const ENDERECO_REQUIRED_FIELDS: ReadonlyArray<keyof ClienteEndereco> = [
   "cep",
   "estado",
   "cidade",
   "bairro",
   "rua",
   "numero",
-  "complemento",
-] as const satisfies ReadonlyArray<keyof ClienteEndereco>;
+];
+
+export const ENDERECO_OPTIONAL_FIELDS: ReadonlyArray<keyof ClienteEndereco> = ["complemento"];
+
+export const ENDERECO_DRAFT_REQUIRED_FIELDS: ReadonlyArray<FieldPath<ClienteFormValues>> = [
+  "enderecoDraft.cep",
+  "enderecoDraft.estado",
+  "enderecoDraft.cidade",
+  "enderecoDraft.bairro",
+  "enderecoDraft.rua",
+  "enderecoDraft.numero",
+];
+
+export const ENDERECO_DRAFT_FIELDS: ReadonlyArray<FieldPath<ClienteFormValues>> = [
+  ...ENDERECO_DRAFT_REQUIRED_FIELDS,
+  "enderecoDraft.complemento",
+];
 
 export const TIPO_CLIENTE_OPTIONS: SelectInputOption[] = [
   { value: "RECORRENTE", label: "Fixo" },

@@ -86,10 +86,10 @@ export const EnderecoTab = ({ onAddEndereco, onRemoveEndereco, onNext }: Enderec
         </FormField>
 
         <FormField name="enderecoDraft.numero" validators={[EnderecoDraftRequiredValidator()]}>
-          <TextInput label="Número" placeholder="Ex. 123" formatter={formatNumber} />
+          <TextInput label="Numero" placeholder="Ex. 123" formatter={formatNumber} />
         </FormField>
 
-        <FormField name="enderecoDraft.complemento" validators={[EnderecoDraftRequiredValidator()]}>
+        <FormField name="enderecoDraft.complemento">
           <TextInput label="Complemento" placeholder="Ex. Apto 101" />
         </FormField>
       </div>
@@ -130,7 +130,8 @@ export const EnderecoTab = ({ onAddEndereco, onRemoveEndereco, onNext }: Enderec
         >
           <div>
             <p className="font-medium text-grayscale-dark">
-              {addr.rua}, {addr.numero}
+              {addr.rua}
+              {addr.numero ? `, ${addr.numero}` : ""}
               {addr.complemento ? ` - ${addr.complemento}` : ""}
             </p>
             <p className="text-xxs font-normal text-grayscale-medium">

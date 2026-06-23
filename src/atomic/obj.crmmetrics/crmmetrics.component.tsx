@@ -13,16 +13,10 @@ import { LoadingState } from "@/atomic/obj.loading-state";
 import { useGetLeadDashboard } from "@/domain/lead";
 import { formatCurrency } from "@/utils/formatters";
 
-// TODO: pegar esses valores do back
-const MOCK_LEADS_GANHOS = 0;
-const MOCK_LEADS_PERDIDOS = 0;
-const MOCK_CAC_CUSTO_MARKETING = 5000;
-
 export const CRMMetrics = () => {
   const { dashboard, dashboardError, isDashboardLoading } = useGetLeadDashboard();
 
   const taxaConversao = (dashboard?.taxaConversao ?? 0).toFixed(2);
-  const cacMedio = MOCK_LEADS_GANHOS > 0 ? MOCK_CAC_CUSTO_MARKETING / MOCK_LEADS_GANHOS : 0;
 
   const metrics = [
     {
@@ -49,18 +43,12 @@ export const CRMMetrics = () => {
       title: "Taxa de Conversão",
       value: `${taxaConversao}%`,
       icon: ArrowPathIcon,
-      subtitle: `${MOCK_LEADS_GANHOS} ganhos / ${MOCK_LEADS_PERDIDOS} perdidos`,
-    },
-    {
-      title: "CAC Médio",
-      value: formatCurrency(cacMedio),
-      icon: BankNotesIcon,
-      subtitle: "Custo de Aquisição por Cliente",
+      subtitle: `${dashboard?.leadsGanhos ?? 0} ganhos / ${dashboard?.leadsPerdidos ?? 0} perdidos`,
     },
   ];
 
   const renderCards = (showSkeleton: boolean) => (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
       {metrics.map((metric) => {
         const Icon = metric.icon;
         return (

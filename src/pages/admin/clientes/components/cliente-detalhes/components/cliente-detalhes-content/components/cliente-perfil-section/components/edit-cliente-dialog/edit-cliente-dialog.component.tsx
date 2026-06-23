@@ -11,6 +11,7 @@ import type { Cliente, ClienteDocumentoInput, EditClienteFormValues } from "@/mo
 import {
   DADOS_FIELDS,
   ENDERECO_DRAFT_FIELDS,
+  ENDERECO_DRAFT_REQUIRED_FIELDS,
   TAB_TRIGGER_CLASS,
 } from "../../../../../../../add-cliente-dialog/add-cliente-dialog.data";
 import type { ClienteDialogTab } from "../../../../../../../add-cliente-dialog/add-cliente-dialog.types";
@@ -80,7 +81,7 @@ export const EditClienteDialog = ({
       return true;
     }
 
-    return formMethods.trigger([...ENDERECO_DRAFT_FIELDS]);
+    return formMethods.trigger([...ENDERECO_DRAFT_REQUIRED_FIELDS]);
   };
 
   const handleNextDados = async () => {
@@ -98,7 +99,7 @@ export const EditClienteDialog = ({
   };
 
   const handleAddEndereco = async () => {
-    const isValid = await formMethods.trigger([...ENDERECO_DRAFT_FIELDS]);
+    const isValid = await formMethods.trigger([...ENDERECO_DRAFT_REQUIRED_FIELDS]);
     if (!isValid) {
       return;
     }

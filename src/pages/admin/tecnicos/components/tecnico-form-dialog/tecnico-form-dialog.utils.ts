@@ -1,23 +1,21 @@
-import type { Tecnico, UpdateTecnicoDTO } from "@/model/rest/tecnico";
-import { formatCPFCNPJ, formatPhone } from "@/utils/formatters";
+import type { CadastrarTecnicoInput, Tecnico } from "@/model/rest/tecnico";
+import { cleanDigits, formatCPFCNPJ, formatPhone } from "@/utils/formatters";
 import { DEFAULT_VALUES } from "./tecnico-form-dialog.data";
-import type { TecnicoFormValues } from "./tecnico-form-dialog.types";
 
-export const mapTecnicoToFormValues = (tecnico: Tecnico): TecnicoFormValues => ({
-  nome: tecnico.nome,
-  email: tecnico.email,
-  cpfCnpj: formatCPFCNPJ(tecnico.cpfCnpj),
-  telefone: tecnico.telefone ? formatPhone(tecnico.telefone) : "",
-  foto: tecnico.foto || "",
+export const mapTecnicoToFormValues = (tecnico: Tecnico): CadastrarTecnicoInput => ({
+  nome: tecnico.nome ?? "",
+  email: tecnico.email ?? "",
+  cpf: formatCPFCNPJ(tecnico.cpf ?? ""),
+  contato: tecnico.contato ? formatPhone(tecnico.contato) : "",
+  fotoUrl: tecnico.fotoUrl ?? "",
 });
 
-export const getTecnicoFormDefaultValues = (tecnico: Tecnico | null): TecnicoFormValues =>
+export const getTecnicoFormDefaultValues = (tecnico: Tecnico | null): CadastrarTecnicoInput =>
   tecnico ? mapTecnicoToFormValues(tecnico) : DEFAULT_VALUES;
 
-export const buildTecnicoPayload = (values: TecnicoFormValues): UpdateTecnicoDTO => ({
-  nome: values.nome,
-  email: values.email,
-  cpf: values.cpfCnpj.replace(/\D/g, ""),
-  foto: values.foto,
-  telefone: values.telefone.replace(/\D/g, ""),
+export const sanitizeTecnicoInput = (values: CadastrarTecnicoInput): CadastrarTecnicoInput => ({
+  ...values,
+  cpf: values.cpf ? cleanDigits(values.cpf) : values.cpf,
+  contato: values.contato ? cleanDigits(values.contato) : values.contato,
+  fotoUrl: values.fotoUrl?.startsWith("data:") ? undefined : values.fotoUrl,
 });
