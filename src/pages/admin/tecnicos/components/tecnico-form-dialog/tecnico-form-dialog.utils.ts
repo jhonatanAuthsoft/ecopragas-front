@@ -17,4 +17,5 @@ export const sanitizeTecnicoInput = (values: CadastrarTecnicoInput): CadastrarTe
   ...values,
   cpf: values.cpf ? cleanDigits(values.cpf) : values.cpf,
   contato: values.contato ? cleanDigits(values.contato) : values.contato,
+  fotoUrl: values.fotoUrl?.startsWith("data:") ? undefined : values.fotoUrl,
 });
