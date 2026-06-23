@@ -1,11 +1,7 @@
 import type { components, operations } from "../api-types";
 
-// TODO: excluir essa tipagem no front quando for adicionado a parte de ultimo serviço no back
-export type Cliente = components["schemas"]["ClienteResponseDTO"] & {
-  tipoDeServico?: string;
-  tecnicoResponsavel?: string;
-  valor?: number;
-};
+export type Cliente = components["schemas"]["ClienteResponseDTO"];
+export type ClienteUltimoServico = components["schemas"]["ClienteUltimoServicoResponseDTO"];
 export type ClienteDocumentoInput = components["schemas"]["ClienteDocumentoInputDTO"];
 export type ClienteDocumentoResponse = components["schemas"]["ClienteDocumentoResponseDTO"];
 export type ClienteTipo = CadastrarClienteInput["tipo"];

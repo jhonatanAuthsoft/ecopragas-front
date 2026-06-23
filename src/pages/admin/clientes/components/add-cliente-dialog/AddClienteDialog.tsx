@@ -181,10 +181,10 @@ export const AddClienteDialog = ({
           <Tabs value={activeTab} onValueChange={(tab) => setActiveTab(tab as ClienteDialogTab)}>
             <TabsList className="grid w-full grid-cols-3 mb-8 bg-transparent border-b rounded-none h-auto p-0">
               <TabsTrigger value="dados" className={TAB_TRIGGER_CLASS}>
-                Dados basicos
+                Dados básicos
               </TabsTrigger>
               <TabsTrigger value="endereco" className={TAB_TRIGGER_CLASS}>
-                Endereco do cliente
+                Endereço do cliente
               </TabsTrigger>
               <TabsTrigger value="documentacao" className={TAB_TRIGGER_CLASS}>
                 Documentação

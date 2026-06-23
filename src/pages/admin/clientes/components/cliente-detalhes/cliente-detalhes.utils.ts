@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import type { Cliente, ClienteEnderecoResponse } from "@/model/rest/cliente";
+import type { Cliente, ClienteEnderecoResponse, ClienteUltimoServico } from "@/model/rest/cliente";
 import { formatCEP } from "@/utils/formatters";
 
 export function getPrimaryAddress(cliente: Cliente): ClienteEnderecoResponse | undefined {
@@ -29,25 +29,24 @@ export function formatClienteEndereco(cliente: Cliente): string {
   return parts.join(", ");
 }
 
-export function hasUltimoServico(cliente: Cliente): boolean {
-  return (
-    !!cliente.dataUltimoServico ||
-    !!cliente.tipoDeServico ||
-    !!cliente.tecnicoResponsavel ||
-    cliente.valor != null
-  );
+export function getUltimoServico(cliente: Cliente): ClienteUltimoServico | undefined {
+  return cliente.ultimosServicos?.[0];
 }
 
-export function formatUltimoServicoDataHora(dataUltimoServico?: string): string {
-  if (!dataUltimoServico) {
+export function hasUltimoServico(cliente: Cliente): boolean {
+  return !!getUltimoServico(cliente);
+}
+
+export function formatUltimoServicoDataHora(dataHoraServico?: string): string {
+  if (!dataHoraServico) {
     return "-";
   }
 
-  const parsed = new Date(dataUltimoServico);
+  const parsed = new Date(dataHoraServico);
 
   if (Number.isNaN(parsed.getTime())) {
     return "-";
   }
 
-  return format(parsed, "dd/MM/yyyy", { locale: ptBR });
+  return format(parsed, "dd/MM/yyyy - HH:mm", { locale: ptBR });
 }

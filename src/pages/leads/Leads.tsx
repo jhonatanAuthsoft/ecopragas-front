@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 import type { Lead, LeadStatus, ListLeadsParams } from "@/model/rest/lead";
 import { useSidebarStore } from "@/store/sidebar";
 
-export const LIST_LEADS_PARAMS: ListLeadsParams = { limit: 100, offset: 0 };
+export const LIST_LEADS_PARAMS: ListLeadsParams = { limit: 300, offset: 0 };
 
 const KANBAN_SKELETON_COLUMNS = [
   "NOVO",
