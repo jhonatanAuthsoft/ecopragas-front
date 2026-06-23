@@ -7,13 +7,15 @@ interface TecnicoFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   tecnico: Tecnico | null;
-  onSubmit: (data: CadastrarTecnicoInput, id?: string) => Promise<void>;
+  isSubmitting?: boolean;
+  onSubmit: (data: CadastrarTecnicoInput, id?: string) => void;
 }
 
 export const TecnicoFormDialog = ({
   open,
   onOpenChange,
   tecnico,
+  isSubmitting,
   onSubmit,
 }: TecnicoFormDialogProps) => {
   return (
@@ -27,8 +29,8 @@ export const TecnicoFormDialog = ({
           <TecnicoForm
             key={tecnico?.id ?? "new"}
             tecnico={tecnico}
+            isSubmitting={isSubmitting}
             onSubmit={onSubmit}
-            onClose={() => onOpenChange(false)}
           />
         )}
       </DialogContent>

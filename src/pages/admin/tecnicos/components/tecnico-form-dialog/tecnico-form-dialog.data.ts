@@ -4,5 +4,6 @@ export const DEFAULT_VALUES: CadastrarTecnicoInput = {
   nome: "",
   email: "",
   cpf: "",
+  contato: "",
   fotoUrl: "",
 };

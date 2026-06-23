@@ -812,6 +812,7 @@ export interface components {
             nome?: string;
             email?: string;
             cpf?: string;
+            contato?: string;
             fotoUrl?: string;
         };
         StandardResponseTecnicoResponseDTO: {
@@ -830,6 +831,7 @@ export interface components {
             nome?: string;
             email?: string;
             cpf?: string;
+            contato?: string;
             fotoUrl?: string;
             /** Format: date-time */
             createdAt?: string;
@@ -1161,6 +1163,7 @@ export interface components {
             nome?: string;
             email?: string;
             cpf?: string;
+            contato?: string;
             fotoUrl?: string;
         };
         RegistrarPortaIscaInputDTO: {

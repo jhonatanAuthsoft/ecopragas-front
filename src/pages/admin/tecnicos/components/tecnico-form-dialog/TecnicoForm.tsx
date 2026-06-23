@@ -19,29 +19,23 @@ import { getTecnicoFormDefaultValues, sanitizeTecnicoInput } from "./tecnico-for
 
 interface TecnicoFormProps {
   tecnico: Tecnico | null;
-  onSubmit: (data: CadastrarTecnicoInput, id?: string) => Promise<void>;
-  onClose: () => void;
+  isSubmitting?: boolean;
+  onSubmit: (data: CadastrarTecnicoInput, id?: string) => void;
 }
 
-export const TecnicoForm = ({ tecnico, onSubmit, onClose }: TecnicoFormProps) => {
+export const TecnicoForm = ({ tecnico, isSubmitting, onSubmit }: TecnicoFormProps) => {
   const formMethods = useForm<CadastrarTecnicoInput>({
     mode: "onChange",
     defaultValues: getTecnicoFormDefaultValues(tecnico),
   });
-  const { isSubmitting } = formMethods.formState;
 
   const [isCropperOpen, setIsCropperOpen] = useState(false);
   const [selectedImageForCrop, setSelectedImageForCrop] = useState<string | null>(null);
 
   const fotoUrl = formMethods.watch("fotoUrl");
 
-  const handleSubmit = async (values: CadastrarTecnicoInput) => {
-    try {
-      await onSubmit(sanitizeTecnicoInput(values), tecnico?.id);
-      onClose();
-    } catch (error) {
-      console.error("Error saving tecnico:", error);
-    }
+  const handleSubmit = (values: CadastrarTecnicoInput) => {
+    onSubmit(sanitizeTecnicoInput(values), tecnico?.id);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,7 +93,7 @@ export const TecnicoForm = ({ tecnico, onSubmit, onClose }: TecnicoFormProps) =>
           <TextInput label="Nome" placeholder="Nome do tecnico" />
         </FormField>
 
-        <FormField name="telefone" validators={[RequiredValidator(), PhoneValidator()]}>
+        <FormField name="contato" validators={[RequiredValidator(), PhoneValidator()]}>
           <TextInput
             label="Contato"
             placeholder="(00) 00000-0000"
@@ -123,8 +117,8 @@ export const TecnicoForm = ({ tecnico, onSubmit, onClose }: TecnicoFormProps) =>
       </div>
 
       <div className="flex justify-center">
-        <Button type="submit" className="w-full md:w-[400px]" size="lg" disabled={isSubmitting}>
-          {isSubmitting ? "Salvando..." : tecnico ? "Salvar alteracoes" : "Adicionar Tecnico"}
+        <Button type="submit" className="w-full md:w-[400px]" size="lg" isLoading={isSubmitting}>
+          {isSubmitting ? "Salvando..." : tecnico ? "Salvar alterações" : "Adicionar Técnico"}
         </Button>
       </div>
 
