@@ -1288,6 +1288,10 @@ export interface components {
             totalLeads?: number;
             /** Format: int64 */
             leadsAtivos?: number;
+            /** Format: int64 */
+            leadsGanhos?: number;
+            /** Format: int64 */
+            leadsPerdidos?: number;
             /** Format: double */
             taxaConversao?: number;
             valorPotencial?: number;
