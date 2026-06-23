@@ -812,6 +812,7 @@ export interface components {
             nome?: string;
             email?: string;
             cpf?: string;
+            contato?: string;
             fotoUrl?: string;
         };
         StandardResponseTecnicoResponseDTO: {
@@ -830,6 +831,7 @@ export interface components {
             nome?: string;
             email?: string;
             cpf?: string;
+            contato?: string;
             fotoUrl?: string;
             /** Format: date-time */
             createdAt?: string;
@@ -1074,6 +1076,17 @@ export interface components {
             documentos?: components["schemas"]["ClienteDocumentoResponseDTO"][];
             cidade?: string;
             estado?: string;
+            ultimosServicos?: components["schemas"]["ClienteUltimoServicoResponseDTO"][];
+        };
+        ClienteUltimoServicoResponseDTO: {
+            /** Format: uuid */
+            id?: string;
+            tecnicoResponsavel?: string;
+            /** @enum {string} */
+            tipoServico?: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
+            valor?: number;
+            /** Format: date-time */
+            dataHoraServico?: string;
         };
         StandardResponseClienteResponseDTO: {
             success?: boolean;
@@ -1150,6 +1163,7 @@ export interface components {
             nome?: string;
             email?: string;
             cpf?: string;
+            contato?: string;
             fotoUrl?: string;
         };
         RegistrarPortaIscaInputDTO: {
@@ -1288,6 +1302,10 @@ export interface components {
             totalLeads?: number;
             /** Format: int64 */
             leadsAtivos?: number;
+            /** Format: int64 */
+            leadsGanhos?: number;
+            /** Format: int64 */
+            leadsPerdidos?: number;
             /** Format: double */
             taxaConversao?: number;
             valorPotencial?: number;

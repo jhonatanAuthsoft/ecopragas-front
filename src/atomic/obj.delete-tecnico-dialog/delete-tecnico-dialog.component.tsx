@@ -9,6 +9,7 @@ interface DeleteTecnicoDialogProps {
   onOpenChange: (open: boolean) => void;
   tecnico: Tecnico | null;
   onConfirm: () => void;
+  isLoading?: boolean;
 }
 
 export const DeleteTecnicoDialog = ({
@@ -16,6 +17,7 @@ export const DeleteTecnicoDialog = ({
   onOpenChange,
   tecnico,
   onConfirm,
+  isLoading,
 }: DeleteTecnicoDialogProps) => {
   if (!tecnico) return null;
 
@@ -44,7 +46,13 @@ export const DeleteTecnicoDialog = ({
             >
               Cancelar
             </Button>
-            <Button variant="destructive" size="lg" className="flex-1" onClick={onConfirm}>
+            <Button
+              variant="destructive"
+              size="lg"
+              className="flex-1"
+              onClick={onConfirm}
+              isLoading={isLoading}
+            >
               Excluir
             </Button>
           </div>

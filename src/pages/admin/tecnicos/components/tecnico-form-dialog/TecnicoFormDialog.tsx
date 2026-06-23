@@ -1,19 +1,21 @@
 import { H2 } from "@/atomic/atm.typography";
 import { Dialog, DialogContent, DialogHeader } from "@/atomic/mol.dialog/dialog.component";
-import type { Tecnico, UpdateTecnicoDTO } from "@/model/rest/tecnico";
+import type { CadastrarTecnicoInput, Tecnico } from "@/model/rest/tecnico";
 import { TecnicoForm } from "./TecnicoForm";
 
 interface TecnicoFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   tecnico: Tecnico | null;
-  onSubmit: (data: UpdateTecnicoDTO, id?: string) => Promise<void>;
+  isSubmitting?: boolean;
+  onSubmit: (data: CadastrarTecnicoInput, id?: string) => void;
 }
 
 export const TecnicoFormDialog = ({
   open,
   onOpenChange,
   tecnico,
+  isSubmitting,
   onSubmit,
 }: TecnicoFormDialogProps) => {
   return (
@@ -27,8 +29,8 @@ export const TecnicoFormDialog = ({
           <TecnicoForm
             key={tecnico?.id ?? "new"}
             tecnico={tecnico}
+            isSubmitting={isSubmitting}
             onSubmit={onSubmit}
-            onClose={() => onOpenChange(false)}
           />
         )}
       </DialogContent>

@@ -10,7 +10,8 @@ import { uploadArquivoDatasource, uploadManyArquivosDatasource } from "@/rest/ar
 
 export function useUploadArquivo(params: UseCaseBaseParams<UploadArquivoResponse> = {}) {
   const {
-    mutateAsync: uploadArquivo,
+    mutate: uploadArquivo,
+    mutateAsync: uploadArquivoAsync,
     data,
     error,
     isLoading,
@@ -21,6 +22,7 @@ export function useUploadArquivo(params: UseCaseBaseParams<UploadArquivoResponse
 
   return {
     uploadArquivo,
+    uploadArquivoAsync,
     uploadArquivoData: data,
     uploadArquivoError: error,
     isUploadArquivoLoading: isLoading,

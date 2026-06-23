@@ -1,27 +1,22 @@
-export interface Tecnico {
-  id: string;
-  nome: string;
-  email: string;
-  cpfCnpj: string;
-  telefone: string | null;
-  foto: string;
-  observacoes: string | null;
-  status: "ATIVO" | "INATIVO";
-  permissao: string;
-}
+import type { components, operations } from "../api-types";
 
-export interface UpdateTecnicoDTO {
-  nome: string;
-  email: string;
-  cpf: string;
-  foto: string;
-  telefone?: string;
-}
+export type Tecnico = components["schemas"]["TecnicoResponseDTO"];
 
-export interface CreateTecnicoDTO {
-  nome: string;
-  email: string;
-  cpf: string;
-  foto: string;
-  telefone: string;
-}
+export type CadastrarTecnicoInput =
+  operations["tecnico_cadastrar"]["requestBody"]["content"]["application/json"];
+export type CadastrarTecnicoResponse =
+  operations["tecnico_cadastrar"]["responses"][200]["content"]["application/json"];
+
+export type ListTecnicosParams = operations["tecnico_obter_todos"]["parameters"]["query"];
+export type ListTecnicosResponse = components["schemas"]["StandardResponseListTecnicoResponseDTO"];
+
+export type GetTecnicoParams = operations["tecnico_obter_por_id"]["parameters"]["path"];
+export type GetTecnicoResponse = components["schemas"]["StandardResponseTecnicoResponseDTO"];
+
+export type DeleteTecnicoParams = operations["tecnico_excluir"]["parameters"]["path"];
+
+export type EditTecnicoParams = operations["tecnico_editar"]["parameters"]["path"];
+export type EditTecnicoInput =
+  operations["tecnico_editar"]["requestBody"]["content"]["application/json"];
+export type EditTecnicoResponse =
+  operations["tecnico_editar"]["responses"][200]["content"]["application/json"];

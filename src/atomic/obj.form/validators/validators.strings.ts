@@ -20,6 +20,7 @@ export const strings = {
   lettersOnly: "O campo deve conter apenas letras.",
   cep: "O CEP deve ser válido.",
   cnpj: "O CNPJ deve ser válido.",
+  cpf: "O CPF deve ser válido.",
   cpfCnpj: "O CPF/CNPJ deve ser válido.",
   url: "A URL deve ser válida.",
   phone: "O telefone deve ser válido.",

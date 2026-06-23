@@ -1,5 +1,6 @@
 export * from "./cep";
 export * from "./cnpj";
+export * from "./cpf";
 export * from "./cpf-cnpj";
 export * from "./custom-validator";
 export * from "./email";

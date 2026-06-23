@@ -6,7 +6,13 @@ import { TextInput } from "@/atomic/atm.text-input";
 import { TextareaInput } from "@/atomic/atm.textarea-input";
 import { H2 } from "@/atomic/atm.typography";
 import { Dialog, DialogContent, DialogHeader } from "@/atomic/mol.dialog/dialog.component";
-import { Form, FormField, PhoneValidator, RequiredValidator } from "@/atomic/obj.form";
+import {
+  EmailValidator,
+  Form,
+  FormField,
+  PhoneValidator,
+  RequiredValidator,
+} from "@/atomic/obj.form";
 import { useCreateLead } from "@/domain/lead";
 import type { CadastrarLeadRequest } from "@/model/rest/lead";
 import { formatCurrency, formatPhone } from "@/utils/formatters";
@@ -55,6 +61,10 @@ export const AddLeadDialog = ({ open, onOpenChange }: AddLeadDialogProps) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField name="nome" validators={[RequiredValidator()]}>
               <TextInput label="Nome" placeholder="Ex. Joao Silva" />
+            </FormField>
+
+            <FormField name="email" validators={[EmailValidator()]}>
+              <TextInput label="E-mail" placeholder="Ex. contato@empresa.com" />
             </FormField>
 
             <FormField name="empresa" validators={[RequiredValidator()]}>

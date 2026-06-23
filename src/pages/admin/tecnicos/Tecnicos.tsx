@@ -6,16 +6,23 @@ import { Body1, H1 } from "@/atomic/atm.typography";
 import { SearchInput } from "@/atomic/mol.search/search.component";
 import { DeleteTecnicoDialog } from "@/atomic/obj.delete-tecnico-dialog/delete-tecnico-dialog.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
-import type { CreateTecnicoDTO, Tecnico, UpdateTecnicoDTO } from "@/model/rest/tecnico";
+import {
+  useCreateTecnico,
+  useDeleteTecnico,
+  useEditTecnico,
+  useListTecnicos,
+} from "@/domain/tecnico";
+import { useDebounce } from "@/hooks/use-debounce";
+import type { CadastrarTecnicoInput, Tecnico } from "@/model/rest/tecnico";
 import { TecnicosTable } from "./components/TecnicosTable";
 import { TecnicoFormDialog } from "./components/tecnico-form-dialog";
-import { MOCK_TECNICOS } from "./tecnicos.mock";
 
-const createTecnicoId = () => `tecnico-${crypto.randomUUID()}`;
+const PAGE_SIZE = 5;
 
 const Tecnicos = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [tecnicos, setTecnicos] = useState<Tecnico[]>(MOCK_TECNICOS);
+  const debouncedSearch = useDebounce(searchTerm);
+  const [page, setPage] = useState(0);
 
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [selectedTecnico, setSelectedTecnico] = useState<Tecnico | null>(null);
@@ -23,12 +30,34 @@ const Tecnicos = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [tecnicoToDelete, setTecnicoToDelete] = useState<Tecnico | null>(null);
 
-  const filteredTecnicos = tecnicos.filter(
-    (tecnico) =>
-      tecnico.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tecnico.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tecnico.cpfCnpj.includes(searchTerm.replace(/\D/g, "")),
-  );
+  const { tecnicos, pagination, listTecnicosError, isListTecnicosLoading } = useListTecnicos({
+    limit: PAGE_SIZE,
+    offset: page * PAGE_SIZE,
+    searchText: debouncedSearch.trim() || undefined,
+  });
+
+  const { createTecnico, isCreateTecnicoLoading } = useCreateTecnico({
+    onSuccess: () => {
+      toast.success("Tecnico cadastrado com sucesso!");
+      setPage(0);
+      setIsEditDialogOpen(false);
+    },
+  });
+  const { editTecnico, isEditTecnicoLoading } = useEditTecnico({
+    onSuccess: () => {
+      toast.success("Tecnico atualizado com sucesso!");
+      setIsEditDialogOpen(false);
+    },
+  });
+  const { deleteTecnico, isDeleteTecnicoLoading } = useDeleteTecnico({
+    onSuccess: () => {
+      toast.success("Tecnico excluido com sucesso!");
+      setIsDeleteDialogOpen(false);
+      setTecnicoToDelete(null);
+    },
+  });
+
+  const currentPage = page + 1;
 
   const handleCreateButtonClick = () => {
     setSelectedTecnico(null);
@@ -40,38 +69,13 @@ const Tecnicos = () => {
     setIsEditDialogOpen(true);
   };
 
-  const handleSubmit = async (data: UpdateTecnicoDTO | CreateTecnicoDTO, id?: string) => {
+  const handleSubmit = (data: CadastrarTecnicoInput, id?: string) => {
     if (id) {
-      setTecnicos((prev) =>
-        prev.map((tecnico) =>
-          tecnico.id === id
-            ? {
-                ...tecnico,
-                nome: data.nome,
-                email: data.email,
-                cpfCnpj: data.cpf,
-                telefone: data.telefone ?? null,
-                foto: data.foto,
-              }
-            : tecnico,
-        ),
-      );
-      toast.success("Tecnico atualizado com sucesso!");
-    } else {
-      const newTecnico: Tecnico = {
-        id: createTecnicoId(),
-        nome: data.nome,
-        email: data.email,
-        cpfCnpj: data.cpf,
-        telefone: data.telefone ?? null,
-        foto: data.foto,
-        observacoes: null,
-        status: "ATIVO",
-        permissao: "TECNICO",
-      };
-      setTecnicos((prev) => [newTecnico, ...prev]);
-      toast.success("Tecnico cadastrado com sucesso!");
+      editTecnico({ id, body: data });
+      return;
     }
+
+    createTecnico(data);
   };
 
   const handleDeleteButtonClick = (tecnico: Tecnico) => {
@@ -80,12 +84,8 @@ const Tecnicos = () => {
   };
 
   const handleDelete = () => {
-    if (!tecnicoToDelete) return;
-
-    setTecnicos((prev) => prev.filter((tecnico) => tecnico.id !== tecnicoToDelete.id));
-    toast.success("Tecnico excluido com sucesso!");
-    setIsDeleteDialogOpen(false);
-    setTecnicoToDelete(null);
+    if (!tecnicoToDelete?.id) return;
+    deleteTecnico({ id: tecnicoToDelete.id });
   };
 
   return (
@@ -103,7 +103,10 @@ const Tecnicos = () => {
             <SearchInput
               placeholder="Buscar por nome, e-mail ou CPF/CNPJ..."
               value={searchTerm}
-              onChange={setSearchTerm}
+              onChange={(value) => {
+                setSearchTerm(value);
+                setPage(0);
+              }}
             />
             <Button
               size="lg"
@@ -115,7 +118,12 @@ const Tecnicos = () => {
           </div>
 
           <TecnicosTable
-            tecnicos={filteredTecnicos}
+            tecnicos={tecnicos}
+            currentPage={currentPage}
+            totalPages={pagination?.totalPages ?? 1}
+            isLoading={isListTecnicosLoading}
+            error={!!listTecnicosError}
+            onPageChange={(nextPage) => setPage(nextPage - 1)}
             onEdit={handleEditButtonClick}
             onDelete={handleDeleteButtonClick}
           />
@@ -125,6 +133,7 @@ const Tecnicos = () => {
           open={isEditDialogOpen}
           onOpenChange={setIsEditDialogOpen}
           tecnico={selectedTecnico}
+          isSubmitting={isCreateTecnicoLoading || isEditTecnicoLoading}
           onSubmit={handleSubmit}
         />
 
@@ -133,6 +142,7 @@ const Tecnicos = () => {
           onOpenChange={setIsDeleteDialogOpen}
           tecnico={tecnicoToDelete}
           onConfirm={handleDelete}
+          isLoading={isDeleteTecnicoLoading}
         />
       </div>
     </MainLayout>
