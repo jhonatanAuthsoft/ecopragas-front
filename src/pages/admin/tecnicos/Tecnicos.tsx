@@ -6,7 +6,7 @@ import { Body1, H1 } from "@/atomic/atm.typography";
 import { SearchInput } from "@/atomic/mol.search/search.component";
 import { DeleteTecnicoDialog } from "@/atomic/obj.delete-tecnico-dialog/delete-tecnico-dialog.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
-import type { CreateTecnicoDTO, Tecnico, UpdateTecnicoDTO } from "@/model/rest/tecnico";
+import type { CadastrarTecnicoInput, Tecnico } from "@/model/rest/tecnico";
 import { TecnicosTable } from "./components/TecnicosTable";
 import { TecnicoFormDialog } from "./components/tecnico-form-dialog";
 import { MOCK_TECNICOS } from "./tecnicos.mock";
@@ -25,9 +25,9 @@ const Tecnicos = () => {
 
   const filteredTecnicos = tecnicos.filter(
     (tecnico) =>
-      tecnico.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tecnico.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tecnico.cpfCnpj.includes(searchTerm.replace(/\D/g, "")),
+      (tecnico.nome ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (tecnico.email ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (tecnico.cpf ?? "").includes(searchTerm.replace(/\D/g, "")),
   );
 
   const handleCreateButtonClick = () => {
@@ -40,7 +40,7 @@ const Tecnicos = () => {
     setIsEditDialogOpen(true);
   };
 
-  const handleSubmit = async (data: UpdateTecnicoDTO | CreateTecnicoDTO, id?: string) => {
+  const handleSubmit = async (data: CadastrarTecnicoInput, id?: string) => {
     if (id) {
       setTecnicos((prev) =>
         prev.map((tecnico) =>
@@ -49,9 +49,8 @@ const Tecnicos = () => {
                 ...tecnico,
                 nome: data.nome,
                 email: data.email,
-                cpfCnpj: data.cpf,
-                telefone: data.telefone ?? null,
-                foto: data.foto,
+                cpf: data.cpf,
+                fotoUrl: data.fotoUrl,
               }
             : tecnico,
         ),
@@ -62,12 +61,8 @@ const Tecnicos = () => {
         id: createTecnicoId(),
         nome: data.nome,
         email: data.email,
-        cpfCnpj: data.cpf,
-        telefone: data.telefone ?? null,
-        foto: data.foto,
-        observacoes: null,
-        status: "ATIVO",
-        permissao: "TECNICO",
+        cpf: data.cpf,
+        fotoUrl: data.fotoUrl,
       };
       setTecnicos((prev) => [newTecnico, ...prev]);
       toast.success("Tecnico cadastrado com sucesso!");

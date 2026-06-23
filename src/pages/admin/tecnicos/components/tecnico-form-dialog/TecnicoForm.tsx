@@ -4,21 +4,27 @@ import { useForm } from "react-hook-form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/atomic/atm.avatar/avatar.component";
 import { Button } from "@/atomic/atm.button/button.component";
 import { TextInput } from "@/atomic/atm.text-input";
-import { Form, FormField, PhoneValidator, RequiredValidator } from "@/atomic/obj.form";
+import {
+  CpfValidator,
+  EmailValidator,
+  Form,
+  FormField,
+  PhoneValidator,
+  RequiredValidator,
+} from "@/atomic/obj.form";
 import { ImageCropperDialog } from "@/atomic/obj.image-cropper-dialog/image-cropper-dialog.component";
-import type { Tecnico, UpdateTecnicoDTO } from "@/model/rest/tecnico";
+import type { CadastrarTecnicoInput, Tecnico } from "@/model/rest/tecnico";
 import { formatCPFCNPJ, formatPhone } from "@/utils/formatters";
-import type { TecnicoFormValues } from "./tecnico-form-dialog.types";
-import { buildTecnicoPayload, getTecnicoFormDefaultValues } from "./tecnico-form-dialog.utils";
+import { getTecnicoFormDefaultValues, sanitizeTecnicoInput } from "./tecnico-form-dialog.utils";
 
 interface TecnicoFormProps {
   tecnico: Tecnico | null;
-  onSubmit: (data: UpdateTecnicoDTO, id?: string) => Promise<void>;
+  onSubmit: (data: CadastrarTecnicoInput, id?: string) => Promise<void>;
   onClose: () => void;
 }
 
 export const TecnicoForm = ({ tecnico, onSubmit, onClose }: TecnicoFormProps) => {
-  const formMethods = useForm<TecnicoFormValues>({
+  const formMethods = useForm<CadastrarTecnicoInput>({
     mode: "onChange",
     defaultValues: getTecnicoFormDefaultValues(tecnico),
   });
@@ -27,11 +33,11 @@ export const TecnicoForm = ({ tecnico, onSubmit, onClose }: TecnicoFormProps) =>
   const [isCropperOpen, setIsCropperOpen] = useState(false);
   const [selectedImageForCrop, setSelectedImageForCrop] = useState<string | null>(null);
 
-  const foto = formMethods.watch("foto");
+  const fotoUrl = formMethods.watch("fotoUrl");
 
-  const handleSubmit = async (values: TecnicoFormValues) => {
+  const handleSubmit = async (values: CadastrarTecnicoInput) => {
     try {
-      await onSubmit(buildTecnicoPayload(values), tecnico?.id);
+      await onSubmit(sanitizeTecnicoInput(values), tecnico?.id);
       onClose();
     } catch (error) {
       console.error("Error saving tecnico:", error);
@@ -52,7 +58,7 @@ export const TecnicoForm = ({ tecnico, onSubmit, onClose }: TecnicoFormProps) =>
   };
 
   const handleCropComplete = (croppedImage: string) => {
-    formMethods.setValue("foto", croppedImage, { shouldDirty: true });
+    formMethods.setValue("fotoUrl", croppedImage, { shouldDirty: true });
     setIsCropperOpen(false);
     setSelectedImageForCrop(null);
   };
@@ -61,7 +67,7 @@ export const TecnicoForm = ({ tecnico, onSubmit, onClose }: TecnicoFormProps) =>
     <Form formMethods={formMethods} onSubmit={handleSubmit} className="space-y-6">
       <div className="flex flex-col items-center gap-sm mb-lg">
         <Avatar className="size-[128px]">
-          <AvatarImage src={foto} />
+          <AvatarImage src={fotoUrl} />
           <AvatarFallback className="bg-zinc-600 flex flex-col items-center justify-center text-white">
             <Camera className="h-8 w-8 mb-1" />
             <span className="text-[10px] font-bold">ADD PHOTO</span>
@@ -90,7 +96,7 @@ export const TecnicoForm = ({ tecnico, onSubmit, onClose }: TecnicoFormProps) =>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <FormField name="nome" validators={[RequiredValidator()]}>
-          <TextInput label="Nome" placeholder="Nome do tecnico" hasClearButton />
+          <TextInput label="Nome" placeholder="Nome do tecnico" />
         </FormField>
 
         <FormField name="telefone" validators={[RequiredValidator(), PhoneValidator()]}>
@@ -102,7 +108,7 @@ export const TecnicoForm = ({ tecnico, onSubmit, onClose }: TecnicoFormProps) =>
           />
         </FormField>
 
-        <FormField name="cpfCnpj" validators={[RequiredValidator()]}>
+        <FormField name="cpf" validators={[RequiredValidator(), CpfValidator()]}>
           <TextInput
             label="CPF"
             placeholder="000.000.000-00"
@@ -111,7 +117,7 @@ export const TecnicoForm = ({ tecnico, onSubmit, onClose }: TecnicoFormProps) =>
           />
         </FormField>
 
-        <FormField name="email">
+        <FormField name="email" validators={[RequiredValidator(), EmailValidator()]}>
           <TextInput label="E-mail" placeholder="email@exemplo.com" />
         </FormField>
       </div>

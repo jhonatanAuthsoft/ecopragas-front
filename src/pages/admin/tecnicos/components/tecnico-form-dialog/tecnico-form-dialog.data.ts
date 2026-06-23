@@ -1,9 +1,8 @@
-import type { TecnicoFormValues } from "./tecnico-form-dialog.types";
+import type { CadastrarTecnicoInput } from "@/model/rest/tecnico";
 
-export const DEFAULT_VALUES: TecnicoFormValues = {
+export const DEFAULT_VALUES: CadastrarTecnicoInput = {
   nome: "",
   email: "",
-  cpfCnpj: "",
-  telefone: "",
-  foto: "",
+  cpf: "",
+  fotoUrl: "",
 };

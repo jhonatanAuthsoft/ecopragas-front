@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/atomic/mol.table/table.component";
 import type { Tecnico } from "@/model/rest/tecnico";
-import { formatCPFCNPJ, formatPhone } from "@/utils/formatters";
+import { formatCPFCNPJ } from "@/utils/formatters";
 
 interface TecnicosTableProps {
   tecnicos: Tecnico[];
@@ -47,16 +47,17 @@ export const TecnicosTable = ({ tecnicos, onEdit, onDelete }: TecnicosTableProps
               <TableCell className="font-medium">
                 <div className="flex items-center gap-3">
                   <Avatar>
-                    <AvatarImage src={tecnico.foto} alt={tecnico.nome} />
-                    <AvatarFallback>{tecnico.nome.substring(0, 2).toUpperCase()}</AvatarFallback>
+                    <AvatarImage src={tecnico.fotoUrl} alt={tecnico.nome} />
+                    <AvatarFallback>{tecnico.nome?.substring(0, 2).toUpperCase()}</AvatarFallback>
                   </Avatar>
                   <span>{tecnico.nome}</span>
                 </div>
               </TableCell>
               <TableCell className="text-muted-foreground">
-                {formatCPFCNPJ(tecnico.cpfCnpj)}
+                {formatCPFCNPJ(tecnico.cpf ?? "")}
               </TableCell>
-              <TableCell>{tecnico.telefone ? formatPhone(tecnico.telefone) : "-"}</TableCell>
+              {/* TODO: Adicionar telefone ao atualizar back */}
+              <TableCell>-</TableCell>
               <TableCell className="text-muted-foreground">{tecnico.email}</TableCell>
               <TableCell className="max-w-[70px] text-right">
                 <div className="flex justify-end gap-md">
