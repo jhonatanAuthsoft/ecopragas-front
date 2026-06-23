@@ -5,7 +5,7 @@ import { getErrorMessages } from "@/utils/get-error-messages";
 
 function defaultOnError(error: AxiosErrorResponse) {
   toast.error(
-    getErrorMessages(error.response?.data) || "Houve um erro, tente novamente mais tarde.",
+    getErrorMessages(error?.response?.data) || "Houve um erro, tente novamente mais tarde.",
   );
 }
 

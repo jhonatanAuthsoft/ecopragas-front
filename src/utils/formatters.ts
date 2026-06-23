@@ -70,3 +70,7 @@ export const formatYesNo = (value?: boolean) => {
   if (value === undefined) return "-";
   return value ? "Sim" : "Não";
 };
+
+export const formatPercentValue = (value?: number, decimals = 0): string => {
+  return `${(value ?? 0).toFixed(decimals)}%`;
+};

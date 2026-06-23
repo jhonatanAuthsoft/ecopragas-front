@@ -5,11 +5,12 @@ import { Checkbox } from "@/atomic/atm.checkbox/checkbox.component";
 import { SelectInput } from "@/atomic/atm.select-input";
 import { TextInput } from "@/atomic/atm.text-input";
 import { TabsContent } from "@/atomic/mol.tabs/tabs.component";
-import { FormField, RequiredValidator } from "@/atomic/obj.form";
+import { FormField } from "@/atomic/obj.form";
 import type { ClienteFormValues } from "@/model/rest/cliente";
 import { formatCEP, formatNumber } from "@/utils/formatters";
 import { ESTADO_OPTIONS } from "../add-cliente-dialog.data";
 import { fetchAddressByCep } from "../add-cliente-dialog.utils";
+import { EnderecoDraftRequiredValidator } from "../add-cliente-dialog.validators";
 
 interface EnderecoTabProps {
   onAddEndereco: () => void;
@@ -28,10 +29,21 @@ export const EnderecoTab = ({ onAddEndereco, onRemoveEndereco, onNext }: Enderec
       return;
     }
 
-    setValue("enderecoDraft.rua", address.logradouro, { shouldDirty: true });
-    setValue("enderecoDraft.bairro", address.bairro, { shouldDirty: true });
-    setValue("enderecoDraft.cidade", address.localidade, { shouldDirty: true });
-    setValue("enderecoDraft.estado", address.uf, { shouldDirty: true });
+    const setDraftField = (
+      name:
+        | "enderecoDraft.rua"
+        | "enderecoDraft.bairro"
+        | "enderecoDraft.cidade"
+        | "enderecoDraft.estado",
+      value: string,
+    ) => {
+      setValue(name, value, { shouldDirty: true, shouldValidate: true });
+    };
+
+    setDraftField("enderecoDraft.rua", address.logradouro);
+    setDraftField("enderecoDraft.bairro", address.bairro);
+    setDraftField("enderecoDraft.cidade", address.localidade);
+    setDraftField("enderecoDraft.estado", address.uf);
   };
 
   return (
@@ -39,19 +51,19 @@ export const EnderecoTab = ({ onAddEndereco, onRemoveEndereco, onNext }: Enderec
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <FormField
           name="enderecoDraft.cep"
-          validators={[RequiredValidator()]}
+          validators={[EnderecoDraftRequiredValidator()]}
           onChange={(value) => void fillAddressFromCep(String(value))}
         >
           <TextInput label="CEP" placeholder="Ex.48000-000" formatter={formatCEP} maxLength={9} />
         </FormField>
 
-        <FormField name="enderecoDraft.estado" validators={[RequiredValidator()]}>
+        <FormField name="enderecoDraft.estado" validators={[EnderecoDraftRequiredValidator()]}>
           <SelectInput label="Estado" placeholder="Selecione o estado" options={ESTADO_OPTIONS} />
         </FormField>
 
         <FormField
           name="enderecoDraft.cidade"
-          validators={[RequiredValidator()]}
+          validators={[EnderecoDraftRequiredValidator()]}
           className="md:col-span-2"
         >
           <TextInput label="Cidade" placeholder="Ex. Cruz das Almas" />
@@ -59,7 +71,7 @@ export const EnderecoTab = ({ onAddEndereco, onRemoveEndereco, onNext }: Enderec
 
         <FormField
           name="enderecoDraft.bairro"
-          validators={[RequiredValidator()]}
+          validators={[EnderecoDraftRequiredValidator()]}
           className="md:col-span-2"
         >
           <TextInput label="Bairro" placeholder="Ex. Centro" />
@@ -67,17 +79,17 @@ export const EnderecoTab = ({ onAddEndereco, onRemoveEndereco, onNext }: Enderec
 
         <FormField
           name="enderecoDraft.rua"
-          validators={[RequiredValidator()]}
+          validators={[EnderecoDraftRequiredValidator()]}
           className="md:col-span-2"
         >
           <TextInput label="Endereço" placeholder="Rua Leonidio Melo Sacramento" />
         </FormField>
 
-        <FormField name="enderecoDraft.numero" validators={[RequiredValidator()]}>
+        <FormField name="enderecoDraft.numero" validators={[EnderecoDraftRequiredValidator()]}>
           <TextInput label="Número" placeholder="Ex. 123" formatter={formatNumber} />
         </FormField>
 
-        <FormField name="enderecoDraft.complemento" validators={[RequiredValidator()]}>
+        <FormField name="enderecoDraft.complemento" validators={[EnderecoDraftRequiredValidator()]}>
           <TextInput label="Complemento" placeholder="Ex. Apto 101" />
         </FormField>
       </div>
@@ -141,7 +153,7 @@ export const EnderecoTab = ({ onAddEndereco, onRemoveEndereco, onNext }: Enderec
 
       <div className="pt-6 flex justify-center">
         <Button type="button" className="w-[400px] h-[43px]" onClick={onNext}>
-          Avancar
+          Avançar
         </Button>
       </div>
     </TabsContent>

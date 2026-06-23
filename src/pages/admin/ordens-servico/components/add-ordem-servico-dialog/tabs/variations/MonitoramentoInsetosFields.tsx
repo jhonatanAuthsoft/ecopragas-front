@@ -170,15 +170,6 @@ const AddNewAreaCard = ({
   <div className="flex flex-col gap-md p-md border border-grayscale-light rounded-2xl">
     <div className="flex items-center justify-between">
       <H4 className="text-grayscale-dark">{isEditing ? "Editar área" : "Nova área"}</H4>
-
-      <div className="flex items-center gap-xs">
-        <Button type="button" variant="link" onClick={onCancel}>
-          Cancelar
-        </Button>
-        <Button type="button" onClick={onConfirm} disabled={!canConfirm}>
-          Salvar
-        </Button>
-      </div>
     </div>
 
     <TextInput
@@ -204,6 +195,22 @@ const AddNewAreaCard = ({
         value={draft.tratamento}
         onChange={(value) => onDraftChange({ ...draft, tratamento: value })}
       />
+    </div>
+    <div className="flex items-center justify-between gap-xs">
+      <Button
+        type="button"
+        className="text-feedback-error-medium hover:text-feedback-error-dark"
+        fullWidth
+        size="lg"
+        variant="link"
+        onClick={onCancel}
+        leftIcon={<TrashIcon className="size-md" />}
+      >
+        Limpar campos
+      </Button>
+      <Button type="button" fullWidth size="lg" onClick={onConfirm} disabled={!canConfirm}>
+        Salvar área
+      </Button>
     </div>
   </div>
 );

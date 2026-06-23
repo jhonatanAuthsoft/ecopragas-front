@@ -5,8 +5,9 @@ import { H2 } from "@/atomic/atm.typography";
 import { Dialog, DialogContent, DialogHeader } from "@/atomic/mol.dialog/dialog.component";
 import { Tabs, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
 import { Form } from "@/atomic/obj.form";
+import { useUploadManyArquivos } from "@/domain/arquivo";
 import { useCreateCliente } from "@/domain/cliente";
-import type { Cliente, ClienteFormValues } from "@/model/rest/cliente";
+import type { CadastrarClienteInput, Cliente, ClienteFormValues } from "@/model/rest/cliente";
 import {
   DADOS_FIELDS,
   DEFAULT_VALUES,
@@ -15,8 +16,10 @@ import {
 } from "./add-cliente-dialog.data";
 import type { ClienteDialogTab, InitialClienteData } from "./add-cliente-dialog.types";
 import {
+  appendEndereco,
   buildCadastrarClienteInput,
-  clearEnderecoDraft,
+  ensureDefaultEndereco,
+  resetEnderecoDraftFields,
   shouldValidateEnderecoDraft,
 } from "./add-cliente-dialog.utils";
 import { DadosBasicosTab } from "./tabs/DadosBasicosTab";
@@ -37,6 +40,8 @@ export const AddClienteDialog = ({
   initialData,
 }: AddClienteDialogProps) => {
   const [activeTab, setActiveTab] = useState<ClienteDialogTab>("dados");
+
+  const { uploadManyArquivosAsync, isUploadManyArquivosLoading } = useUploadManyArquivos();
 
   const { createCliente, isCreateClienteLoading } = useCreateCliente({
     onSuccess: (cliente) => {
@@ -75,6 +80,7 @@ export const AddClienteDialog = ({
     const enderecoDraft = formMethods.getValues("enderecoDraft");
 
     if (!shouldValidateEnderecoDraft(enderecoDraft, enderecos.length)) {
+      formMethods.clearErrors([...ENDERECO_DRAFT_FIELDS]);
       return true;
     }
 
@@ -104,18 +110,19 @@ export const AddClienteDialog = ({
     const enderecos = formMethods.getValues("enderecos");
     const enderecoDraft = formMethods.getValues("enderecoDraft");
 
-    formMethods.setValue("enderecos", [...enderecos, enderecoDraft], { shouldDirty: true });
-    formMethods.setValue("enderecoDraft", clearEnderecoDraft(), { shouldDirty: true });
-    formMethods.clearErrors([...ENDERECO_DRAFT_FIELDS]);
+    formMethods.setValue("enderecos", appendEndereco(enderecos, enderecoDraft), {
+      shouldDirty: true,
+    });
+    resetEnderecoDraftFields(formMethods.resetField);
   };
 
   const handleRemoveEndereco = (index: number) => {
     const enderecos = formMethods.getValues("enderecos");
-    formMethods.setValue(
-      "enderecos",
+    const updatedEnderecos = ensureDefaultEndereco(
       enderecos.filter((_, enderecoIndex) => enderecoIndex !== index),
-      { shouldDirty: true },
     );
+
+    formMethods.setValue("enderecos", updatedEnderecos, { shouldDirty: true });
   };
 
   const handleInvalid = (errors: FieldErrors<ClienteFormValues>) => {
@@ -145,9 +152,22 @@ export const AddClienteDialog = ({
       return;
     }
 
-    const input = await buildCadastrarClienteInput(values);
-    createCliente(input);
+    let documentos: CadastrarClienteInput["documentos"];
+
+    if (values.documentos.length > 0) {
+      documentos = await uploadManyArquivosAsync(values.documentos);
+    }
+
+    const input = buildCadastrarClienteInput(values, documentos);
+    await createCliente(input);
   };
+
+  const isSubmitting = isUploadManyArquivosLoading || isCreateClienteLoading;
+  const submitLabel = isUploadManyArquivosLoading
+    ? "Enviando documentos..."
+    : isCreateClienteLoading
+      ? "Cadastrando..."
+      : "Cadastrar cliente";
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -176,7 +196,7 @@ export const AddClienteDialog = ({
               onRemoveEndereco={handleRemoveEndereco}
               onNext={handleNextEndereco}
             />
-            <DocumentacaoTab isSubmitting={isCreateClienteLoading} />
+            <DocumentacaoTab isSubmitting={isSubmitting} submitLabel={submitLabel} />
           </Tabs>
         </Form>
       </DialogContent>

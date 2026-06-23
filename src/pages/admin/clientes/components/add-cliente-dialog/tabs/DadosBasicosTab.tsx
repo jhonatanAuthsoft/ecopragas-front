@@ -65,7 +65,7 @@ export const DadosBasicosTab = ({ onNext }: DadosBasicosTabProps) => (
 
     <div className="pt-4 flex justify-center">
       <Button type="button" className="w-[400px] h-[43px]" onClick={onNext}>
-        Avancar
+        Avançar
       </Button>
     </div>
   </TabsContent>

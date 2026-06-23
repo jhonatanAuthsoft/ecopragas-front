@@ -1,11 +1,13 @@
+import type { UseFormResetField } from "react-hook-form";
 import type {
   CadastrarClienteInput,
-  ClienteDocumento,
+  ClienteDocumentoInput,
   ClienteEndereco,
+  ClienteEnderecoInput,
   ClienteFormValues,
 } from "@/model/rest/cliente";
 import { cleanDigits } from "@/utils/formatters";
-import { ENDERECO_FIELDS } from "./add-cliente-dialog.data";
+import { ENDERECO_DRAFT_FIELDS, ENDERECO_FIELDS } from "./add-cliente-dialog.data";
 import type { ViaCepResponse } from "./add-cliente-dialog.types";
 
 const sanitizeEndereco = (endereco: ClienteEndereco): ClienteEndereco => ({
@@ -13,43 +15,52 @@ const sanitizeEndereco = (endereco: ClienteEndereco): ClienteEndereco => ({
   cep: endereco.cep ? cleanDigits(endereco.cep) : endereco.cep,
 });
 
-const toApiEndereco = (endereco: ClienteEndereco): ClienteEndereco => {
-  const { padrao: _padrao, ...apiEndereco } = endereco;
-  return sanitizeEndereco(apiEndereco);
+const toApiEndereco = (endereco: ClienteEndereco): ClienteEnderecoInput => ({
+  ...sanitizeEndereco(endereco),
+  padrao: endereco.padrao ?? false,
+});
+
+export const hasDefaultEndereco = (enderecos: Array<{ padrao?: boolean }>) =>
+  enderecos.some((endereco) => endereco.padrao);
+
+export const ensureDefaultEndereco = <T extends { padrao?: boolean }>(enderecos: T[]): T[] => {
+  if (enderecos.length === 0 || hasDefaultEndereco(enderecos)) {
+    return enderecos;
+  }
+
+  return enderecos.map((endereco, index) =>
+    index === 0 ? { ...endereco, padrao: true } : endereco,
+  );
 };
 
-// TODO: modificar ao ver documentos
-const buildClienteDocumentos = (files: File[], base64Urls: string[]): ClienteDocumento[] =>
-  files.map((file, index) => ({
-    nome: file.name,
-    tipo: file.type,
-    url: base64Urls[index] ?? "",
-  }));
+export const appendEndereco = (
+  enderecos: ClienteEndereco[],
+  novoEndereco: ClienteEndereco,
+): ClienteEndereco[] => {
+  const enderecoFormatted: ClienteEndereco = {
+    ...novoEndereco,
+    padrao: novoEndereco.padrao ?? false,
+  };
 
-// TODO: modificar ao ver documentos, possivelmente excluir
-const filesToBase64 = (files: File[]): Promise<string[]> =>
-  Promise.all(
-    files.map(
-      (file) =>
-        new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => {
-            if (typeof reader.result === "string") {
-              resolve(reader.result);
-              return;
-            }
-            reject(new Error("Falha ao converter arquivo"));
-          };
-          reader.onerror = () => reject(reader.error);
-        }),
-    ),
-  );
+  let updatedEnderecos: ClienteEndereco[];
 
-export const buildCadastrarClienteInput = async (
+  if (!enderecoFormatted.padrao) {
+    updatedEnderecos = [...enderecos, enderecoFormatted];
+  } else {
+    updatedEnderecos = [
+      ...enderecos.map((endereco) => ({ ...endereco, padrao: false })),
+      enderecoFormatted,
+    ];
+  }
+
+  return ensureDefaultEndereco(updatedEnderecos);
+};
+
+export const buildCadastrarClienteInput = (
   values: ClienteFormValues,
-): Promise<CadastrarClienteInput> => {
-  const enderecosInput = values.enderecos.map(toApiEndereco);
+  documentos: ClienteDocumentoInput[] = [],
+): CadastrarClienteInput => {
+  let enderecosInput = values.enderecos.map(toApiEndereco);
 
   const hasDraftAddress =
     values.enderecoDraft.cep &&
@@ -60,11 +71,15 @@ export const buildCadastrarClienteInput = async (
     values.enderecoDraft.numero;
 
   if (hasDraftAddress) {
-    enderecosInput.push(toApiEndereco(values.enderecoDraft));
+    const draft = toApiEndereco(values.enderecoDraft);
+
+    if (draft.padrao) {
+      enderecosInput = enderecosInput.map((endereco) => ({ ...endereco, padrao: false }));
+    }
+    enderecosInput.push(draft);
   }
 
-  const base64Urls = await filesToBase64(values.documentos);
-  const documentos = buildClienteDocumentos(values.documentos, base64Urls);
+  enderecosInput = ensureDefaultEndereco(enderecosInput);
 
   return {
     nomeRazaoSocial: values.nomeRazaoSocial,
@@ -112,3 +127,17 @@ export const shouldValidateEnderecoDraft = (
   enderecoDraft: ClienteEndereco,
   enderecosCount: number,
 ) => enderecosCount === 0 || !isAddressEmpty(enderecoDraft);
+
+export const resetEnderecoDraftFields = <T extends ClienteFormValues>(
+  resetField: UseFormResetField<T>,
+) => {
+  const reset = resetField as unknown as UseFormResetField<ClienteFormValues>;
+  const emptyDraft = clearEnderecoDraft();
+
+  for (const field of ENDERECO_DRAFT_FIELDS) {
+    const draftKey = field.replace("enderecoDraft.", "") as keyof ClienteEndereco;
+    reset(field, { defaultValue: String(emptyDraft[draftKey]) });
+  }
+
+  reset("enderecoDraft.padrao", { defaultValue: false });
+};

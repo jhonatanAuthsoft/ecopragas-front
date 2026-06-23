@@ -47,9 +47,7 @@ const baseUrl = getEnvVar("VITE_API_URL", "http://localhost:8080");
  */
 export const env = {
   // Base URLs
-  baseUrl: baseUrl,
   apiBaseUrl: `${baseUrl}`,
-  wsBaseUrl: baseUrl,
 
   // Environment
   isDevelopment: import.meta.env.DEV,

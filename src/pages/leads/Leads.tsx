@@ -3,55 +3,53 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
+import { Skeleton } from "@/atomic/atm.skeleton/skeleton.component";
 import { Body1, H1 } from "@/atomic/atm.typography";
 import { AddLeadDialog } from "@/atomic/obj.add-lead-dialog/add-lead-dialog.component";
 import { ConvertLeadDialog } from "@/atomic/obj.convert-lead-dialog/convert-lead-dialog.component";
 import { CRMMetrics } from "@/atomic/obj.crmmetrics/crmmetrics.component";
 import { LeadKanban } from "@/atomic/obj.lead-kanban/lead-kanban.component";
+import { LoadingState } from "@/atomic/obj.loading-state";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
+import { useListLeads, useUpdateLeadStatus } from "@/domain/lead";
 import { cn } from "@/lib/utils";
+import type { Lead, LeadStatus, ListLeadsParams } from "@/model/rest/lead";
 import { useSidebarStore } from "@/store/sidebar";
-import { MOCK_LEADS } from "./leads.mock";
-import type { Lead } from "./leads.types";
 
-export type { Lead } from "./leads.types";
+export const LIST_LEADS_PARAMS: ListLeadsParams = { limit: 100, offset: 0 };
 
-const createLeadId = () => `lead-${crypto.randomUUID()}`;
+const KANBAN_SKELETON_COLUMNS = [
+  "NOVO",
+  "EM_CONTATO",
+  "PROPOSTA_ENVIADA",
+  "EM_NEGOCIACAO",
+  "GANHO",
+  "PERDIDO",
+];
 
 const Leads = () => {
   const navigate = useNavigate();
   const isMinimized = useSidebarStore((state) => state.isMinimized);
-  const [leads, setLeads] = useState<Lead[]>(MOCK_LEADS);
+  // TODO: otimizar (ideia: fazer listagens individuais em cada coluna, com paginação infinita, e ao atualizar fazer refetch)
+  const { leads, listLeadsError, isListLeadsLoading } = useListLeads(LIST_LEADS_PARAMS);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [convertLeadDialogOpen, setConvertLeadDialogOpen] = useState(false);
   const [leadToConvert, setLeadToConvert] = useState<Lead | null>(null);
 
-  const handleAddLead = (lead: Omit<Lead, "id" | "createdAt">) => {
-    const newLead: Lead = {
-      ...lead,
-      id: createLeadId(),
-      createdAt: new Date(),
-    };
+  const { updateLeadStatus } = useUpdateLeadStatus({
+    onSuccess: (response) => {
+      toast.success("Status atualizado!");
 
-    setLeads((prev) => [newLead, ...prev]);
-    toast.success("Lead criado com sucesso!");
-    setIsDialogOpen(false);
-  };
+      if (response.data?.status === "GANHO") {
+        setLeadToConvert(response.data);
+        setConvertLeadDialogOpen(true);
+      }
+    },
+  });
 
-  const handleUpdateLeadStatus = (leadId: string, newStatus: Lead["status"]) => {
-    const leadToUpdate = leads.find((l) => l.id === leadId);
-    if (!leadToUpdate) return;
-
-    setLeads((prev) =>
-      prev.map((lead) => (lead.id === leadId ? { ...lead, status: newStatus } : lead)),
-    );
-    toast.success("Status atualizado!");
-
-    if (newStatus === "ganho") {
-      setLeadToConvert({ ...leadToUpdate, status: newStatus });
-      setConvertLeadDialogOpen(true);
-    }
+  const handleUpdateLeadStatus = (leadId: string, newStatus: LeadStatus) => {
+    updateLeadStatus({ id: leadId, body: { status: newStatus } });
   };
 
   const handleConfirmConvert = () => {
@@ -81,21 +79,41 @@ const Leads = () => {
           </Button>
         </div>
 
-        <CRMMetrics leads={leads} />
+        <CRMMetrics />
 
         <div
           className={cn(
             isMinimized ? "md:max-w-[calc(100dvw-180px)]" : "md:max-w-[calc(100dvw-320px)]",
           )}
         >
-          <LeadKanban leads={leads} onUpdateStatus={handleUpdateLeadStatus} />
+          <LoadingState
+            loading={isListLeadsLoading}
+            error={!!listLeadsError}
+            data={!isListLeadsLoading && !listLeadsError}
+          >
+            <LoadingState.Shimmer>
+              <div className="flex gap-md overflow-x-auto pb-xs">
+                {KANBAN_SKELETON_COLUMNS.map((status) => (
+                  <Skeleton
+                    key={`kanban-skeleton-${status}`}
+                    className="h-[700px] w-[250px] shrink-0"
+                  />
+                ))}
+              </div>
+            </LoadingState.Shimmer>
+
+            <LoadingState.Error>
+              <div className="text-center py-lg">
+                <p className="text-lg font-medium text-foreground">Erro ao carregar leads</p>
+                <p className="text-sm text-muted-foreground mt-1">Tente recarregar a pagina</p>
+              </div>
+            </LoadingState.Error>
+
+            <LeadKanban leads={leads} onUpdateStatus={handleUpdateLeadStatus} />
+          </LoadingState>
         </div>
 
-        <AddLeadDialog
-          open={isDialogOpen}
-          onOpenChange={setIsDialogOpen}
-          onAddLead={handleAddLead}
-        />
+        <AddLeadDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
 
         <ConvertLeadDialog
           open={convertLeadDialogOpen}
