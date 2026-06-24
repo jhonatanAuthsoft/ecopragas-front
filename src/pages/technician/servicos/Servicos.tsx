@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Body2, H1 } from "@/atomic/atm.typography";
 import { SearchInput } from "@/atomic/mol.search/search.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
+import type { OrdemServico } from "@/model/rest/ordem-servico";
 import { OrdensServicoTable } from "@/pages/admin/ordens-servico/components/OrdensServicoTable";
-import type { OrdemServico } from "@/pages/admin/ordens-servico/OrdensServico";
 
 const Servicos = () => {
   const [searchTerm, setSearchTerm] = useState("");
