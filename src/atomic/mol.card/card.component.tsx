@@ -66,7 +66,7 @@ CardDescription.displayName = "CardDescription";
 
 const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("self-start flex flex-col gap-xs", className)} {...props} />
+    <div ref={ref} className={cn("w-full self-start flex flex-col gap-xs", className)} {...props} />
   ),
 );
 CardContent.displayName = "CardContent";
