@@ -4,121 +4,29 @@ import {
   DragOverlay,
   type DragStartEvent,
   PointerSensor,
-  useDraggable,
-  useDroppable,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { H3, InputCaption } from "@/atomic/atm.typography";
-import { Card, CardContent, CardHeader } from "@/atomic/mol.card/card.component";
-import { ScrollArea } from "@/atomic/mol.scroll-area/scroll-area.component";
 import { LeadCard } from "@/atomic/obj.lead-card/lead-card.component";
-import type { Lead, LeadStatus } from "@/model/rest/lead";
-import { formatCurrency } from "@/utils/formatters";
-
-const columns: { status: LeadStatus; title: string; color: string }[] = [
-  { status: "NOVO", title: "Novo", color: "border-l-brand-primary-medium" },
-  { status: "EM_CONTATO", title: "Em Contato", color: "border-l-brand-secondary-medium" },
-  { status: "PROPOSTA_ENVIADA", title: "Proposta Enviada", color: "border-l-brand-secondary-dark" },
-  { status: "EM_NEGOCIACAO", title: "Negociação", color: "border-l-feedback-warning-medium" },
-  { status: "GANHO", title: "Ganho", color: "border-l-feedback-success-medium" },
-  { status: "PERDIDO", title: "Perdido", color: "border-l-feedback-error-medium" },
-];
-
-const COLUMN_STATUSES = columns.map((column) => column.status);
-
-const resolveDropStatus = (overId: string | number, leads: Lead[]): LeadStatus | undefined => {
-  if (COLUMN_STATUSES.includes(overId as LeadStatus)) {
-    return overId as LeadStatus;
-  }
-
-  return leads.find((lead) => lead.id === overId)?.status;
-};
-
-interface DraggableLeadProps {
-  lead: Lead;
-}
-
-const DraggableLead = ({ lead }: DraggableLeadProps) => {
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
-    id: lead.id ?? "",
-    data: { lead },
-  });
-
-  return (
-    <div
-      ref={setNodeRef}
-      {...listeners}
-      {...attributes}
-      className={`cursor-move touch-none ${isDragging ? "opacity-50" : ""}`}
-    >
-      <LeadCard lead={lead} />
-    </div>
-  );
-};
-
-interface DroppableColumnProps {
-  column: (typeof columns)[number];
-  children: React.ReactNode;
-  totalValue: number;
-  count: number;
-}
-
-const DroppableColumn = ({ column, children, totalValue, count }: DroppableColumnProps) => {
-  const { setNodeRef } = useDroppable({
-    id: column.status,
-  });
-
-  return (
-    <Card
-      ref={setNodeRef}
-      className={`p-0! block border-l-4 ${column.color} h-full w-full md:w-[250px]`}
-    >
-      <CardHeader className="p-3 pb-xs w-[250px]">
-        <div className="flex items-center gap-xs">
-          <H3 className="font-bold text-grayscale-dark">{column.title}</H3>
-          <InputCaption className="font-bold text-brand-secondary-medium">({count})</InputCaption>
-        </div>
-        <InputCaption className="font-medium">Total: {formatCurrency(totalValue)}</InputCaption>
-        <span className="w-full h-[1px] bg-grayscale-light"></span>
-      </CardHeader>
-      <CardContent className="p-0 pl-3 pb-3 h-[calc(100%-80px)]">
-        <ScrollArea className="h-[600px] pr-3">
-          <div className="space-y-2 min-h-[100px]">
-            {children}
-            {count === 0 && (
-              <div className="text-center py-8 text-sm text-muted-foreground">
-                Nenhum lead nesta etapa
-              </div>
-            )}
-          </div>
-        </ScrollArea>
-      </CardContent>
-    </Card>
-  );
-};
+import type { Lead } from "@/model/rest/lead";
+import { KANBAN_COLUMNS } from "./lead-kanban.data";
+import { resolveDropStatus } from "./lead-kanban.utils";
+import { LeadKanbanColumn } from "./lead-kanban-column.component";
 
 interface LeadKanbanProps {
-  leads: Lead[];
-  onUpdateStatus: (leadId: string, newStatus: LeadStatus) => void;
+  onUpdateStatus: (lead: Lead, newStatus: Lead["status"]) => void;
 }
 
-export const LeadKanban = ({ leads, onUpdateStatus }: LeadKanbanProps) => {
+export const LeadKanban = ({ onUpdateStatus }: LeadKanbanProps) => {
   const [activeLead, setActiveLead] = useState<Lead | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
+      activationConstraint: { distance: 8 },
     }),
   );
-
-  const getLeadsByStatus = (status: LeadStatus) => {
-    return leads.filter((lead) => lead.status === status);
-  };
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveLead(event.active.data.current?.lead);
@@ -128,36 +36,23 @@ export const LeadKanban = ({ leads, onUpdateStatus }: LeadKanbanProps) => {
     const { active, over } = event;
 
     if (over) {
-      const lead = active.data.current?.lead;
-      const newStatus = resolveDropStatus(over.id, leads);
+      const lead = active.data.current?.lead as Lead | undefined;
+      const newStatus = resolveDropStatus(over.id, over.data.current?.lead as Lead | undefined);
 
-      if (lead?.id && newStatus && lead.status !== newStatus) {
-        onUpdateStatus(lead.id, newStatus);
+      if (lead?.id && lead.status && newStatus && lead.status !== newStatus) {
+        onUpdateStatus(lead, newStatus);
       }
     }
+
     setActiveLead(null);
   };
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="flex flex-col md:flex-row gap-md overflow-x-auto custom-scrollbar pb-xs">
-        {columns.map((column) => {
-          const columnLeads = getLeadsByStatus(column.status);
-          const totalValue = columnLeads.reduce((sum, lead) => sum + (lead.valorEstimado ?? 0), 0);
-
-          return (
-            <DroppableColumn
-              key={`column-${column.status}-${column.title}`}
-              column={column}
-              totalValue={totalValue}
-              count={columnLeads.length}
-            >
-              {columnLeads.map((lead) =>
-                lead.id ? <DraggableLead key={lead.id} lead={lead} /> : null,
-              )}
-            </DroppableColumn>
-          );
-        })}
+        {KANBAN_COLUMNS.map((column) => (
+          <LeadKanbanColumn key={`column-${column.status}`} column={column} />
+        ))}
       </div>
       {createPortal(
         <DragOverlay>

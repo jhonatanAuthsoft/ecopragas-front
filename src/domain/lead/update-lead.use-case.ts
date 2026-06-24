@@ -3,12 +3,11 @@ import { useCustomMutation } from "@/domain/custom-mutation";
 import type { EditLeadParams, EditLeadRequest, EditLeadResponse } from "@/model/rest/lead";
 import type { UseCaseBaseParams } from "@/model/use-case.model";
 import { editLeadDatasource } from "@/rest/lead";
-import { GET_LEAD_DASHBOARD_QUERY_KEY } from "./get-lead-dashboard.use-case";
-import { LIST_LEADS_QUERY_KEY } from "./list-leads.use-case";
+import { findLeadInKanban, refreshLeadColumn, refreshLeadDashboard } from "./kanban-leads-cache";
 
 export function useEditLead(params: UseCaseBaseParams<EditLeadResponse> = {}) {
   const queryClient = useQueryClient();
-  const { onSuccess, ...restParams } = params;
+  const { onSuccess } = params;
 
   const {
     mutate: editLead,
@@ -18,11 +17,21 @@ export function useEditLead(params: UseCaseBaseParams<EditLeadResponse> = {}) {
   } = useCustomMutation<EditLeadResponse, EditLeadParams & { body: EditLeadRequest }>({
     mutationFn: ({ id, body }) => editLeadDatasource(id, body),
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: [LIST_LEADS_QUERY_KEY] });
-      queryClient.invalidateQueries({ queryKey: [GET_LEAD_DASHBOARD_QUERY_KEY] });
+      const updatedLead = response.data;
+
+      if (updatedLead?.id && updatedLead.status) {
+        const cachedLead = findLeadInKanban(queryClient, updatedLead.id);
+
+        if (cachedLead?.status && cachedLead.status !== updatedLead.status) {
+          refreshLeadColumn(queryClient, cachedLead.status);
+        }
+
+        refreshLeadColumn(queryClient, updatedLead.status);
+      }
+
+      refreshLeadDashboard(queryClient);
       onSuccess?.(response);
     },
-    ...restParams,
   });
 
   return {

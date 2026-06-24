@@ -1,43 +1,75 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { useCustomMutation } from "@/domain/custom-mutation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import type {
+  Lead,
   UpdateLeadStatusParams,
   UpdateLeadStatusRequest,
   UpdateLeadStatusResponse,
 } from "@/model/rest/lead";
-import type { UseCaseBaseParams } from "@/model/use-case.model";
+import type { AxiosErrorResponse, UseCaseBaseParams } from "@/model/use-case.model";
 import { updateLeadStatusDatasource } from "@/rest/lead";
-import { GET_LEAD_DASHBOARD_QUERY_KEY } from "./get-lead-dashboard.use-case";
-import { LIST_LEADS_QUERY_KEY } from "./list-leads.use-case";
+import { getErrorMessages } from "@/utils/get-error-messages";
+import {
+  type KanbanSnapshot,
+  moveLeadBetweenColumns,
+  refreshLeadDashboard,
+  restoreKanban,
+  snapshotKanban,
+} from "./kanban-leads-cache";
+import { LIST_LEADS_INFINITE_QUERY_KEY } from "./list-leads-infinite.use-case";
+
+type UpdateLeadStatusInput = UpdateLeadStatusParams & {
+  body: UpdateLeadStatusRequest;
+  lead: Lead;
+};
 
 export function useUpdateLeadStatus(params: UseCaseBaseParams<UpdateLeadStatusResponse> = {}) {
   const queryClient = useQueryClient();
-  const { onSuccess, ...restParams } = params;
+  const { onSuccess, onError } = params;
 
   const {
     mutate: updateLeadStatus,
-    mutateAsync: updateLeadStatusAsync,
     data,
     error,
-    isLoading,
-  } = useCustomMutation<
+    isPending,
+  } = useMutation<
     UpdateLeadStatusResponse,
-    UpdateLeadStatusParams & { body: UpdateLeadStatusRequest }
+    AxiosErrorResponse,
+    UpdateLeadStatusInput,
+    { snapshot: KanbanSnapshot }
   >({
     mutationFn: ({ id, body }) => updateLeadStatusDatasource(id, body),
+    onMutate: async ({ lead, body }) => {
+      await queryClient.cancelQueries({ queryKey: [LIST_LEADS_INFINITE_QUERY_KEY] });
+
+      const snapshot = snapshotKanban(queryClient);
+      moveLeadBetweenColumns(queryClient, lead, body.status);
+
+      return { snapshot };
+    },
+    onError: (mutationError, _variables, context) => {
+      restoreKanban(queryClient, context?.snapshot);
+
+      if (onError) {
+        onError(mutationError);
+        return;
+      }
+
+      toast.error(
+        getErrorMessages(mutationError.response?.data) ||
+          "Houve um erro, tente novamente mais tarde.",
+      );
+    },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: [LIST_LEADS_QUERY_KEY] });
-      queryClient.invalidateQueries({ queryKey: [GET_LEAD_DASHBOARD_QUERY_KEY] });
+      refreshLeadDashboard(queryClient);
       onSuccess?.(response);
     },
-    ...restParams,
   });
 
   return {
     updateLeadStatus,
-    updateLeadStatusAsync,
     updateLeadStatusData: data,
     updateLeadStatusError: error,
-    isUpdateLeadStatusLoading: isLoading,
+    isUpdateLeadStatusLoading: isPending,
   };
 }
