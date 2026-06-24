@@ -1,13 +1,10 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/atomic/mol.sonner/sonner.component";
 import { Toaster } from "@/atomic/mol.toaster/toaster.component";
 import { TooltipProvider } from "@/atomic/mol.tooltip/tooltip.component";
 import { ROLES } from "@/constants/roles";
 import { ROUTES } from "@/constants/routes";
 import { AuthGuard, GuestGuard } from "@/router/guards";
-import { Button } from "./atomic/atm.button/button.component";
-import { ErrorPlaceholder } from "./atomic/org.error-placeholder";
-import { useLogout } from "./domain/auth";
 import Agendamentos from "./pages/admin/agendamentos/Agendamentos";
 import ClienteDetalhes from "./pages/admin/clientes/ClienteDetalhes";
 import Clientes from "./pages/admin/clientes/Clientes";
@@ -28,7 +25,6 @@ import NotFound from "./pages/not-found/NotFound";
 import TechAgendamentos from "./pages/technician/agendamentos/Agendamentos";
 import TechAgendamentoDetalhes from "./pages/technician/agendamentos/DetalhesAgendamento";
 import TechServicos from "./pages/technician/servicos/Servicos";
-import { useAuthStore } from "./store/auth";
 
 const App = () => (
   <TooltipProvider>
@@ -46,12 +42,7 @@ const App = () => (
         <Route path={ROUTES.TECHNICIAN_SERVICES} element={<TechServicos />} />
       </Route>
 
-      {/* TODO: criar as rotas para o tecnico e cliente */}
-      <Route element={<AuthGuard roles={[ROLES.TECNICO]} />}>
-        <Route path={ROUTES.TEMPORARY_FALLBACK.TECNICO} element={<TemporaryFallback />} />
-      </Route>
       <Route element={<AuthGuard roles={[ROLES.CLIENTE]} />}>
-        <Route path={ROUTES.TEMPORARY_FALLBACK.CLIENTE} element={<TemporaryFallback />} />
         <Route path={ROUTES.CLIENT_SERVICES} element={<Services />} />
         <Route path={ROUTES.CLIENT_SERVICES_DETAILS} element={<ServicosClienteDetalhes />} />
         <Route path={ROUTES.CLIENT_SERVICE_ORDER} element={<ClientOrdensServico />} />
@@ -77,26 +68,3 @@ const App = () => (
 );
 
 export default App;
-
-// TODO: apagar ao inserir as páginas de tecnico e cliente
-const TemporaryFallback = () => {
-  const navigate = useNavigate();
-  const clearSession = useAuthStore((state) => state.clearSession);
-  const { logout, isLogoutLoading } = useLogout({
-    onSettled: () => {
-      clearSession();
-      navigate(ROUTES.AUTH.LOGIN);
-    },
-  });
-  return (
-    <div className="flex flex-col gap-2xl items-center justify-center min-h-screen bg-background">
-      <ErrorPlaceholder
-        title="Em construção..."
-        description="Esta página ainda está em desenvolvimento, por favor entre como administrador para acessar a página."
-      />
-      <Button onClick={() => logout()} variant="tertiary" isLoading={isLogoutLoading}>
-        Deslogar e voltar para o login
-      </Button>
-    </div>
-  );
-};
