@@ -16,6 +16,7 @@ export function useUpdateLeadStatus(params: UseCaseBaseParams<UpdateLeadStatusRe
 
   const {
     mutate: updateLeadStatus,
+    mutateAsync: updateLeadStatusAsync,
     data,
     error,
     isLoading,
@@ -34,6 +35,7 @@ export function useUpdateLeadStatus(params: UseCaseBaseParams<UpdateLeadStatusRe
 
   return {
     updateLeadStatus,
+    updateLeadStatusAsync,
     updateLeadStatusData: data,
     updateLeadStatusError: error,
     isUpdateLeadStatusLoading: isLoading,

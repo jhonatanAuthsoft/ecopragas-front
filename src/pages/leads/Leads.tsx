@@ -1,5 +1,5 @@
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
@@ -37,7 +37,9 @@ const Leads = () => {
   const [convertLeadDialogOpen, setConvertLeadDialogOpen] = useState(false);
   const [leadToConvert, setLeadToConvert] = useState<Lead | null>(null);
 
-  const { updateLeadStatus } = useUpdateLeadStatus({
+  const [pendingStatuses, setPendingStatuses] = useState<Record<Lead["id"], LeadStatus>>({});
+
+  const { updateLeadStatusAsync } = useUpdateLeadStatus({
     onSuccess: (response) => {
       toast.success("Status atualizado!");
 
@@ -48,8 +50,24 @@ const Leads = () => {
     },
   });
 
+  const kanbanLeads = useMemo(
+    () =>
+      leads.map((lead) => {
+        const pendingStatus = lead.id ? pendingStatuses[lead.id] : undefined;
+        return pendingStatus ? { ...lead, status: pendingStatus } : lead;
+      }),
+    [leads, pendingStatuses],
+  );
+
   const handleUpdateLeadStatus = (leadId: string, newStatus: LeadStatus) => {
-    updateLeadStatus({ id: leadId, body: { status: newStatus } });
+    setPendingStatuses((prev) => ({ ...prev, [leadId]: newStatus }));
+
+    updateLeadStatusAsync({ id: leadId, body: { status: newStatus } }).catch(() => {
+      setPendingStatuses((prev) => {
+        const { [leadId]: _, ...rest } = prev;
+        return rest;
+      });
+    });
   };
 
   const handleConfirmConvert = () => {
@@ -109,7 +127,7 @@ const Leads = () => {
               </div>
             </LoadingState.Error>
 
-            <LeadKanban leads={leads} onUpdateStatus={handleUpdateLeadStatus} />
+            <LeadKanban leads={kanbanLeads} onUpdateStatus={handleUpdateLeadStatus} />
           </LoadingState>
         </div>
 
