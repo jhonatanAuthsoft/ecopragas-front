@@ -45,7 +45,7 @@ const RelatoriosChartsContent = ({
   tiposServico,
   statusOS,
 }: RelatoriosChartsContentProps) => (
-  <>
+  <div className="flex flex-col gap-lg">
     <div className="grid gap-6 md:grid-cols-2">
       <Card>
         <CardContent className="gap-md!">
@@ -170,7 +170,7 @@ const RelatoriosChartsContent = ({
         </CardContent>
       </Card>
     </div>
-  </>
+  </div>
 );
 
 interface RelatoriosChartsProps extends RelatoriosChartsContentProps {
