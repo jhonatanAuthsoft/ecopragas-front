@@ -1,32 +1,52 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { useCustomMutation } from "@/domain/custom-mutation";
-import type { DeleteLeadParams } from "@/model/rest/lead";
-import type { UseCaseBaseParams } from "@/model/use-case.model";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import type { DeleteLeadParams, LeadStatus } from "@/model/rest/lead";
+import type { AxiosErrorResponse, UseCaseBaseParams } from "@/model/use-case.model";
 import { deleteLeadDatasource } from "@/rest/lead";
-import { GET_LEAD_DASHBOARD_QUERY_KEY } from "./get-lead-dashboard.use-case";
-import { LIST_LEADS_QUERY_KEY } from "./list-leads.use-case";
+import { getErrorMessages } from "@/utils/get-error-messages";
+import { findLeadInKanban, refreshLeadColumn, refreshLeadDashboard } from "./kanban-leads-cache";
+
+type DeleteLeadContext = {
+  columnStatus?: LeadStatus;
+};
 
 export function useDeleteLead(params: UseCaseBaseParams<void> = {}) {
   const queryClient = useQueryClient();
-  const { onSuccess, ...restParams } = params;
+  const { onSuccess, onError } = params;
 
   const {
     mutate: deleteLead,
     error,
-    isLoading,
-  } = useCustomMutation<void, DeleteLeadParams>({
+    isPending,
+  } = useMutation<void, AxiosErrorResponse, DeleteLeadParams, DeleteLeadContext>({
     mutationFn: deleteLeadDatasource,
-    onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: [LIST_LEADS_QUERY_KEY] });
-      queryClient.invalidateQueries({ queryKey: [GET_LEAD_DASHBOARD_QUERY_KEY] });
-      onSuccess?.(response);
+    onMutate: ({ id }) => ({
+      columnStatus: findLeadInKanban(queryClient, id)?.status,
+    }),
+    onError: (mutationError) => {
+      if (onError) {
+        onError(mutationError);
+        return;
+      }
+
+      toast.error(
+        getErrorMessages(mutationError.response?.data) ||
+          "Houve um erro, tente novamente mais tarde.",
+      );
     },
-    ...restParams,
+    onSuccess: (_response, _variables, context) => {
+      if (context?.columnStatus) {
+        refreshLeadColumn(queryClient, context.columnStatus);
+      }
+
+      refreshLeadDashboard(queryClient);
+      onSuccess?.();
+    },
   });
 
   return {
     deleteLead,
     deleteLeadError: error,
-    isDeleteLeadLoading: isLoading,
+    isDeleteLeadLoading: isPending,
   };
 }

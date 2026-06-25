@@ -79,10 +79,10 @@ export const CalendarDropdown: React.FC<CalendarDropdownProps> = ({
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="inline-flex items-center justify-between w-full rounded-small border border-grayscale-light p-md bg-background text-sm font-medium text-grayscale-dark hover:bg-grayscale-x-light focus:outline-none transition-colors shadow-sm"
+          className="inline-flex items-center justify-between w-full rounded-small border border-grayscale-light p-md bg-background text-sm font-medium text-grayscale-dark hover:bg-grayscale-x-light focus:outline-none transition-colors shadow-sm cursor-pointer"
         >
           <div className="flex items-center gap-xs">
-            <CalendarIcon className="text-grayscale-medium size-md" />
+            <CalendarIcon className="shrink-0 text-grayscale-dark size-lg" />
             <Body2 className="text-grayscale-dark font-medium">{getSelectedText()}</Body2>
           </div>
           <ChevronDown
