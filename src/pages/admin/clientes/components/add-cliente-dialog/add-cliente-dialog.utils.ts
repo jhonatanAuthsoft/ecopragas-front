@@ -7,10 +7,7 @@ import type {
   ClienteFormValues,
 } from "@/model/rest/cliente";
 import { cleanDigits } from "@/utils/formatters";
-import {
-  ENDERECO_DRAFT_FIELDS,
-  ENDERECO_REQUIRED_FIELDS,
-} from "./add-cliente-dialog.data";
+import { ENDERECO_DRAFT_FIELDS, ENDERECO_REQUIRED_FIELDS } from "./add-cliente-dialog.data";
 import type { ViaCepResponse } from "./add-cliente-dialog.types";
 
 const sanitizeEndereco = (endereco: ClienteEndereco): ClienteEndereco => ({

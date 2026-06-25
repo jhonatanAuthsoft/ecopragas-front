@@ -1,10 +1,10 @@
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { ArrowUpRightFromSquare } from "lucide-react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { Body1, H1 } from "@/atomic/atm.typography";
 import { CalendarDropdown } from "@/atomic/mol.calendar-dropdown";
+import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
 import { SearchInput } from "@/atomic/mol.search/search.component";
 import {
   Table,
@@ -15,31 +15,68 @@ import {
   TableRow,
 } from "@/atomic/mol.table/table.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
-import { ROUTES } from "@/constants/routes";
-import type { OrdemServico } from "@/model/rest/ordem-servico";
-import { TIPO_SERVICO_LABELS } from "@/pages/admin/ordens-servico/components/ordem-servico-detalhes/ordem-servico-detalhes.labels";
-import { OS_MOCKS } from "@/pages/admin/ordens-servico/ordens-servico.mock";
+import { useGetHistoricoOsPortal, useVisualizarPdfOsPortal } from "@/domain/cliente";
+import { formatTipoServico } from "@/utils/formatters";
 
 const OrdensServico = () => {
-  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [dateFilter, setDateFilter] = useState<Date | undefined>(undefined);
+  const [dateFilter, setDateFilter] = useState<Date | { start: Date; end: Date } | undefined>(
+    undefined,
+  );
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 10;
 
-  // TODO: substituir por dados da API quando disponível
-  const ordensServico: OrdemServico[] = OS_MOCKS;
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [dateFilter]);
 
-  const filteredOrdens = ordensServico.filter((os) => {
+  const { historicoOsData, isGetHistoricoOsLoading } = useGetHistoricoOsPortal({
+    limit,
+    offset: (currentPage - 1) * limit,
+    periodo: dateFilter
+      ? dateFilter instanceof Date
+        ? format(dateFilter, "yyyy-MM-dd")
+        : dateFilter.start && dateFilter.end
+          ? `${format(dateFilter.start, "yyyy-MM-dd")},${format(dateFilter.end, "yyyy-MM-dd")}`
+          : undefined
+      : undefined,
+  });
+
+  const { mutateAsync: fetchPdf } = useVisualizarPdfOsPortal();
+
+  const handleDownloadPdf = async (e: React.MouseEvent, id: string | undefined) => {
+    e.stopPropagation();
+    if (!id) return;
+    try {
+      const blob = await fetchPdf(id);
+
+      const url = window.URL.createObjectURL(new Blob([blob], { type: "application/pdf" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `OS_${id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Erro ao baixar PDF", error);
+    }
+  };
+
+  const ordens = historicoOsData?.data ?? [];
+  const pagination = historicoOsData?.pagination;
+  const totalPages = pagination?.totalPages ?? 1;
+
+  const filteredOrdens = ordens.filter((os) => {
+    if (!searchTerm) return true;
     const matchesSearch =
-      os.numeroOS.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      TIPO_SERVICO_LABELS[os.tipoServico].toLowerCase().includes(searchTerm.toLowerCase()) ||
-      os.tecnicoNome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      os.endereco.toLowerCase().includes(searchTerm.toLowerCase());
-
-    const matchesDate = !dateFilter
-      ? true
-      : format(os.dataAgendamento, "yyyy-MM-dd") === format(dateFilter, "yyyy-MM-dd");
-
-    return matchesSearch && matchesDate;
+      String(os.osNumero).includes(searchTerm) ||
+      formatTipoServico(os.tipoServico).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (os.tecnicoResponsavel ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      `${os.rua ?? ""} ${os.numero ?? ""} ${os.bairro ?? ""}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+    return matchesSearch;
   });
 
   return (
@@ -65,14 +102,20 @@ const OrdensServico = () => {
             <CalendarDropdown
               label="Período"
               value={dateFilter}
-              onChange={(val) => setDateFilter(val instanceof Date ? val : undefined)}
+              onChange={(val) => {
+                if (val instanceof Date) setDateFilter(val);
+                else if (val?.start && val?.end) setDateFilter(val);
+                else setDateFilter(undefined);
+              }}
               className="min-w-[180px] [&_button]:bg-transparent"
             />
           </div>
         </div>
 
         {/* Tabela */}
-        {filteredOrdens.length === 0 ? (
+        {isGetHistoricoOsLoading ? (
+          <p>Carregando ordens de serviço...</p>
+        ) : filteredOrdens.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-lg font-medium text-foreground">
               Nenhuma ordem de serviço encontrada
@@ -80,48 +123,69 @@ const OrdensServico = () => {
             <p className="text-sm text-muted-foreground mt-1">Tente ajustar os filtros de busca</p>
           </div>
         ) : (
-          <div className="rounded-xs border border-border p-lg">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nº O.S.</TableHead>
-                  <TableHead>Serviço</TableHead>
-                  <TableHead>Técnico</TableHead>
-                  <TableHead>Horário</TableHead>
-                  <TableHead>Endereço</TableHead>
-                  <TableHead />
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredOrdens.map((os) => (
-                  <TableRow
-                    key={os.id}
-                    className="cursor-pointer"
-                    onClick={() =>
-                      navigate(ROUTES.CLIENT_SERVICE_ORDER_DETAILS.replace(":id", os.id))
-                    }
-                  >
-                    <TableCell className="text-grayscale-x-dark font-medium">
-                      {os.numeroOS}
-                    </TableCell>
-                    <TableCell>{TIPO_SERVICO_LABELS[os.tipoServico]}</TableCell>
-                    <TableCell className="text-muted-foreground">{os.tecnicoNome}</TableCell>
-                    <TableCell>
-                      {format(os.dataAgendamento, "dd/MM/yyyy", {
-                        locale: ptBR,
-                      })}{" "}
-                      às {os.horaAgendamento}
-                    </TableCell>
-                    <TableCell className="max-w-[120px] xl:max-w-[200px]" textClassName="truncate">
-                      {os.endereco}
-                    </TableCell>
-                    <TableCell>
-                      <ArrowUpRightFromSquare className="size-md text-brand-primary-medium" />
-                    </TableCell>
+          <div className="flex flex-col gap-lg pb-xl">
+            <div className="rounded-xs border border-border p-lg">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Nº O.S.</TableHead>
+                    <TableHead>Serviço</TableHead>
+                    <TableHead>Técnico</TableHead>
+                    <TableHead>Horário</TableHead>
+                    <TableHead>Endereço</TableHead>
+                    <TableHead />
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {filteredOrdens.map((os) => (
+                    <TableRow key={os.id}>
+                      <TableCell className="text-grayscale-x-dark font-medium">
+                        {os.osNumero}
+                      </TableCell>
+                      <TableCell className="text-grayscale-x-dark capitalize">
+                        {formatTipoServico(os.tipoServico)}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {os.tecnicoResponsavel}
+                      </TableCell>
+                      <TableCell>
+                        {os.dataHoraServico
+                          ? format(new Date(os.dataHoraServico), "dd/MM/yyyy", { locale: ptBR })
+                          : "--/--/----"}{" "}
+                        às{" "}
+                        {os.dataHoraServico
+                          ? format(new Date(os.dataHoraServico), "HH:mm")
+                          : "--:--"}
+                      </TableCell>
+                      <TableCell
+                        className="max-w-[120px] xl:max-w-[200px]"
+                        textClassName="truncate"
+                      >
+                        {`${os.rua ?? ""}, ${os.numero ?? ""} - ${os.bairro ?? ""}`.replace(
+                          /^, | - $/g,
+                          "",
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <ArrowUpRightFromSquare
+                          className="size-md text-brand-primary-medium hover:text-brand-primary-dark transition-colors cursor-pointer"
+                          onClick={(e) => handleDownloadPdf(e, os.id)}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+
+            {totalPages > 1 && (
+              <PaginationControl
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+                className="self-center"
+              />
+            )}
           </div>
         )}
       </div>

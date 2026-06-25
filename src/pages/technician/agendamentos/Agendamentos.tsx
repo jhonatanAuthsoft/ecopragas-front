@@ -1,77 +1,70 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Label } from "@/atomic/atm.label/label.component";
+import { format } from "date-fns";
+import { serverRequest } from "@/rest/server-request";
 import { Body2, H1 } from "@/atomic/atm.typography";
 import { CalendarDropdown } from "@/atomic/mol.calendar-dropdown";
 import { SearchInput } from "@/atomic/mol.search/search.component";
 import { SchedulingList } from "@/atomic/obj.scheduling-list";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
+import type { SchedulingCardProps } from "@/atomic/obj.scheduling-card";
+
+const mapStatus = (status: string): SchedulingCardProps["status"] => {
+  switch (status) {
+    case "AGENDADO":
+      return "Agendada";
+    case "EM_ANDAMENTO":
+      return "Em Andamento";
+    case "CONCLUIDO":
+      return "Concluída";
+    case "CANCELADO":
+      return "Cancelada";
+    default:
+      return "Agendada";
+  }
+};
 
 const Agendamentos = () => {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
-
   const [searchTerm, setSearchTerm] = useState("");
+  const [schedulings, setSchedulings] = useState<SchedulingCardProps[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const MOCK_SCHEDULINGS = [
-    {
-      id: "1",
-      time: "08:00",
-      title: "Controle de Pragas e Vetores",
-      status: "Em Andamento" as const,
-      clientName: "João Silva de Jesus da Souza",
-      phone: "(11) 0000-0000",
-      address: "Rio da Dona, 139, 44380-00, Cruz das Almas - Ba",
-    },
-    {
-      id: "2",
-      time: "10:30",
-      title: "Limpeza de caixa d'água",
-      status: "Agendada" as const,
-      clientName: "Maria Santos",
-      phone: "(11) 9999-9999",
-      address: "Av. Principal, 123 - Centro",
-    },
-    {
-      id: "3",
-      time: "14:00",
-      title: "Desinsetização",
-      status: "Agendada" as const,
-      clientName: "Condomínio Solar",
-      phone: "(11) 8888-8888",
-      address: "Rua das Flores, 456 - Jardim",
-    },
-    {
-      id: "4",
-      time: "16:00",
-      title: "Higienização",
-      status: "Agendada" as const,
-      clientName: "Academia Fit",
-      phone: "(11) 7777-7777",
-      address: "Rua da Saúde, 789 - Centro",
-    },
-    {
-      id: "5",
-      time: "18:00",
-      title: "Monitoramento de Insetos",
-      status: "Agendada" as const,
-      clientName: "Restaurante Gourmet",
-      phone: "(11) 6666-6666",
-      address: "Rua do Sabor, 101 - Gastronomia",
-    },
-    {
-      id: "6",
-      time: "19:30",
-      title: "Monitoramento de Roedores",
-      status: "Agendada" as const,
-      clientName: "Armazém Central",
-      phone: "(11) 5555-5555",
-      address: "Av. Industrial, 500 - Galpão 3",
-    },
-  ];
+  useEffect(() => {
+    const fetchSchedulings = async () => {
+      if (!selectedDate) return;
+      setIsLoading(true);
+      try {
+        const periodo = format(selectedDate, "yyyy-MM-dd");
+        const response = await serverRequest.get("/tecnico/agenda", {
+          params: { periodo },
+        });
 
-  const filteredSchedulings = MOCK_SCHEDULINGS.filter(
+        if (response.data.success) {
+          const formattedData: SchedulingCardProps[] = response.data.data.map((item: any) => ({
+            id: item.id,
+            time: format(new Date(item.dataHoraServico), "HH:mm"),
+            title: item.tipoServico,
+            status: mapStatus(item.status),
+            clientName: item.clienteNome,
+            phone: "", // Not provided in API
+            address: `${item.rua}, ${item.numero} - ${item.bairro}, ${item.cidade} - ${item.estado}`,
+          }));
+          setSchedulings(formattedData);
+        }
+      } catch (error) {
+        console.error("Failed to fetch schedulings:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchSchedulings();
+  }, [selectedDate]);
+
+  const filteredSchedulings = schedulings.filter(
     (item) =>
       item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.clientName.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -101,15 +94,28 @@ const Agendamentos = () => {
               onChange={setSelectedDate}
               label="Selecione uma data"
               maxDate={new Date()}
+              allowRange={false}
             />
           </div>
         </div>
 
         {/* List Section */}
-        <SchedulingList
-          items={filteredSchedulings}
-          onItemClick={(id) => navigate(ROUTES.TECHNICIAN_SCHEDULING_DETAILS.replace(":id", id))}
-        />
+        {isLoading ? (
+          <div className="flex justify-center py-8">
+            <Body2 className="text-muted-foreground">Carregando agendamentos...</Body2>
+          </div>
+        ) : filteredSchedulings.length > 0 ? (
+          <SchedulingList
+            items={filteredSchedulings}
+            onItemClick={(id) => navigate(ROUTES.TECHNICIAN_SCHEDULING_DETAILS.replace(":id", id))}
+          />
+        ) : (
+          <div className="flex justify-center py-8">
+            <Body2 className="text-muted-foreground">
+              Nenhum agendamento encontrado para esta data.
+            </Body2>
+          </div>
+        )}
       </div>
     </MainLayout>
   );

@@ -29,6 +29,25 @@ export type ListClientesResponse = components["schemas"]["StandardResponseListCl
 
 export type ClienteDashboardResponse = components["schemas"]["StandardResponseClienteDashboardDTO"];
 
+export type UltimosServicosPortalParams = {
+  tipoServico?: string;
+  status?: string;
+  limit?: number;
+  offset?: number;
+};
+
+export type UltimosServicosPortalResponse =
+  operations["cliente_obter_ultimos_servicos"]["responses"][200]["content"]["application/json"];
+
+export type HistoricoOsPortalParams = NonNullable<
+  operations["cliente_obter_historico_os"]["parameters"]["query"]
+>;
+export type HistoricoOsPortalResponse =
+  operations["cliente_obter_historico_os"]["responses"][200]["content"]["application/json"];
+
+export type AgendamentosPortalResponse =
+  operations["cliente_obter_agendamentos"]["responses"][200]["content"]["application/json"];
+
 export type GetClienteParams = operations["cliente_obter_por_id"]["parameters"]["path"];
 export type GetClienteResponse = Omit<
   components["schemas"]["StandardResponseClienteResponseDTO"],

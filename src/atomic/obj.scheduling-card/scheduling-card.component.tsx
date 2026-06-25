@@ -2,15 +2,16 @@ import { ChevronRight, MapPin, Phone, User } from "lucide-react";
 import type React from "react";
 import { Badge } from "@/atomic/atm.badge/badge.component";
 import { Separator } from "@/atomic/atm.separator/separator.component";
-import { Body1, Body2, H3 } from "@/atomic/atm.typography";
+import { Body2, H3 } from "@/atomic/atm.typography";
 import { Card } from "@/atomic/mol.card/card.component";
 import { cn } from "@/lib/utils";
+import { getStatusBadgeClass } from "@/utils/formatters";
 
 export interface SchedulingCardProps {
   id: string;
   time: string;
   title: string;
-  status: "Em Andamento" | "Agendada" | "Concluída";
+  status: "Em Andamento" | "Agendada" | "Concluída" | "Cancelada";
   clientName: string;
   phone: string;
   address: string;
@@ -51,9 +52,7 @@ export const SchedulingCard: React.FC<SchedulingCardProps> = ({
         <div className="flex-1 p-md flex flex-col justify-center gap-xs">
           <div className="flex items-center gap-sm flex-wrap">
             <H3 className="text-grayscale-x-dark font-medium">{title}</H3>
-            <Badge className="font-medium bg-feedback-warning-light text-feedback-warning-dark border-brand-accessory-orange">
-              {status}
-            </Badge>
+            <Badge className={`font-medium ${getStatusBadgeClass(status)}`}>{status}</Badge>
           </div>
 
           <div className="flex flex-col gap-1 mt-1">

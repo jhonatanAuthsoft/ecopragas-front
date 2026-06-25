@@ -18,6 +18,7 @@ interface CalendarPickerProps {
   onChange?: (value: Date | DateRange | null) => void;
   className?: string;
   maxDate?: Date;
+  allowRange?: boolean;
 }
 
 const DAYS_OF_WEEK = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
@@ -42,6 +43,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
   onChange,
   className,
   maxDate,
+  allowRange = true,
 }) => {
   const [currentDate, setCurrentDate] = useState(() => {
     if (value instanceof Date) return value;
@@ -57,6 +59,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
   });
   const [hoverDate, setHoverDate] = useState<Date | null>(null);
   const [isRange, setIsRange] = useState(() => {
+    if (!allowRange) return false;
     if (value && !(value instanceof Date)) return true;
     return type === "range";
   });
@@ -84,8 +87,12 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
   });
 
   useEffect(() => {
-    setIsRange(type === "range");
-  }, [type]);
+    if (allowRange) {
+      setIsRange(type === "range");
+    } else {
+      setIsRange(false);
+    }
+  }, [type, allowRange]);
 
   // Sincroniza os inputs quando as datas mudam via clique no calendário
   useEffect(() => {
@@ -434,12 +441,16 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
         })}
       </div>
 
-      <Separator />
+      {allowRange && (
+        <>
+          <Separator />
 
-      <div className="flex items-center justify-between w-full px-1">
-        <Body2 className="text-grayscale-dark">Data de término</Body2>
-        <Switch checked={isRange} onCheckedChange={(checked) => setIsRange(checked)} />
-      </div>
+          <div className="flex items-center justify-between w-full px-1">
+            <Body2 className="text-grayscale-dark">Data de término</Body2>
+            <Switch checked={isRange} onCheckedChange={(checked) => setIsRange(checked)} />
+          </div>
+        </>
+      )}
     </div>
   );
 };
