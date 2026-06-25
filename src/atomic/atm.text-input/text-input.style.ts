@@ -48,6 +48,11 @@ export const style = tv({
         wrapper: "opacity-50 pointer-events-none",
       },
     },
+    size: {
+      sm: {
+        field: "h-[44px]!",
+      },
+    },
   },
   compoundVariants: [
     {
