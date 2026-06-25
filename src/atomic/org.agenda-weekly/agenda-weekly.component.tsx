@@ -82,13 +82,13 @@ export function AgendaWeekly({
           <H2 className="text-grayscale-medium font-bold shrink-0">{formatMonthYear(weekStart)}</H2>
 
           <div className="flex flex-col md:flex-row items-stretch md:items-center gap-sm">
-            {/* TODO: ui correta do calendario */}
             <CalendarDropdown
               value={weekRange}
               onChange={handleDateChange}
               label="Selecione a semana"
-              allowRange={false}
+              selectionMode="week"
               className="whitespace-nowrap"
+              maxDate={new Date()}
             />
 
             <TextInput
