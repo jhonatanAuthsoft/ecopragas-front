@@ -1,119 +1,74 @@
 import { Calendar, ChevronLeft, MapPin, Repeat2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Badge } from "@/atomic/atm.badge/badge.component";
 import { Button } from "@/atomic/atm.button/button.component";
 import { Body1, Body2, H1, H2 } from "@/atomic/atm.typography";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
-import type { Cliente } from "@/model/rest/cliente";
+import type { components } from "@/model/rest/api-types";
+import { formatTipoServico, getStatusBadgeClass } from "@/utils/formatters";
 import { ServicoCertificados } from "./components/ServicoCertificados";
 import { ServicoFotos } from "./components/ServicoFotos";
 import { ServicoLaudos } from "./components/ServicoLaudos";
 
-const MOCK_CLIENTE: Cliente = {
-  id: "mock-cliente-001",
-  nomeRazaoSocial: "Supermercado Bom Preco Ltda",
-  cnpjCpf: "12.345.678/0001-90",
-  tipo: "RECORRENTE",
-  telefone: "(11) 98765-4321",
-  email: "contato@bompreco.com.br",
-  status: "ATIVO",
-  cidade: "Sao Paulo",
-  estado: "SP",
-  dataUltimoServico: "2026-01-15",
-  observacoes: "Cliente prioritario - contrato anual",
-  enderecos: [
-    {
-      rua: "Rua das Flores",
-      numero: "1500",
-      complemento: "Loja 3",
-      bairro: "",
-      cidade: "Sao Paulo",
-      estado: "SP",
-      cep: "01310-100",
-    },
-  ],
-  documentos: [
-    {
-      nome: "Contrato de Servico.pdf",
-      tipo: "application/pdf",
-      url: "data:application/pdf;base64,JVBERi0xLjQK",
-    },
-    {
-      nome: "Alvara de Funcionamento.pdf",
-      tipo: "application/pdf",
-      url: "data:application/pdf;base64,JVBERi0xLjQK",
-    },
-    {
-      nome: "CNPJ.pdf",
-      tipo: "application/pdf",
-      url: "data:application/pdf;base64,JVBERi0xLjQK",
-    },
-    {
-      nome: "Certificado Sanitario.pdf",
-      tipo: "application/pdf",
-      url: "data:application/pdf;base64,JVBERi0xLjQK",
-    },
-    {
-      nome: "Licenca Ambiental.pdf",
-      tipo: "application/pdf",
-      url: "data:application/pdf;base64,JVBERi0xLjQK",
-    },
-    {
-      nome: "Comprovante Endereco.pdf",
-      tipo: "application/pdf",
-      url: "data:application/pdf;base64,JVBERi0xLjQK",
-    },
-    {
-      nome: "ART Responsavel Tecnico.pdf",
-      tipo: "application/pdf",
-      url: "data:application/pdf;base64,JVBERi0xLjQK",
-    },
-  ],
-};
+type ServicoState = components["schemas"]["UltimoServicoResponseDTO"] & { status?: string };
 
-const MOCK_SERVICO = {
-  titulo: "Controle de Pragas e Vetores",
-  status: "Concluída" as const,
-  dataHorario: "15/01/2026 - 14:00",
-  endereco: "Rua das Flores, 1500, 01310-100, São Paulo - SP",
-  recorrencia: "Mensal",
-  fotosAntes: [
-    "https://picsum.photos/400/300?random=1",
-    "https://picsum.photos/400/300?random=2",
-    "https://picsum.photos/400/300?random=3",
-  ],
-  fotosDepois: [
-    "https://picsum.photos/400/300?random=4",
-    "https://picsum.photos/400/300?random=5",
-    "https://picsum.photos/400/300?random=6",
-    "https://picsum.photos/400/300?random=7",
-    "https://picsum.photos/400/300?random=8",
-  ],
-  observacoes:
-    "Foi aplicado gel formicida nos rodapés e cantos escuros. Recomendado não lavar o local por 48 horas.",
-};
-
-const getStatusClass = (status: string) => {
-  switch (status) {
-    case "Agendada":
-      return "bg-grayscale-light text-grayscale-dark border-grayscale-medium";
-    case "Em Andamento":
-      return "bg-feedback-warning-light text-feedback-warning-dark border-feedback-warning-medium";
-    case "Concluída":
-      return "bg-feedback-success-light text-feedback-success-dark border-feedback-success-medium";
-    case "Cancelada":
-      return "bg-feedback-error-light text-feedback-error-dark border-feedback-error-medium";
-    default:
-      return "bg-grayscale-light text-grayscale-dark border-grayscale-medium";
-  }
+const mapStatusToCard = (
+  statusApi?: string | null,
+): "Em Andamento" | "Agendada" | "Concluída" | "Cancelada" => {
+  if (!statusApi) return "Concluída";
+  const s = statusApi.toLowerCase();
+  if (s.includes("agendado") || s.includes("agendada")) return "Agendada";
+  if (s.includes("andamento") || s.includes("aguardo")) return "Em Andamento";
+  if (s.includes("concluido") || s.includes("concluida")) return "Concluída";
+  if (s.includes("cancelado") || s.includes("cancelada")) return "Cancelada";
+  return "Concluída";
 };
 
 const ServicosClienteDetalhes = () => {
   const navigate = useNavigate();
-  const documentos = MOCK_CLIENTE.documentos ?? [];
-  const servico = MOCK_SERVICO;
+  const location = useLocation();
+
+  const servicoData = location.state?.servico as ServicoState | undefined;
+
+  if (!servicoData) {
+    return <Navigate to={ROUTES.CLIENT_SERVICES} />;
+  }
+
+  const dataObj = servicoData.dataHoraServico ? new Date(servicoData.dataHoraServico) : null;
+  const formattedTime = dataObj
+    ? `${dataObj.toLocaleDateString("pt-BR")} - ${dataObj.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`
+    : "--/--/---- --:--";
+
+  const enderecoArray = [
+    servicoData.rua,
+    servicoData.numero,
+    servicoData.complemento,
+    servicoData.bairro,
+    servicoData.cidade,
+    servicoData.estado,
+    servicoData.cep,
+  ].filter(Boolean);
+
+  const enderecoFormatado =
+    enderecoArray.length > 0 ? enderecoArray.join(", ") : "Endereço não informado";
+
+  const servico = {
+    id: servicoData.id,
+    titulo: formatTipoServico(servicoData.tipoServico),
+    data: dataObj ? dataObj.toLocaleDateString("pt-BR") : "--/--/----",
+    status: mapStatusToCard(servicoData.status),
+    dataHorario: formattedTime,
+    endereco: enderecoFormatado,
+    recorrencia: servicoData.recorrencia ?? "Nenhuma",
+    fotosAntes: servicoData.fotos ?? [],
+    fotosDepois: [],
+    observacoes: "",
+  };
+
+  const laudos = servicoData.laudos ?? [];
+  const certificados = servicoData.certificados ?? [];
 
   return (
     <MainLayout>
@@ -134,10 +89,12 @@ const ServicosClienteDetalhes = () => {
 
         <div className="flex flex-col gap-sm p-lg bg-transparent rounded-lg shadow-sm border border-grayscale-light">
           <div className="flex items-center justify-between gap-sm">
-            <H2>{servico.titulo}</H2>
-            <Badge className={`font-medium shrink-0 ${getStatusClass(servico.status)}`}>
-              {servico.status}
-            </Badge>
+            <div className="flex flex-col gap-xs">
+              <H2>{servico.titulo}</H2>
+              <Badge className={`font-medium self-start ${getStatusBadgeClass(servico.status)}`}>
+                {servico.status}
+              </Badge>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-md pt-xs">
@@ -197,11 +154,11 @@ const ServicosClienteDetalhes = () => {
             </TabsContent>
 
             <TabsContent value="laudos" className="pt-md">
-              <ServicoLaudos laudos={documentos} />
+              <ServicoLaudos laudos={laudos} />
             </TabsContent>
 
             <TabsContent value="certificados" className="pt-md">
-              <ServicoCertificados certificados={documentos} />
+              <ServicoCertificados certificados={certificados} />
             </TabsContent>
           </Tabs>
         </div>

@@ -1,5 +1,7 @@
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { ChevronRight, ListFilter } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/atomic/atm.badge/badge.component";
 import { Body1, Body2, H1 } from "@/atomic/atm.typography";
@@ -16,17 +18,10 @@ import {
 } from "@/atomic/mol.table/table.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
+import { useGetAgendamentosPortal } from "@/domain/cliente";
+import { formatTipoServico, getStatusBadgeClass } from "@/utils/formatters";
 
 type AgendamentoStatus = "todas" | "agendada" | "em_andamento" | "concluida" | "cancelada";
-
-interface Agendamento {
-  id: string;
-  servico: string;
-  data: string;
-  horario: string;
-  status: AgendamentoStatus;
-  tecnico: string;
-}
 
 const STATUS_LABELS: Record<AgendamentoStatus, string> = {
   todas: "Todas",
@@ -40,70 +35,15 @@ const STATUS_OPTIONS = (Object.entries(STATUS_LABELS) as [AgendamentoStatus, str
   ([value, label]) => ({ value, label }),
 );
 
-const getStatusBadgeClass = (status: AgendamentoStatus) => {
-  switch (status) {
-    case "agendada":
-      return "bg-grayscale-light text-grayscale-dark border-grayscale-medium";
-    case "em_andamento":
-      return "bg-feedback-warning-light text-feedback-warning-dark border-brand-accessory-orange";
-    case "concluida":
-      return "bg-feedback-success-light text-feedback-success-dark border-feedback-success-medium";
-    case "cancelada":
-      return "bg-feedback-error-light text-feedback-error-dark border-feedback-error-medium";
-  }
+const mapStatusDaApi = (statusApi: string): AgendamentoStatus => {
+  if (!statusApi) return "agendada";
+  const s = statusApi.toLowerCase();
+  if (s.includes("agendado") || s.includes("agendada")) return "agendada";
+  if (s.includes("andamento") || s.includes("aguardo")) return "em_andamento";
+  if (s.includes("concluido") || s.includes("concluida")) return "concluida";
+  if (s.includes("cancelado") || s.includes("cancelada")) return "cancelada";
+  return "agendada";
 };
-
-// TODO: substituir por dados da API quando disponível
-const MOCK_AGENDAMENTOS: Agendamento[] = [
-  {
-    id: "1",
-    servico: "Controle de Pragas e Vetores",
-    data: "15/01/2026",
-    horario: "08:00",
-    status: "concluida",
-    tecnico: "Carlos Silva",
-  },
-  {
-    id: "2",
-    servico: "Limpeza de caixa d'água",
-    data: "22/01/2026",
-    horario: "10:30",
-    status: "em_andamento",
-    tecnico: "Ana Oliveira",
-  },
-  {
-    id: "3",
-    servico: "Desinsetização",
-    data: "05/02/2026",
-    horario: "14:00",
-    status: "agendada",
-    tecnico: "Roberto Lima",
-  },
-  {
-    id: "4",
-    servico: "Higienização",
-    data: "10/02/2026",
-    horario: "16:00",
-    status: "agendada",
-    tecnico: "Carlos Silva",
-  },
-  {
-    id: "5",
-    servico: "Monitoramento de Insetos",
-    data: "18/02/2026",
-    horario: "09:00",
-    status: "agendada",
-    tecnico: "Ana Oliveira",
-  },
-  {
-    id: "6",
-    servico: "Monitoramento de Roedores",
-    data: "25/02/2026",
-    horario: "11:00",
-    status: "cancelada",
-    tecnico: "Roberto Lima",
-  },
-];
 
 const Agendamentos = () => {
   const navigate = useNavigate();
@@ -111,19 +51,40 @@ const Agendamentos = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [statusFilter, setStatusFilter] = useState<AgendamentoStatus>("todas");
 
-  const filteredAgendamentos = MOCK_AGENDAMENTOS.filter((item) => {
+  const { agendamentosData, isGetAgendamentosLoading } = useGetAgendamentosPortal();
+
+  const todosAgendamentos = useMemo(() => {
+    if (!agendamentosData?.data) return [];
+
+    const concluidos = agendamentosData.data.concluidos || [];
+    const emAguardo = agendamentosData.data.emAguardo || [];
+
+    const combinados = [...concluidos, ...emAguardo];
+
+    return combinados.map((item) => {
+      const dataObj = item.dataHoraServico ? new Date(item.dataHoraServico) : null;
+      return {
+        id: item.id,
+        servico: formatTipoServico(item.tipoServico),
+        data: dataObj ? format(dataObj, "dd/MM/yyyy", { locale: ptBR }) : "--/--/----",
+        horario: dataObj ? format(dataObj, "HH:mm") : "--:--",
+        status: mapStatusDaApi(item.status ?? ""),
+        tecnico: item.tecnicoResponsavel ?? "Não definido",
+        dataOriginal: dataObj,
+        rawApiData: item,
+      };
+    });
+  }, [agendamentosData]);
+
+  const filteredAgendamentos = todosAgendamentos.filter((item) => {
     const matchesSearch =
       item.servico.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.tecnico.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesDate = !selectedDate
       ? true
-      : item.data ===
-        selectedDate.toLocaleDateString("pt-BR", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        });
+      : item.dataOriginal &&
+        format(item.dataOriginal, "yyyy-MM-dd") === format(selectedDate, "yyyy-MM-dd");
 
     const matchesStatus = statusFilter === "todas" || item.status === statusFilter;
 
@@ -133,7 +94,6 @@ const Agendamentos = () => {
   return (
     <MainLayout>
       <div className="flex flex-col gap-xl">
-        {/* Header */}
         <div className="flex flex-col self-start gap-xs">
           <H1>Agendamentos</H1>
           <Body1 className="font-normal text-grayscale-dark">
@@ -141,7 +101,6 @@ const Agendamentos = () => {
           </Body1>
         </div>
 
-        {/* Busca e Filtros */}
         <div className="flex flex-col md:flex-row items-end justify-between gap-md">
           <SearchInput
             placeholder="Buscar por serviço ou técnico..."
@@ -167,8 +126,9 @@ const Agendamentos = () => {
           </div>
         </div>
 
-        {/* Tabela */}
-        {filteredAgendamentos.length === 0 ? (
+        {isGetAgendamentosLoading ? (
+          <p>Carregando agendamentos...</p>
+        ) : filteredAgendamentos.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-lg font-medium text-foreground">Nenhum agendamento encontrado</p>
             <p className="text-sm text-muted-foreground mt-1">Tente ajustar os filtros de busca</p>
@@ -190,12 +150,15 @@ const Agendamentos = () => {
                 {filteredAgendamentos.map((agendamento) => (
                   <TableRow
                     key={agendamento.id}
-                    className="cursor-pointer"
+                    className="cursor-pointer hover:bg-accent/50 transition-colors"
                     onClick={() =>
-                      navigate(ROUTES.CLIENT_SCHEDULING_DETAILS.replace(":id", agendamento.id))
+                      navigate(
+                        ROUTES.CLIENT_SCHEDULING_DETAILS.replace(":id", agendamento.id ?? ""),
+                        { state: { agendamento: agendamento.rawApiData } },
+                      )
                     }
                   >
-                    <TableCell>{agendamento.servico}</TableCell>
+                    <TableCell className="capitalize">{agendamento.servico}</TableCell>
                     <TableCell>{agendamento.data}</TableCell>
                     <TableCell>{agendamento.horario}</TableCell>
                     <TableCell>
@@ -205,7 +168,7 @@ const Agendamentos = () => {
                     </TableCell>
                     <TableCell className="text-muted-foreground">{agendamento.tecnico}</TableCell>
                     <TableCell>
-                      <ChevronRight className="size-md" />
+                      <ChevronRight className="size-md text-brand-primary-medium" />
                     </TableCell>
                   </TableRow>
                 ))}

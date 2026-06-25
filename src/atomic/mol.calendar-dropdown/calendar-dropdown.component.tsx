@@ -12,6 +12,7 @@ interface CalendarDropdownProps {
   onChange?: (value: any) => void;
   className?: string;
   maxDate?: Date;
+  allowRange?: boolean;
 }
 
 export const CalendarDropdown: React.FC<CalendarDropdownProps> = ({
@@ -20,6 +21,7 @@ export const CalendarDropdown: React.FC<CalendarDropdownProps> = ({
   onChange,
   className,
   maxDate,
+  allowRange = true,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState<any>(propValue || null);
@@ -107,6 +109,7 @@ export const CalendarDropdown: React.FC<CalendarDropdownProps> = ({
                 type={value && value?.start ? "range" : "single"}
                 onChange={handleDateChange}
                 maxDate={maxDate}
+                allowRange={allowRange}
               />
             </div>
           </div>

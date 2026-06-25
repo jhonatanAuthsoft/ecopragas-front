@@ -74,3 +74,33 @@ export const formatYesNo = (value?: boolean) => {
 export const formatPercentValue = (value?: number, decimals = 0): string => {
   return `${(value ?? 0).toFixed(decimals)}%`;
 };
+
+export const TIPO_SERVICO_LABELS: Record<string, string> = {
+  DEDETIZACAO: "Dedetização",
+  LIMPEZA_CAIXA_AGUA: "Limpeza de Caixa D'Água",
+  SANITIZACAO: "Sanitização",
+  DESRATIZACAO: "Desratização",
+  OUTROS: "Outros",
+};
+
+export const formatTipoServico = (tipo?: string | null): string => {
+  if (!tipo) return "Serviço";
+  return TIPO_SERVICO_LABELS[tipo.toUpperCase()] ?? tipo.replace(/_/g, " ");
+};
+
+export const getStatusBadgeClass = (status: string) => {
+  const s = status.toLowerCase();
+  if (s.includes("agendada") || s.includes("agendado")) {
+    return "bg-grayscale-light text-grayscale-dark border-grayscale-medium";
+  }
+  if (s.includes("andamento")) {
+    return "bg-feedback-warning-light text-feedback-warning-dark border-brand-accessory-orange";
+  }
+  if (s.includes("concluída") || s.includes("concluida") || s.includes("concluido")) {
+    return "bg-feedback-success-light text-feedback-success-dark border-feedback-success-medium";
+  }
+  if (s.includes("cancelada") || s.includes("cancelado")) {
+    return "bg-feedback-error-light text-feedback-error-dark border-feedback-error-medium";
+  }
+  return "bg-grayscale-light text-grayscale-dark border-grayscale-medium";
+};

@@ -73,7 +73,7 @@ export const FilterDropdown: React.FC<FilterDropdownProps> = ({
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 md:left-0 mt-xs z-50 min-w-full rounded-md border border-grayscale-light bg-popover shadow-md animate-in fade-in-0 zoom-in-95">
+        <div className="absolute right-0 mt-xs z-50 min-w-max rounded-md border border-grayscale-light bg-popover shadow-md animate-in fade-in-0 zoom-in-95">
           <div className="p-1">
             {options.map((option) => (
               <button

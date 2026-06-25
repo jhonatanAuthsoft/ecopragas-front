@@ -8,6 +8,7 @@ import type {
   GetClienteResponse,
   ListClientesParams,
   ListClientesResponse,
+  UltimosServicosPortalResponse,
 } from "@/model/rest/cliente";
 import { serverRequest } from "@/rest/server-request";
 
@@ -37,5 +38,38 @@ export async function deleteClienteDatasource({ id }: DeleteClienteParams) {
 
 export async function editClienteDatasource({ id, body }: EditClienteMutationParams) {
   const { data } = await serverRequest.put<EditClienteResponse>(`/clientes/${id}`, body);
+  return data;
+}
+
+export async function getUltimosServicosPortalDatasource(
+  params?: import("@/model/rest/cliente").UltimosServicosPortalParams,
+) {
+  const { data } = await serverRequest.get<UltimosServicosPortalResponse>(
+    "/clientes/portal/ultimos-servicos",
+    { params },
+  );
+  return data;
+}
+
+export async function getHistoricoOsPortalDatasource(
+  params: import("@/model/rest/cliente").HistoricoOsPortalParams,
+) {
+  const { data } = await serverRequest.get<
+    import("@/model/rest/cliente").HistoricoOsPortalResponse
+  >("/clientes/portal/ordens-servico", { params });
+  return data;
+}
+
+export async function visualizarPdfOsPortalDatasource(id: string) {
+  const { data } = await serverRequest.get<Blob>(`/clientes/portal/ordens-servico/${id}/pdf`, {
+    responseType: "blob",
+  });
+  return data;
+}
+
+export async function getAgendamentosPortalDatasource() {
+  const { data } = await serverRequest.get<
+    import("@/model/rest/cliente").AgendamentosPortalResponse
+  >("/clientes/portal/agendamentos");
   return data;
 }
