@@ -7,23 +7,22 @@ import { RelatoriosCharts } from "./components/RelatoriosCharts";
 import { RelatoriosMetrics } from "./components/RelatoriosMetrics";
 import {
   buildRelatoriosMetrics,
+  type DateFilter,
+  mapDateFilterToDashboardParams,
   mapFaturamentoMensal,
   mapServicosPorMes,
   mapStatusOS,
   mapTiposServico,
 } from "./relatorios.utils";
 
-interface DateRange {
-  start: Date;
-  end: Date;
-}
-
 const Relatorios = () => {
-  const [dateFilter, setDateFilter] = useState<Date | DateRange | undefined>(undefined);
+  const [dateFilter, setDateFilter] = useState<DateFilter | undefined>(undefined);
 
-  // TODO: mapear dateFilter para params quando o back suportar filtro de periodo
-  const { visaoGeral, visaoGeralError, isVisaoGeralLoading } = useGetDashboardVisaoGeral();
-  const { metricas, metricasError, isMetricasLoading } = useGetDashboardMetricas();
+  const dashboardParams = useMemo(() => mapDateFilterToDashboardParams(dateFilter), [dateFilter]);
+
+  const { visaoGeral, visaoGeralError, isVisaoGeralLoading } =
+    useGetDashboardVisaoGeral(dashboardParams);
+  const { metricas, metricasError, isMetricasLoading } = useGetDashboardMetricas(dashboardParams);
 
   const metrics = useMemo(() => buildRelatoriosMetrics(visaoGeral), [visaoGeral]);
   const servicosPorMes = useMemo(() => mapServicosPorMes(metricas), [metricas]);
