@@ -2465,6 +2465,8 @@ export interface operations {
     dashboard_obter_visao_geral: {
         parameters: {
             query?: {
+                dataHoraInicio?: string;
+                dataHoraFim?: string;
                 meses?: number;
             };
             header?: never;
@@ -2486,7 +2488,10 @@ export interface operations {
     };
     dashboard_obter_metricas: {
         parameters: {
-            query?: never;
+            query?: {
+                dataHoraInicio?: string;
+                dataHoraFim?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
