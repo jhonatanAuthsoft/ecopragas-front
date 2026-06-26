@@ -66,6 +66,37 @@ export const formatNumber = (value: string) => {
   return value.replace(/\D/g, "");
 };
 
+export const formatTime = (value: string): string => {
+  const digits = value.replace(/\D/g, "").slice(0, 4);
+
+  if (!digits) {
+    return "";
+  }
+
+  if (digits.length <= 2) {
+    const hours = Number(digits);
+
+    if (digits.length === 2 && hours > 23) {
+      return "23";
+    }
+
+    return digits;
+  }
+
+  let hours = digits.slice(0, 2);
+  let minutes = digits.slice(2, 4);
+
+  if (Number(hours) > 23) {
+    hours = "23";
+  }
+
+  if (minutes.length === 2 && Number(minutes) > 59) {
+    minutes = "59";
+  }
+
+  return `${hours}:${minutes}`;
+};
+
 export const formatYesNo = (value?: boolean) => {
   if (value === undefined) return "-";
   return value ? "Sim" : "Não";

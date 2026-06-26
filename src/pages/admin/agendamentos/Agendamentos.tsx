@@ -9,7 +9,10 @@ import {
 } from "@/atomic/org.agenda-weekly";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
-import { AddAgendamentoDialog } from "./components/AddAgendamentoDialog";
+import {
+  AddAgendamentoDialog,
+  type AddAgendamentoSubmitPayload,
+} from "./components/add-agendamento-dialog";
 
 type AgendamentoStatus = "agendado" | "em-andamento" | "concluido" | "cancelado";
 type AgendamentoRecorrencia = "semanal" | "mensal" | "trimestral" | "semestral" | "anual";
@@ -20,14 +23,6 @@ interface Agendamento extends AgendaWeeklyItem {
   status: AgendamentoStatus;
   recorrencia?: AgendamentoRecorrencia;
 }
-
-const TECNICOS = ["Carlos Santos", "Pedro Lima", "Ana Costa", "Roberto Alves"];
-const TIPOS_SERVICO = [
-  "Dedetização",
-  "Limpeza de Caixa D'água",
-  "Desinsetização",
-  "Descupinização",
-];
 
 const Agendamentos = () => {
   const navigate = useNavigate();
@@ -47,11 +42,19 @@ const Agendamentos = () => {
     }));
   });
 
-  const handleAddAgendamento = (agendamento: Omit<Agendamento, "id">) => {
+  const handleAddAgendamento = (data: AddAgendamentoSubmitPayload) => {
     const newAgendamento: Agendamento = {
-      ...agendamento,
       id: String(agendamentos.length + 1),
+      tipoServico: data.tipoServico,
+      horario: data.horario,
+      data: data.data,
+      tecnico: data.tecnicoNome,
+      clienteNome: data.clienteNome,
+      endereco: data.endereco,
+      status: "agendado",
+      recorrencia: data.recorrencia,
     };
+
     setAgendamentos([...agendamentos, newAgendamento]);
     setIsAddDialogOpen(false);
   };
@@ -77,13 +80,10 @@ const Agendamentos = () => {
         />
       </div>
 
-      {/* TODO: corrigir componente */}
       <AddAgendamentoDialog
         open={isAddDialogOpen}
         onOpenChange={setIsAddDialogOpen}
         onAdd={handleAddAgendamento}
-        tecnicos={TECNICOS}
-        tiposServico={TIPOS_SERVICO}
       />
     </MainLayout>
   );
