@@ -127,7 +127,7 @@ export function createMockWeekAgendamentos(baseDate: Date): AgendaWeeklyItem[] {
     {
       id: "4",
       tipoServico: "Limpeza de Caixa D'água",
-      horario: "09:00",
+      horario: "09:30",
       data: addDays(weekStart, 0),
       tecnico: "Pedro Lima",
     },
@@ -162,10 +162,25 @@ export function createMockWeekAgendamentos(baseDate: Date): AgendaWeeklyItem[] {
     {
       id: "5",
       tipoServico: "Limpeza de Caixa D'água",
+      horario: "17:15",
+      data: addDays(weekStart, 0),
+      tecnico: "Ana Costa",
+      tecnicos: ["Ana Costa", "Carlos Santos"],
+    },
+    {
+      id: "5b",
+      tipoServico: "Limpeza de Caixa D'água",
       horario: "17:00",
       data: addDays(weekStart, 0),
       tecnico: "Ana Costa",
       tecnicos: ["Ana Costa", "Roberto Alves", "Carlos Santos"],
+    },
+    {
+      id: "5c",
+      tipoServico: "Limpeza de Caixa D'água",
+      horario: "17:30",
+      data: addDays(weekStart, 0),
+      tecnico: "Ana Costa",
     },
     {
       id: "6",

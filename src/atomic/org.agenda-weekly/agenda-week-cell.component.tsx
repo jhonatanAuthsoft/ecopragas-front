@@ -59,6 +59,7 @@ export function AgendaWeekCell({ agendamentos, onAgendamentoClick }: AgendaWeekC
       className={cn(
         "border-b border-l border-r border-grayscale-light p-xs min-h-[82px]",
         "max-h-[240px] overflow-y-auto",
+        "custom-scrollbar",
       )}
     >
       <div className="flex flex-col gap-2xs">
