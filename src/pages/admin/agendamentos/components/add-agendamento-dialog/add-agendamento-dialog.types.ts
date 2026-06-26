@@ -4,7 +4,7 @@ import type { CadastrarAgendamentoInput } from "@/model/rest/agendamento";
 export interface AddAgendamentoFormValues {
   clienteId: string;
   ordemServicoId: string;
-  tecnicoId: string;
+  tecnicoIds: string[];
   recorrencia: CadastrarAgendamentoInput["recorrencia"] | "";
   data?: Date;
   horario: string;

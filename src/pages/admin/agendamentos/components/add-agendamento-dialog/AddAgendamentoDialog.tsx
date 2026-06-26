@@ -1,11 +1,18 @@
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/atomic/atm.button/button.component";
 import { DateInput } from "@/atomic/atm.date-input";
+import { MultiSelectInput } from "@/atomic/atm.multi-select-input";
 import { SelectInput } from "@/atomic/atm.select-input";
 import { TimeInput } from "@/atomic/atm.time-input";
 import { Body1, H2 } from "@/atomic/atm.typography";
 import { Dialog, DialogContent, DialogHeader } from "@/atomic/mol.dialog/dialog.component";
-import { Form, FormField, RequiredValidator, TimeValidator } from "@/atomic/obj.form";
+import {
+  AtLeastOneArrayItemValidator,
+  Form,
+  FormField,
+  RequiredValidator,
+  TimeValidator,
+} from "@/atomic/obj.form";
 import { strings } from "@/atomic/obj.form/validators/validators.strings";
 import { useListClientes } from "@/domain/cliente";
 import { useListOrdensServico } from "@/domain/ordem-servico";
@@ -102,12 +109,33 @@ export const AddAgendamentoDialog = ({ open, onOpenChange, onAdd }: AddAgendamen
               />
             </FormField>
 
-            {/* TODO: multiSelect */}
-            <FormField name="tecnicoId" validators={[RequiredValidator()]}>
-              <SelectInput
+            <FormField name="tecnicoIds" validators={[AtLeastOneArrayItemValidator()]}>
+              <MultiSelectInput
                 label="Técnico Responsável"
-                placeholder="Selecione o técnico"
+                placeholder="Selecione o(s) técnico(s)"
                 options={getTecnicoOptions(tecnicos)}
+                // options={[
+                //   { value: "1", label: "João da Silva" },
+                //   { value: "2", label: "Maria Oliveira" },
+                //   { value: "3", label: "Pedro Santos" },
+                //   { value: "4", label: "Ana Maria" },
+                //   { value: "5", label: "Carlos Ferreira" },
+                //   { value: "6", label: "Laura Souza" },
+                //   { value: "7", label: "Rafael Oliveira" },
+                //   { value: "8", label: "Camila Santos" },
+                //   { value: "9", label: "Gustavo Lima" },
+                //   { value: "10", label: "Julia Costa" },
+                //   { value: "11", label: "Ricardo Almeida" },
+                //   { value: "12", label: "Mariana Santos" },
+                //   { value: "13", label: "Bruno Oliveira" },
+                //   { value: "14", label: "Fernanda Lima" },
+                //   { value: "15", label: "André Costa" },
+                //   { value: "16", label: "Carla Souza" },
+                //   { value: "17", label: "Roberto Oliveira" },
+                //   { value: "18", label: "Camila Santos" },
+                //   { value: "19", label: "Gustavo Lima" },
+                //   { value: "20", label: "Julia Costa" },
+                // ]}
               />
             </FormField>
 

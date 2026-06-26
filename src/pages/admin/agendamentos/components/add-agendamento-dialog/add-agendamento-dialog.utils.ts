@@ -3,7 +3,7 @@ import type { CadastrarAgendamentoInput } from "@/model/rest/agendamento";
 import type { Cliente } from "@/model/rest/cliente";
 import type { OrdemServico } from "@/model/rest/ordem-servico/ordem-servico.model";
 import type { Tecnico } from "@/model/rest/tecnico";
-import { formatCPFCNPJ, formatTipoServico } from "@/utils/formatters";
+import { formatTipoServico } from "@/utils/formatters";
 import type {
   AddAgendamentoFormValues,
   AddAgendamentoSubmitPayload,
@@ -21,13 +21,6 @@ const RECORRENCIA_TO_MOCK: Record<
   ANUAL: "anual",
 };
 
-export const getClienteSelectLabel = (cliente: Cliente): string => {
-  const nome = cliente.nomeRazaoSocial ?? "-";
-  const documento = cliente.cnpjCpf ? formatCPFCNPJ(cliente.cnpjCpf) : "";
-
-  return documento ? `${nome} [${documento}]` : nome;
-};
-
 export const getOrdemServicoSelectLabel = (ordemServico: OrdemServico): string => {
   const numero = ordemServico.osNumero != null ? `OS-${ordemServico.osNumero}` : "-";
   const tipo = ordemServico.tipoServico ? formatTipoServico(ordemServico.tipoServico) : "";
@@ -40,7 +33,7 @@ export const getClienteOptions = (clientes: Cliente[]): SelectInputOption[] =>
     .filter((cliente) => cliente.id)
     .map((cliente) => ({
       value: cliente.id as string,
-      label: getClienteSelectLabel(cliente),
+      label: cliente.nomeRazaoSocial ?? "-",
     }));
 
 export const getOrdemServicoOptions = (ordensServico: OrdemServico[]): SelectInputOption[] =>
@@ -90,10 +83,18 @@ export const buildAddAgendamentoPayload = (
   ordensServico: OrdemServico[],
 ): AddAgendamentoSubmitPayload | null => {
   const cliente = clientes.find((item) => item.id === values.clienteId);
-  const tecnico = tecnicos.find((item) => item.id === values.tecnicoId);
+  const tecnicosSelecionados = tecnicos.filter(
+    (item) => item.id && values.tecnicoIds.includes(item.id),
+  );
   const ordemServico = ordensServico.find((item) => item.id === values.ordemServicoId);
 
-  if (!cliente || !tecnico || !values.data || !values.horario || !values.recorrencia) {
+  if (
+    !cliente ||
+    tecnicosSelecionados.length === 0 ||
+    !values.data ||
+    !values.horario ||
+    !values.recorrencia
+  ) {
     return null;
   }
 
@@ -108,7 +109,7 @@ export const buildAddAgendamentoPayload = (
     clienteId: values.clienteId,
     clienteNome: cliente.nomeRazaoSocial ?? "-",
     ordemServicoId: ordemServico?.id,
-    tecnicoNome: tecnico.nome ?? "-",
+    tecnicoNome: tecnicosSelecionados.map((tecnico) => tecnico.nome ?? "-").join(", "),
     recorrencia,
     data: values.data,
     horario: values.horario,

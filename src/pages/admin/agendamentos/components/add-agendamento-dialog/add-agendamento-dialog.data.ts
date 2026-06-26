@@ -4,7 +4,7 @@ import type { AddAgendamentoFormValues } from "./add-agendamento-dialog.types";
 export const DEFAULT_VALUES: AddAgendamentoFormValues = {
   clienteId: "",
   ordemServicoId: "",
-  tecnicoId: "",
+  tecnicoIds: [],
   recorrencia: "",
   data: undefined,
   horario: "",
