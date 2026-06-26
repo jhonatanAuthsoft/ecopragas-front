@@ -1,4 +1,5 @@
 import { forwardRef } from "react";
+import { Body2 } from "@/atomic/atm.typography";
 import {
   Select,
   SelectContent,
@@ -73,11 +74,15 @@ export const SelectInput = forwardRef<HTMLButtonElement, SelectInputProps>(
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
-          {options.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
+          {options.length <= 0 ? (
+            <Body2 className="p-xs text-grayscale-dark">Nenhum resultado encontrado</Body2>
+          ) : (
+            options.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))
+          )}
         </SelectContent>
       </Select>
     </div>

@@ -39,6 +39,7 @@ const DefaultValues: Record<string, unknown> = {
   ComboBoxInput: [],
   InfiniteComboBoxInput: [],
   MultiSelectInput: [],
+  InfiniteMultiSelectInput: [],
 };
 
 export const FormField = <

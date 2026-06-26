@@ -1,10 +1,12 @@
+import { useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/atomic/atm.button/button.component";
 import { DateInput } from "@/atomic/atm.date-input";
-import { MultiSelectInput } from "@/atomic/atm.multi-select-input";
+import { InfiniteMultiSelectInput } from "@/atomic/atm.infinite-multi-select-input";
+import { InfiniteSelectInput } from "@/atomic/atm.infinite-select-input";
 import { SelectInput } from "@/atomic/atm.select-input";
 import { TimeInput } from "@/atomic/atm.time-input";
-import { Body1, H2 } from "@/atomic/atm.typography";
+import { H2 } from "@/atomic/atm.typography";
 import { Dialog, DialogContent, DialogHeader } from "@/atomic/mol.dialog/dialog.component";
 import {
   AtLeastOneArrayItemValidator,
@@ -14,20 +16,20 @@ import {
   TimeValidator,
 } from "@/atomic/obj.form";
 import { strings } from "@/atomic/obj.form/validators/validators.strings";
-import { useListClientes } from "@/domain/cliente";
-import { useListOrdensServico } from "@/domain/ordem-servico";
-import { useListTecnicos } from "@/domain/tecnico";
+import { clientesInfiniteSelectConfig } from "@/domain/cliente";
+import { ordensServicoInfiniteSelectConfig } from "@/domain/ordem-servico";
+import { tecnicosInfiniteSelectConfig } from "@/domain/tecnico";
+import type { OrdemServico } from "@/model/rest/ordem-servico/ordem-servico.model";
+import { formatTipoServico } from "@/utils/formatters";
+import { formatEnderecoFromOrdemServico } from "@/utils/ordem-servico";
 import { DEFAULT_VALUES, RECORRENCIA_OPTIONS } from "./add-agendamento-dialog.data";
 import type {
   AddAgendamentoFormValues,
   AddAgendamentoSubmitPayload,
 } from "./add-agendamento-dialog.types";
 import {
+  type AddAgendamentoSelectionLabels,
   buildAddAgendamentoPayload,
-  filterOrdensServicoByCliente,
-  getClienteOptions,
-  getOrdemServicoOptions,
-  getTecnicoOptions,
 } from "./add-agendamento-dialog.utils";
 
 export interface AddAgendamentoDialogProps {
@@ -35,6 +37,11 @@ export interface AddAgendamentoDialogProps {
   onOpenChange: (open: boolean) => void;
   onAdd: (payload: AddAgendamentoSubmitPayload) => void;
 }
+
+const EMPTY_SELECTION_LABELS: AddAgendamentoSelectionLabels = {
+  clienteNome: "",
+  tecnicoNomes: [],
+};
 
 export const AddAgendamentoDialog = ({ open, onOpenChange, onAdd }: AddAgendamentoDialogProps) => {
   const formMethods = useForm<AddAgendamentoFormValues>({
@@ -44,16 +51,21 @@ export const AddAgendamentoDialog = ({ open, onOpenChange, onAdd }: AddAgendamen
 
   const { isSubmitting } = formMethods.formState;
   const clienteId = formMethods.watch("clienteId");
+  const [selectionLabels, setSelectionLabels] =
+    useState<AddAgendamentoSelectionLabels>(EMPTY_SELECTION_LABELS);
 
-  // TODO: fazer o select infinito, com busca por texto nesses 3
-  const { clientes, listClientesError } = useListClientes({ limit: 100 });
-  const { ordensServico, listOrdensServicoError } = useListOrdensServico({ limit: 100 });
-  const { tecnicos, listTecnicosError } = useListTecnicos({ limit: 100 });
+  const ordemServicoQueryConfig = useMemo(
+    () => ({
+      ...ordensServicoInfiniteSelectConfig,
+      enabled: !!clienteId,
+      filterItem: (ordemServico: OrdemServico) => ordemServico.clienteId === clienteId,
+    }),
+    [clienteId],
+  );
 
-  const ordensServicoDoCliente = filterOrdensServicoByCliente(ordensServico, clienteId);
-  const hasLoadError = !!(listClientesError || listOrdensServicoError || listTecnicosError);
   const resetDialog = () => {
     formMethods.reset(DEFAULT_VALUES);
+    setSelectionLabels(EMPTY_SELECTION_LABELS);
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
@@ -65,7 +77,7 @@ export const AddAgendamentoDialog = ({ open, onOpenChange, onAdd }: AddAgendamen
   };
 
   const handleSubmit = (values: AddAgendamentoFormValues) => {
-    const payload = buildAddAgendamentoPayload(values, clientes, tecnicos, ordensServico);
+    const payload = buildAddAgendamentoPayload(values, selectionLabels);
 
     if (!payload) {
       return;
@@ -84,58 +96,56 @@ export const AddAgendamentoDialog = ({ open, onOpenChange, onAdd }: AddAgendamen
         </DialogHeader>
 
         <Form formMethods={formMethods} onSubmit={handleSubmit}>
-          {hasLoadError && (
-            <Body1 className="font-normal text-feedback-error-medium">
-              Não foi possível carregar os dados do formulário. Tente novamente.
-            </Body1>
-          )}
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-            {/* TODO: seleção infinita, com busca por texto */}
             <FormField name="clienteId" validators={[RequiredValidator()]}>
-              <SelectInput
+              <InfiniteSelectInput
                 label="Cliente"
                 placeholder="Selecione o cliente"
-                options={getClienteOptions(clientes)}
+                searchPlaceholder="Buscar cliente"
+                queryConfig={clientesInfiniteSelectConfig}
+                onOptionSelect={(option) => {
+                  setSelectionLabels((current) => ({
+                    ...current,
+                    clienteNome: option.label,
+                    ordemServicoTipoServico: undefined,
+                    ordemServicoEndereco: undefined,
+                  }));
+                  formMethods.setValue("ordemServicoId", "");
+                }}
               />
             </FormField>
 
             <FormField name="ordemServicoId">
-              <SelectInput
+              <InfiniteSelectInput
                 label="Ordem de serviço"
                 placeholder="Vincule uma O.S."
-                options={getOrdemServicoOptions(ordensServicoDoCliente)}
+                searchPlaceholder="Buscar ordem de serviço"
+                queryConfig={ordemServicoQueryConfig}
                 disabled={!clienteId}
+                onItemSelect={(ordemServico) => {
+                  setSelectionLabels((current) => ({
+                    ...current,
+                    ordemServicoTipoServico: ordemServico.tipoServico
+                      ? formatTipoServico(ordemServico.tipoServico)
+                      : undefined,
+                    ordemServicoEndereco: formatEnderecoFromOrdemServico(ordemServico),
+                  }));
+                }}
               />
             </FormField>
 
             <FormField name="tecnicoIds" validators={[AtLeastOneArrayItemValidator()]}>
-              <MultiSelectInput
+              <InfiniteMultiSelectInput
                 label="Técnico Responsável"
                 placeholder="Selecione o(s) técnico(s)"
-                options={getTecnicoOptions(tecnicos)}
-                // options={[
-                //   { value: "1", label: "João da Silva" },
-                //   { value: "2", label: "Maria Oliveira" },
-                //   { value: "3", label: "Pedro Santos" },
-                //   { value: "4", label: "Ana Maria" },
-                //   { value: "5", label: "Carlos Ferreira" },
-                //   { value: "6", label: "Laura Souza" },
-                //   { value: "7", label: "Rafael Oliveira" },
-                //   { value: "8", label: "Camila Santos" },
-                //   { value: "9", label: "Gustavo Lima" },
-                //   { value: "10", label: "Julia Costa" },
-                //   { value: "11", label: "Ricardo Almeida" },
-                //   { value: "12", label: "Mariana Santos" },
-                //   { value: "13", label: "Bruno Oliveira" },
-                //   { value: "14", label: "Fernanda Lima" },
-                //   { value: "15", label: "André Costa" },
-                //   { value: "16", label: "Carla Souza" },
-                //   { value: "17", label: "Roberto Oliveira" },
-                //   { value: "18", label: "Camila Santos" },
-                //   { value: "19", label: "Gustavo Lima" },
-                //   { value: "20", label: "Julia Costa" },
-                // ]}
+                searchPlaceholder="Buscar técnico"
+                queryConfig={tecnicosInfiniteSelectConfig}
+                onOptionsChange={(options) => {
+                  setSelectionLabels((current) => ({
+                    ...current,
+                    tecnicoNomes: options.map((option) => option.label),
+                  }));
+                }}
               />
             </FormField>
 
