@@ -692,7 +692,7 @@ export interface paths {
         };
         /**
          * Listagem de agendamentos do cliente logado
-         * @description Retorna a listagem de agendamentos do cliente logado divididos entre concluídos e em aguardo.
+         * @description Retorna a listagem paginada de agendamentos do cliente logado com filtros.
          */
         get: operations["cliente_obter_agendamentos"];
         put?: never;
@@ -1429,18 +1429,6 @@ export interface components {
             fotos?: string[];
             laudos?: components["schemas"]["ClienteDocumentoResponseDTO"][];
             certificados?: components["schemas"]["ClienteDocumentoResponseDTO"][];
-        };
-        ClienteAgendamentosResponseDTO: {
-            concluidos?: components["schemas"]["AgendamentoResponseDTO"][];
-            emAguardo?: components["schemas"]["AgendamentoResponseDTO"][];
-        };
-        StandardResponseClienteAgendamentosResponseDTO: {
-            success?: boolean;
-            timestamp?: string;
-            message?: string;
-            data?: components["schemas"]["ClienteAgendamentosResponseDTO"];
-            errors?: components["schemas"]["ErrorDetail"][];
-            pagination?: components["schemas"]["PaginationInfo"];
         };
         ClienteDashboardDTO: {
             /** Format: int64 */
@@ -2537,7 +2525,11 @@ export interface operations {
     cliente_obter_historico_os: {
         parameters: {
             query?: {
-                periodo?: string;
+                dataHoraInicio?: string;
+                dataHoraFim?: string;
+                numero?: number;
+                servico?: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
+                tecnico?: string;
                 limit?: number;
                 offset?: number;
             };
@@ -2582,7 +2574,15 @@ export interface operations {
     };
     cliente_obter_agendamentos: {
         parameters: {
-            query?: never;
+            query?: {
+                status?: "AGENDADO" | "EM_ANDAMENTO" | "CONCLUIDO" | "CANCELADO";
+                servico?: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
+                tecnico?: string;
+                dataHoraInicio?: string;
+                dataHoraFim?: string;
+                limit?: number;
+                offset?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -2595,7 +2595,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["StandardResponseClienteAgendamentosResponseDTO"];
+                    "application/json": components["schemas"]["StandardResponseListAgendamentoResponseDTO"];
                 };
             };
         };
