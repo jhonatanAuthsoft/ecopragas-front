@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Body1, H1 } from "@/atomic/atm.typography";
 import {
   AgendaWeekly,
@@ -7,6 +8,7 @@ import {
   getWeekStartFromDate,
 } from "@/atomic/org.agenda-weekly";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
+import { ROUTES } from "@/constants/routes";
 import { AddAgendamentoDialog } from "./components/AddAgendamentoDialog";
 
 type AgendamentoStatus = "agendado" | "em-andamento" | "concluido" | "cancelado";
@@ -28,6 +30,7 @@ const TIPOS_SERVICO = [
 ];
 
 const Agendamentos = () => {
+  const navigate = useNavigate();
   const [weekStart, setWeekStart] = useState(() => getWeekStartFromDate(new Date()));
   const [filtroTecnico, setFiltroTecnico] = useState("");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -68,6 +71,9 @@ const Agendamentos = () => {
           filtroTecnico={filtroTecnico}
           onFiltroTecnicoChange={setFiltroTecnico}
           onNovoClick={() => setIsAddDialogOpen(true)}
+          onAgendamentoClick={(item) =>
+            navigate(ROUTES.ADMIN.SCHEDULING.DETAILS.replace(":id", item.id ?? ""))
+          }
         />
       </div>
 
