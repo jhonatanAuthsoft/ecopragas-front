@@ -21,5 +21,6 @@ export * from "./phone";
 export * from "./required";
 export * from "./required-boolean";
 export * from "./special-char";
+export * from "./time";
 export * from "./upper-case";
 export * from "./url";

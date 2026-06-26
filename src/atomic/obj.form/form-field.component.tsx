@@ -34,9 +34,12 @@ const DefaultValues: Record<string, unknown> = {
   SwitchInput: false,
   TextareaInput: "",
   TextInput: "",
+  TimeInput: "",
   PasswordInput: "",
   ComboBoxInput: [],
   InfiniteComboBoxInput: [],
+  MultiSelectInput: [],
+  InfiniteMultiSelectInput: [],
 };
 
 export const FormField = <
