@@ -23,6 +23,7 @@ export interface InfiniteSelectInputProps<TItem> {
   onBlur?: () => void;
   invalid?: boolean;
   disabled?: boolean;
+  selectedLabel?: string;
   id?: string;
   className?: string;
   triggerClassName?: string;
@@ -43,6 +44,7 @@ export const InfiniteSelectInput = forwardRef(
       onBlur,
       invalid,
       disabled,
+      selectedLabel,
       id,
       className,
       triggerClassName,
@@ -51,7 +53,12 @@ export const InfiniteSelectInput = forwardRef(
   ) => {
     const [open, setOpen] = useState(false);
     const [searchText, setSearchText] = useState("");
-    const [selectedLabels, setSelectedLabels] = useState<Record<string, string>>({});
+    const [selectedLabels, setSelectedLabels] = useState<Record<string, string>>(() => {
+      if (value && selectedLabel) {
+        return { [value]: selectedLabel };
+      }
+      return {};
+    });
 
     const { items, options, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
       useInfiniteListQuery(queryConfig, searchText);
@@ -61,13 +68,17 @@ export const InfiniteSelectInput = forwardRef(
         return placeholder;
       }
 
+      if (selectedLabel) {
+        return selectedLabel;
+      }
+
       const cachedLabel = selectedLabels[value];
       if (cachedLabel) {
         return cachedLabel;
       }
 
       return options.find((option) => option.value === value)?.label ?? placeholder;
-    }, [value, placeholder, selectedLabels, options]);
+    }, [value, placeholder, selectedLabel, selectedLabels, options]);
 
     const handleSelect = (option: SelectInputOption) => {
       setSelectedLabels((current) => ({ ...current, [option.value]: option.label }));

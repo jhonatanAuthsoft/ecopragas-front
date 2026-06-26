@@ -22,6 +22,7 @@ export interface InfiniteMultiSelectInputProps<TItem> {
   onBlur?: () => void;
   invalid?: boolean;
   disabled?: boolean;
+  selectedOptions?: SelectInputOption[];
   id?: string;
   className?: string;
   triggerClassName?: string;
@@ -41,6 +42,7 @@ export const InfiniteMultiSelectInput = forwardRef(
       onBlur,
       invalid,
       disabled,
+      selectedOptions,
       id,
       className,
       triggerClassName,
@@ -49,7 +51,9 @@ export const InfiniteMultiSelectInput = forwardRef(
   ) => {
     const [open, setOpen] = useState(false);
     const [searchText, setSearchText] = useState("");
-    const [selectedLabels, setSelectedLabels] = useState<Record<string, string>>({});
+    const [selectedLabels, setSelectedLabels] = useState<Record<string, string>>(() =>
+      Object.fromEntries((selectedOptions ?? []).map((option) => [option.value, option.label])),
+    );
     const selectedValues = value ?? [];
 
     const { options, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
@@ -81,6 +85,11 @@ export const InfiniteMultiSelectInput = forwardRef(
 
       return selectedValues
         .map((optionValue) => {
+          const presetLabel = selectedOptions?.find((option) => option.value === optionValue)?.label;
+          if (presetLabel) {
+            return presetLabel;
+          }
+
           const cachedLabel = selectedLabels[optionValue];
           if (cachedLabel) {
             return cachedLabel;
@@ -90,7 +99,7 @@ export const InfiniteMultiSelectInput = forwardRef(
         })
         .filter(Boolean)
         .join(", ");
-    }, [options, placeholder, selectedLabels, selectedValues]);
+    }, [options, placeholder, selectedLabels, selectedOptions, selectedValues]);
 
     const toggleOption = (option: SelectInputOption) => {
       const nextValue = selectedValues.includes(option.value)

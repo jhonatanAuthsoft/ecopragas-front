@@ -11,7 +11,10 @@ import {
   type AgendamentoDetalhesView,
   getAgendamentoDetalhesById,
 } from "./components/agendamento-detalhes";
-import { ReagendarAgendamentoDialog } from "./components/ReagendarAgendamentoDialog";
+import {
+  ReagendarAgendamentoDialog,
+  type ReagendarAgendamentoSubmitPayload,
+} from "./components/reagendar-agendamento-dialog";
 
 export default function AgendamentoDetalhes() {
   const { id } = useParams();
@@ -30,7 +33,7 @@ export default function AgendamentoDetalhes() {
     navigate(ROUTES.ADMIN.SCHEDULING.BASE);
   };
 
-  const handleReagendar = () => {
+  const handleReagendar = (_payload: ReagendarAgendamentoSubmitPayload) => {
     toast.info("Em desenvolvimento...");
   };
 

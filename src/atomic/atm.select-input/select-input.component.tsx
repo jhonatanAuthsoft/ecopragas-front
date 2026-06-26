@@ -68,6 +68,7 @@ export const SelectInput = forwardRef<HTMLButtonElement, SelectInputProps>(
             "rounded-lg h-[55px] mb-0 text-xs",
             value ? "text-grayscale-x-dark" : "text-grayscale-medium",
             invalid ? "border-feedback-error-medium" : "border-grayscale-light",
+            disabled && "bg-grayscale-light opacity-70!",
             triggerClassName,
           )}
         >
