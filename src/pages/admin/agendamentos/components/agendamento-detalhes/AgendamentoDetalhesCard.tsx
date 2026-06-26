@@ -7,14 +7,13 @@ import { Badge } from "@/atomic/atm.badge/badge.component";
 import { Button } from "@/atomic/atm.button/button.component";
 import { DetailItem } from "@/atomic/atm.detail-item";
 import { Body2, H2, H3 } from "@/atomic/atm.typography";
-import { formatCurrency, formatPhone } from "@/utils/formatters";
+import type { Agendamento } from "@/model/rest/agendamento";
 import { DeleteAgendamentoDialog } from "../DeleteAgendamentoDialog";
 import { getBadgeRecorrenciaLabel, TIPO_SERVICO_LABELS } from "./agendamento-detalhes.labels";
-import type { AgendamentoDetalhesView } from "./agendamento-detalhes.types";
 import { formatDataHorario, formatEndereco } from "./agendamento-detalhes.utils";
 
 interface AgendamentoDetalhesCardProps {
-  agendamento: AgendamentoDetalhesView;
+  agendamento: Agendamento;
   onDelete: () => void;
   onReagendar: () => void;
 }
@@ -35,7 +34,8 @@ export function AgendamentoDetalhesCard({
       <div className="flex flex-col gap-lg p-lg bg-white rounded-medium shadow-sm border border-grayscale-light">
         <div className="flex flex-col gap-sm pb-sm border-b border-grayscale-light">
           <Badge color="blue" className="self-start">
-            {recorrenciaLabel} - <b>{agendamento.numeroOrdemServico ?? "-"}</b>
+            {/* TODO: adicionar ao atualizar back */}
+            {recorrenciaLabel} - <b>{agendamento.ordemServicoId ?? "-"}</b>
           </Badge>
 
           <H2>{agendamento.tipoServico ? TIPO_SERVICO_LABELS[agendamento.tipoServico] : "-"}</H2>
@@ -47,9 +47,8 @@ export function AgendamentoDetalhesCard({
             </div>
             <div className="flex items-center gap-2xs">
               <PhoneIcon className="size-lg" />
-              <Body2>
-                {agendamento.clienteTelefone ? formatPhone(agendamento.clienteTelefone) : "-"}
-              </Body2>
+              {/* TODO: adicionar ao atualizar back */}
+              <Body2>-</Body2>
             </div>
             <div className="flex items-center gap-2xs">
               <MapPinIcon className="size-lg" />
@@ -73,15 +72,10 @@ export function AgendamentoDetalhesCard({
               label="Data e horario"
               value={[agendamento.dataHoraServico ? dataHorario : "-"]}
             />
+            {/* TODO: adicionar ao atualizar back */}
             <DetailItem
               label="Valor do servico"
-              value={[
-                agendamento.valorServico != null ? (
-                  <b key="valor-servico">{formatCurrency(agendamento.valorServico)}</b>
-                ) : (
-                  "-"
-                ),
-              ]}
+              value={["-"]}
               valueClassName="text-brand-cta-dark"
             />
           </div>

@@ -1,11 +1,11 @@
 import type { SelectInputOption } from "@/atomic/atm.select-input";
-import type { AddAgendamentoFormValues } from "./add-agendamento-dialog.types";
+import type { CadastrarAgendamentoFormValues } from "@/model/rest/agendamento";
 
-export const DEFAULT_VALUES: AddAgendamentoFormValues = {
+export const DEFAULT_VALUES: CadastrarAgendamentoFormValues = {
   clienteId: "",
   ordemServicoId: "",
   tecnicoIds: [],
-  recorrencia: "",
+  recorrencia: "NENHUMA",
   data: undefined,
   horario: "",
 };

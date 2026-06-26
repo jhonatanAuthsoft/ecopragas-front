@@ -1,11 +1,10 @@
-import type { AgendamentoDetalhesView } from "./agendamento-detalhes.types";
+import type { Agendamento } from "@/model/rest/agendamento";
 
-export const AGENDAMENTO_DETALHES_MOCKS: AgendamentoDetalhesView[] = [
+export const AGENDAMENTO_DETALHES_MOCKS: Agendamento[] = [
   {
     id: "1",
     clienteId: "cliente-1",
     clienteNome: "Joao Silva de Jesus",
-    clienteTelefone: "11000000000",
     clienteCpfCnpj: "12345678901",
     tecnicoResponsavel: "Joao Carlos Silva",
     tipoServico: "LIMPEZA_CAIXA_AGUA",
@@ -19,15 +18,12 @@ export const AGENDAMENTO_DETALHES_MOCKS: AgendamentoDetalhesView[] = [
     recorrencia: "NENHUMA",
     status: "AGENDADO",
     ordemServicoId: "os-1",
-    numeroOrdemServico: "OS-2025-001",
-    valorServico: 400,
     observacoes: "",
   },
   {
     id: "2",
     clienteId: "cliente-2",
     clienteNome: "Maria Oliveira",
-    clienteTelefone: "11999999999",
     clienteCpfCnpj: "98765432100",
     tecnicoResponsavel: "Pedro Lima",
     tipoServico: "DEDETIZACAO",
@@ -40,14 +36,11 @@ export const AGENDAMENTO_DETALHES_MOCKS: AgendamentoDetalhesView[] = [
     recorrencia: "MENSAL",
     status: "EM_ANDAMENTO",
     ordemServicoId: "os-2",
-    numeroOrdemServico: "OS-2025-002",
-    valorServico: 350,
   },
   {
     id: "3",
     clienteId: "cliente-3",
     clienteNome: "Roberto Alves",
-    clienteTelefone: "11888888888",
     tecnicoResponsavel: "Ana Costa",
     tipoServico: "SANITIZACAO",
     dataHoraServico: "2025-12-05T14:00:00",
@@ -57,11 +50,9 @@ export const AGENDAMENTO_DETALHES_MOCKS: AgendamentoDetalhesView[] = [
     estado: "BA",
     recorrencia: "NENHUMA",
     status: "CONCLUIDO",
-    numeroOrdemServico: "OS-2025-003",
-    valorServico: 500,
   },
 ];
 
-export const getAgendamentoDetalhesById = (id: string): AgendamentoDetalhesView => {
+export const getAgendamentoDetalhesById = (id: string): Agendamento => {
   return AGENDAMENTO_DETALHES_MOCKS.find((item) => item.id === id) ?? AGENDAMENTO_DETALHES_MOCKS[0];
 };

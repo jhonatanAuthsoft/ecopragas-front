@@ -22,11 +22,11 @@ import { tecnicosInfiniteSelectConfig } from "@/domain/tecnico";
 import type { OrdemServico } from "@/model/rest/ordem-servico/ordem-servico.model";
 import { formatTipoServico } from "@/utils/formatters";
 import { formatEnderecoFromOrdemServico } from "@/utils/ordem-servico";
-import { DEFAULT_VALUES, RECORRENCIA_OPTIONS } from "./add-agendamento-dialog.data";
 import type {
-  AddAgendamentoFormValues,
-  AddAgendamentoSubmitPayload,
-} from "./add-agendamento-dialog.types";
+  CadastrarAgendamentoFormValues,
+  CadastrarAgendamentoLocalPayload,
+} from "@/model/rest/agendamento";
+import { DEFAULT_VALUES, RECORRENCIA_OPTIONS } from "./add-agendamento-dialog.data";
 import {
   type AddAgendamentoSelectionLabels,
   buildAddAgendamentoPayload,
@@ -35,7 +35,7 @@ import {
 export interface AddAgendamentoDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAdd: (payload: AddAgendamentoSubmitPayload) => void;
+  onAdd: (payload: CadastrarAgendamentoLocalPayload) => void;
 }
 
 const EMPTY_SELECTION_LABELS: AddAgendamentoSelectionLabels = {
@@ -44,7 +44,7 @@ const EMPTY_SELECTION_LABELS: AddAgendamentoSelectionLabels = {
 };
 
 export const AddAgendamentoDialog = ({ open, onOpenChange, onAdd }: AddAgendamentoDialogProps) => {
-  const formMethods = useForm<AddAgendamentoFormValues>({
+  const formMethods = useForm<CadastrarAgendamentoFormValues>({
     mode: "onChange",
     defaultValues: DEFAULT_VALUES,
   });
@@ -76,7 +76,7 @@ export const AddAgendamentoDialog = ({ open, onOpenChange, onAdd }: AddAgendamen
     onOpenChange(nextOpen);
   };
 
-  const handleSubmit = (values: AddAgendamentoFormValues) => {
+  const handleSubmit = (values: CadastrarAgendamentoFormValues) => {
     const payload = buildAddAgendamentoPayload(values, selectionLabels);
 
     if (!payload) {

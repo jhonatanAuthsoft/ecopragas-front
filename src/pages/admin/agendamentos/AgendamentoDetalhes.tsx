@@ -6,20 +6,17 @@ import { Button } from "@/atomic/atm.button/button.component";
 import { Body1, H1 } from "@/atomic/atm.typography";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
+import type { Agendamento, ReagendarAgendamentoFormValues } from "@/model/rest/agendamento";
 import {
   AgendamentoDetalhesCard,
-  type AgendamentoDetalhesView,
   getAgendamentoDetalhesById,
 } from "./components/agendamento-detalhes";
-import {
-  ReagendarAgendamentoDialog,
-  type ReagendarAgendamentoSubmitPayload,
-} from "./components/reagendar-agendamento-dialog";
+import { ReagendarAgendamentoDialog } from "./components/reagendar-agendamento-dialog";
 
 export default function AgendamentoDetalhes() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [agendamento, setAgendamento] = useState<AgendamentoDetalhesView>(() =>
+  const [agendamento, setAgendamento] = useState<Agendamento>(() =>
     getAgendamentoDetalhesById(id ?? "1"),
   );
   const [isReagendarDialogOpen, setIsReagendarDialogOpen] = useState(false);
@@ -33,7 +30,7 @@ export default function AgendamentoDetalhes() {
     navigate(ROUTES.ADMIN.SCHEDULING.BASE);
   };
 
-  const handleReagendar = (_payload: ReagendarAgendamentoSubmitPayload) => {
+  const handleReagendar = (_payload: ReagendarAgendamentoFormValues) => {
     toast.info("Em desenvolvimento...");
   };
 

@@ -1,8 +1,10 @@
 import { format } from "date-fns";
 import type { SelectInputOption } from "@/atomic/atm.select-input";
-import type { AddAgendamentoFormValues } from "../add-agendamento-dialog/add-agendamento-dialog.types";
-import type { AgendamentoDetalhesView } from "../agendamento-detalhes/agendamento-detalhes.types";
-import type { ReagendarAgendamentoSubmitPayload } from "./reagendar-agendamento-dialog.types";
+import type {
+  Agendamento,
+  CadastrarAgendamentoFormValues,
+  ReagendarAgendamentoFormValues,
+} from "@/model/rest/agendamento";
 
 const TECNICO_DISPLAY_VALUE = "tecnico-display";
 
@@ -14,7 +16,7 @@ interface ReagendarAgendamentoDisplayLabels {
 
 const parseAgendamentoDataHora = (
   dataHoraServico?: string,
-): Pick<AddAgendamentoFormValues, "data" | "horario"> => {
+): Pick<CadastrarAgendamentoFormValues, "data" | "horario"> => {
   if (!dataHoraServico) {
     return { data: undefined, horario: "" };
   }
@@ -32,8 +34,8 @@ const parseAgendamentoDataHora = (
 };
 
 export const buildReagendarFormValues = (
-  agendamento: AgendamentoDetalhesView,
-): AddAgendamentoFormValues => {
+  agendamento: Agendamento,
+): CadastrarAgendamentoFormValues => {
   const { data, horario } = parseAgendamentoDataHora(agendamento.dataHoraServico);
   const tecnicoResponsavel = agendamento.tecnicoResponsavel?.trim();
 
@@ -41,20 +43,21 @@ export const buildReagendarFormValues = (
     clienteId: agendamento.clienteId ?? "",
     ordemServicoId: agendamento.ordemServicoId ?? "",
     tecnicoIds: tecnicoResponsavel ? [TECNICO_DISPLAY_VALUE] : [],
-    recorrencia: agendamento.recorrencia ?? "",
+    recorrencia: agendamento.recorrencia ?? "NENHUMA",
     data,
     horario,
   };
 };
 
 export const buildReagendarDisplayLabels = (
-  agendamento: AgendamentoDetalhesView,
+  agendamento: Agendamento,
 ): ReagendarAgendamentoDisplayLabels => {
   const tecnicoResponsavel = agendamento.tecnicoResponsavel?.trim();
 
   return {
     clienteNome: agendamento.clienteNome ?? "",
-    ordemServicoLabel: agendamento.numeroOrdemServico ?? agendamento.ordemServicoId ?? "-",
+    // TODO: adicionar ao atualizar back
+    ordemServicoLabel: agendamento.ordemServicoId ?? "-",
     tecnicoOptions: tecnicoResponsavel
       ? [{ value: TECNICO_DISPLAY_VALUE, label: tecnicoResponsavel }]
       : [],
@@ -62,8 +65,8 @@ export const buildReagendarDisplayLabels = (
 };
 
 export const buildReagendarPayload = (
-  values: Pick<AddAgendamentoFormValues, "data" | "horario">,
-): ReagendarAgendamentoSubmitPayload | null => {
+  values: Pick<CadastrarAgendamentoFormValues, "data" | "horario">,
+): ReagendarAgendamentoFormValues | null => {
   if (!values.data || !values.horario) {
     return null;
   }

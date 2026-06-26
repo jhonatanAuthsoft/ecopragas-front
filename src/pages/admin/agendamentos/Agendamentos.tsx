@@ -9,19 +9,17 @@ import {
 } from "@/atomic/org.agenda-weekly";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
-import {
-  AddAgendamentoDialog,
-  type AddAgendamentoSubmitPayload,
-} from "./components/add-agendamento-dialog";
-
-type AgendamentoStatus = "agendado" | "em-andamento" | "concluido" | "cancelado";
-type AgendamentoRecorrencia = "semanal" | "mensal" | "trimestral" | "semestral" | "anual";
+import type {
+  Agendamento as AgendamentoModel,
+  CadastrarAgendamentoLocalPayload,
+} from "@/model/rest/agendamento";
+import { AddAgendamentoDialog } from "./components/add-agendamento-dialog";
 
 interface Agendamento extends AgendaWeeklyItem {
   clienteNome: string;
   endereco: string;
-  status: AgendamentoStatus;
-  recorrencia?: AgendamentoRecorrencia;
+  status: AgendamentoModel["status"];
+  recorrencia?: AgendamentoModel["recorrencia"];
 }
 
 const Agendamentos = () => {
@@ -37,12 +35,12 @@ const Agendamentos = () => {
       ...item,
       clienteNome: index % 2 === 0 ? "João Silva" : "Maria Oliveira",
       endereco: index % 2 === 0 ? "Rua A, 123" : "Av. B, 456",
-      status: index === 1 ? "em-andamento" : "agendado",
-      recorrencia: index === 0 ? "mensal" : undefined,
+      status: index === 1 ? "EM_ANDAMENTO" : "AGENDADO",
+      recorrencia: index === 0 ? "MENSAL" : undefined,
     }));
   });
 
-  const handleAddAgendamento = (data: AddAgendamentoSubmitPayload) => {
+  const handleAddAgendamento = (data: CadastrarAgendamentoLocalPayload) => {
     const newAgendamento: Agendamento = {
       id: String(agendamentos.length + 1),
       tipoServico: data.tipoServico,
@@ -51,7 +49,7 @@ const Agendamentos = () => {
       tecnico: data.tecnicoNome,
       clienteNome: data.clienteNome,
       endereco: data.endereco,
-      status: "agendado",
+      status: "AGENDADO",
       recorrencia: data.recorrencia,
     };
 

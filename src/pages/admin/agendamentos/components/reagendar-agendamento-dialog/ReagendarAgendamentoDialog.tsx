@@ -14,10 +14,12 @@ import { clientesInfiniteSelectConfig } from "@/domain/cliente";
 import type { InfiniteSelectQueryConfig } from "@/domain/infinite-list";
 import { ordensServicoInfiniteSelectConfig } from "@/domain/ordem-servico";
 import { tecnicosInfiniteSelectConfig } from "@/domain/tecnico";
+import type {
+  Agendamento,
+  CadastrarAgendamentoFormValues,
+  ReagendarAgendamentoFormValues,
+} from "@/model/rest/agendamento";
 import { RECORRENCIA_OPTIONS } from "../add-agendamento-dialog/add-agendamento-dialog.data";
-import type { AddAgendamentoFormValues } from "../add-agendamento-dialog/add-agendamento-dialog.types";
-import type { AgendamentoDetalhesView } from "../agendamento-detalhes/agendamento-detalhes.types";
-import type { ReagendarAgendamentoSubmitPayload } from "./reagendar-agendamento-dialog.types";
 import {
   buildReagendarDisplayLabels,
   buildReagendarFormValues,
@@ -32,8 +34,8 @@ const disabledInfiniteSelectConfig = <TItem,>(config: InfiniteSelectQueryConfig<
 interface ReagendarAgendamentoDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  agendamento: AgendamentoDetalhesView;
-  onConfirm: (payload: ReagendarAgendamentoSubmitPayload) => void;
+  agendamento: Agendamento;
+  onConfirm: (payload: ReagendarAgendamentoFormValues) => void;
 }
 
 export function ReagendarAgendamentoDialog({
@@ -42,7 +44,7 @@ export function ReagendarAgendamentoDialog({
   agendamento,
   onConfirm,
 }: ReagendarAgendamentoDialogProps) {
-  const formMethods = useForm<AddAgendamentoFormValues>({
+  const formMethods = useForm<CadastrarAgendamentoFormValues>({
     mode: "onChange",
     defaultValues: buildReagendarFormValues(agendamento),
   });
@@ -76,7 +78,7 @@ export function ReagendarAgendamentoDialog({
     onOpenChange(nextOpen);
   };
 
-  const handleSubmit = (values: AddAgendamentoFormValues) => {
+  const handleSubmit = (values: CadastrarAgendamentoFormValues) => {
     const payload = buildReagendarPayload(values);
     if (!payload) return;
 

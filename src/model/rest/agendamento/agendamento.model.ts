@@ -5,6 +5,33 @@ export type AgendamentoAtividade = components["schemas"]["AgendamentoAtividadeRe
 
 export type CadastrarAgendamentoInput =
   operations["agendamento_cadastrar"]["requestBody"]["content"]["application/json"];
+
+export type CadastrarAgendamentoFormValues = Pick<
+  CadastrarAgendamentoInput,
+  "clienteId" | "ordemServicoId" | "recorrencia"
+> & {
+  tecnicoIds?: string[];
+  data?: Date;
+  horario?: string;
+};
+
+export type ReagendarAgendamentoFormValues = Pick<
+  CadastrarAgendamentoFormValues,
+  "data" | "horario"
+>;
+
+export type CadastrarAgendamentoLocalPayload = Pick<
+  Agendamento,
+  "clienteId" | "clienteNome" | "ordemServicoId"
+> & {
+  tecnicoNome?: string;
+  recorrencia?: Agendamento["recorrencia"];
+  data?: Date;
+  horario?: string;
+  tipoServico?: string;
+  endereco?: string;
+};
+
 export type CadastrarAgendamentoResponse =
   operations["agendamento_cadastrar"]["responses"][200]["content"]["application/json"];
 

@@ -1,20 +1,7 @@
-import type { CadastrarAgendamentoInput } from "@/model/rest/agendamento";
 import type {
-  AddAgendamentoFormValues,
-  AddAgendamentoSubmitPayload,
-  AgendamentoRecorrenciaMock,
-} from "./add-agendamento-dialog.types";
-
-const RECORRENCIA_TO_MOCK: Record<
-  Exclude<CadastrarAgendamentoInput["recorrencia"], "NENHUMA">,
-  AgendamentoRecorrenciaMock
-> = {
-  SEMANAL: "semanal",
-  MENSAL: "mensal",
-  TRIMESTRAL: "trimestral",
-  SEMESTRAL: "semestral",
-  ANUAL: "anual",
-};
+  CadastrarAgendamentoFormValues,
+  CadastrarAgendamentoLocalPayload,
+} from "@/model/rest/agendamento";
 
 export interface AddAgendamentoSelectionLabels {
   clienteNome: string;
@@ -24,9 +11,9 @@ export interface AddAgendamentoSelectionLabels {
 }
 
 export const buildAddAgendamentoPayload = (
-  values: AddAgendamentoFormValues,
+  values: CadastrarAgendamentoFormValues,
   selectionLabels: AddAgendamentoSelectionLabels,
-): AddAgendamentoSubmitPayload | null => {
+): CadastrarAgendamentoLocalPayload | null => {
   if (
     !values.clienteId ||
     values.tecnicoIds.length === 0 ||
@@ -39,11 +26,9 @@ export const buildAddAgendamentoPayload = (
   }
 
   const recorrencia =
-    values.recorrencia === "NENHUMA"
+    values.recorrencia === "NENHUMA" || !values.recorrencia
       ? undefined
-      : RECORRENCIA_TO_MOCK[
-          values.recorrencia as Exclude<CadastrarAgendamentoInput["recorrencia"], "NENHUMA">
-        ];
+      : values.recorrencia;
 
   return {
     clienteId: values.clienteId,
