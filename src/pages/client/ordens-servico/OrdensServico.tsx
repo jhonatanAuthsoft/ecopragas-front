@@ -1,7 +1,8 @@
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { ArrowUpRightFromSquare } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import { useDebounce } from "@/hooks/use-debounce";
 import { Body1, H1 } from "@/atomic/atm.typography";
 import { CalendarDropdown } from "@/atomic/mol.calendar-dropdown";
 import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
@@ -26,18 +27,60 @@ const OrdensServico = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 10;
 
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
   useEffect(() => {
     setCurrentPage(1);
-  }, [dateFilter]);
+  }, [dateFilter, debouncedSearchTerm]);
+
+  const searchFilters = useMemo(() => {
+    if (!debouncedSearchTerm) return {};
+    
+    const trimmed = debouncedSearchTerm.trim();
+    if (/^\d+$/.test(trimmed)) {
+      return { numero: Number(trimmed) };
+    }
+
+    const normalized = trimmed.toLowerCase();
+    const serviceMap: Record<string, string> = {
+      dedetizacao: "DEDETIZACAO",
+      "dedetização": "DEDETIZACAO",
+      "limpeza": "LIMPEZA_CAIXA_AGUA",
+      "caixa": "LIMPEZA_CAIXA_AGUA",
+      sanitizacao: "SANITIZACAO",
+      "sanitização": "SANITIZACAO",
+      desratizacao: "DESRATIZACAO",
+      "desratização": "DESRATIZACAO",
+      outros: "OUTROS",
+    };
+
+    for (const [key, value] of Object.entries(serviceMap)) {
+      if (normalized.includes(key)) {
+        return { servico: value };
+      }
+    }
+
+    return { tecnico: trimmed };
+  }, [debouncedSearchTerm]);
 
   const { historicoOsData, isGetHistoricoOsLoading } = useGetHistoricoOsPortal({
     limit,
     offset: (currentPage - 1) * limit,
-    periodo: dateFilter
+    numero: searchFilters.numero,
+    servico: searchFilters.servico,
+    tecnico: searchFilters.tecnico,
+    dataHoraInicio: dateFilter
       ? dateFilter instanceof Date
-        ? format(dateFilter, "yyyy-MM-dd")
-        : dateFilter.start && dateFilter.end
-          ? `${format(dateFilter.start, "yyyy-MM-dd")},${format(dateFilter.end, "yyyy-MM-dd")}`
+        ? new Date(dateFilter.setHours(0, 0, 0, 0)).toISOString()
+        : dateFilter.start
+          ? new Date(dateFilter.start.setHours(0, 0, 0, 0)).toISOString()
+          : undefined
+      : undefined,
+    dataHoraFim: dateFilter
+      ? dateFilter instanceof Date
+        ? new Date(dateFilter.setHours(23, 59, 59, 999)).toISOString()
+        : dateFilter.end
+          ? new Date(dateFilter.end.setHours(23, 59, 59, 999)).toISOString()
           : undefined
       : undefined,
   });
@@ -67,18 +110,6 @@ const OrdensServico = () => {
   const pagination = historicoOsData?.pagination;
   const totalPages = pagination?.totalPages ?? 1;
 
-  const filteredOrdens = ordens.filter((os) => {
-    if (!searchTerm) return true;
-    const matchesSearch =
-      String(os.osNumero).includes(searchTerm) ||
-      formatTipoServico(os.tipoServico).toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (os.tecnicoResponsavel ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-      `${os.rua ?? ""} ${os.numero ?? ""} ${os.bairro ?? ""}`
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
-    return matchesSearch;
-  });
-
   return (
     <MainLayout>
       <div className="flex flex-col gap-xl">
@@ -104,7 +135,7 @@ const OrdensServico = () => {
               value={dateFilter}
               onChange={(val) => {
                 if (val instanceof Date) setDateFilter(val);
-                else if (val?.start && val?.end) setDateFilter(val);
+                else if (val?.start) setDateFilter(val);
                 else setDateFilter(undefined);
               }}
               className="min-w-[180px] [&_button]:bg-transparent"
@@ -115,7 +146,7 @@ const OrdensServico = () => {
         {/* Tabela */}
         {isGetHistoricoOsLoading ? (
           <p>Carregando ordens de serviço...</p>
-        ) : filteredOrdens.length === 0 ? (
+        ) : ordens.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-lg font-medium text-foreground">
               Nenhuma ordem de serviço encontrada
@@ -137,7 +168,7 @@ const OrdensServico = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredOrdens.map((os) => (
+                  {ordens.map((os) => (
                     <TableRow key={os.id}>
                       <TableCell className="text-grayscale-x-dark font-medium">
                         {os.osNumero}

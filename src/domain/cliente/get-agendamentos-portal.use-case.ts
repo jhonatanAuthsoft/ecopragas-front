@@ -1,10 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { getAgendamentosPortalDatasource } from "@/rest/cliente/cliente.datasource";
 
-export function useGetAgendamentosPortal() {
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["getAgendamentosPortal"],
-    queryFn: () => getAgendamentosPortalDatasource(),
+import type { AgendamentosPortalParams } from "@/model/rest/cliente";
+
+export function useGetAgendamentosPortal(params: AgendamentosPortalParams) {
+  const { data, isLoading, isError, error, isPlaceholderData } = useQuery({
+    queryKey: ["getAgendamentosPortal", params],
+    queryFn: () => getAgendamentosPortalDatasource(params),
+    placeholderData: (previousData) => previousData,
   });
 
   return {
@@ -12,5 +15,6 @@ export function useGetAgendamentosPortal() {
     isGetAgendamentosLoading: isLoading,
     isGetAgendamentosError: isError,
     getAgendamentosError: error,
+    isGetAgendamentosPlaceholderData: isPlaceholderData,
   };
 }

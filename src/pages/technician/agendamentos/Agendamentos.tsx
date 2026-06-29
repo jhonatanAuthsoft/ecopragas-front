@@ -37,7 +37,7 @@ const Agendamentos = () => {
       if (!selectedDate) return;
       setIsLoading(true);
       try {
-        const periodo = format(selectedDate, "yyyy-MM-dd");
+        const periodo = format(selectedDate, "dd/MM/yyyy");
         const response = await serverRequest.get("/tecnico/agenda", {
           params: { periodo },
         });

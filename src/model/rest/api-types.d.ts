@@ -1497,6 +1497,18 @@ export interface components {
             laudos?: components["schemas"]["ClienteDocumentoResponseDTO"][];
             certificados?: components["schemas"]["ClienteDocumentoResponseDTO"][];
         };
+        ClienteAgendamentosResponseDTO: {
+            concluidos?: components["schemas"]["AgendamentoResponseDTO"][];
+            emAguardo?: components["schemas"]["AgendamentoResponseDTO"][];
+        };
+        StandardResponseClienteAgendamentosResponseDTO: {
+            success?: boolean;
+            timestamp?: string;
+            message?: string;
+            data?: components["schemas"]["AgendamentoResponseDTO"][];
+            errors?: components["schemas"]["ErrorDetail"][];
+            pagination?: components["schemas"]["PaginationInfo"];
+        };
         ClienteDashboardDTO: {
             /** Format: int64 */
             clientesAtivos?: number;
