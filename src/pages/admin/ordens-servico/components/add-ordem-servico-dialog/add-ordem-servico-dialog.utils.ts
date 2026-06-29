@@ -1,9 +1,14 @@
+import { format } from "date-fns";
 import type { SelectInputOption } from "@/atomic/atm.select-input";
 import type { ClienteEnderecoResponse } from "@/model/rest/cliente";
-import type { CadastrarOrdemServicoInput } from "@/model/rest/ordem-servico";
+import type { CadastrarOrdemServicoInput, OrdemServico } from "@/model/rest/ordem-servico";
 import { formatDateHour } from "@/pages/admin/agendamentos/agendamentos.utils";
-import { cleanDigits, formatCurrencyNumber } from "@/utils/formatters";
-import { ENDERECO_FIELDS, getTipoServicoVariacao } from "./add-ordem-servico-dialog.data";
+import { cleanDigits, formatCEP, formatCurrency, formatCurrencyNumber } from "@/utils/formatters";
+import {
+  ENDERECO_FIELDS,
+  getTipoServicoVariacao,
+  NOVO_ENDERECO_ID,
+} from "./add-ordem-servico-dialog.data";
 import type {
   OrdemServicoFormValues,
   ServicoEndereco,
@@ -110,7 +115,71 @@ export const mapClienteEnderecoToServicoEndereco = (
   padrao: endereco.padrao,
 });
 
-export const buildCadastrarOrdemServicoInput = (
+const normalizeAddressField = (value?: string | null) => (value ?? "").trim().toLowerCase();
+
+const normalizeCep = (value?: string | null) => cleanDigits(value ?? "");
+
+export const isSameEndereco = (ordem: OrdemServico, endereco: ServicoEndereco): boolean =>
+  normalizeAddressField(ordem.rua) === normalizeAddressField(endereco.endereco) &&
+  normalizeAddressField(ordem.numero) === normalizeAddressField(endereco.numero) &&
+  normalizeAddressField(ordem.complemento) === normalizeAddressField(endereco.complemento) &&
+  normalizeAddressField(ordem.bairro) === normalizeAddressField(endereco.bairro) &&
+  normalizeAddressField(ordem.cidade) === normalizeAddressField(endereco.cidade) &&
+  normalizeAddressField(ordem.estado) === normalizeAddressField(endereco.estado) &&
+  normalizeCep(ordem.cep) === normalizeCep(endereco.cep);
+
+export const resolveInitialEnderecoId = (
+  ordem: OrdemServico,
+  clienteEnderecos: ServicoEndereco[],
+): string => {
+  const match = clienteEnderecos.find((endereco) => isSameEndereco(ordem, endereco));
+  return match?.id ?? NOVO_ENDERECO_ID;
+};
+
+export const mapOrdemServicoToFormValues = (ordem: OrdemServico): OrdemServicoFormValues => {
+  let data: Date | undefined;
+  let horario = "";
+
+  if (ordem.dataHoraServico) {
+    const parsedDate = new Date(ordem.dataHoraServico);
+    data = parsedDate;
+    horario = format(parsedDate, "HH:mm");
+  }
+
+  const areasMonitoramentoInsetos =
+    ordem.dadosEspecificos?.areasMonitoramentoInsetos?.map((area, index) => ({
+      id: `area-${index}`,
+      nome: area.areaMonitorada ?? "",
+      pragaAlvo: area.pragasAlvo ?? [],
+      tratamento: area.tratamento ?? "",
+    })) ?? [];
+
+  const estacoesMonitoramento =
+    ordem.dadosEspecificos?.estacoesMonitoramentoRoedores?.map((estacao, index) => ({
+      id: `estacao-${index}`,
+      nome: estacao.nome ?? "",
+    })) ?? [];
+
+  return {
+    clienteId: ordem.clienteId ?? "",
+    tipoServico: ordem.tipoServico ?? "",
+    valorServico: ordem.valor != null ? formatCurrency(ordem.valor) : "",
+    data,
+    horario,
+    observacoes: ordem.observacoes ?? "",
+    estacoesMonitoramento,
+    areasMonitoramentoInsetos,
+    cep: ordem.cep ? formatCEP(ordem.cep) : "",
+    estado: ordem.estado ?? "",
+    cidade: ordem.cidade ?? "",
+    bairro: ordem.bairro ?? "",
+    endereco: ordem.rua ?? "",
+    numero: ordem.numero ?? "",
+    complemento: ordem.complemento ?? "",
+  };
+};
+
+export const buildOrdemServicoMutationInput = (
   values: OrdemServicoFormValues,
   endereco: ServicoEndereco,
 ): CadastrarOrdemServicoInput | null => {
@@ -118,7 +187,10 @@ export const buildCadastrarOrdemServicoInput = (
     return null;
   }
 
-  const dataHoraServico = formatDateHour(values.data ?? new Date(), values.horario || "09:00");
+  const dataHoraServico =
+    values.data && values.horario
+      ? formatDateHour(values.data, values.horario)
+      : format(new Date(), "yyyy-MM-dd'T'HH:mm:ss");
 
   const variacao = getTipoServicoVariacao(values.tipoServico);
 

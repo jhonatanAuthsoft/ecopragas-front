@@ -3,7 +3,6 @@ import type { OrdemServico } from "@/model/rest/ordem-servico";
 export type OrdemServicoDialogTab = "dados" | "endereco";
 
 export type TipoServicoForm = NonNullable<OrdemServico["tipoServico"]>;
-export type StatusOrdemServicoForm = OrdemServico["status"];
 
 export type TipoServicoVariacao = "normal" | "monitoramento_insetos" | "monitoramento_roedores";
 
@@ -26,7 +25,6 @@ export type OrdemServicoFormValues = {
   clienteId: string;
   tipoServico: TipoServicoForm | "";
   valorServico: string;
-  status: StatusOrdemServicoForm | "";
   data?: Date;
   horario: string;
   observacoes: string;

@@ -1,5 +1,5 @@
 import { Plus } from "lucide-react";
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { RadioButtonCheckedIcon } from "@/assets/icons/radio-button-checked";
 import { RadioButtonUncheckedIcon } from "@/assets/icons/radio-button-unchecked";
@@ -49,10 +49,20 @@ export const EnderecoServicoTab = forwardRef<EnderecoServicoTabHandle, EnderecoS
 
     const isNewEnderecoSelected = selectedEnderecoId === NOVO_ENDERECO_ID;
 
+    const previousClienteIdRef = useRef<string | undefined>(undefined);
+
     useEffect(() => {
-      setSelectedEnderecoId(null);
-      setIsNewEnderecoFormVisible(false);
-      setSelectionError(null);
+      if (previousClienteIdRef.current === undefined) {
+        previousClienteIdRef.current = clienteId;
+        return;
+      }
+
+      if (previousClienteIdRef.current !== clienteId) {
+        setSelectedEnderecoId(null);
+        setIsNewEnderecoFormVisible(false);
+        setSelectionError(null);
+        previousClienteIdRef.current = clienteId;
+      }
     }, [clienteId]);
 
     useEffect(() => {

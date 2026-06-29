@@ -11,7 +11,6 @@ export const DEFAULT_VALUES: OrdemServicoFormValues = {
   clienteId: "",
   tipoServico: "",
   valorServico: "",
-  status: "AGENDADO",
   data: undefined,
   horario: undefined,
   observacoes: "",
@@ -30,7 +29,6 @@ export const DADOS_FIELDS = [
   "clienteId",
   "tipoServico",
   "valorServico",
-  "status",
 ] as const satisfies ReadonlyArray<keyof OrdemServicoFormValues>;
 
 export const NOVO_ENDERECO_ID = "novo-endereco";
@@ -51,13 +49,6 @@ export const TAB_TRIGGER_CLASS =
 export const TIPO_SERVICO_OPTIONS: SelectInputOption[] = (
   Object.entries(TIPO_SERVICO_LABELS) as [TipoServicoForm, string][]
 ).map(([value, label]) => ({ value, label }));
-
-export const STATUS_OPTIONS: SelectInputOption[] = [
-  { value: "AGENDADO", label: "Agendada" },
-  { value: "EM_ANDAMENTO", label: "Em andamento" },
-  { value: "CONCLUIDO", label: "Concluída" },
-  { value: "CANCELADO", label: "Cancelada" },
-];
 
 export const PRAGA_ALVO_OPTIONS: SelectInputOption[] = [
   { value: "barata_germanica", label: "Barata Germânica" },

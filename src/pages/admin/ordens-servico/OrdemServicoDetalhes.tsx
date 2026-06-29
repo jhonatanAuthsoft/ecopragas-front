@@ -1,4 +1,5 @@
 import { ChevronLeft } from "lucide-react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
@@ -14,11 +15,13 @@ import {
 } from "@/domain/ordem-servico";
 import { downloadFileFromBase64 } from "@/utils/download-file";
 import { formatOsNumero } from "@/utils/ordem-servico";
+import { AddOrdemServicoDialog } from "./components/add-ordem-servico-dialog";
 import { OrdemServicoDetalhesCard } from "./components/ordem-servico-detalhes";
 
 export default function OrdemServicoDetalhes() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const { ordemServico, getOrdemServicoError, isGetOrdemServicoLoading } = useGetOrdemServico({
     id: id ?? "",
@@ -55,7 +58,7 @@ export default function OrdemServicoDetalhes() {
   };
 
   const handleEdit = () => {
-    toast.info("Em desenvolvimento...");
+    setIsEditDialogOpen(true);
   };
 
   const handleDownload = () => {
@@ -106,6 +109,12 @@ export default function OrdemServicoDetalhes() {
             onDownload={handleDownload}
             isDeleteLoading={isDeleteOrdemServicoLoading}
             isDownloadLoading={isDownloadOrdensServicoPdfLoading}
+          />
+
+          <AddOrdemServicoDialog
+            open={isEditDialogOpen}
+            onOpenChange={setIsEditDialogOpen}
+            ordemServico={ordemServico}
           />
         </LoadingState>
       </div>

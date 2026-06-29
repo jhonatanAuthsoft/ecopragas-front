@@ -8,24 +8,16 @@ import { TabsContent } from "@/atomic/mol.tabs/tabs.component";
 import { FormField, RequiredValidator } from "@/atomic/obj.form";
 import { clientesInfiniteSelectConfig } from "@/domain/cliente";
 import { formatCurrency } from "@/utils/formatters";
-import {
-  getTipoServicoVariacao,
-  STATUS_OPTIONS,
-  TIPO_SERVICO_OPTIONS,
-} from "../add-ordem-servico-dialog.data";
+import { getTipoServicoVariacao, TIPO_SERVICO_OPTIONS } from "../add-ordem-servico-dialog.data";
 import type { OrdemServicoFormValues } from "../add-ordem-servico-dialog.types";
 import { MonitoramentoInsetosFields } from "./variations/MonitoramentoInsetosFields";
 import { MonitoramentoRoedoresFields } from "./variations/MonitoramentoRoedoresFields";
 
 interface DadosServicoTabProps {
   onNext: () => void;
-  statusLabel?: string;
 }
 
-export const DadosServicoTab = ({
-  onNext,
-  statusLabel = "Status inicial",
-}: DadosServicoTabProps) => {
+export const DadosServicoTab = ({ onNext }: DadosServicoTabProps) => {
   const { watch } = useFormContext<OrdemServicoFormValues>();
   const tipoServico = watch("tipoServico");
   const variacao = getTipoServicoVariacao(tipoServico);
@@ -59,14 +51,6 @@ export const DadosServicoTab = ({
             label="Valor do serviço (R$)"
             placeholder="R$ 450,00"
             formatter={formatCurrency}
-          />
-        </FormField>
-
-        <FormField name="status" validators={[RequiredValidator()]}>
-          <SelectInput
-            label={statusLabel}
-            placeholder="Selecione o status"
-            options={STATUS_OPTIONS}
           />
         </FormField>
       </div>
