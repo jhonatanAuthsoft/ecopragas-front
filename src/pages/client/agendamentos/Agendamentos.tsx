@@ -2,11 +2,13 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { ChevronRight, ListFilter } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useDebounce } from "@/hooks/use-debounce";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/atomic/atm.badge/badge.component";
 import { Body1, Body2, H1 } from "@/atomic/atm.typography";
 import { CalendarDropdown } from "@/atomic/mol.calendar-dropdown";
 import { FilterDropdown } from "@/atomic/mol.filter-dropdown";
+import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
 import { SearchInput } from "@/atomic/mol.search/search.component";
 import {
   Table,
@@ -50,18 +52,64 @@ const Agendamentos = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [statusFilter, setStatusFilter] = useState<AgendamentoStatus>("todas");
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 10;
 
-  const { agendamentosData, isGetAgendamentosLoading } = useGetAgendamentosPortal();
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+  const searchFilters = useMemo(() => {
+    if (!debouncedSearchTerm) return {};
+    
+    const trimmed = debouncedSearchTerm.trim();
+    const normalized = trimmed.toLowerCase();
+    const serviceMap: Record<string, string> = {
+      dedetizacao: "DEDETIZACAO",
+      "dedetização": "DEDETIZACAO",
+      "limpeza": "LIMPEZA_CAIXA_AGUA",
+      "caixa": "LIMPEZA_CAIXA_AGUA",
+      sanitizacao: "SANITIZACAO",
+      "sanitização": "SANITIZACAO",
+      desratizacao: "DESRATIZACAO",
+      "desratização": "DESRATIZACAO",
+      outros: "OUTROS",
+    };
+
+    for (const [key, value] of Object.entries(serviceMap)) {
+      if (normalized.includes(key)) {
+        return { servico: value };
+      }
+    }
+
+    return { tecnico: trimmed };
+  }, [debouncedSearchTerm]);
+
+  const apiStatus = useMemo(() => {
+    switch (statusFilter) {
+      case "agendada": return "AGENDADO";
+      case "em_andamento": return "EM_ANDAMENTO";
+      case "concluida": return "CONCLUIDO";
+      case "cancelada": return "CANCELADO";
+      default: return undefined;
+    }
+  }, [statusFilter]);
+
+  const { agendamentosData, isGetAgendamentosLoading } = useGetAgendamentosPortal({
+    limit,
+    offset: (currentPage - 1) * limit,
+    servico: searchFilters.servico,
+    tecnico: searchFilters.tecnico,
+    status: apiStatus,
+    dataHoraInicio: selectedDate ? new Date(selectedDate.setHours(0, 0, 0, 0)).toISOString() : undefined,
+    dataHoraFim: selectedDate ? new Date(selectedDate.setHours(23, 59, 59, 999)).toISOString() : undefined,
+  });
+
+  const pagination = agendamentosData?.pagination;
+  const totalPages = pagination?.totalPages ?? 1;
 
   const todosAgendamentos = useMemo(() => {
     if (!agendamentosData?.data) return [];
 
-    const concluidos = agendamentosData.data.concluidos || [];
-    const emAguardo = agendamentosData.data.emAguardo || [];
-
-    const combinados = [...concluidos, ...emAguardo];
-
-    return combinados.map((item) => {
+    return agendamentosData.data.map((item) => {
       const dataObj = item.dataHoraServico ? new Date(item.dataHoraServico) : null;
       return {
         id: item.id,
@@ -76,20 +124,7 @@ const Agendamentos = () => {
     });
   }, [agendamentosData]);
 
-  const filteredAgendamentos = todosAgendamentos.filter((item) => {
-    const matchesSearch =
-      item.servico.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.tecnico.toLowerCase().includes(searchTerm.toLowerCase());
-
-    const matchesDate = !selectedDate
-      ? true
-      : item.dataOriginal &&
-        format(item.dataOriginal, "yyyy-MM-dd") === format(selectedDate, "yyyy-MM-dd");
-
-    const matchesStatus = statusFilter === "todas" || item.status === statusFilter;
-
-    return matchesSearch && matchesDate && matchesStatus;
-  });
+  const filteredAgendamentos = todosAgendamentos;
 
   return (
     <MainLayout>
@@ -134,47 +169,58 @@ const Agendamentos = () => {
             <p className="text-sm text-muted-foreground mt-1">Tente ajustar os filtros de busca</p>
           </div>
         ) : (
-          <div className="rounded-xs border border-border p-lg">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Serviço</TableHead>
-                  <TableHead>Data</TableHead>
-                  <TableHead>Horário</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Técnico</TableHead>
-                  <TableHead />
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredAgendamentos.map((agendamento) => (
-                  <TableRow
-                    key={agendamento.id}
-                    className="cursor-pointer hover:bg-accent/50 transition-colors"
-                    onClick={() =>
-                      navigate(
-                        ROUTES.CLIENT_SCHEDULING_DETAILS.replace(":id", agendamento.id ?? ""),
-                        { state: { agendamento: agendamento.rawApiData } },
-                      )
-                    }
-                  >
-                    <TableCell className="capitalize">{agendamento.servico}</TableCell>
-                    <TableCell>{agendamento.data}</TableCell>
-                    <TableCell>{agendamento.horario}</TableCell>
-                    <TableCell>
-                      <Badge className={`font-medium ${getStatusBadgeClass(agendamento.status)}`}>
-                        {STATUS_LABELS[agendamento.status]}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">{agendamento.tecnico}</TableCell>
-                    <TableCell>
-                      <ChevronRight className="size-md text-brand-primary-medium" />
-                    </TableCell>
+          <>
+            <div className="rounded-xs border border-border p-lg">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Serviço</TableHead>
+                    <TableHead>Data</TableHead>
+                    <TableHead>Horário</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Técnico</TableHead>
+                    <TableHead />
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+                </TableHeader>
+                <TableBody>
+                  {filteredAgendamentos.map((agendamento) => (
+                    <TableRow
+                      key={agendamento.id}
+                      className="cursor-pointer hover:bg-accent/50 transition-colors"
+                      onClick={() =>
+                        navigate(
+                          ROUTES.CLIENT_SCHEDULING_DETAILS.replace(":id", agendamento.id ?? ""),
+                          { state: { agendamento: agendamento.rawApiData } },
+                        )
+                      }
+                    >
+                      <TableCell className="capitalize">{agendamento.servico}</TableCell>
+                      <TableCell>{agendamento.data}</TableCell>
+                      <TableCell>{agendamento.horario}</TableCell>
+                      <TableCell>
+                        <Badge className={`font-medium ${getStatusBadgeClass(agendamento.status)}`}>
+                          {STATUS_LABELS[agendamento.status]}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">{agendamento.tecnico}</TableCell>
+                      <TableCell>
+                        <ChevronRight className="size-md text-brand-primary-medium" />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+            
+            {totalPages > 1 && (
+              <PaginationControl
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+                className="self-center mt-4"
+              />
+            )}
+          </>
         )}
       </div>
     </MainLayout>

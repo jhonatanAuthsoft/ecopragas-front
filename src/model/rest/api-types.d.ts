@@ -1438,7 +1438,7 @@ export interface components {
             success?: boolean;
             timestamp?: string;
             message?: string;
-            data?: components["schemas"]["ClienteAgendamentosResponseDTO"];
+            data?: components["schemas"]["AgendamentoResponseDTO"][];
             errors?: components["schemas"]["ErrorDetail"][];
             pagination?: components["schemas"]["PaginationInfo"];
         };
@@ -2532,7 +2532,11 @@ export interface operations {
     cliente_obter_historico_os: {
         parameters: {
             query?: {
-                periodo?: string;
+                dataHoraInicio?: string;
+                dataHoraFim?: string;
+                numero?: number;
+                servico?: string;
+                tecnico?: string;
                 limit?: number;
                 offset?: number;
             };
@@ -2577,7 +2581,15 @@ export interface operations {
     };
     cliente_obter_agendamentos: {
         parameters: {
-            query?: never;
+            query?: {
+                status?: string;
+                servico?: string;
+                tecnico?: string;
+                dataHoraInicio?: string;
+                dataHoraFim?: string;
+                limit?: number;
+                offset?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;

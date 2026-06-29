@@ -13,6 +13,7 @@ interface CalendarDropdownProps {
   className?: string;
   maxDate?: Date;
   allowRange?: boolean;
+  type?: "single" | "range";
 }
 
 export const CalendarDropdown: React.FC<CalendarDropdownProps> = ({
@@ -22,6 +23,7 @@ export const CalendarDropdown: React.FC<CalendarDropdownProps> = ({
   className,
   maxDate,
   allowRange = true,
+  type,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState<any>(propValue || null);
@@ -106,7 +108,7 @@ export const CalendarDropdown: React.FC<CalendarDropdownProps> = ({
             <div className="max-sm:scale-90 transform-gpu">
               <CalendarPicker
                 value={value}
-                type={value && value?.start ? "range" : "single"}
+                type={type || (value && value?.start ? "range" : "single")}
                 onChange={handleDateChange}
                 maxDate={maxDate}
                 allowRange={allowRange}

@@ -67,9 +67,11 @@ export async function visualizarPdfOsPortalDatasource(id: string) {
   return data;
 }
 
-export async function getAgendamentosPortalDatasource() {
+export async function getAgendamentosPortalDatasource(
+  params?: import("@/model/rest/cliente").AgendamentosPortalParams,
+) {
   const { data } = await serverRequest.get<
     import("@/model/rest/cliente").AgendamentosPortalResponse
-  >("/clientes/portal/agendamentos");
+  >("/clientes/portal/agendamentos", { params });
   return data;
 }

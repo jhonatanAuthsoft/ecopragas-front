@@ -165,22 +165,42 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
 
   const handleDayClick = (date: Date, isCurrentMonth: boolean) => {
     if (!isCurrentMonth) return;
-
     if (maxDate && date > maxDate) return;
 
     if (!isRange) {
-      setSelectedDate(date);
-      onChange?.(date);
+      if (isSameDay(date, selectedDate)) {
+        setSelectedDate(null);
+        onChange?.(null);
+      } else {
+        setSelectedDate(date);
+        onChange?.(date);
+      }
       return;
     }
+    
     if (!range.start || (range.start && range.end)) {
-      const newRange = { start: date, end: null };
-      setRange(newRange);
-      onChange?.(newRange);
+      if (range.start && range.end && isSameDay(date, range.start) && isSameDay(date, range.end)) {
+        const newRange = { start: null, end: null };
+        setRange(newRange);
+        onChange?.(newRange);
+      } else {
+        const newRange = { start: date, end: null };
+        setRange(newRange);
+        onChange?.(newRange);
+      }
     } else {
-      const newRange = { start: range.start, end: date };
-      setRange(newRange);
-      onChange?.(newRange);
+      if (isSameDay(date, range.start)) {
+        const newRange = { start: null, end: null };
+        setRange(newRange);
+        onChange?.(newRange);
+      } else {
+        const newRange = { 
+          start: date < range.start ? date : range.start, 
+          end: date < range.start ? range.start : date 
+        };
+        setRange(newRange);
+        onChange?.(newRange);
+      }
     }
   };
 

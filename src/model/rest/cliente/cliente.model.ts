@@ -45,6 +45,10 @@ export type HistoricoOsPortalParams = NonNullable<
 export type HistoricoOsPortalResponse =
   operations["cliente_obter_historico_os"]["responses"][200]["content"]["application/json"];
 
+export type AgendamentosPortalParams = NonNullable<
+  operations["cliente_obter_agendamentos"]["parameters"]["query"]
+>;
+
 export type AgendamentosPortalResponse =
   operations["cliente_obter_agendamentos"]["responses"][200]["content"]["application/json"];
 
