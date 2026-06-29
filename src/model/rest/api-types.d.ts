@@ -2316,6 +2316,7 @@ export interface operations {
                 searchText?: string;
                 dataInicio?: string;
                 dataFim?: string;
+                tecnico?: string[];
             };
             header?: never;
             path?: never;
