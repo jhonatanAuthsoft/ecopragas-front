@@ -14,18 +14,21 @@ export interface AdminAgendaWeeklyItem extends AgendaWeeklyItem {
 
 export const buildListAgendamentosParams = (
   weekDays: Date[],
-  searchText?: string,
+  filtroTecnico?: string,
 ): ListAgendamentosParams => {
   const start = weekDays[0];
   const end = weekDays[weekDays.length - 1];
-  const trimmedSearch = searchText?.trim();
+  const tecnicos = filtroTecnico
+    ?.split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
 
   return {
     // TODO: ver estrategia para melhorar listagem
     limit: 200,
     dataInicio: formatISO(startOfDay(start)),
     dataFim: formatISO(endOfDay(end)),
-    searchText: trimmedSearch || undefined,
+    tecnico: tecnicos?.length ? tecnicos : undefined,
   };
 };
 

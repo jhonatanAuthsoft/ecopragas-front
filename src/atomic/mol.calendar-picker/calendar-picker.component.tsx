@@ -435,14 +435,16 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
         </H2>
         <div className="flex items-center gap-[12px]">
           <button
+            type="button"
             onClick={handlePrevMonth}
-            className="flex items-center justify-center text-grayscale-dark hover:text-brand-primary-medium transition-colors"
+            className="flex items-center justify-center p-2xs text-grayscale-dark hover:text-brand-primary-medium hover:bg-grayscale-light/50 rounded-full transition-colors cursor-pointer"
           >
             <ChevronLeft size={20} />
           </button>
           <button
+            type="button"
             onClick={handleNextMonth}
-            className="flex items-center justify-center text-grayscale-dark hover:text-brand-primary-medium transition-colors"
+            className="flex items-center justify-center p-2xs text-grayscale-dark hover:text-brand-primary-medium hover:bg-grayscale-light/50 rounded-full transition-colors cursor-pointer"
           >
             <ChevronRight size={20} />
           </button>
@@ -451,7 +453,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
 
       <div className="grid grid-cols-7 w-full">
         {DAYS_OF_WEEK.map((day) => (
-          <div key={day} className="flex justify-center">
+          <div key={`calendar-day-of-week-${day}`} className="flex justify-center">
             <Body2 className="text-grayscale-medium">{day}</Body2>
           </div>
         ))}
@@ -460,7 +462,9 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
       <div className="grid grid-cols-7 gap-y-0.5 w-full">
         {calendarDays.map((item, idx) => {
           if (!item.isCurrentMonth) {
-            return <div key={idx} className="h-9" />;
+            return (
+              <div key={`calendar-day-placeholder-${item.date.toISOString()}`} className="h-9" />
+            );
           }
 
           const isSelected =
@@ -496,7 +500,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
 
           return (
             <div
-              key={idx}
+              key={`calendar-day-${item.date.toISOString()}-${idx}`}
               onClick={() => !isDisabled && handleDayClick(item.date, item.isCurrentMonth)}
               onMouseEnter={() => !isDisabled && setHoverDate(item.date)}
               onMouseLeave={() => setHoverDate(null)}
