@@ -1,10 +1,23 @@
 import type { components, operations } from "../api-types";
 
 export type Agendamento = components["schemas"]["AgendamentoResponseDTO"];
-export type AgendamentoAtividade = components["schemas"]["AgendamentoAtividadeResponseDTO"];
+export type Recorrencia = NonNullable<Agendamento["recorrencia"]>;
+export type TecnicoResumo = components["schemas"]["TecnicoResumoDTO"];
 
 export type CadastrarAgendamentoInput =
   operations["agendamento_cadastrar"]["requestBody"]["content"]["application/json"];
+
+export type CadastrarAgendamentoFormValues = Omit<CadastrarAgendamentoInput, "dataHoraServico"> & {
+  clienteId: string;
+  data?: Date;
+  horario?: string;
+};
+
+export type ReagendarAgendamentoFormValues = Pick<
+  CadastrarAgendamentoFormValues,
+  "data" | "horario"
+>;
+
 export type CadastrarAgendamentoResponse =
   operations["agendamento_cadastrar"]["responses"][200]["content"]["application/json"];
 

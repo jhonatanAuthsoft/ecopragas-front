@@ -7,22 +7,25 @@ import { Badge } from "@/atomic/atm.badge/badge.component";
 import { Button } from "@/atomic/atm.button/button.component";
 import { DetailItem } from "@/atomic/atm.detail-item";
 import { Body2, H2, H3 } from "@/atomic/atm.typography";
+import type { Agendamento } from "@/model/rest/agendamento";
 import { formatCurrency, formatPhone } from "@/utils/formatters";
+import { formatTecnicosLabel } from "../../agendamentos.utils";
 import { DeleteAgendamentoDialog } from "../DeleteAgendamentoDialog";
 import { getBadgeRecorrenciaLabel, TIPO_SERVICO_LABELS } from "./agendamento-detalhes.labels";
-import type { AgendamentoDetalhesView } from "./agendamento-detalhes.types";
 import { formatDataHorario, formatEndereco } from "./agendamento-detalhes.utils";
 
 interface AgendamentoDetalhesCardProps {
-  agendamento: AgendamentoDetalhesView;
+  agendamento: Agendamento;
   onDelete: () => void;
   onReagendar: () => void;
+  isDeleteLoading?: boolean;
 }
 
 export function AgendamentoDetalhesCard({
   agendamento,
   onDelete,
   onReagendar,
+  isDeleteLoading = false,
 }: AgendamentoDetalhesCardProps) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const endereco = formatEndereco(agendamento);
@@ -35,7 +38,8 @@ export function AgendamentoDetalhesCard({
       <div className="flex flex-col gap-lg p-lg bg-white rounded-medium shadow-sm border border-grayscale-light">
         <div className="flex flex-col gap-sm pb-sm border-b border-grayscale-light">
           <Badge color="blue" className="self-start">
-            {recorrenciaLabel} - <b>{agendamento.numeroOrdemServico ?? "-"}</b>
+            {/* TODO: adicionar ao atualizar back */}
+            {recorrenciaLabel} - <b>{agendamento.ordemServicoId ?? "-"}</b>
           </Badge>
 
           <H2>{agendamento.tipoServico ? TIPO_SERVICO_LABELS[agendamento.tipoServico] : "-"}</H2>
@@ -59,28 +63,26 @@ export function AgendamentoDetalhesCard({
         </div>
 
         <div className="flex flex-col gap-md pb-sm border-b border-grayscale-light">
-          <H3>Dados do Servico</H3>
+          <H3>Dados do Serviço</H3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
             <DetailItem
               label="Tipo de Servico"
               value={[agendamento.tipoServico ? TIPO_SERVICO_LABELS[agendamento.tipoServico] : "-"]}
             />
             <DetailItem
-              label="Tecnico responsavel"
-              value={[agendamento.tecnicoResponsavel ?? "-"]}
+              label="Técnico responsável"
+              value={[formatTecnicosLabel(agendamento.tecnicos)]}
             />
             <DetailItem
-              label="Data e horario"
+              label="Data e horário"
               value={[agendamento.dataHoraServico ? dataHorario : "-"]}
             />
             <DetailItem
-              label="Valor do servico"
+              label="Valor do serviço"
               value={[
-                agendamento.valorServico != null ? (
-                  <b key="valor-servico">{formatCurrency(agendamento.valorServico)}</b>
-                ) : (
-                  "-"
-                ),
+                <b key="valor-servico">
+                  {agendamento.valor != null ? formatCurrency(agendamento.valor) : "-"}
+                </b>,
               ]}
               valueClassName="text-brand-cta-dark"
             />
@@ -109,6 +111,7 @@ export function AgendamentoDetalhesCard({
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
         onConfirm={onDelete}
+        isLoading={isDeleteLoading}
       />
     </>
   );

@@ -1,63 +1,46 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Skeleton } from "@/atomic/atm.skeleton/skeleton.component";
 import { Body1, H1 } from "@/atomic/atm.typography";
-import {
-  AgendaWeekly,
-  type AgendaWeeklyItem,
-  createMockWeekAgendamentos,
-  getWeekStartFromDate,
-} from "@/atomic/org.agenda-weekly";
+import { LoadingState } from "@/atomic/obj.loading-state";
+import { AgendaWeekly, getWeekDays, getWeekStartFromDate } from "@/atomic/org.agenda-weekly";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
+import { useListAgendamentos } from "@/domain/agendamento";
+import { useDebounce } from "@/hooks/use-debounce";
 import {
-  AddAgendamentoDialog,
-  type AddAgendamentoSubmitPayload,
-} from "./components/add-agendamento-dialog";
-
-type AgendamentoStatus = "agendado" | "em-andamento" | "concluido" | "cancelado";
-type AgendamentoRecorrencia = "semanal" | "mensal" | "trimestral" | "semestral" | "anual";
-
-interface Agendamento extends AgendaWeeklyItem {
-  clienteNome: string;
-  endereco: string;
-  status: AgendamentoStatus;
-  recorrencia?: AgendamentoRecorrencia;
-}
+  buildListAgendamentosParams,
+  mapAgendamentoToAgendaWeeklyItem,
+} from "./agendamentos.utils";
+import { AddAgendamentoDialog } from "./components/add-agendamento-dialog";
 
 const Agendamentos = () => {
   const navigate = useNavigate();
   const [weekStart, setWeekStart] = useState(() => getWeekStartFromDate(new Date()));
   const [filtroTecnico, setFiltroTecnico] = useState("");
+  const debouncedFiltroTecnico = useDebounce(filtroTecnico);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
-  const [agendamentos, setAgendamentos] = useState<Agendamento[]>(() => {
-    const mockItems = createMockWeekAgendamentos(new Date());
+  const weekDays = useMemo(() => getWeekDays(weekStart), [weekStart]);
 
-    return mockItems.map((item, index) => ({
-      ...item,
-      clienteNome: index % 2 === 0 ? "João Silva" : "Maria Oliveira",
-      endereco: index % 2 === 0 ? "Rua A, 123" : "Av. B, 456",
-      status: index === 1 ? "em-andamento" : "agendado",
-      recorrencia: index === 0 ? "mensal" : undefined,
-    }));
-  });
+  const listParams = useMemo(
+    () => buildListAgendamentosParams(weekDays, debouncedFiltroTecnico),
+    [weekDays, debouncedFiltroTecnico],
+  );
 
-  const handleAddAgendamento = (data: AddAgendamentoSubmitPayload) => {
-    const newAgendamento: Agendamento = {
-      id: String(agendamentos.length + 1),
-      tipoServico: data.tipoServico,
-      horario: data.horario,
-      data: data.data,
-      tecnico: data.tecnicoNome,
-      clienteNome: data.clienteNome,
-      endereco: data.endereco,
-      status: "agendado",
-      recorrencia: data.recorrencia,
-    };
+  const {
+    agendamentos: agendamentosApi,
+    isListAgendamentosLoading,
+    listAgendamentosError,
+  } = useListAgendamentos(listParams);
 
-    setAgendamentos([...agendamentos, newAgendamento]);
-    setIsAddDialogOpen(false);
-  };
+  const agendamentos = useMemo(
+    () =>
+      agendamentosApi
+        .map(mapAgendamentoToAgendaWeeklyItem)
+        .filter((item): item is NonNullable<typeof item> => item !== null),
+    [agendamentosApi],
+  );
 
   return (
     <MainLayout>
@@ -67,24 +50,37 @@ const Agendamentos = () => {
           <Body1 className="font-normal text-grayscale-dark">Gerencie a agenda de serviços</Body1>
         </div>
 
-        <AgendaWeekly
-          agendamentos={agendamentos}
-          weekStart={weekStart}
-          onWeekChange={setWeekStart}
-          filtroTecnico={filtroTecnico}
-          onFiltroTecnicoChange={setFiltroTecnico}
-          onNovoClick={() => setIsAddDialogOpen(true)}
-          onAgendamentoClick={(item) =>
-            navigate(ROUTES.ADMIN.SCHEDULING.DETAILS.replace(":id", item.id ?? ""))
-          }
-        />
+        <LoadingState
+          loading={isListAgendamentosLoading}
+          error={!!listAgendamentosError}
+          data={!!agendamentos}
+        >
+          <LoadingState.Shimmer>
+            <Skeleton className="h-[600px] w-full rounded-xl" />
+          </LoadingState.Shimmer>
+
+          <LoadingState.Error>
+            <div className="text-center py-12">
+              <p className="text-lg font-medium text-foreground">Erro ao carregar agendamentos</p>
+              <p className="text-sm text-muted-foreground mt-1">Tente recarregar a página</p>
+            </div>
+          </LoadingState.Error>
+
+          <AgendaWeekly
+            agendamentos={agendamentos}
+            weekStart={weekStart}
+            onWeekChange={setWeekStart}
+            filtroTecnico={filtroTecnico}
+            onFiltroTecnicoChange={setFiltroTecnico}
+            onNovoClick={() => setIsAddDialogOpen(true)}
+            onAgendamentoClick={(item) =>
+              navigate(ROUTES.ADMIN.SCHEDULING.DETAILS.replace(":id", item.id ?? ""))
+            }
+          />
+        </LoadingState>
       </div>
 
-      <AddAgendamentoDialog
-        open={isAddDialogOpen}
-        onOpenChange={setIsAddDialogOpen}
-        onAdd={handleAddAgendamento}
-      />
+      <AddAgendamentoDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
     </MainLayout>
   );
 };

@@ -1,10 +1,11 @@
-import { format } from "date-fns";
 import type { SelectInputOption } from "@/atomic/atm.select-input";
-import type { AddAgendamentoFormValues } from "../add-agendamento-dialog/add-agendamento-dialog.types";
-import type { AgendamentoDetalhesView } from "../agendamento-detalhes/agendamento-detalhes.types";
-import type { ReagendarAgendamentoSubmitPayload } from "./reagendar-agendamento-dialog.types";
-
-const TECNICO_DISPLAY_VALUE = "tecnico-display";
+import type {
+  Agendamento,
+  CadastrarAgendamentoFormValues,
+  EditAgendamentoInput,
+  ReagendarAgendamentoFormValues,
+} from "@/model/rest/agendamento";
+import { formatDateHour, parseDataHoraServico } from "../../agendamentos.utils";
 
 interface ReagendarAgendamentoDisplayLabels {
   clienteNome: string;
@@ -12,58 +13,42 @@ interface ReagendarAgendamentoDisplayLabels {
   tecnicoOptions: SelectInputOption[];
 }
 
-const parseAgendamentoDataHora = (
-  dataHoraServico?: string,
-): Pick<AddAgendamentoFormValues, "data" | "horario"> => {
-  if (!dataHoraServico) {
-    return { data: undefined, horario: "" };
-  }
-
-  const parsed = new Date(dataHoraServico);
-
-  if (Number.isNaN(parsed.getTime())) {
-    return { data: undefined, horario: "" };
-  }
-
-  return {
-    data: parsed,
-    horario: format(parsed, "HH:mm"),
-  };
-};
-
 export const buildReagendarFormValues = (
-  agendamento: AgendamentoDetalhesView,
-): AddAgendamentoFormValues => {
-  const { data, horario } = parseAgendamentoDataHora(agendamento.dataHoraServico);
-  const tecnicoResponsavel = agendamento.tecnicoResponsavel?.trim();
+  agendamento: Agendamento,
+): CadastrarAgendamentoFormValues => {
+  const { data, horario } = parseDataHoraServico(agendamento.dataHoraServico);
+  const tecnicosIds =
+    agendamento.tecnicos?.map((tecnico) => tecnico.id ?? "").filter(Boolean) ?? [];
 
   return {
     clienteId: agendamento.clienteId ?? "",
     ordemServicoId: agendamento.ordemServicoId ?? "",
-    tecnicoIds: tecnicoResponsavel ? [TECNICO_DISPLAY_VALUE] : [],
-    recorrencia: agendamento.recorrencia ?? "",
+    tecnicosIds,
+    recorrencia: agendamento.recorrencia ?? "NENHUMA",
     data,
     horario,
   };
 };
 
 export const buildReagendarDisplayLabels = (
-  agendamento: AgendamentoDetalhesView,
+  agendamento: Agendamento,
 ): ReagendarAgendamentoDisplayLabels => {
-  const tecnicoResponsavel = agendamento.tecnicoResponsavel?.trim();
-
   return {
     clienteNome: agendamento.clienteNome ?? "",
-    ordemServicoLabel: agendamento.numeroOrdemServico ?? agendamento.ordemServicoId ?? "-",
-    tecnicoOptions: tecnicoResponsavel
-      ? [{ value: TECNICO_DISPLAY_VALUE, label: tecnicoResponsavel }]
-      : [],
+    ordemServicoLabel: agendamento.ordemServicoId ?? "-",
+    tecnicoOptions:
+      agendamento.tecnicos
+        ?.filter((tecnico) => tecnico.id && tecnico.nome)
+        .map((tecnico) => ({
+          value: tecnico.id ?? "",
+          label: tecnico.nome ?? "",
+        })) ?? [],
   };
 };
 
 export const buildReagendarPayload = (
-  values: Pick<AddAgendamentoFormValues, "data" | "horario">,
-): ReagendarAgendamentoSubmitPayload | null => {
+  values: Pick<CadastrarAgendamentoFormValues, "data" | "horario">,
+): ReagendarAgendamentoFormValues | null => {
   if (!values.data || !values.horario) {
     return null;
   }
@@ -71,5 +56,21 @@ export const buildReagendarPayload = (
   return {
     data: values.data,
     horario: values.horario,
+  };
+};
+
+export const buildEditAgendamentoInput = (
+  agendamento: Agendamento,
+  values: ReagendarAgendamentoFormValues,
+): EditAgendamentoInput | null => {
+  const tecnicosIds =
+    agendamento.tecnicos?.map((tecnico) => tecnico.id ?? "").filter(Boolean) ?? [];
+
+  return {
+    ordemServicoId: agendamento.ordemServicoId,
+    tecnicosIds: tecnicosIds.length > 0 ? tecnicosIds : undefined,
+    dataHoraServico: formatDateHour(values.data, values.horario),
+    recorrencia: agendamento.recorrencia ?? "NENHUMA",
+    status: agendamento.status,
   };
 };

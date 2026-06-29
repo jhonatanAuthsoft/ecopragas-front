@@ -7,16 +7,17 @@ interface DeleteAgendamentoDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
+  isLoading?: boolean;
 }
 
 export function DeleteAgendamentoDialog({
   open,
   onOpenChange,
   onConfirm,
+  isLoading = false,
 }: DeleteAgendamentoDialogProps) {
   const handleConfirm = () => {
     onConfirm();
-    onOpenChange(false);
   };
 
   return (
@@ -40,10 +41,18 @@ export function DeleteAgendamentoDialog({
             size="lg"
             className="flex-1"
             onClick={() => onOpenChange(false)}
+            disabled={isLoading}
           >
             Cancelar
           </Button>
-          <Button variant="destructive" size="lg" className="flex-1" onClick={handleConfirm}>
+          <Button
+            variant="destructive"
+            size="lg"
+            className="flex-1"
+            onClick={handleConfirm}
+            disabled={isLoading}
+            isLoading={isLoading}
+          >
             Excluir
           </Button>
         </div>

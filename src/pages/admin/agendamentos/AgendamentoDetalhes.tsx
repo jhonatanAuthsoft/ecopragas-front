@@ -1,40 +1,36 @@
 import { ChevronLeft } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
+import { Skeleton } from "@/atomic/atm.skeleton/skeleton.component";
 import { Body1, H1 } from "@/atomic/atm.typography";
+import { LoadingState } from "@/atomic/obj.loading-state";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
-import {
-  AgendamentoDetalhesCard,
-  type AgendamentoDetalhesView,
-  getAgendamentoDetalhesById,
-} from "./components/agendamento-detalhes";
-import {
-  ReagendarAgendamentoDialog,
-  type ReagendarAgendamentoSubmitPayload,
-} from "./components/reagendar-agendamento-dialog";
+import { useDeleteAgendamento, useGetAgendamento } from "@/domain/agendamento";
+import { AgendamentoDetalhesCard } from "./components/agendamento-detalhes";
+import { ReagendarAgendamentoDialog } from "./components/reagendar-agendamento-dialog";
 
 export default function AgendamentoDetalhes() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [agendamento, setAgendamento] = useState<AgendamentoDetalhesView>(() =>
-    getAgendamentoDetalhesById(id ?? "1"),
-  );
   const [isReagendarDialogOpen, setIsReagendarDialogOpen] = useState(false);
 
-  useEffect(() => {
-    setAgendamento(getAgendamentoDetalhesById(id ?? "1"));
-  }, [id]);
+  const { agendamento, getAgendamentoError, isGetAgendamentoLoading } = useGetAgendamento({
+    id: id ?? "",
+  });
+
+  const { deleteAgendamento, isDeleteAgendamentoLoading } = useDeleteAgendamento({
+    onSuccess: () => {
+      toast.success("Agendamento excluído com sucesso!");
+      navigate(ROUTES.ADMIN.SCHEDULING.BASE);
+    },
+  });
 
   const handleDelete = () => {
-    toast.info("Em desenvolvimento...");
-    navigate(ROUTES.ADMIN.SCHEDULING.BASE);
-  };
-
-  const handleReagendar = (_payload: ReagendarAgendamentoSubmitPayload) => {
-    toast.info("Em desenvolvimento...");
+    if (!agendamento?.id) return;
+    deleteAgendamento({ id: agendamento.id });
   };
 
   return (
@@ -57,18 +53,36 @@ export default function AgendamentoDetalhes() {
           </Body1>
         </div>
 
-        <AgendamentoDetalhesCard
-          agendamento={agendamento}
-          onDelete={handleDelete}
-          onReagendar={() => setIsReagendarDialogOpen(true)}
-        />
+        <LoadingState
+          loading={isGetAgendamentoLoading}
+          error={!!getAgendamentoError}
+          data={!!agendamento}
+          renderOnlyWhenData
+        >
+          <LoadingState.Shimmer>
+            <Skeleton className="h-[400px] w-full rounded-medium" />
+          </LoadingState.Shimmer>
 
-        <ReagendarAgendamentoDialog
-          open={isReagendarDialogOpen}
-          onOpenChange={setIsReagendarDialogOpen}
-          agendamento={agendamento}
-          onConfirm={handleReagendar}
-        />
+          <LoadingState.Error>
+            <div className="text-center py-12">
+              <p className="text-lg font-medium text-foreground">Erro ao carregar agendamento</p>
+              <p className="text-sm text-muted-foreground mt-1">Tente recarregar a página</p>
+            </div>
+          </LoadingState.Error>
+
+          <AgendamentoDetalhesCard
+            agendamento={agendamento}
+            onDelete={handleDelete}
+            onReagendar={() => setIsReagendarDialogOpen(true)}
+            isDeleteLoading={isDeleteAgendamentoLoading}
+          />
+
+          <ReagendarAgendamentoDialog
+            open={isReagendarDialogOpen}
+            onOpenChange={setIsReagendarDialogOpen}
+            agendamento={agendamento}
+          />
+        </LoadingState>
       </div>
     </MainLayout>
   );

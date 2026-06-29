@@ -1,5 +1,5 @@
 import { Plus } from "lucide-react";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { MagnifierIcon } from "@/assets/icons/magnifier";
 import { Button } from "@/atomic/atm.button/button.component";
 import { TextInput } from "@/atomic/atm.text-input";
@@ -15,7 +15,6 @@ import {
   formatMonthYear,
   formatTimeSlotLabel,
   getAgendamentosForCell,
-  getItemTecnicos,
   getWeekDays,
   getWeekStartFromDate,
 } from "./agenda-weekly.utils";
@@ -35,21 +34,8 @@ export function AgendaWeekly({
   const currentHourRowRef = useRef<HTMLDivElement>(null);
   const currentHour = new Date().getHours();
 
-  const weekDays = useMemo(() => getWeekDays(weekStart), [weekStart]);
-  const weekRange = useMemo(
-    () => ({ start: weekDays[0], end: weekDays[weekDays.length - 1] }),
-    [weekDays],
-  );
-
-  const filteredAgendamentos = useMemo(() => {
-    if (!filtroTecnico.trim()) return agendamentos;
-
-    const term = filtroTecnico.toLowerCase();
-    return agendamentos.filter((item) => {
-      const tecnicos = getItemTecnicos(item);
-      return tecnicos.some((tecnico) => tecnico.toLowerCase().includes(term));
-    });
-  }, [agendamentos, filtroTecnico]);
+  const weekDays = getWeekDays(weekStart);
+  const weekRange = { start: weekDays[0], end: weekDays[weekDays.length - 1] };
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
@@ -88,7 +74,6 @@ export function AgendaWeekly({
               label="Selecione a semana"
               selectionMode="week"
               className="whitespace-nowrap"
-              maxDate={new Date()}
             />
 
             <TextInput
@@ -149,7 +134,7 @@ export function AgendaWeekly({
                 {weekDays.map((day) => (
                   <AgendaWeekCell
                     key={`${day.toISOString()}-${hour}`}
-                    agendamentos={getAgendamentosForCell(filteredAgendamentos, day, hour)}
+                    agendamentos={getAgendamentosForCell(agendamentos, day, hour)}
                     onAgendamentoClick={onAgendamentoClick}
                   />
                 ))}
