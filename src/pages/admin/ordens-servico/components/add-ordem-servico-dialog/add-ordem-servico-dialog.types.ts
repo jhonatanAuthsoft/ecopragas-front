@@ -15,18 +15,20 @@ export type EstacaoMonitoramento = {
 export type AreaMonitoramentoInsetos = {
   id: string;
   nome: string;
-  pragaAlvo: string;
+  pragaAlvo: string[];
   tratamento: string;
 };
 
 export type AreaMonitoramentoInsetosDraft = Omit<AreaMonitoramentoInsetos, "id">;
 
+// TODO: organizar nos models
 export type OrdemServicoFormValues = {
   clienteId: string;
   tipoServico: TipoServicoForm | "";
-  tecnicoId: string;
   valorServico: string;
   status: StatusOrdemServicoForm | "";
+  data?: Date;
+  horario: string;
   observacoes: string;
   estacoesMonitoramento: EstacaoMonitoramento[];
   areasMonitoramentoInsetos: AreaMonitoramentoInsetos[];
@@ -49,19 +51,6 @@ export type ServicoEndereco = {
   numero: string;
   complemento: string;
   padrao?: boolean;
-};
-
-export type MockCliente = {
-  id: string;
-  nome: string;
-  cpfCnpj: string;
-  telefone: string;
-  enderecos: ServicoEndereco[];
-};
-
-export type MockTecnico = {
-  id: string;
-  nome: string;
 };
 
 export type ViaCepResponse = {

@@ -44,6 +44,7 @@ export function OrdemServicoDetalhesCard({
   const endereco = formatEndereco(ordem);
   const dataHorario = formatDataHorario(ordem.dataHoraServico);
   const tipoServicoLabel = ordem.tipoServico ? TIPO_SERVICO_LABELS[ordem.tipoServico] : "-";
+  const statusLabel = ordem.status ? STATUS_LABELS[ordem.status] : "Criado";
   const isDone =
     ordem.status === "CONCLUIDO" || ordem.status === "EM_ANDAMENTO" || ordem.status === "CANCELADO";
 
@@ -54,11 +55,10 @@ export function OrdemServicoDetalhesCard({
           <div className="flex justify-between">
             <div className="flex flex-col gap-xs">
               <Badge
-                color={ordem.status ? STATUS_BADGE_COLOR[ordem.status] : undefined}
+                color={ordem.status ? STATUS_BADGE_COLOR[ordem.status] : "neutral"}
                 className="self-start"
               >
-                {ordem.status && `${STATUS_LABELS[ordem.status]} - `}
-                <b>{formatOsNumero(ordem.osNumero)}</b>
+                {statusLabel} - <b className="ml-2xs">{formatOsNumero(ordem.osNumero)}</b>
               </Badge>
               <H2>{ordem.clienteNome ?? "-"}</H2>
             </div>

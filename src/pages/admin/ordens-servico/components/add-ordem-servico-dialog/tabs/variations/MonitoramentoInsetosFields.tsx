@@ -6,6 +6,7 @@ import { BugAntIcon } from "@/assets/icons/bug-ant";
 import { PencilSquareFilledIcon } from "@/assets/icons/pencil-square-filled";
 import { TrashIcon } from "@/assets/icons/trash";
 import { Button } from "@/atomic/atm.button/button.component";
+import { MultiSelectInput } from "@/atomic/atm.multi-select-input";
 import { SelectInput } from "@/atomic/atm.select-input";
 import { TextInput } from "@/atomic/atm.text-input";
 import { Body2, H3, H4, InputCaption } from "@/atomic/atm.typography/typography.component";
@@ -19,7 +20,10 @@ import type {
   AreaMonitoramentoInsetosDraft,
   OrdemServicoFormValues,
 } from "../../add-ordem-servico-dialog.types";
-import { getSelectOptionLabel } from "../../add-ordem-servico-dialog.utils";
+import {
+  getMultiSelectOptionLabels,
+  getSelectOptionLabel,
+} from "../../add-ordem-servico-dialog.utils";
 
 export const MonitoramentoInsetosFields = () => {
   const { watch, setValue } = useFormContext<OrdemServicoFormValues>();
@@ -32,7 +36,7 @@ export const MonitoramentoInsetosFields = () => {
   );
 
   const trimmedNome = draft.nome.trim();
-  const canConfirm = trimmedNome.length > 0 && !!draft.pragaAlvo && !!draft.tratamento;
+  const canConfirm = trimmedNome.length > 0 && draft.pragaAlvo.length > 0 && !!draft.tratamento;
 
   const resetForm = () => {
     setIsFormVisible(false);
@@ -121,7 +125,7 @@ export const MonitoramentoInsetosFields = () => {
             <AreaCard
               key={area.id}
               nome={area.nome}
-              pragaAlvo={getSelectOptionLabel(PRAGA_ALVO_OPTIONS, area.pragaAlvo)}
+              pragaAlvo={getMultiSelectOptionLabels(PRAGA_ALVO_OPTIONS, area.pragaAlvo)}
               tratamento={getSelectOptionLabel(TRATAMENTO_OPTIONS, area.tratamento)}
               isEditing={editingId === area.id}
               onEdit={() => handleEdit(area.id)}
@@ -181,9 +185,10 @@ const AddNewAreaCard = ({
     />
 
     <div className="flex flex-col md:flex-row gap-md">
-      <SelectInput
+      <MultiSelectInput
+        className="w-full max-w-[360px]"
         label="Praga alvo"
-        placeholder="Selecione a praga"
+        placeholder="Selecione a(s) praga(s)"
         options={PRAGA_ALVO_OPTIONS}
         value={draft.pragaAlvo}
         onChange={(value) => onDraftChange({ ...draft, pragaAlvo: value })}

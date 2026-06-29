@@ -1,14 +1,14 @@
 import { useFormContext } from "react-hook-form";
 import { Button } from "@/atomic/atm.button/button.component";
+import { InfiniteSelectInput } from "@/atomic/atm.infinite-select-input";
 import { SelectInput } from "@/atomic/atm.select-input";
 import { TextInput } from "@/atomic/atm.text-input";
 import { TextareaInput } from "@/atomic/atm.textarea-input";
 import { TabsContent } from "@/atomic/mol.tabs/tabs.component";
 import { FormField, RequiredValidator } from "@/atomic/obj.form";
+import { clientesInfiniteSelectConfig } from "@/domain/cliente";
 import { formatCurrency } from "@/utils/formatters";
 import {
-  getClienteOptions,
-  getTecnicoOptions,
   getTipoServicoVariacao,
   STATUS_OPTIONS,
   TIPO_SERVICO_OPTIONS,
@@ -38,10 +38,11 @@ export const DadosServicoTab = ({
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <FormField name="clienteId" validators={[RequiredValidator()]}>
-          <SelectInput
+          <InfiniteSelectInput
             label="Cliente"
             placeholder="Selecione o cliente"
-            options={getClienteOptions()}
+            searchPlaceholder="Buscar cliente"
+            queryConfig={clientesInfiniteSelectConfig}
           />
         </FormField>
 
@@ -50,14 +51,6 @@ export const DadosServicoTab = ({
             label="Tipo de serviço"
             placeholder="Selecione o tipo de serviço"
             options={TIPO_SERVICO_OPTIONS}
-          />
-        </FormField>
-
-        <FormField name="tecnicoId" validators={[RequiredValidator()]}>
-          <SelectInput
-            label="Técnico responsável"
-            placeholder="Selecione o tecnico"
-            options={getTecnicoOptions()}
           />
         </FormField>
 

@@ -109,11 +109,11 @@ export const formatPercentValue = (value?: number, decimals = 0): string => {
 };
 
 export const TIPO_SERVICO_LABELS: Record<OrdemServico["tipoServico"], string> = {
+  SANITIZACAO: "Sanitização",
+  CONTROLE_PRAGAS_VETORES: "Controle de Pragas e Vetores",
   HIGIENIZACAO: "Higienização",
   MONITORAMENTO_INSETOS: "Monitoramento de Insetos",
   MONITORAMENTO_ROEDORES: "Monitoramento de Roedores",
-  CONTROLE_PRAGAS_VETORES: "Controle de Pragas e Vetores",
-  SANITIZACAO: "Sanitização",
 };
 
 export const formatTipoServico = (tipo?: string | null): string => {

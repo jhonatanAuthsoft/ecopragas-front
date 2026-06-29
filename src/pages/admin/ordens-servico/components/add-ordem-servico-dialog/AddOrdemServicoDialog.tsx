@@ -1,28 +1,26 @@
 import { useEffect, useRef, useState } from "react";
 import { type FieldErrors, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { H2 } from "@/atomic/atm.typography";
 import { Dialog, DialogContent, DialogHeader } from "@/atomic/mol.dialog/dialog.component";
 import { Tabs, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
 import { Form } from "@/atomic/obj.form";
+import { useCreateOrdemServico } from "@/domain/ordem-servico";
 import { DADOS_FIELDS, DEFAULT_VALUES, TAB_TRIGGER_CLASS } from "./add-ordem-servico-dialog.data";
 import type {
   OrdemServicoDialogTab,
   OrdemServicoFormValues,
 } from "./add-ordem-servico-dialog.types";
+import { buildCadastrarOrdemServicoInput } from "./add-ordem-servico-dialog.utils";
 import { DadosServicoTab } from "./tabs/DadosServicoTab";
 import { EnderecoServicoTab, type EnderecoServicoTabHandle } from "./tabs/EnderecoServicoTab";
 
 export interface AddOrdemServicoDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddOrdemServico: () => void;
 }
 
-export const AddOrdemServicoDialog = ({
-  open,
-  onOpenChange,
-  onAddOrdemServico,
-}: AddOrdemServicoDialogProps) => {
+export const AddOrdemServicoDialog = ({ open, onOpenChange }: AddOrdemServicoDialogProps) => {
   const [activeTab, setActiveTab] = useState<OrdemServicoDialogTab>("dados");
   const enderecoTabRef = useRef<EnderecoServicoTabHandle>(null);
 
@@ -32,6 +30,14 @@ export const AddOrdemServicoDialog = ({
   });
   const { isSubmitting } = formMethods.formState;
   const clienteId = formMethods.watch("clienteId");
+
+  const { createOrdemServico, isCreateOrdemServicoLoading } = useCreateOrdemServico({
+    onSuccess: () => {
+      toast.success("Ordem de serviço cadastrada com sucesso!");
+      resetDialog();
+      onOpenChange(false);
+    },
+  });
 
   useEffect(() => {
     if (!clienteId) {
@@ -83,10 +89,16 @@ export const AddOrdemServicoDialog = ({
       return;
     }
 
-    onAddOrdemServico();
-    resetDialog();
-    onOpenChange(false);
+    const payload = buildCadastrarOrdemServicoInput(values, selectedEndereco);
+    if (!payload) {
+      setActiveTab("dados");
+      return;
+    }
+
+    createOrdemServico(payload);
   };
+
+  const isLoading = isSubmitting || isCreateOrdemServicoLoading;
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -107,7 +119,11 @@ export const AddOrdemServicoDialog = ({
             </TabsList>
 
             <DadosServicoTab onNext={handleNextDados} />
-            <EnderecoServicoTab ref={enderecoTabRef} isSubmitting={isSubmitting} />
+            <EnderecoServicoTab
+              ref={enderecoTabRef}
+              isSubmitting={isLoading}
+              submitLabel={isCreateOrdemServicoLoading ? "Criando..." : "Criar ordem de serviço"}
+            />
           </Tabs>
         </Form>
       </DialogContent>

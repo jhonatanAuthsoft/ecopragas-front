@@ -75,11 +75,7 @@ const OrdensServico = () => {
           />
         </div>
 
-        <AddOrdemServicoDialog
-          open={isDialogOpen}
-          onOpenChange={setIsDialogOpen}
-          onAddOrdemServico={() => setIsDialogOpen(false)}
-        />
+        <AddOrdemServicoDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
       </div>
     </MainLayout>
   );
