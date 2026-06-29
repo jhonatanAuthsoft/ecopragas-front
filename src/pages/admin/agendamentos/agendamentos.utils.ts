@@ -18,9 +18,10 @@ export const buildListAgendamentosParams = (weekDays: Date[]): ListAgendamentosP
 
   return {
     // TODO: ver estrategia para melhorar listagem
-    limit: 100,
+    limit: 200,
     dataInicio: formatISO(startOfDay(start)),
     dataFim: formatISO(endOfDay(end)),
+    // TODO: search
   };
 };
 

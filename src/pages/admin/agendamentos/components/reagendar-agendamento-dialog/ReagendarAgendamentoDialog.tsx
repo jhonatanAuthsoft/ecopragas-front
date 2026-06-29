@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
 import { DateInput } from "@/atomic/atm.date-input";
 import { InfiniteMultiSelectInput } from "@/atomic/atm.infinite-multi-select-input";
@@ -10,17 +11,15 @@ import { H2 } from "@/atomic/atm.typography";
 import { Dialog, DialogContent, DialogHeader } from "@/atomic/mol.dialog/dialog.component";
 import { Form, FormField, RequiredValidator, TimeValidator } from "@/atomic/obj.form";
 import { strings } from "@/atomic/obj.form/validators/validators.strings";
+import { useEditAgendamento } from "@/domain/agendamento";
 import { clientesInfiniteSelectConfig } from "@/domain/cliente";
 import type { InfiniteSelectQueryConfig } from "@/domain/infinite-list";
 import { ordensServicoInfiniteSelectConfig } from "@/domain/ordem-servico";
 import { tecnicosInfiniteSelectConfig } from "@/domain/tecnico";
-import type {
-  Agendamento,
-  CadastrarAgendamentoFormValues,
-  ReagendarAgendamentoFormValues,
-} from "@/model/rest/agendamento";
+import type { Agendamento, CadastrarAgendamentoFormValues } from "@/model/rest/agendamento";
 import { RECORRENCIA_OPTIONS } from "../add-agendamento-dialog/add-agendamento-dialog.data";
 import {
+  buildEditAgendamentoInput,
   buildReagendarDisplayLabels,
   buildReagendarFormValues,
   buildReagendarPayload,
@@ -35,22 +34,26 @@ interface ReagendarAgendamentoDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   agendamento: Agendamento;
-  onConfirm: (payload: ReagendarAgendamentoFormValues) => void;
 }
 
 export function ReagendarAgendamentoDialog({
   open,
   onOpenChange,
   agendamento,
-  onConfirm,
 }: ReagendarAgendamentoDialogProps) {
   const formMethods = useForm<CadastrarAgendamentoFormValues>({
     mode: "onChange",
     defaultValues: buildReagendarFormValues(agendamento),
   });
 
-  const { isSubmitting } = formMethods.formState;
   const displayLabels = useMemo(() => buildReagendarDisplayLabels(agendamento), [agendamento]);
+
+  const { editAgendamento, isEditAgendamentoLoading } = useEditAgendamento({
+    onSuccess: () => {
+      toast.success("Agendamento reagendado com sucesso!");
+      onOpenChange(false);
+    },
+  });
 
   const clientesQueryConfig = useMemo(
     () => disabledInfiniteSelectConfig(clientesInfiniteSelectConfig),
@@ -80,10 +83,12 @@ export function ReagendarAgendamentoDialog({
 
   const handleSubmit = (values: CadastrarAgendamentoFormValues) => {
     const payload = buildReagendarPayload(values);
-    if (!payload) return;
+    if (!payload || !agendamento.id) return;
 
-    onConfirm(payload);
-    onOpenChange(false);
+    const body = buildEditAgendamentoInput(agendamento, payload);
+    if (!body) return;
+
+    editAgendamento({ id: agendamento.id, body });
   };
 
   return (
@@ -173,9 +178,9 @@ export function ReagendarAgendamentoDialog({
               variant="primary"
               size="lg"
               className="flex-1"
-              isLoading={isSubmitting}
+              isLoading={isEditAgendamentoLoading}
             >
-              {isSubmitting ? "Reagendando..." : "Confirmar"}
+              {isEditAgendamentoLoading ? "Reagendando..." : "Confirmar"}
             </Button>
           </div>
         </Form>

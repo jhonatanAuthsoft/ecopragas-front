@@ -18,12 +18,14 @@ interface AgendamentoDetalhesCardProps {
   agendamento: Agendamento;
   onDelete: () => void;
   onReagendar: () => void;
+  isDeleteLoading?: boolean;
 }
 
 export function AgendamentoDetalhesCard({
   agendamento,
   onDelete,
   onReagendar,
+  isDeleteLoading = false,
 }: AgendamentoDetalhesCardProps) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const endereco = formatEndereco(agendamento);
@@ -61,23 +63,27 @@ export function AgendamentoDetalhesCard({
         </div>
 
         <div className="flex flex-col gap-md pb-sm border-b border-grayscale-light">
-          <H3>Dados do Servico</H3>
+          <H3>Dados do Serviço</H3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
             <DetailItem
               label="Tipo de Servico"
               value={[agendamento.tipoServico ? TIPO_SERVICO_LABELS[agendamento.tipoServico] : "-"]}
             />
             <DetailItem
-              label="Tecnico responsavel"
+              label="Técnico responsável"
               value={[formatTecnicosLabel(agendamento.tecnicos)]}
             />
             <DetailItem
-              label="Data e horario"
+              label="Data e horário"
               value={[agendamento.dataHoraServico ? dataHorario : "-"]}
             />
             <DetailItem
-              label="Valor do servico"
-              value={[agendamento.valor != null ? formatCurrency(agendamento.valor) : "-"]}
+              label="Valor do serviço"
+              value={[
+                <b key="valor-servico">
+                  {agendamento.valor != null ? formatCurrency(agendamento.valor) : "-"}
+                </b>,
+              ]}
               valueClassName="text-brand-cta-dark"
             />
           </div>
@@ -105,6 +111,7 @@ export function AgendamentoDetalhesCard({
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
         onConfirm={onDelete}
+        isLoading={isDeleteLoading}
       />
     </>
   );

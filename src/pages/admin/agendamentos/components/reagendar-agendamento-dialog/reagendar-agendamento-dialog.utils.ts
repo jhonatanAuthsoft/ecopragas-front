@@ -2,9 +2,10 @@ import type { SelectInputOption } from "@/atomic/atm.select-input";
 import type {
   Agendamento,
   CadastrarAgendamentoFormValues,
+  EditAgendamentoInput,
   ReagendarAgendamentoFormValues,
 } from "@/model/rest/agendamento";
-import { parseDataHoraServico } from "../../agendamentos.utils";
+import { formatDateHour, parseDataHoraServico } from "../../agendamentos.utils";
 
 interface ReagendarAgendamentoDisplayLabels {
   clienteNome: string;
@@ -55,5 +56,21 @@ export const buildReagendarPayload = (
   return {
     data: values.data,
     horario: values.horario,
+  };
+};
+
+export const buildEditAgendamentoInput = (
+  agendamento: Agendamento,
+  values: ReagendarAgendamentoFormValues,
+): EditAgendamentoInput | null => {
+  const tecnicosIds =
+    agendamento.tecnicos?.map((tecnico) => tecnico.id ?? "").filter(Boolean) ?? [];
+
+  return {
+    ordemServicoId: agendamento.ordemServicoId,
+    tecnicosIds: tecnicosIds.length > 0 ? tecnicosIds : undefined,
+    dataHoraServico: formatDateHour(values.data, values.horario),
+    recorrencia: agendamento.recorrencia ?? "NENHUMA",
+    status: agendamento.status,
   };
 };

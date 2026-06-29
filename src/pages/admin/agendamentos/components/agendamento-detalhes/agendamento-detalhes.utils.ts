@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import type { Agendamento } from "@/model/rest/agendamento";
+import { formatCEP } from "@/utils/formatters";
 
 export const formatEndereco = (
   agendamento: Pick<
@@ -15,7 +16,7 @@ export const formatEndereco = (
     agendamento.bairro,
     agendamento.cidade,
     agendamento.estado,
-    agendamento.cep,
+    formatCEP(agendamento.cep),
   ].filter(Boolean);
 
   return partes.length > 0 ? partes.join(", ") : "-";
