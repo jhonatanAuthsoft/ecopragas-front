@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
 import { DateInput } from "@/atomic/atm.date-input";
 import { InfiniteMultiSelectInput } from "@/atomic/atm.infinite-multi-select-input";
@@ -16,43 +17,35 @@ import {
   TimeValidator,
 } from "@/atomic/obj.form";
 import { strings } from "@/atomic/obj.form/validators/validators.strings";
+import { useCreateAgendamento } from "@/domain/agendamento";
 import { clientesInfiniteSelectConfig } from "@/domain/cliente";
 import { ordensServicoInfiniteSelectConfig } from "@/domain/ordem-servico";
 import { tecnicosInfiniteSelectConfig } from "@/domain/tecnico";
+import type { CadastrarAgendamentoFormValues } from "@/model/rest/agendamento";
 import type { OrdemServico } from "@/model/rest/ordem-servico/ordem-servico.model";
-import { formatTipoServico } from "@/utils/formatters";
-import { formatEnderecoFromOrdemServico } from "@/utils/ordem-servico";
-import type {
-  CadastrarAgendamentoFormValues,
-  CadastrarAgendamentoLocalPayload,
-} from "@/model/rest/agendamento";
 import { DEFAULT_VALUES, RECORRENCIA_OPTIONS } from "./add-agendamento-dialog.data";
-import {
-  type AddAgendamentoSelectionLabels,
-  buildAddAgendamentoPayload,
-} from "./add-agendamento-dialog.utils";
+import { buildCadastrarAgendamentoInput } from "./add-agendamento-dialog.utils";
 
 export interface AddAgendamentoDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAdd: (payload: CadastrarAgendamentoLocalPayload) => void;
 }
 
-const EMPTY_SELECTION_LABELS: AddAgendamentoSelectionLabels = {
-  clienteNome: "",
-  tecnicoNomes: [],
-};
-
-export const AddAgendamentoDialog = ({ open, onOpenChange, onAdd }: AddAgendamentoDialogProps) => {
+export const AddAgendamentoDialog = ({ open, onOpenChange }: AddAgendamentoDialogProps) => {
   const formMethods = useForm<CadastrarAgendamentoFormValues>({
     mode: "onChange",
     defaultValues: DEFAULT_VALUES,
   });
 
-  const { isSubmitting } = formMethods.formState;
+  const { createAgendamento, isCreateAgendamentoLoading } = useCreateAgendamento({
+    onSuccess: () => {
+      toast.success("Agendamento cadastrado com sucesso!");
+      resetDialog();
+      onOpenChange(false);
+    },
+  });
+
   const clienteId = formMethods.watch("clienteId");
-  const [selectionLabels, setSelectionLabels] =
-    useState<AddAgendamentoSelectionLabels>(EMPTY_SELECTION_LABELS);
 
   const ordemServicoQueryConfig = useMemo(
     () => ({
@@ -65,7 +58,6 @@ export const AddAgendamentoDialog = ({ open, onOpenChange, onAdd }: AddAgendamen
 
   const resetDialog = () => {
     formMethods.reset(DEFAULT_VALUES);
-    setSelectionLabels(EMPTY_SELECTION_LABELS);
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
@@ -77,15 +69,10 @@ export const AddAgendamentoDialog = ({ open, onOpenChange, onAdd }: AddAgendamen
   };
 
   const handleSubmit = (values: CadastrarAgendamentoFormValues) => {
-    const payload = buildAddAgendamentoPayload(values, selectionLabels);
+    const payload = buildCadastrarAgendamentoInput(values);
+    if (!payload) return;
 
-    if (!payload) {
-      return;
-    }
-
-    onAdd(payload);
-    resetDialog();
-    onOpenChange(false);
+    createAgendamento(payload);
   };
 
   return (
@@ -103,49 +90,26 @@ export const AddAgendamentoDialog = ({ open, onOpenChange, onAdd }: AddAgendamen
                 placeholder="Selecione o cliente"
                 searchPlaceholder="Buscar cliente"
                 queryConfig={clientesInfiniteSelectConfig}
-                onOptionSelect={(option) => {
-                  setSelectionLabels((current) => ({
-                    ...current,
-                    clienteNome: option.label,
-                    ordemServicoTipoServico: undefined,
-                    ordemServicoEndereco: undefined,
-                  }));
-                  formMethods.setValue("ordemServicoId", "");
-                }}
+                onOptionSelect={() => formMethods.setValue("ordemServicoId", "")}
               />
             </FormField>
 
-            <FormField name="ordemServicoId">
+            <FormField name="ordemServicoId" validators={[RequiredValidator()]}>
               <InfiniteSelectInput
                 label="Ordem de serviço"
                 placeholder="Vincule uma O.S."
                 searchPlaceholder="Buscar ordem de serviço"
                 queryConfig={ordemServicoQueryConfig}
                 disabled={!clienteId}
-                onItemSelect={(ordemServico) => {
-                  setSelectionLabels((current) => ({
-                    ...current,
-                    ordemServicoTipoServico: ordemServico.tipoServico
-                      ? formatTipoServico(ordemServico.tipoServico)
-                      : undefined,
-                    ordemServicoEndereco: formatEnderecoFromOrdemServico(ordemServico),
-                  }));
-                }}
               />
             </FormField>
 
-            <FormField name="tecnicoIds" validators={[AtLeastOneArrayItemValidator()]}>
+            <FormField name="tecnicosIds" validators={[AtLeastOneArrayItemValidator()]}>
               <InfiniteMultiSelectInput
                 label="Técnico Responsável"
                 placeholder="Selecione o(s) técnico(s)"
                 searchPlaceholder="Buscar técnico"
                 queryConfig={tecnicosInfiniteSelectConfig}
-                onOptionsChange={(options) => {
-                  setSelectionLabels((current) => ({
-                    ...current,
-                    tecnicoNomes: options.map((option) => option.label),
-                  }));
-                }}
               />
             </FormField>
 
@@ -183,9 +147,9 @@ export const AddAgendamentoDialog = ({ open, onOpenChange, onAdd }: AddAgendamen
             <Button
               type="submit"
               className="w-full max-w-[400px] h-[43px]"
-              isLoading={isSubmitting}
+              isLoading={isCreateAgendamentoLoading}
             >
-              {isSubmitting ? "Adicionando..." : "Adicionar Agendamento"}
+              {isCreateAgendamentoLoading ? "Adicionando..." : "Adicionar Agendamento"}
             </Button>
           </div>
         </Form>

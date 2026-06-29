@@ -1,21 +1,21 @@
 import type { Agendamento } from "@/model/rest/agendamento";
 
-export const TIPO_SERVICO_LABELS: Record<Agendamento["tipoServico"], string> = {
-  DEDETIZACAO: "Dedetizacao",
-  LIMPEZA_CAIXA_AGUA: "Limpeza de caixa d'agua",
-  SANITIZACAO: "Sanitizacao",
-  DESRATIZACAO: "Desratizacao",
-  OUTROS: "Outros",
+export const TIPO_SERVICO_LABELS: Record<NonNullable<Agendamento["tipoServico"]>, string> = {
+  SANITIZACAO: "Sanitização",
+  CONTROLE_PRAGAS_VETORES: "Controle de pragas e vetores",
+  HIGIENIZACAO: "Higienização",
+  MONITORAMENTO_INSETOS: "Monitoramento de insetos",
+  MONITORAMENTO_ROEDORES: "Monitoramento de roedores",
 };
 
-export const STATUS_LABELS: Record<Agendamento["status"], string> = {
+export const STATUS_LABELS: Record<NonNullable<Agendamento["status"]>, string> = {
   AGENDADO: "Agendado",
   EM_ANDAMENTO: "Em andamento",
-  CONCLUIDO: "Concluido",
+  CONCLUIDO: "Concluído",
   CANCELADO: "Cancelado",
 };
 
-export const RECORRENCIA_LABELS: Record<Agendamento["recorrencia"], string> = {
+export const RECORRENCIA_LABELS: Record<NonNullable<Agendamento["recorrencia"]>, string> = {
   NENHUMA: "Fixo",
   SEMANAL: "Semanal",
   MENSAL: "Mensal",

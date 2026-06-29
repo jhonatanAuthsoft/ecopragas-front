@@ -4,7 +4,7 @@ import type { CadastrarAgendamentoFormValues } from "@/model/rest/agendamento";
 export const DEFAULT_VALUES: CadastrarAgendamentoFormValues = {
   clienteId: "",
   ordemServicoId: "",
-  tecnicoIds: [],
+  tecnicosIds: [],
   recorrencia: "NENHUMA",
   data: undefined,
   horario: "",

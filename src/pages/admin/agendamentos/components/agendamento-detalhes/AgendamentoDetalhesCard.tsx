@@ -8,6 +8,8 @@ import { Button } from "@/atomic/atm.button/button.component";
 import { DetailItem } from "@/atomic/atm.detail-item";
 import { Body2, H2, H3 } from "@/atomic/atm.typography";
 import type { Agendamento } from "@/model/rest/agendamento";
+import { formatCurrency, formatPhone } from "@/utils/formatters";
+import { formatTecnicosLabel } from "../../agendamentos.utils";
 import { DeleteAgendamentoDialog } from "../DeleteAgendamentoDialog";
 import { getBadgeRecorrenciaLabel, TIPO_SERVICO_LABELS } from "./agendamento-detalhes.labels";
 import { formatDataHorario, formatEndereco } from "./agendamento-detalhes.utils";
@@ -47,8 +49,9 @@ export function AgendamentoDetalhesCard({
             </div>
             <div className="flex items-center gap-2xs">
               <PhoneIcon className="size-lg" />
-              {/* TODO: adicionar ao atualizar back */}
-              <Body2>-</Body2>
+              <Body2>
+                {agendamento.clienteTelefone ? formatPhone(agendamento.clienteTelefone) : "-"}
+              </Body2>
             </div>
             <div className="flex items-center gap-2xs">
               <MapPinIcon className="size-lg" />
@@ -66,16 +69,15 @@ export function AgendamentoDetalhesCard({
             />
             <DetailItem
               label="Tecnico responsavel"
-              value={[agendamento.tecnicoResponsavel ?? "-"]}
+              value={[formatTecnicosLabel(agendamento.tecnicos)]}
             />
             <DetailItem
               label="Data e horario"
               value={[agendamento.dataHoraServico ? dataHorario : "-"]}
             />
-            {/* TODO: adicionar ao atualizar back */}
             <DetailItem
               label="Valor do servico"
-              value={["-"]}
+              value={[agendamento.valor != null ? formatCurrency(agendamento.valor) : "-"]}
               valueClassName="text-brand-cta-dark"
             />
           </div>

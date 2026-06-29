@@ -1,12 +1,10 @@
-import { format } from "date-fns";
 import type { SelectInputOption } from "@/atomic/atm.select-input";
 import type {
   Agendamento,
   CadastrarAgendamentoFormValues,
   ReagendarAgendamentoFormValues,
 } from "@/model/rest/agendamento";
-
-const TECNICO_DISPLAY_VALUE = "tecnico-display";
+import { parseDataHoraServico } from "../../agendamentos.utils";
 
 interface ReagendarAgendamentoDisplayLabels {
   clienteNome: string;
@@ -14,35 +12,17 @@ interface ReagendarAgendamentoDisplayLabels {
   tecnicoOptions: SelectInputOption[];
 }
 
-const parseAgendamentoDataHora = (
-  dataHoraServico?: string,
-): Pick<CadastrarAgendamentoFormValues, "data" | "horario"> => {
-  if (!dataHoraServico) {
-    return { data: undefined, horario: "" };
-  }
-
-  const parsed = new Date(dataHoraServico);
-
-  if (Number.isNaN(parsed.getTime())) {
-    return { data: undefined, horario: "" };
-  }
-
-  return {
-    data: parsed,
-    horario: format(parsed, "HH:mm"),
-  };
-};
-
 export const buildReagendarFormValues = (
   agendamento: Agendamento,
 ): CadastrarAgendamentoFormValues => {
-  const { data, horario } = parseAgendamentoDataHora(agendamento.dataHoraServico);
-  const tecnicoResponsavel = agendamento.tecnicoResponsavel?.trim();
+  const { data, horario } = parseDataHoraServico(agendamento.dataHoraServico);
+  const tecnicosIds =
+    agendamento.tecnicos?.map((tecnico) => tecnico.id ?? "").filter(Boolean) ?? [];
 
   return {
     clienteId: agendamento.clienteId ?? "",
     ordemServicoId: agendamento.ordemServicoId ?? "",
-    tecnicoIds: tecnicoResponsavel ? [TECNICO_DISPLAY_VALUE] : [],
+    tecnicosIds,
     recorrencia: agendamento.recorrencia ?? "NENHUMA",
     data,
     horario,
@@ -52,15 +32,16 @@ export const buildReagendarFormValues = (
 export const buildReagendarDisplayLabels = (
   agendamento: Agendamento,
 ): ReagendarAgendamentoDisplayLabels => {
-  const tecnicoResponsavel = agendamento.tecnicoResponsavel?.trim();
-
   return {
     clienteNome: agendamento.clienteNome ?? "",
-    // TODO: adicionar ao atualizar back
     ordemServicoLabel: agendamento.ordemServicoId ?? "-",
-    tecnicoOptions: tecnicoResponsavel
-      ? [{ value: TECNICO_DISPLAY_VALUE, label: tecnicoResponsavel }]
-      : [],
+    tecnicoOptions:
+      agendamento.tecnicos
+        ?.filter((tecnico) => tecnico.id && tecnico.nome)
+        .map((tecnico) => ({
+          value: tecnico.id ?? "",
+          label: tecnico.nome ?? "",
+        })) ?? [],
   };
 };
 

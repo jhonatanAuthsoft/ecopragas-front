@@ -117,7 +117,7 @@ export function ReagendarAgendamentoDialog({
               />
             </FormField>
 
-            <FormField name="tecnicoIds" disabled>
+            <FormField name="tecnicosIds" disabled>
               <InfiniteMultiSelectInput
                 key={`${agendamento.id}-tecnico`}
                 label="Técnico Responsável"

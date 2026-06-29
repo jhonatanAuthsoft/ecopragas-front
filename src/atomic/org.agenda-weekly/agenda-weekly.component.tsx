@@ -88,7 +88,6 @@ export function AgendaWeekly({
               label="Selecione a semana"
               selectionMode="week"
               className="whitespace-nowrap"
-              maxDate={new Date()}
             />
 
             <TextInput

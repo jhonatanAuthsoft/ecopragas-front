@@ -512,7 +512,7 @@ export interface paths {
         };
         /**
          * Consulta a agenda do técnico logado
-         * @description Retorna os agendamentos do técnico para o período especificado ('dia' ou 'semana').
+         * @description Retorna os agendamentos do técnico para o intervalo de datas especificado.
          */
         get: operations["tecnico_agenda_obter_agenda"];
         put?: never;
@@ -838,11 +838,7 @@ export interface components {
             /** Format: date-time */
             updatedAt?: string;
         };
-        ConcluirServicoInputDTO: {
-            fotoAntesUrl?: string;
-            fotoDepoisUrl?: string;
-            observacoes?: string;
-        };
+        ConcluirServicoInputDTO: Record<string, never>;
         AgendamentoAtividadeResponseDTO: {
             /** Format: uuid */
             id?: string;
@@ -853,14 +849,14 @@ export interface components {
             /** Format: uuid */
             id?: string;
             /** Format: uuid */
+            ordemServicoId?: string;
+            /** Format: uuid */
             clienteId?: string;
             clienteNome?: string;
-            clienteCpfCnpj?: string;
-            tecnicoResponsavel?: string;
+            clienteTelefone?: string;
+            valor?: number;
             /** @enum {string} */
-            tipoServico?: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
-            /** Format: date-time */
-            dataHoraServico?: string;
+            tipoServico?: "SANITIZACAO" | "CONTROLE_PRAGAS_VETORES" | "HIGIENIZACAO" | "MONITORAMENTO_INSETOS" | "MONITORAMENTO_ROEDORES";
             rua?: string;
             numero?: string;
             complemento?: string;
@@ -868,16 +864,13 @@ export interface components {
             cidade?: string;
             estado?: string;
             cep?: string;
+            tecnicos?: components["schemas"]["TecnicoResumoDTO"][];
+            /** Format: date-time */
+            dataHoraServico?: string;
             /** @enum {string} */
             recorrencia?: "NENHUMA" | "SEMANAL" | "MENSAL" | "TRIMESTRAL" | "SEMESTRAL" | "ANUAL";
             /** @enum {string} */
             status?: "AGENDADO" | "EM_ANDAMENTO" | "CONCLUIDO" | "CANCELADO";
-            /** Format: uuid */
-            ordemServicoId?: string;
-            qrCodePortaIsca?: string;
-            fotoAntesUrl?: string;
-            fotoDepoisUrl?: string;
-            observacoes?: string;
             atividades?: components["schemas"]["AgendamentoAtividadeResponseDTO"][];
             portaIscas?: components["schemas"]["PortaIscaResponseDTO"][];
             /** Format: double */
@@ -908,17 +901,60 @@ export interface components {
             errors?: components["schemas"]["ErrorDetail"][];
             pagination?: components["schemas"]["PaginationInfo"];
         };
+        TecnicoResumoDTO: {
+            /** Format: uuid */
+            id?: string;
+            nome?: string;
+            fotoUrl?: string;
+        };
         AtualizarAtividadeInputDTO: {
             /** Format: uuid */
             id: string;
             concluido: boolean;
         };
+        AreaMonitoramentoInsetosDTO: {
+            areaMonitorada?: string;
+            pragasAlvo?: string[];
+            tratamento?: string;
+            grauInfestacao?: string;
+            produtoUtilizado?: string;
+            adesiva?: string;
+            produto?: string;
+            dosagem?: string;
+            refilLuminosa?: boolean;
+            /** Format: int32 */
+            quantidade?: number;
+            fotos?: string[];
+            observacoesGerais?: string;
+        };
+        DadosProdutoDTO: {
+            principioAtivo?: string;
+            produto?: string;
+            concentracao?: string;
+            diluente?: string;
+            volume?: string;
+            setor?: string;
+            equipamento?: string;
+        };
+        DescricaoServicoItemDTO: {
+            setor?: string;
+            higieneLocal?: string;
+            nivelInfestacao?: string;
+            equipamento?: string;
+        };
+        DiagnosticoLocalDTO: {
+            pragasAlvo?: string[];
+            areaExterna?: string;
+            areaVacinal?: boolean;
+            pontoReferencia?: string;
+            piscina?: boolean;
+            pet?: boolean;
+        };
         EditarOrdemServicoInputDTO: {
             /** Format: uuid */
             clienteId: string;
             /** @enum {string} */
-            tipoServico: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
-            tecnicoResponsavel?: string;
+            tipoServico: "SANITIZACAO" | "CONTROLE_PRAGAS_VETORES" | "HIGIENIZACAO" | "MONITORAMENTO_INSETOS" | "MONITORAMENTO_ROEDORES";
             valor: number;
             /** Format: date-time */
             dataHoraServico: string;
@@ -929,9 +965,76 @@ export interface components {
             cidade?: string;
             estado?: string;
             cep?: string;
-            /** @enum {string} */
-            status: "AGENDADA" | "EM_ANDAMENTO" | "CONCLUIDA" | "CANCELADA";
             observacoes?: string;
+            dadosEspecificos?: components["schemas"]["OrdemServicoDetalhesDTO"];
+        };
+        EstacaoControleDTO: {
+            produto?: string;
+            /** Format: int32 */
+            quantidade?: number;
+        };
+        EstacaoMonitoramentoRoedoresDTO: {
+            nome?: string;
+            portaIscaRaticida?: string[];
+            armadilhaAdesiva?: string[];
+            controle?: components["schemas"]["EstacaoControleDTO"][];
+            pontosVariaveis?: components["schemas"]["EstacaoPontoVariavelDTO"][];
+            fotos?: string[];
+            observacoesGerais?: string;
+        };
+        EstacaoPontoVariavelDTO: {
+            local?: string;
+            produto?: string;
+            /** Format: int32 */
+            quantidade?: number;
+        };
+        HigienizacaoProdutoDTO: {
+            tipoEquipamento?: string;
+            nivelChuva?: string;
+            tempoDuracaoEstimado?: string;
+            volume?: string;
+            realizarColeta?: boolean;
+            fecharRegistro?: boolean;
+        };
+        OrdemServicoDetalhesDTO: {
+            diagnosticoLocal?: components["schemas"]["DiagnosticoLocalDTO"];
+            dadosProduto?: components["schemas"]["DadosProdutoDTO"];
+            vistoria?: components["schemas"]["VistoriaItemDTO"][];
+            registroServico?: components["schemas"]["RegistroServicoDTO"];
+            produtos?: components["schemas"]["DadosProdutoDTO"][];
+            descricaoServico?: components["schemas"]["DescricaoServicoItemDTO"][];
+            higienizacaoProduto?: components["schemas"]["HigienizacaoProdutoDTO"];
+            fotosLocal?: string[];
+            reservatorios?: components["schemas"]["ReservatorioItemDTO"][];
+            areasMonitoramentoInsetos?: components["schemas"]["AreaMonitoramentoInsetosDTO"][];
+            estacoesMonitoramentoRoedores?: components["schemas"]["EstacaoMonitoramentoRoedoresDTO"][];
+        };
+        RegistroServicoDTO: {
+            imagens?: string[];
+            observacoesGerais?: string;
+            imagensAntes?: string[];
+            imagensDepois?: string[];
+        };
+        ReservatorioItemDTO: {
+            reservatorio?: string;
+            material?: string;
+            volume?: string;
+            desinfeccao?: string;
+            situacao?: string;
+            vetores?: boolean;
+            residuos?: boolean;
+            fendas?: boolean;
+            boia?: string;
+            cobertura?: string;
+            pintura?: string;
+            revestimentoInterno?: string;
+            sistemaLadrao?: boolean;
+        };
+        VistoriaItemDTO: {
+            setor?: string;
+            situacao?: string;
+            medidaCorretiva?: string;
+            avaliacao?: string;
         };
         OrdemServicoResponseDTO: {
             /** Format: uuid */
@@ -943,8 +1046,7 @@ export interface components {
             clienteNome?: string;
             clienteCpfCnpj?: string;
             /** @enum {string} */
-            tipoServico?: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
-            tecnicoResponsavel?: string;
+            tipoServico?: "SANITIZACAO" | "CONTROLE_PRAGAS_VETORES" | "HIGIENIZACAO" | "MONITORAMENTO_INSETOS" | "MONITORAMENTO_ROEDORES";
             valor?: number;
             /** Format: date-time */
             dataHoraServico?: string;
@@ -955,9 +1057,8 @@ export interface components {
             cidade?: string;
             estado?: string;
             cep?: string;
-            /** @enum {string} */
-            status?: "AGENDADA" | "EM_ANDAMENTO" | "CONCLUIDA" | "CANCELADA";
             observacoes?: string;
+            dadosEspecificos?: components["schemas"]["OrdemServicoDetalhesDTO"];
             /** Format: date-time */
             createdAt?: string;
             /** Format: date-time */
@@ -1081,9 +1182,8 @@ export interface components {
         ClienteUltimoServicoResponseDTO: {
             /** Format: uuid */
             id?: string;
-            tecnicoResponsavel?: string;
             /** @enum {string} */
-            tipoServico?: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
+            tipoServico?: "SANITIZACAO" | "CONTROLE_PRAGAS_VETORES" | "HIGIENIZACAO" | "MONITORAMENTO_INSETOS" | "MONITORAMENTO_ROEDORES";
             valor?: number;
             /** Format: date-time */
             dataHoraServico?: string;
@@ -1098,29 +1198,14 @@ export interface components {
         };
         EditarAgendamentoInputDTO: {
             /** Format: uuid */
-            clienteId: string;
-            tecnicoResponsavel?: string;
-            /** @enum {string} */
-            tipoServico: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
+            ordemServicoId: string;
+            tecnicosIds?: string[];
             /** Format: date-time */
             dataHoraServico: string;
-            rua?: string;
-            numero?: string;
-            complemento?: string;
-            bairro?: string;
-            cidade?: string;
-            estado?: string;
-            cep?: string;
             /** @enum {string} */
             recorrencia: "NENHUMA" | "SEMANAL" | "MENSAL" | "TRIMESTRAL" | "SEMESTRAL" | "ANUAL";
             /** @enum {string} */
             status: "AGENDADO" | "EM_ANDAMENTO" | "CONCLUIDO" | "CANCELADO";
-            qrCodePortaIsca?: string;
-            fotoAntesUrl?: string;
-            fotoDepoisUrl?: string;
-            observacoes?: string;
-            /** Format: uuid */
-            ordemServicoId?: string;
         };
         RedefinirSenhaInputDTO: {
             email?: string;
@@ -1180,8 +1265,7 @@ export interface components {
             /** Format: uuid */
             clienteId: string;
             /** @enum {string} */
-            tipoServico: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
-            tecnicoResponsavel?: string;
+            tipoServico: "SANITIZACAO" | "CONTROLE_PRAGAS_VETORES" | "HIGIENIZACAO" | "MONITORAMENTO_INSETOS" | "MONITORAMENTO_ROEDORES";
             valor: number;
             /** Format: date-time */
             dataHoraServico: string;
@@ -1192,9 +1276,8 @@ export interface components {
             cidade?: string;
             estado?: string;
             cep?: string;
-            /** @enum {string} */
-            status: "AGENDADA" | "EM_ANDAMENTO" | "CONCLUIDA" | "CANCELADA";
             observacoes?: string;
+            dadosEspecificos?: components["schemas"]["OrdemServicoDetalhesDTO"];
         };
         CadastrarLeadInputDTO: {
             nome?: string;
@@ -1231,27 +1314,12 @@ export interface components {
         };
         CadastrarAgendamentoInputDTO: {
             /** Format: uuid */
-            clienteId: string;
-            tecnicoResponsavel?: string;
-            /** @enum {string} */
-            tipoServico: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
+            ordemServicoId: string;
+            tecnicosIds?: string[];
             /** Format: date-time */
             dataHoraServico: string;
-            rua?: string;
-            numero?: string;
-            complemento?: string;
-            bairro?: string;
-            cidade?: string;
-            estado?: string;
-            cep?: string;
             /** @enum {string} */
             recorrencia: "NENHUMA" | "SEMANAL" | "MENSAL" | "TRIMESTRAL" | "SEMESTRAL" | "ANUAL";
-            qrCodePortaIsca?: string;
-            fotoAntesUrl?: string;
-            fotoDepoisUrl?: string;
-            observacoes?: string;
-            /** Format: uuid */
-            ordemServicoId?: string;
         };
         AtualizarLeadStatusInputDTO: {
             /** @enum {string} */
@@ -1410,10 +1478,9 @@ export interface components {
             /** Format: uuid */
             id?: string;
             /** @enum {string} */
-            status?: "AGENDADA" | "EM_ANDAMENTO" | "CONCLUIDA" | "CANCELADA";
-            tecnicoResponsavel?: string;
+            status?: "AGENDADO" | "EM_ANDAMENTO" | "CONCLUIDO" | "CANCELADO";
             /** @enum {string} */
-            tipoServico?: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
+            tipoServico?: "SANITIZACAO" | "CONTROLE_PRAGAS_VETORES" | "HIGIENIZACAO" | "MONITORAMENTO_INSETOS" | "MONITORAMENTO_ROEDORES";
             valor?: number;
             /** Format: date-time */
             dataHoraServico?: string;
@@ -2073,6 +2140,7 @@ export interface operations {
                 limit?: number;
                 offset?: number;
                 searchText?: string;
+                tipoServico?: "SANITIZACAO" | "CONTROLE_PRAGAS_VETORES" | "HIGIENIZACAO" | "MONITORAMENTO_INSETOS" | "MONITORAMENTO_ROEDORES";
             };
             header?: never;
             path?: never;
@@ -2367,7 +2435,8 @@ export interface operations {
     tecnico_agenda_obter_agenda: {
         parameters: {
             query?: {
-                periodo?: string;
+                dataHoraInicio?: string;
+                dataHoraFim?: string;
             };
             header?: never;
             path?: never;
@@ -2500,7 +2569,7 @@ export interface operations {
     cliente_obter_ultimos_servicos: {
         parameters: {
             query?: {
-                tipoServico?: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
+                tipoServico?: "SANITIZACAO" | "CONTROLE_PRAGAS_VETORES" | "HIGIENIZACAO" | "MONITORAMENTO_INSETOS" | "MONITORAMENTO_ROEDORES";
                 status?: "AGENDADA" | "EM_ANDAMENTO" | "CONCLUIDA" | "CANCELADA";
                 limit?: number;
                 offset?: number;
@@ -2528,7 +2597,7 @@ export interface operations {
                 dataHoraInicio?: string;
                 dataHoraFim?: string;
                 numero?: number;
-                servico?: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
+                servico?: "SANITIZACAO" | "CONTROLE_PRAGAS_VETORES" | "HIGIENIZACAO" | "MONITORAMENTO_INSETOS" | "MONITORAMENTO_ROEDORES";
                 tecnico?: string;
                 limit?: number;
                 offset?: number;
@@ -2576,7 +2645,7 @@ export interface operations {
         parameters: {
             query?: {
                 status?: "AGENDADO" | "EM_ANDAMENTO" | "CONCLUIDO" | "CANCELADO";
-                servico?: "DEDETIZACAO" | "LIMPEZA_CAIXA_AGUA" | "SANITIZACAO" | "DESRATIZACAO" | "OUTROS";
+                servico?: "SANITIZACAO" | "CONTROLE_PRAGAS_VETORES" | "HIGIENIZACAO" | "MONITORAMENTO_INSETOS" | "MONITORAMENTO_ROEDORES";
                 tecnico?: string;
                 dataHoraInicio?: string;
                 dataHoraFim?: string;
