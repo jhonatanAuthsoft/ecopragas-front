@@ -4,28 +4,24 @@ import { H2 } from "@/atomic/atm.typography";
 import { Dialog, DialogContent, DialogHeader } from "@/atomic/mol.dialog/dialog.component";
 import { Tabs, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
 import { Form } from "@/atomic/obj.form";
-import type { OrdemServicoMock } from "@/model/rest/ordem-servico/ordem-servico.mock.model";
 import { DADOS_FIELDS, DEFAULT_VALUES, TAB_TRIGGER_CLASS } from "./add-ordem-servico-dialog.data";
 import type {
   OrdemServicoDialogTab,
   OrdemServicoFormValues,
 } from "./add-ordem-servico-dialog.types";
-import { buildOrdemServicoPayload } from "./add-ordem-servico-dialog.utils";
 import { DadosServicoTab } from "./tabs/DadosServicoTab";
 import { EnderecoServicoTab, type EnderecoServicoTabHandle } from "./tabs/EnderecoServicoTab";
 
 export interface AddOrdemServicoDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddOrdemServico: (os: Omit<OrdemServicoMock, "id">) => void;
-  existingOsCount: number;
+  onAddOrdemServico: () => void;
 }
 
 export const AddOrdemServicoDialog = ({
   open,
   onOpenChange,
   onAddOrdemServico,
-  existingOsCount,
 }: AddOrdemServicoDialogProps) => {
   const [activeTab, setActiveTab] = useState<OrdemServicoDialogTab>("dados");
   const enderecoTabRef = useRef<EnderecoServicoTabHandle>(null);
@@ -87,8 +83,7 @@ export const AddOrdemServicoDialog = ({
       return;
     }
 
-    const payload = buildOrdemServicoPayload(values, selectedEndereco, existingOsCount);
-    onAddOrdemServico(payload);
+    onAddOrdemServico();
     resetDialog();
     onOpenChange(false);
   };

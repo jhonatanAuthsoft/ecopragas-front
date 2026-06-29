@@ -79,7 +79,6 @@ const OrdensServico = () => {
           open={isDialogOpen}
           onOpenChange={setIsDialogOpen}
           onAddOrdemServico={() => setIsDialogOpen(false)}
-          existingOsCount={metricas?.total ?? 0}
         />
       </div>
     </MainLayout>

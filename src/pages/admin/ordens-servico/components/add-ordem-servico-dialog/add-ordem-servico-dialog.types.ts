@@ -1,8 +1,9 @@
-import type { OrdemServicoMock } from "@/model/rest/ordem-servico/ordem-servico.mock.model";
+import type { OrdemServico } from "@/model/rest/ordem-servico";
 
 export type OrdemServicoDialogTab = "dados" | "endereco";
 
-export type TipoServicoForm = OrdemServicoMock["tipoServico"];
+export type TipoServicoForm = NonNullable<OrdemServico["tipoServico"]>;
+export type StatusOrdemServicoForm = OrdemServico["status"];
 
 export type TipoServicoVariacao = "normal" | "monitoramento_insetos" | "monitoramento_roedores";
 
@@ -25,7 +26,7 @@ export type OrdemServicoFormValues = {
   tipoServico: TipoServicoForm | "";
   tecnicoId: string;
   valorServico: string;
-  status: OrdemServicoMock["status"] | "";
+  status: StatusOrdemServicoForm | "";
   observacoes: string;
   estacoesMonitoramento: EstacaoMonitoramento[];
   areasMonitoramentoInsetos: AreaMonitoramentoInsetos[];

@@ -44,7 +44,8 @@ export function OrdemServicoDetalhesCard({
   const endereco = formatEndereco(ordem);
   const dataHorario = formatDataHorario(ordem.dataHoraServico);
   const tipoServicoLabel = ordem.tipoServico ? TIPO_SERVICO_LABELS[ordem.tipoServico] : "-";
-  const isAgendado = ordem.status === "AGENDADO";
+  const isDone =
+    ordem.status === "CONCLUIDO" || ordem.status === "EM_ANDAMENTO" || ordem.status === "CANCELADO";
 
   return (
     <>
@@ -62,7 +63,7 @@ export function OrdemServicoDetalhesCard({
               <H2>{ordem.clienteNome ?? "-"}</H2>
             </div>
 
-            {!isAgendado && (
+            {isDone && (
               <div>
                 <button
                   type="button"
@@ -118,7 +119,7 @@ export function OrdemServicoDetalhesCard({
           </div>
         </div>
 
-        {isAgendado && (
+        {!isDone && (
           <>
             <div className="w-full h-[1px] bg-grayscale-light" />
 
