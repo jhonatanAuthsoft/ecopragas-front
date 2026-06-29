@@ -6,10 +6,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/atomic/mol.table/table.component";
-import type { OrdemServico } from "@/model/rest/ordem-servico";
+import type { OrdemServicoMock } from "@/model/rest/ordem-servico/ordem-servico.mock.model";
 
 interface ControleTableProps {
-  controle: OrdemServico["estacoes"][number]["controle"];
+  controle: OrdemServicoMock["estacoes"][number]["controle"];
 }
 
 export function ControleTable({ controle }: ControleTableProps) {

@@ -1,4 +1,4 @@
-import type { OrdemServico } from "@/model/rest/ordem-servico";
+import type { OrdemServicoMock } from "@/model/rest/ordem-servico/ordem-servico.mock.model";
 import { formatCurrency, formatCurrencyNumber } from "@/utils/formatters";
 import {
   MOCK_CLIENTES,
@@ -10,7 +10,7 @@ import type {
 } from "../add-ordem-servico-dialog/add-ordem-servico-dialog.types";
 import { formatEnderecoLabel } from "../add-ordem-servico-dialog/add-ordem-servico-dialog.utils";
 
-export const mapOrdemToFormValues = (ordem: OrdemServico): OrdemServicoFormValues => ({
+export const mapOrdemToFormValues = (ordem: OrdemServicoMock): OrdemServicoFormValues => ({
   clienteId: ordem.cliente.id,
   tipoServico: ordem.tipoServico,
   tecnicoId: ordem.tecnicoId,
@@ -28,7 +28,7 @@ export const mapOrdemToFormValues = (ordem: OrdemServico): OrdemServicoFormValue
   complemento: "",
 });
 
-export const resolveInitialEnderecoId = (ordem: OrdemServico): string | null => {
+export const resolveInitialEnderecoId = (ordem: OrdemServicoMock): string | null => {
   const cliente = MOCK_CLIENTES.find((item) => item.id === ordem.cliente.id);
   if (!cliente) return null;
 
@@ -40,10 +40,10 @@ export const resolveInitialEnderecoId = (ordem: OrdemServico): string | null => 
 };
 
 export const buildOrdemServicoUpdatePayload = (
-  ordem: OrdemServico,
+  ordem: OrdemServicoMock,
   values: OrdemServicoFormValues,
   selectedEndereco: ServicoEndereco,
-): OrdemServico => {
+): OrdemServicoMock => {
   const cliente = MOCK_CLIENTES.find((item) => item.id === values.clienteId);
   const tecnico = MOCK_TECNICOS.find((item) => item.id === values.tecnicoId);
 
@@ -55,11 +55,11 @@ export const buildOrdemServicoUpdatePayload = (
       cpfCnpj: cliente?.cpfCnpj ?? ordem.cliente.cpfCnpj,
       telefone: cliente?.telefone ?? ordem.cliente.telefone,
     },
-    tipoServico: values.tipoServico as OrdemServico["tipoServico"],
+    tipoServico: values.tipoServico as OrdemServicoMock["tipoServico"],
     tecnicoId: values.tecnicoId,
     tecnicoNome: tecnico?.nome ?? ordem.tecnicoNome,
     endereco: formatEnderecoLabel(selectedEndereco),
-    status: (values.status || ordem.status) as OrdemServico["status"],
+    status: (values.status || ordem.status) as OrdemServicoMock["status"],
     observacoes: values.observacoes || undefined,
     valorServico: formatCurrencyNumber(values.valorServico),
   };

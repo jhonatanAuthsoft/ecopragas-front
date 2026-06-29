@@ -1,8 +1,8 @@
-import type { OrdemServico } from "@/model/rest/ordem-servico";
+import type { OrdemServicoMock } from "@/model/rest/ordem-servico/ordem-servico.mock.model";
 
 const PLACEHOLDER_FOTO = "https://placehold.co/300x200";
 
-export const OS_MOCKS: OrdemServico[] = [
+export const OS_MOCKS: OrdemServicoMock[] = [
   {
     id: "1",
     numeroOS: "OS-2025-001",

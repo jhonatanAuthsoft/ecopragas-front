@@ -1,28 +1,29 @@
-import type { OrdemServico } from "@/model/rest/ordem-servico";
+import type { OrdemServico } from "@/model/rest/ordem-servico/ordem-servico.model";
 
-export type TipoServico = OrdemServico["tipoServico"];
+export type TipoServico = NonNullable<OrdemServico["tipoServico"]>;
+export type StatusOrdemServico = NonNullable<OrdemServico["status"]>;
 
 export const TIPO_SERVICO_LABELS: Record<TipoServico, string> = {
-  sanitizacao: "Sanitizacao",
-  controle_pragas_vetores: "Controle de Pragas e Vetores",
-  higienizacao: "Higienizacao",
-  monitoramento_insetos: "Monitoramento de insetos",
-  monitoramento_roedores: "Monitoramento de roedores",
+  SANITIZACAO: "Sanitizacao",
+  CONTROLE_PRAGAS_VETORES: "Controle de Pragas e Vetores",
+  HIGIENIZACAO: "Higienizacao",
+  MONITORAMENTO_INSETOS: "Monitoramento de insetos",
+  MONITORAMENTO_ROEDORES: "Monitoramento de roedores",
 };
 
-export const STATUS_LABELS: Record<OrdemServico["status"], string> = {
-  agendada: "Agendada",
-  em_andamento: "Em andamento",
-  concluida: "Concluida",
-  cancelada: "Cancelada",
+export const STATUS_LABELS: Record<StatusOrdemServico, string> = {
+  AGENDADO: "Agendado",
+  EM_ANDAMENTO: "Em andamento",
+  CONCLUIDO: "Concluido",
+  CANCELADO: "Cancelado",
 };
 
 export const STATUS_BADGE_COLOR: Record<
-  OrdemServico["status"],
+  StatusOrdemServico,
   "blue" | "orange" | "neutral" | undefined
 > = {
-  agendada: "blue",
-  em_andamento: "orange",
-  concluida: undefined,
-  cancelada: "neutral",
+  AGENDADO: "blue",
+  EM_ANDAMENTO: "orange",
+  CONCLUIDO: undefined,
+  CANCELADO: "neutral",
 };

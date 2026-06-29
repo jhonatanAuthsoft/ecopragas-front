@@ -4,7 +4,7 @@ import { H2 } from "@/atomic/atm.typography";
 import { Dialog, DialogContent, DialogHeader } from "@/atomic/mol.dialog/dialog.component";
 import { Tabs, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
 import { Form } from "@/atomic/obj.form";
-import type { OrdemServico } from "@/model/rest/ordem-servico";
+import type { OrdemServicoMock } from "@/model/rest/ordem-servico/ordem-servico.mock.model";
 import { DADOS_FIELDS, DEFAULT_VALUES, TAB_TRIGGER_CLASS } from "./add-ordem-servico-dialog.data";
 import type {
   OrdemServicoDialogTab,
@@ -17,7 +17,7 @@ import { EnderecoServicoTab, type EnderecoServicoTabHandle } from "./tabs/Endere
 export interface AddOrdemServicoDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddOrdemServico: (os: Omit<OrdemServico, "id">) => void;
+  onAddOrdemServico: (os: Omit<OrdemServicoMock, "id">) => void;
   existingOsCount: number;
 }
 

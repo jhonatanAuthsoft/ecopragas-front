@@ -19,13 +19,13 @@ import {
   TableRow,
 } from "@/atomic/mol.table/table.component";
 import { ROUTES } from "@/constants/routes";
-import type { OrdemServico } from "@/model/rest/ordem-servico";
+import type { OrdemServicoMock } from "@/model/rest/ordem-servico/ordem-servico.mock.model";
 
 interface OrdensServicoTableTechnicianProps {
-  ordensServico: OrdemServico[];
+  ordensServico: OrdemServicoMock[];
 }
 
-const tipoServicoLabels: Record<OrdemServico["tipoServico"], string> = {
+const tipoServicoLabels: Record<OrdemServicoMock["tipoServico"], string> = {
   dedetizacao: "Dedetização",
   limpeza_caixa: "Limpeza de Caixa D'água",
   sanitizacao: "Sanitização",

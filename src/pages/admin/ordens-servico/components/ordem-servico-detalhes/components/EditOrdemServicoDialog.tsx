@@ -4,7 +4,7 @@ import { H2 } from "@/atomic/atm.typography";
 import { Dialog, DialogContent, DialogHeader } from "@/atomic/mol.dialog/dialog.component";
 import { Tabs, TabsList, TabsTrigger } from "@/atomic/mol.tabs/tabs.component";
 import { Form } from "@/atomic/obj.form";
-import type { OrdemServico } from "@/model/rest/ordem-servico";
+import type { OrdemServicoMock } from "@/model/rest/ordem-servico/ordem-servico.mock.model";
 import {
   DADOS_FIELDS,
   TAB_TRIGGER_CLASS,
@@ -27,8 +27,8 @@ import {
 export interface EditOrdemServicoDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  ordem: OrdemServico;
-  onSubmit: (ordem: OrdemServico) => void;
+  ordem: OrdemServicoMock;
+  onSubmit: (ordem: OrdemServicoMock) => void;
 }
 
 export function EditOrdemServicoDialog({

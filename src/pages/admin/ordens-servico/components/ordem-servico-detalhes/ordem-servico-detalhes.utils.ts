@@ -1,13 +1,44 @@
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import type { OrdemServico } from "@/model/rest/ordem-servico";
+import type { OrdemServico } from "@/model/rest/ordem-servico/ordem-servico.model";
+import { formatCEP } from "@/utils/formatters";
 
-export const formatDataHorario = (ordem: OrdemServico): string => {
-  if (ordem.dataAgendamento && ordem.horaAgendamento) {
-    return `${format(ordem.dataAgendamento, "dd/MM/yyyy", { locale: ptBR })} - ${ordem.horaAgendamento}`;
+export const formatEndereco = (
+  ordem: Pick<
+    OrdemServico,
+    "rua" | "numero" | "complemento" | "bairro" | "cidade" | "estado" | "cep"
+  >,
+): string => {
+  const partes = [
+    ordem.rua,
+    ordem.numero,
+    ordem.complemento,
+    ordem.bairro,
+    ordem.cidade,
+    ordem.estado,
+    ordem.cep ? formatCEP(ordem.cep) : undefined,
+  ].filter(Boolean);
+
+  return partes.length > 0 ? partes.join(", ") : "-";
+};
+
+export const formatDataHorario = (dataHoraServico?: string): string => {
+  if (!dataHoraServico) {
+    return "-";
   }
-  if (ordem.dataAgendamento) {
-    return format(ordem.dataAgendamento, "dd/MM/yyyy", { locale: ptBR });
+
+  const data = new Date(dataHoraServico);
+
+  if (Number.isNaN(data.getTime())) {
+    return "-";
   }
-  return "-";
+
+  return `${format(data, "dd/MM/yyyy", { locale: ptBR })} - ${format(data, "HH:mm", { locale: ptBR })}`;
+};
+
+export const formatTecnicosLabel = (tecnicos?: OrdemServico["tecnicos"]): string => {
+  if (!tecnicos?.length) return "-";
+
+  const nomes = tecnicos.map((tecnico) => tecnico.nome).filter(Boolean);
+  return nomes.length > 0 ? nomes.join(", ") : "-";
 };

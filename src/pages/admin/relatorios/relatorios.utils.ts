@@ -32,7 +32,7 @@ export function mapDateFilterToDashboardParams(
 }
 
 import { formatCurrency, formatPercentValue, formatTipoServico } from "@/utils/formatters";
-import { STATUS_OS_LABELS } from "./relatorios.labels";
+import { STATUS_OS_LABELS, type StatusOrdemServico } from "./relatorios.labels";
 
 type MetricWithVariation = {
   valorAtual?: number;
@@ -107,10 +107,10 @@ export function mapTiposServico(metricas?: DashboardMetricas) {
 
 export function mapStatusOS(metricas?: DashboardMetricas) {
   return (metricas?.statusOSs ?? []).map((item) => {
-    const status = item.status ?? "";
+    const status = (item.status ?? "").toUpperCase() as StatusOrdemServico;
 
     return {
-      status: STATUS_OS_LABELS[status.toLowerCase()] ?? status,
+      status: STATUS_OS_LABELS[status] ?? item.status ?? "-",
       quantidade: item.quantidade ?? 0,
     };
   });

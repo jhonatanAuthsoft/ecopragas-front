@@ -1,9 +1,9 @@
 import { DetailItem } from "@/atomic/atm.detail-item";
 import { SectionCard } from "@/atomic/mol.section-card";
-import type { OrdemServico } from "@/model/rest/ordem-servico";
+import type { OrdemServicoMock } from "@/model/rest/ordem-servico/ordem-servico.mock.model";
 
 interface DiagnosticoLocalSectionProps {
-  diagnosticoLocal?: OrdemServico["diagnosticoLocal"];
+  diagnosticoLocal?: OrdemServicoMock["diagnosticoLocal"];
 }
 
 const formatBoolean = (value?: boolean) => {

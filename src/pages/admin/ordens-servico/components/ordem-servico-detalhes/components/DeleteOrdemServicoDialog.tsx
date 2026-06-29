@@ -7,16 +7,17 @@ interface DeleteOrdemServicoDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
+  isLoading?: boolean;
 }
 
 export function DeleteOrdemServicoDialog({
   open,
   onOpenChange,
   onConfirm,
+  isLoading = false,
 }: DeleteOrdemServicoDialogProps) {
   const handleConfirm = () => {
     onConfirm();
-    onOpenChange(false);
   };
 
   return (
@@ -39,10 +40,17 @@ export function DeleteOrdemServicoDialog({
             size="lg"
             className="flex-1"
             onClick={() => onOpenChange(false)}
+            disabled={isLoading}
           >
             Cancelar
           </Button>
-          <Button variant="destructive" size="lg" className="flex-1" onClick={handleConfirm}>
+          <Button
+            variant="destructive"
+            size="lg"
+            className="flex-1"
+            onClick={handleConfirm}
+            isLoading={isLoading}
+          >
             Excluir
           </Button>
         </div>

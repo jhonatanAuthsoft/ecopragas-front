@@ -5,9 +5,9 @@ import { ImageCarousel } from "@/atomic/mol.image-carousel";
 import { cn } from "@/lib/utils";
 import type {
   ArmadilhaAdesivaTypes,
-  OrdemServico,
+  OrdemServicoMock,
   PortaIscaRaticidaTypes,
-} from "@/model/rest/ordem-servico";
+} from "@/model/rest/ordem-servico/ordem-servico.mock.model";
 import { ControleTable } from "./ControleTable";
 import { PontosVariaveisTable } from "./PontosVariaveisTable";
 
@@ -27,7 +27,7 @@ const ARMADILHA_ADESIVA_LABELS: Record<ArmadilhaAdesivaTypes, string> = {
 };
 
 interface EstacoesCardProps {
-  estacao: OrdemServico["estacoes"][number];
+  estacao: OrdemServicoMock["estacoes"][number];
 }
 
 export function EstacoesCard({ estacao }: EstacoesCardProps) {

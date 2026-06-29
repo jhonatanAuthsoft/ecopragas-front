@@ -563,6 +563,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/ordens-servico/metricas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Obtém métricas resumidas das Ordens de Serviço
+         * @description Retorna contadores de OS por status no período
+         */
+        get: operations["ordem_servico_obter_metricas"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/leads/dashboard": {
         parameters: {
             query?: never;
@@ -1061,6 +1081,9 @@ export interface components {
             cep?: string;
             observacoes?: string;
             dadosEspecificos?: components["schemas"]["OrdemServicoDetalhesDTO"];
+            tecnicos?: components["schemas"]["TecnicoResumoDTO"][];
+            /** @enum {string} */
+            status?: "AGENDADO" | "EM_ANDAMENTO" | "CONCLUIDO" | "CANCELADO";
             /** Format: date-time */
             createdAt?: string;
             /** Format: date-time */
@@ -1356,6 +1379,26 @@ export interface components {
             timestamp?: string;
             message?: string;
             data?: components["schemas"]["OrdemServicoResponseDTO"][];
+            errors?: components["schemas"]["ErrorDetail"][];
+            pagination?: components["schemas"]["PaginationInfo"];
+        };
+        OrdemServicoMetricasDTO: {
+            /** Format: int64 */
+            total?: number;
+            /** Format: int64 */
+            agendadas?: number;
+            /** Format: int64 */
+            emAndamento?: number;
+            /** Format: int64 */
+            concluidas?: number;
+            /** Format: int64 */
+            canceladas?: number;
+        };
+        StandardResponseOrdemServicoMetricasDTO: {
+            success?: boolean;
+            timestamp?: string;
+            message?: string;
+            data?: components["schemas"]["OrdemServicoMetricasDTO"];
             errors?: components["schemas"]["ErrorDetail"][];
             pagination?: components["schemas"]["PaginationInfo"];
         };
@@ -2510,6 +2553,29 @@ export interface operations {
                 };
                 content: {
                     "application/json": string;
+                };
+            };
+        };
+    };
+    ordem_servico_obter_metricas: {
+        parameters: {
+            query?: {
+                dataHoraInicio?: string;
+                dataHoraFim?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StandardResponseOrdemServicoMetricasDTO"];
                 };
             };
         };

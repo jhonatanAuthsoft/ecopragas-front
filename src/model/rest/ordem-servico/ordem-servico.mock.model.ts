@@ -11,7 +11,7 @@ export type ArmadilhaAdesivaTypes =
   | "em_conformidade";
 
 /** TODO: Tipo mock da UI ate integracao com a API. */
-export type OrdemServico = {
+export type OrdemServicoMock = {
   id: string;
   numeroOS: string;
   cliente: {

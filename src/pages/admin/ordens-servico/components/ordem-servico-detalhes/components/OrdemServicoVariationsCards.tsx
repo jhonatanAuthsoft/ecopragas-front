@@ -1,5 +1,5 @@
 import type { ComponentType } from "react";
-import type { OrdemServico } from "@/model/rest/ordem-servico";
+import type { OrdemServicoMock } from "@/model/rest/ordem-servico/ordem-servico.mock.model";
 import type { OrdemServicoVariationsCardsProps } from "../ordem-servico-detalhes.types";
 import { ControlePragasDetalhesCards } from "./variations/controle-pragas-vetores/ControlePragasDetalhesCards";
 import { HigienizacaoDetalhesCards } from "./variations/higienizacao/HigienizacaoDetalhesCards";
@@ -7,7 +7,7 @@ import { MonitoramentoInsetosDetalhesCards } from "./variations/monitoramento-in
 import { MonitoramentoRoedoresDetalhesCards } from "./variations/monitoramento-roedores/MonitoramentoRoedoresDetalhesCards";
 import { SanitizacaoDetalhesCards } from "./variations/sanitizacao/SanitizacaoDetalhesCards";
 
-type TipoServico = OrdemServico["tipoServico"];
+type TipoServico = OrdemServicoMock["tipoServico"];
 
 const VARIATION_CARDS: Record<TipoServico, ComponentType<OrdemServicoVariationsCardsProps>> = {
   sanitizacao: SanitizacaoDetalhesCards,

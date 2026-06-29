@@ -1,7 +1,7 @@
-import type { OrdemServico } from "@/model/rest/ordem-servico";
+import type { OrdemServicoMock } from "@/model/rest/ordem-servico/ordem-servico.mock.model";
 
-export type TipoServico = OrdemServico["tipoServico"];
+export type TipoServico = OrdemServicoMock["tipoServico"];
 
 export interface OrdemServicoVariationsCardsProps {
-  ordem: OrdemServico;
+  ordem: OrdemServicoMock;
 }

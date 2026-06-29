@@ -6,11 +6,11 @@ import { DetailItem } from "@/atomic/atm.detail-item";
 import { Body1, Body2, H3, H4 } from "@/atomic/atm.typography";
 import { ImageCarousel } from "@/atomic/mol.image-carousel";
 import { cn } from "@/lib/utils";
-import type { OrdemServico } from "@/model/rest/ordem-servico";
+import type { OrdemServicoMock } from "@/model/rest/ordem-servico/ordem-servico.mock.model";
 import { formatYesNo } from "@/utils/formatters";
 
 interface MonitoramentoCardProps {
-  monitoramento: OrdemServico["monitoramento"][number];
+  monitoramento: OrdemServicoMock["monitoramento"][number];
 }
 
 export function MonitoramentoCard({ monitoramento }: MonitoramentoCardProps) {

@@ -10,7 +10,8 @@ export function useDownloadOrdensServicoPdf(
   params: UseCaseBaseParams<DownloadOrdensServicoPdfResponse> = {},
 ) {
   const {
-    mutateAsync: downloadOrdensServicoPdf,
+    mutate: downloadOrdensServicoPdf,
+    mutateAsync: downloadOrdensServicoPdfAsync,
     data,
     error,
     isLoading,
@@ -21,6 +22,7 @@ export function useDownloadOrdensServicoPdf(
 
   return {
     downloadOrdensServicoPdf,
+    downloadOrdensServicoPdfAsync,
     downloadOrdensServicoPdfData: data,
     downloadOrdensServicoPdfError: error,
     isDownloadOrdensServicoPdfLoading: isLoading,

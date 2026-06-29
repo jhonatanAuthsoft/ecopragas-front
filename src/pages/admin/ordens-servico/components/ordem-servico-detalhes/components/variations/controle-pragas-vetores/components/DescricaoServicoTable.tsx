@@ -7,10 +7,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/atomic/mol.table/table.component";
-import type { OrdemServico } from "@/model/rest/ordem-servico";
+import type { OrdemServicoMock } from "@/model/rest/ordem-servico/ordem-servico.mock.model";
 
 interface DescricaoServicoTableProps {
-  descricaoServico?: OrdemServico["descricaoServico"];
+  descricaoServico?: OrdemServicoMock["descricaoServico"];
 }
 
 export function DescricaoServicoTable({ descricaoServico }: DescricaoServicoTableProps) {
