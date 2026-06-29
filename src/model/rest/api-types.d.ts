@@ -850,6 +850,8 @@ export interface components {
             id?: string;
             /** Format: uuid */
             ordemServicoId?: string;
+            /** Format: int64 */
+            osNumero?: number;
             /** Format: uuid */
             clienteId?: string;
             clienteNome?: string;

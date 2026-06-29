@@ -31,8 +31,8 @@ export function mapDateFilterToDashboardParams(
   };
 }
 
-import { formatCurrency, formatPercentValue } from "@/utils/formatters";
-import { STATUS_OS_LABELS, TIPO_SERVICO_RELATORIO_LABELS } from "./relatorios.labels";
+import { formatCurrency, formatPercentValue, formatTipoServico } from "@/utils/formatters";
+import { STATUS_OS_LABELS } from "./relatorios.labels";
 
 type MetricWithVariation = {
   valorAtual?: number;
@@ -98,7 +98,7 @@ export function mapTiposServico(metricas?: DashboardMetricas) {
     const tipoServico = item.tipoServico ?? "";
 
     return {
-      nome: TIPO_SERVICO_RELATORIO_LABELS[tipoServico] ?? tipoServico,
+      nome: formatTipoServico(tipoServico),
       valor,
       percentual: total > 0 ? Math.round((valor / total) * 100) : 0,
     };
@@ -110,7 +110,7 @@ export function mapStatusOS(metricas?: DashboardMetricas) {
     const status = item.status ?? "";
 
     return {
-      status: STATUS_OS_LABELS[status] ?? status,
+      status: STATUS_OS_LABELS[status.toLowerCase()] ?? status,
       quantidade: item.quantidade ?? 0,
     };
   });

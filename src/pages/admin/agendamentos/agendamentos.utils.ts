@@ -44,25 +44,6 @@ export const formatDateHour = (date: Date, hour: string): string => {
   return format(dateTime, "yyyy-MM-dd'T'HH:mm:ss");
 };
 
-export const parseDataHoraServico = (
-  dataHoraServico?: string,
-): { data?: Date; horario: string } => {
-  if (!dataHoraServico) {
-    return { data: undefined, horario: "" };
-  }
-
-  const parsed = new Date(dataHoraServico);
-
-  if (Number.isNaN(parsed.getTime())) {
-    return { data: undefined, horario: "" };
-  }
-
-  return {
-    data: parsed,
-    horario: format(parsed, "HH:mm"),
-  };
-};
-
 export const formatTecnicosLabel = (tecnicos?: TecnicoResumo[]): string => {
   if (!tecnicos?.length) return "-";
 
