@@ -6,6 +6,8 @@ export type ClienteRecente = components["schemas"]["ClienteRecenteDTO"];
 
 export type GetDashboardVisaoGeralParams =
   operations["dashboard_obter_visao_geral"]["parameters"]["query"];
+export type GetDashboardMetricasParams =
+  operations["dashboard_obter_metricas"]["parameters"]["query"];
 export type DashboardVisaoGeralResponse =
   components["schemas"]["StandardResponseDashboardVisaoGeralDTO"];
 

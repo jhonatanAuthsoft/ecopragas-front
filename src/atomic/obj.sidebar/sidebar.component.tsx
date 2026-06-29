@@ -29,7 +29,7 @@ const ADMIN_MENU = [
     label: "Serviços",
     path: ROUTES.ADMIN.SERVICE_ORDER.BASE,
   },
-  { icon: CalendarIcon, label: "Agendamentos", path: ROUTES.ADMIN.SCHEDULING },
+  { icon: CalendarIcon, label: "Agendamentos", path: ROUTES.ADMIN.SCHEDULING.BASE },
   { icon: ChartBarIcon, label: "Relatórios", path: ROUTES.ADMIN.REPORT },
   {
     icon: WrenchScrewdriverIcon,
@@ -68,6 +68,10 @@ const CLIENT_MENU = [
     path: ROUTES.CLIENT_SCHEDULING,
   },
 ];
+
+const isNavItemActive = (pathname: string, path: string) => {
+  return pathname === path || pathname.startsWith(`${path}/`);
+};
 
 export const Sidebar = ({ className }: { className?: string }) => {
   const location = useLocation();
@@ -125,7 +129,7 @@ export const Sidebar = ({ className }: { className?: string }) => {
                   icon={item.icon}
                   label={item.label}
                   path={item.path}
-                  isActive={location.pathname === item.path}
+                  isActive={isNavItemActive(location.pathname, item.path)}
                   isMinimized={isMinimized}
                 />
               </li>

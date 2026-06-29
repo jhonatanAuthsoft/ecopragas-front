@@ -14,7 +14,10 @@ export const ROUTES = {
       BASE: "/admin/service-order",
       DETAILS: "/admin/service-order/:id",
     },
-    SCHEDULING: "/admin/scheduling",
+    SCHEDULING: {
+      BASE: "/admin/scheduling",
+      DETAILS: "/admin/scheduling/:id",
+    },
     REPORT: "/admin/report",
     TECHNICIAN: "/admin/technician",
   },

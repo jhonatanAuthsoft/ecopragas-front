@@ -24,4 +24,5 @@ export const strings = {
   cpfCnpj: "O CPF/CNPJ deve ser válido.",
   url: "A URL deve ser válida.",
   phone: "O telefone deve ser válido.",
+  time: "O horário deve estar no formato HH:mm (ex.: 12:30).",
 };

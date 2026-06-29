@@ -1,4 +1,36 @@
-import type { DashboardMetricas, DashboardVisaoGeral } from "@/model/rest/dashboard";
+import { endOfDay, formatISO, startOfDay } from "date-fns";
+import type {
+  DashboardMetricas,
+  DashboardVisaoGeral,
+  GetDashboardMetricasParams,
+} from "@/model/rest/dashboard";
+
+type DataRange = { start: Date; end: Date };
+export type DateFilter = Date | DataRange | undefined;
+
+export function mapDateFilterToDashboardParams(
+  dateFilter: DateFilter,
+): GetDashboardMetricasParams | undefined {
+  if (!dateFilter) return undefined;
+
+  if (dateFilter instanceof Date) {
+    return {
+      dataHoraInicio: formatISO(startOfDay(dateFilter)),
+      dataHoraFim: formatISO(endOfDay(dateFilter)),
+    };
+  }
+
+  if (!dateFilter.start || !dateFilter.end) return undefined;
+
+  const start = dateFilter.start <= dateFilter.end ? dateFilter.start : dateFilter.end;
+  const end = dateFilter.start <= dateFilter.end ? dateFilter.end : dateFilter.start;
+
+  return {
+    dataHoraInicio: formatISO(startOfDay(start)),
+    dataHoraFim: formatISO(endOfDay(end)),
+  };
+}
+
 import { formatCurrency, formatPercentValue } from "@/utils/formatters";
 import { STATUS_OS_LABELS, TIPO_SERVICO_RELATORIO_LABELS } from "./relatorios.labels";
 

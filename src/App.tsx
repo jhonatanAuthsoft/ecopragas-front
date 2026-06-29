@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/atomic/mol.tooltip/tooltip.component";
 import { ROLES } from "@/constants/roles";
 import { ROUTES } from "@/constants/routes";
 import { AuthGuard, GuestGuard } from "@/router/guards";
+import AgendamentoDetalhes from "./pages/admin/agendamentos/AgendamentoDetalhes";
 import Agendamentos from "./pages/admin/agendamentos/Agendamentos";
 import ClienteDetalhes from "./pages/admin/clientes/ClienteDetalhes";
 import Clientes from "./pages/admin/clientes/Clientes";
@@ -57,7 +58,8 @@ const App = () => (
         <Route path={ROUTES.ADMIN.CLIENT.DETAILS} element={<ClienteDetalhes />} />
         <Route path={ROUTES.ADMIN.SERVICE_ORDER.BASE} element={<OrdensServico />} />
         <Route path={ROUTES.ADMIN.SERVICE_ORDER.DETAILS} element={<OrdemServicoDetalhes />} />
-        <Route path={ROUTES.ADMIN.SCHEDULING} element={<Agendamentos />} />
+        <Route path={ROUTES.ADMIN.SCHEDULING.BASE} element={<Agendamentos />} />
+        <Route path={ROUTES.ADMIN.SCHEDULING.DETAILS} element={<AgendamentoDetalhes />} />
         <Route path={ROUTES.ADMIN.REPORT} element={<Relatorios />} />
         <Route path={ROUTES.ADMIN.TECHNICIAN} element={<Tecnicos />} />
       </Route>

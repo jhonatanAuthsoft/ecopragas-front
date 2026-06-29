@@ -18,8 +18,6 @@ import { useDebounce } from "@/hooks/use-debounce";
 import type { ClienteRecente } from "@/model/rest/dashboard";
 import { formatCPFCNPJ } from "@/utils/formatters";
 
-// TODO: ver se vale continuar com a paginação ou sem
-// const PAGE_SIZE = 5;
 const RECENT_CLIENTS_TABLE_COLUMNS = ["Nome", "CPF/CNPJ", "Status", "Tipo", "Último Serviço"];
 
 function getTipoLabel(tipo?: string): string {
@@ -56,7 +54,6 @@ function filterClientesRecentes(clientes: ClienteRecente[], searchTerm: string):
 export const RecentClients = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearch = useDebounce(searchTerm);
-  // const [page, setPage] = useState(0);
 
   const { metricas, metricasError, isMetricasLoading } = useGetDashboardMetricas();
 
@@ -67,21 +64,9 @@ export const RecentClients = () => {
     [clientesRecentes, debouncedSearch],
   );
 
-  // const totalPages = Math.max(1, Math.ceil(filteredClientes.length / PAGE_SIZE));
-  // const currentPage = Math.min(page + 1, totalPages);
-  // const paginatedClientes = filteredClientes.slice(
-  //   (currentPage - 1) * PAGE_SIZE,
-  //   currentPage * PAGE_SIZE,
-  // );
-
   const handleSearchChange = (value: string) => {
     setSearchTerm(value);
-    // setPage(0);
   };
-
-  // const handlePageChange = (nextPage: number) => {
-  //   setPage(nextPage - 1);
-  // };
 
   return (
     <div className="flex flex-col gap-md">
@@ -142,15 +127,6 @@ export const RecentClients = () => {
               ))}
             </TableBody>
           </Table>
-
-          {/* {totalPages > 1 && (
-            <PaginationControl
-              className="mt-xs"
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
-          )} */}
         </div>
       </LoadingState>
     </div>

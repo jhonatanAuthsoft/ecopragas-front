@@ -6,14 +6,16 @@ import { Body2 } from "@/atomic/atm.typography";
 import { cn } from "@/lib/utils";
 import { CalendarPicker } from "../mol.calendar-picker";
 
+type CalendarValue = Date | { start: Date | null; end: Date | null } | null;
+
 interface CalendarDropdownProps {
   label?: string;
-  value?: any;
-  onChange?: (value: any) => void;
+  value?: CalendarValue;
+  onChange?: (value: CalendarValue) => void;
   className?: string;
   maxDate?: Date;
   allowRange?: boolean;
-  type?: "single" | "range";
+  selectionMode?: "single" | "range" | "week";
 }
 
 export const CalendarDropdown: React.FC<CalendarDropdownProps> = ({
@@ -23,10 +25,10 @@ export const CalendarDropdown: React.FC<CalendarDropdownProps> = ({
   className,
   maxDate,
   allowRange = true,
-  type,
+  selectionMode,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [value, setValue] = useState<any>(propValue || null);
+  const [value, setValue] = useState<CalendarValue>(propValue ?? null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Sync internal state with propValue
@@ -47,16 +49,25 @@ export const CalendarDropdown: React.FC<CalendarDropdownProps> = ({
     };
   }, []);
 
-  const handleDateChange = (newValue: any) => {
+  const handleDateChange = (newValue: CalendarValue) => {
     setValue(newValue);
     onChange?.(newValue);
 
     // Auto-close on single date selection or completed range
     if (newValue instanceof Date) {
       setIsOpen(false);
-    } else if (newValue && newValue.start && newValue.end) {
+      return;
+    }
+
+    if (newValue?.start && newValue.end) {
       setIsOpen(false);
     }
+  };
+
+  const getPickerType = (): "single" | "range" | "week" => {
+    if (selectionMode) return selectionMode;
+    if (value && !(value instanceof Date) && value.start) return "range";
+    return "single";
   };
 
   const getSelectedText = () => {
@@ -107,11 +118,11 @@ export const CalendarDropdown: React.FC<CalendarDropdownProps> = ({
           <div className="fixed md:absolute left-1/2 md:left-auto md:right-0 top-1/2 md:top-auto md:mt-xs -translate-x-1/2 md:translate-x-0 -translate-y-1/2 md:translate-y-0 z-50">
             <div className="max-sm:scale-90 transform-gpu">
               <CalendarPicker
-                value={value}
-                type={type || (value && value?.start ? "range" : "single")}
+                value={value ?? undefined}
+                type={getPickerType()}
                 onChange={handleDateChange}
                 maxDate={maxDate}
-                allowRange={allowRange}
+                allowRange={selectionMode === "week" ? false : allowRange}
               />
             </div>
           </div>

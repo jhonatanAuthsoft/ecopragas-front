@@ -8,6 +8,7 @@ import { type StyleVariants, style } from "./text-input.style";
 export interface TextInputProps
   extends Omit<ComponentProps<"input">, "onChange" | "size">,
     StyleVariants {
+  wrapperClassName?: string;
   onChange?: (value: string) => void;
   iconLeft?: React.ReactNode;
   iconRight?: React.ReactNode;
@@ -22,6 +23,7 @@ export interface TextInputProps
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>((props, ref) => {
   const {
     className,
+    wrapperClassName,
     onChange,
     invalid,
     label,
@@ -32,6 +34,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>((props, re
     formatter,
     error,
     hasClearButton,
+    size,
     value,
     ...rest
   } = props;
@@ -47,12 +50,13 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>((props, re
     hasLeftIcon: !!iconLeft,
     hasRightIcon: !!iconRight || hasClearButton,
     disabled: rest.disabled,
+    size,
   });
 
   const clearButtonIsOpen = hasClearButton && !!value;
 
   return (
-    <div className={wrapper()}>
+    <div className={cn(wrapper(), wrapperClassName)}>
       <div className="flex items-center justify-between gap-xs">
         {label && (
           <label htmlFor={rest.id} className="w-full">

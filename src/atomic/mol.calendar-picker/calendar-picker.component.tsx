@@ -1,3 +1,4 @@
+import { endOfWeek, startOfWeek } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
@@ -13,12 +14,31 @@ interface DateRange {
 }
 
 interface CalendarPickerProps {
-  type?: "single" | "range";
+  type?: "single" | "range" | "week";
   value?: Date | DateRange;
   onChange?: (value: Date | DateRange | null) => void;
   className?: string;
   maxDate?: Date;
   allowRange?: boolean;
+}
+
+const WEEK_OPTIONS = { weekStartsOn: 0 as const };
+
+function getWeekRange(date: Date): DateRange {
+  return {
+    start: startOfWeek(date, WEEK_OPTIONS),
+    end: endOfWeek(date, WEEK_OPTIONS),
+  };
+}
+
+function isDayInRange(date: Date, start: Date, end: Date): boolean {
+  const time = date.getTime();
+  return time >= start.getTime() && time <= end.getTime();
+}
+
+function formatWeekRangeLabel(weekRange: DateRange): string {
+  if (!weekRange.start || !weekRange.end) return "";
+  return `${weekRange.start.toLocaleDateString("pt-BR")} - ${weekRange.end.toLocaleDateString("pt-BR")}`;
 }
 
 const DAYS_OF_WEEK = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
@@ -45,6 +65,8 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
   maxDate,
   allowRange = true,
 }) => {
+  const isWeekMode = type === "week";
+
   const [currentDate, setCurrentDate] = useState(() => {
     if (value instanceof Date) return value;
     if (value && (value as DateRange).start) return (value as DateRange).start as Date;
@@ -54,18 +76,25 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
     return value instanceof Date ? value : null;
   });
   const [range, setRange] = useState<DateRange>(() => {
+    if (isWeekMode && value instanceof Date) return getWeekRange(value);
     if (value && !(value instanceof Date)) return value as DateRange;
     return { start: null, end: null };
   });
   const [hoverDate, setHoverDate] = useState<Date | null>(null);
   const [isRange, setIsRange] = useState(() => {
-    if (!allowRange) return false;
+    if (isWeekMode || !allowRange) return false;
     if (value && !(value instanceof Date)) return true;
     return type === "range";
   });
 
   // Estados para controlar o texto digitado nos inputs
   const [inputDate, setInputDate] = useState(() => {
+    if (isWeekMode && value && !(value instanceof Date)) {
+      const weekValue = value as DateRange;
+      if (weekValue.start && weekValue.end) {
+        return formatWeekRangeLabel(weekValue);
+      }
+    }
     return value instanceof Date ? value.toLocaleDateString("pt-BR") : "";
   });
   const [inputRange, setInputRange] = useState(() => {
@@ -87,20 +116,50 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
   });
 
   useEffect(() => {
+    if (isWeekMode) {
+      setIsRange(false);
+      return;
+    }
+
     if (allowRange) {
       setIsRange(type === "range");
     } else {
       setIsRange(false);
     }
-  }, [type, allowRange]);
+  }, [type, allowRange, isWeekMode]);
+
+  useEffect(() => {
+    if (!isWeekMode) return;
+
+    if (value instanceof Date) {
+      const weekRange = getWeekRange(value);
+      setRange(weekRange);
+      setCurrentDate(value);
+      setInputDate(formatWeekRangeLabel(weekRange));
+      return;
+    }
+
+    if (value && !(value instanceof Date)) {
+      const weekValue = value as DateRange;
+      setRange(weekValue);
+      if (weekValue.start) {
+        setCurrentDate(weekValue.start);
+      }
+      if (weekValue.start && weekValue.end) {
+        setInputDate(formatWeekRangeLabel(weekValue));
+      }
+    }
+  }, [value, isWeekMode]);
 
   // Sincroniza os inputs quando as datas mudam via clique no calendário
   useEffect(() => {
+    if (isWeekMode) return;
+
     if (selectedDate) {
       setInputDate(selectedDate.toLocaleDateString("pt-BR"));
       setInputError(false);
     }
-  }, [selectedDate]);
+  }, [selectedDate, isWeekMode]);
 
   useEffect(() => {
     setInputRange({
@@ -166,6 +225,15 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
   const handleDayClick = (date: Date, isCurrentMonth: boolean) => {
     if (!isCurrentMonth) return;
     if (maxDate && date > maxDate) return;
+
+    if (isWeekMode) {
+      const weekRange = getWeekRange(date);
+      setRange(weekRange);
+      setCurrentDate(date);
+      setInputDate(formatWeekRangeLabel(weekRange));
+      onChange?.(date);
+      return;
+    }
 
     if (!isRange) {
       if (isSameDay(date, selectedDate)) {
@@ -333,14 +401,18 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
         <TextInput
           value={inputDate}
           onChange={(val) => {
+            if (isWeekMode) return;
             setInputDate(val);
             if (inputError) setInputError(false);
           }}
-          onBlur={() => handleBlur()}
+          onBlur={() => {
+            if (!isWeekMode) handleBlur();
+          }}
           onKeyDown={handleKeyDown}
           invalid={inputError}
-          error={inputError ? "Data inválida" : undefined}
-          placeholder="DD/MM/AAAA"
+          error={inputError ? "Data invalida" : undefined}
+          placeholder={isWeekMode ? "DD/MM/AAAA - DD/MM/AAAA" : "DD/MM/AAAA"}
+          readOnly={isWeekMode}
           className="bg-background! rounded-xl! px-md! py-sm! h-auto!"
           id="calendar-single-input"
         />
@@ -383,14 +455,16 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
         </H2>
         <div className="flex items-center gap-[12px]">
           <button
+            type="button"
             onClick={handlePrevMonth}
-            className="flex items-center justify-center text-grayscale-dark hover:text-brand-primary-medium transition-colors"
+            className="flex items-center justify-center p-2xs text-grayscale-dark hover:text-brand-primary-medium hover:bg-grayscale-light/50 rounded-full transition-colors cursor-pointer"
           >
             <ChevronLeft size={20} />
           </button>
           <button
+            type="button"
             onClick={handleNextMonth}
-            className="flex items-center justify-center text-grayscale-dark hover:text-brand-primary-medium transition-colors"
+            className="flex items-center justify-center p-2xs text-grayscale-dark hover:text-brand-primary-medium hover:bg-grayscale-light/50 rounded-full transition-colors cursor-pointer"
           >
             <ChevronRight size={20} />
           </button>
@@ -399,7 +473,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
 
       <div className="grid grid-cols-7 w-full">
         {DAYS_OF_WEEK.map((day) => (
-          <div key={day} className="flex justify-center">
+          <div key={`calendar-day-of-week-${day}`} className="flex justify-center">
             <Body2 className="text-grayscale-medium">{day}</Body2>
           </div>
         ))}
@@ -408,29 +482,45 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
       <div className="grid grid-cols-7 gap-y-0.5 w-full">
         {calendarDays.map((item, idx) => {
           if (!item.isCurrentMonth) {
-            return <div key={idx} className="h-9" />;
+            return (
+              <div key={`calendar-day-placeholder-${item.date.toISOString()}`} className="h-9" />
+            );
           }
 
           const isSelected =
-            isSameDay(item.date, isRange ? range.start : selectedDate) ||
-            (isRange && isSameDay(item.date, range.end));
+            isWeekMode && range.start && range.end
+              ? isDayInRange(item.date, range.start, range.end)
+              : isSameDay(item.date, isRange ? range.start : selectedDate) ||
+                (isRange && isSameDay(item.date, range.end));
+
+          const hoverWeekRange = isWeekMode && hoverDate ? getWeekRange(hoverDate) : null;
 
           const inRange =
-            isRange &&
-            (isBetween(item.date, range.start, range.end) ||
-              (range.start &&
-                !range.end &&
-                hoverDate &&
-                isBetween(item.date, range.start, hoverDate)));
+            isWeekMode && range.start && range.end
+              ? isDayInRange(item.date, range.start, range.end)
+              : isWeekMode && hoverWeekRange?.start && hoverWeekRange.end
+                ? isDayInRange(item.date, hoverWeekRange.start, hoverWeekRange.end)
+                : isRange &&
+                  (isBetween(item.date, range.start, range.end) ||
+                    (range.start &&
+                      !range.end &&
+                      hoverDate &&
+                      isBetween(item.date, range.start, hoverDate)));
 
-          const isStart = isRange && range.start && isSameDay(item.date, range.start);
-          const isEnd = isRange && range.end && isSameDay(item.date, range.end);
+          const isStart =
+            isWeekMode && range.start
+              ? isSameDay(item.date, range.start)
+              : isRange && range.start && isSameDay(item.date, range.start);
+          const isEnd =
+            isWeekMode && range.end
+              ? isSameDay(item.date, range.end)
+              : isRange && range.end && isSameDay(item.date, range.end);
 
           const isDisabled = maxDate && item.date > maxDate;
 
           return (
             <div
-              key={idx}
+              key={`calendar-day-${item.date.toISOString()}-${idx}`}
               onClick={() => !isDisabled && handleDayClick(item.date, item.isCurrentMonth)}
               onMouseEnter={() => !isDisabled && setHoverDate(item.date)}
               onMouseLeave={() => setHoverDate(null)}
@@ -438,11 +528,14 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
                 "relative h-9 flex items-center justify-center transition-all",
                 !isDisabled && "cursor-pointer",
                 isDisabled && "cursor-not-allowed opacity-30",
-                inRange && "bg-brand-primary-light/20 text-brand-primary-dark",
-                isSelected && "bg-brand-primary-medium text-grayscale-white rounded-small z-10",
+                inRange && !isSelected && "bg-brand-primary-light/20 text-brand-primary-dark",
+                isSelected && "bg-brand-primary-medium text-grayscale-white z-10",
+                isWeekMode && isSelected && isStart && "rounded-l-small",
+                isWeekMode && isSelected && isEnd && "rounded-r-small",
+                !isWeekMode && isSelected && "rounded-small",
                 !isSelected && !isDisabled && "hover:bg-grayscale-x-light hover:rounded-small",
-                isStart && range.end && "rounded-r-none",
-                isEnd && "rounded-l-none",
+                !isWeekMode && isStart && range.end && "rounded-r-none",
+                !isWeekMode && isEnd && "rounded-l-none",
               )}
             >
               <Body1
@@ -461,7 +554,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
         })}
       </div>
 
-      {allowRange && (
+      {allowRange && !isWeekMode && (
         <>
           <Separator />
 
