@@ -12,16 +12,20 @@ export interface AdminAgendaWeeklyItem extends AgendaWeeklyItem {
   recorrencia?: Agendamento["recorrencia"];
 }
 
-export const buildListAgendamentosParams = (weekDays: Date[]): ListAgendamentosParams => {
+export const buildListAgendamentosParams = (
+  weekDays: Date[],
+  searchText?: string,
+): ListAgendamentosParams => {
   const start = weekDays[0];
   const end = weekDays[weekDays.length - 1];
+  const trimmedSearch = searchText?.trim();
 
   return {
     // TODO: ver estrategia para melhorar listagem
     limit: 200,
     dataInicio: formatISO(startOfDay(start)),
     dataFim: formatISO(endOfDay(end)),
-    // TODO: search
+    searchText: trimmedSearch || undefined,
   };
 };
 

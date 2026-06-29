@@ -7,6 +7,7 @@ import { AgendaWeekly, getWeekDays, getWeekStartFromDate } from "@/atomic/org.ag
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
 import { useListAgendamentos } from "@/domain/agendamento";
+import { useDebounce } from "@/hooks/use-debounce";
 import {
   buildListAgendamentosParams,
   mapAgendamentoToAgendaWeeklyItem,
@@ -17,11 +18,15 @@ const Agendamentos = () => {
   const navigate = useNavigate();
   const [weekStart, setWeekStart] = useState(() => getWeekStartFromDate(new Date()));
   const [filtroTecnico, setFiltroTecnico] = useState("");
+  const debouncedFiltroTecnico = useDebounce(filtroTecnico);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   const weekDays = useMemo(() => getWeekDays(weekStart), [weekStart]);
 
-  const listParams = useMemo(() => buildListAgendamentosParams(weekDays), [weekDays]);
+  const listParams = useMemo(
+    () => buildListAgendamentosParams(weekDays, debouncedFiltroTecnico),
+    [weekDays, debouncedFiltroTecnico],
+  );
 
   const {
     agendamentos: agendamentosApi,
