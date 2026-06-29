@@ -17,6 +17,7 @@ import type { OrdemServico } from "@/model/rest/ordem-servico/ordem-servico.mode
 import { parseDateTime } from "@/utils/date-time";
 import { formatCurrency, formatTipoServico } from "@/utils/formatters";
 import { formatEnderecoFromOrdemServico, formatOsNumero } from "@/utils/ordem-servico";
+import { formatTecnicosLabel } from "./ordem-servico-detalhes/ordem-servico-detalhes.utils";
 
 const ORDENS_SERVICO_TABLE_COLUMNS = [
   "N O.S.",
@@ -102,8 +103,9 @@ export const OrdensServicoTable = ({
                   </TableCell>
                   <TableCell>{os.clienteNome ?? "-"}</TableCell>
                   <TableCell>{formatTipoServico(os.tipoServico)}</TableCell>
-                  {/* TODO: adicionar técnico */}
-                  <TableCell className="text-muted-foreground">-</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {formatTecnicosLabel(os.tecnicos)}
+                  </TableCell>
                   <TableCell>{date ? format(date, "dd/MM/yyyy") : "-"}</TableCell>
                   <TableCell>{time || "-"}</TableCell>
                   <TableCell className="max-w-[100px] xl:max-w-[200px]" textClassName="truncate">

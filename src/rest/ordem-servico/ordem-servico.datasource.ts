@@ -7,9 +7,11 @@ import type {
   EditOrdemServicoInput,
   EditOrdemServicoParams,
   EditOrdemServicoResponse,
+  GetOrdemServicoMetricasParams,
   GetOrdemServicoResponse,
   ListOrdensServicoParams,
   ListOrdensServicoResponse,
+  OrdemServicoMetricasResponse,
 } from "@/model/rest/ordem-servico";
 import { serverRequest } from "@/rest/server-request";
 
@@ -48,6 +50,14 @@ export async function editOrdemServicoDatasource(
 export async function downloadOrdensServicoPdfDatasource({ id }: DownloadOrdensServicoPdfParams) {
   const { data } = await serverRequest.get<DownloadOrdensServicoPdfResponse>(
     `/ordens-servico/${id}/pdf`,
+  );
+  return data;
+}
+
+export async function getOrdemServicoMetricasDatasource(params?: GetOrdemServicoMetricasParams) {
+  const { data } = await serverRequest.get<OrdemServicoMetricasResponse>(
+    "/ordens-servico/metricas",
+    { params },
   );
   return data;
 }
