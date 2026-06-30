@@ -12,6 +12,7 @@ import type { AgendaWeeklyProps } from "./agenda-weekly.types";
 import {
   DAY_HOURS,
   DAY_NAMES,
+  DEFAULT_SCROLL_HOUR,
   formatMonthYear,
   formatTimeSlotLabel,
   getAgendamentosForCell,
@@ -31,15 +32,14 @@ export function AgendaWeekly({
   onAgendamentoClick,
   className,
 }: AgendaWeeklyProps) {
-  const currentHourRowRef = useRef<HTMLDivElement>(null);
-  const currentHour = new Date().getHours();
+  const scrollTargetRowRef = useRef<HTMLDivElement>(null);
 
   const weekDays = getWeekDays(weekStart);
   const weekRange = { start: weekDays[0], end: weekDays[weekDays.length - 1] };
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
-      currentHourRowRef.current?.scrollIntoView({ block: "start" });
+      scrollTargetRowRef.current?.scrollIntoView({ block: "start" });
     });
 
     return () => cancelAnimationFrame(frame);
@@ -121,7 +121,7 @@ export function AgendaWeekly({
             {DAY_HOURS.map((hour) => (
               <div
                 key={hour}
-                ref={hour === currentHour ? currentHourRowRef : undefined}
+                ref={hour === DEFAULT_SCROLL_HOUR ? scrollTargetRowRef : undefined}
                 className="grid scroll-mt-[52px]"
                 style={{ gridTemplateColumns: GRID_COLUMNS }}
               >

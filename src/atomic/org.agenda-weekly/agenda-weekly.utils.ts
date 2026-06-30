@@ -13,6 +13,7 @@ import type { AgendaEventColorVariant, AgendaWeeklyItem } from "./agenda-weekly.
 
 export const DAY_NAMES = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
 export const DAY_HOURS = Array.from({ length: 24 }, (_, hour) => hour);
+export const DEFAULT_SCROLL_HOUR = 7;
 export const MAX_VISIBLE_AVATARS = 3;
 
 const COLOR_POOL: AgendaEventColorVariant[] = ["orange", "purple"];
