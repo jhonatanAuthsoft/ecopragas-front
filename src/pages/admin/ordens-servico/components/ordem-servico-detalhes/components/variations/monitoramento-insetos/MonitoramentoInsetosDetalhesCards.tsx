@@ -1,13 +1,8 @@
-import { SectionCard } from "@/atomic/mol.section-card";
-import type { OrdemServicoVariationsCardsProps } from "../../../ordem-servico-detalhes.types";
-import { MonitoramentoCard } from "./components/MonitoramentoCard";
+import type { OrdemServicoDetalhesSectionProps } from "../../../ordem-servico-detalhes.types";
+import { AreasMonitoramentoInsetosSection } from "../../sections";
 
-export function MonitoramentoInsetosDetalhesCards({ ordem }: OrdemServicoVariationsCardsProps) {
-  return (
-    <SectionCard title="Monitoramento">
-      {ordem.monitoramento?.map((item) => (
-        <MonitoramentoCard key={item.id} monitoramento={item} />
-      ))}
-    </SectionCard>
-  );
+export function MonitoramentoInsetosDetalhesCards({
+  ordemServico,
+}: OrdemServicoDetalhesSectionProps) {
+  return <AreasMonitoramentoInsetosSection ordemServico={ordemServico} />;
 }

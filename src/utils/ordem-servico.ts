@@ -1,8 +1,13 @@
 import type { OrdemServico } from "@/model/rest/ordem-servico/ordem-servico.model";
 
+export const formatOsNumero = (osNumero?: number | null): string => {
+  if (osNumero == null) return "-";
+  return `OS-${osNumero}`;
+};
+
 export const formatEnderecoFromOrdemServico = (ordemServico?: OrdemServico): string => {
   if (!ordemServico) {
-    return "";
+    return "-";
   }
 
   const rua = [ordemServico.rua, ordemServico.numero].filter(Boolean).join(", ");

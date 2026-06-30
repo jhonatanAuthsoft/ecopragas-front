@@ -70,6 +70,7 @@ function CarouselSlot({ src }: { src?: string }) {
       <div className="aspect-[3/2] shrink-0 rounded-medium bg-grayscale-light" style={slotStyle} />
     );
   }
+
   return (
     <div className="aspect-[3/2] shrink-0 overflow-hidden rounded-medium" style={slotStyle}>
       <img src={src} alt="Imagem do serviço" className="h-full w-full object-cover" />

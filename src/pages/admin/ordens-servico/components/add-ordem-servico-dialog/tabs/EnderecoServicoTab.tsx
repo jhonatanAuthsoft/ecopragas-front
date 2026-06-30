@@ -1,5 +1,5 @@
 import { Plus } from "lucide-react";
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { RadioButtonCheckedIcon } from "@/assets/icons/radio-button-checked";
 import { RadioButtonUncheckedIcon } from "@/assets/icons/radio-button-unchecked";
@@ -10,14 +10,16 @@ import { TextInput } from "@/atomic/atm.text-input";
 import { Body2, InputCaption } from "@/atomic/atm.typography";
 import { TabsContent } from "@/atomic/mol.tabs/tabs.component";
 import { FormField } from "@/atomic/obj.form";
+import { useGetCliente } from "@/domain/cliente";
 import { cn } from "@/lib/utils";
 import { formatCEP, formatNumber } from "@/utils/formatters";
-import { ENDERECO_FIELDS, MOCK_CLIENTES, NOVO_ENDERECO_ID } from "../add-ordem-servico-dialog.data";
+import { ENDERECO_FIELDS, NOVO_ENDERECO_ID } from "../add-ordem-servico-dialog.data";
 import type { OrdemServicoFormValues, ServicoEndereco } from "../add-ordem-servico-dialog.types";
 import {
   createEnderecoFromForm,
   fetchAddressByCep,
   getAddressValidationErrors,
+  mapClienteEnderecoToServicoEndereco,
 } from "../add-ordem-servico-dialog.utils";
 
 export type EnderecoServicoTabHandle = {
@@ -34,15 +36,34 @@ export const EnderecoServicoTab = forwardRef<EnderecoServicoTabHandle, EnderecoS
   ({ isSubmitting, submitLabel = "Criar ordem de serviço", initialSelectedEnderecoId }, ref) => {
     const { setError, clearErrors, watch } = useFormContext<OrdemServicoFormValues>();
     const clienteId = watch("clienteId");
+    const { cliente } = useGetCliente({ id: clienteId });
 
     const [selectedEnderecoId, setSelectedEnderecoId] = useState<string | null>(null);
     const [isNewEnderecoFormVisible, setIsNewEnderecoFormVisible] = useState(false);
     const [selectionError, setSelectionError] = useState<string | null>(null);
 
     const clienteEnderecos =
-      MOCK_CLIENTES.find((cliente) => cliente.id === clienteId)?.enderecos ?? [];
+      cliente?.enderecos
+        ?.map(mapClienteEnderecoToServicoEndereco)
+        .filter((endereco) => endereco.id) ?? [];
 
     const isNewEnderecoSelected = selectedEnderecoId === NOVO_ENDERECO_ID;
+
+    const previousClienteIdRef = useRef<string | undefined>(undefined);
+
+    useEffect(() => {
+      if (previousClienteIdRef.current === undefined) {
+        previousClienteIdRef.current = clienteId;
+        return;
+      }
+
+      if (previousClienteIdRef.current !== clienteId) {
+        setSelectedEnderecoId(null);
+        setIsNewEnderecoFormVisible(false);
+        setSelectionError(null);
+        previousClienteIdRef.current = clienteId;
+      }
+    }, [clienteId]);
 
     useEffect(() => {
       if (initialSelectedEnderecoId === undefined) return;

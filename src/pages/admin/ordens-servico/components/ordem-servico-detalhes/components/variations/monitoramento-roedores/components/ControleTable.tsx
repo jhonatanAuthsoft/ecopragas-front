@@ -6,13 +6,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/atomic/mol.table/table.component";
-import type { OrdemServico } from "@/model/rest/ordem-servico";
+import type { EstacaoControle } from "@/model/rest/ordem-servico";
+import { buildDetailRowKey } from "../../../sections/variation-detail.utils";
 
 interface ControleTableProps {
-  controle: OrdemServico["estacoes"][number]["controle"];
+  controle?: EstacaoControle[];
 }
 
 export function ControleTable({ controle }: ControleTableProps) {
+  if (!controle?.length) {
+    return null;
+  }
+
   return (
     <div className="px-lg py-md rounded-medium border border-grayscale-light">
       <Table>
@@ -23,8 +28,8 @@ export function ControleTable({ controle }: ControleTableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {controle?.map((item) => (
-            <TableRow key={item.id}>
+          {controle.map((item) => (
+            <TableRow key={buildDetailRowKey("controle", item.produto, item.quantidade)}>
               <TableCell>{item.produto}</TableCell>
               <TableCell>{item.quantidade}</TableCell>
             </TableRow>

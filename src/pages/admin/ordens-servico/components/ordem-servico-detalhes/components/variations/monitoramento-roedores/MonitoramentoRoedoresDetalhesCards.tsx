@@ -1,13 +1,8 @@
-import { SectionCard } from "@/atomic/mol.section-card";
-import type { OrdemServicoVariationsCardsProps } from "../../../ordem-servico-detalhes.types";
-import { EstacoesCard } from "./components/EstacoesCard";
+import type { OrdemServicoDetalhesSectionProps } from "../../../ordem-servico-detalhes.types";
+import { EstacoesMonitoramentoRoedoresSection } from "../../sections";
 
-export function MonitoramentoRoedoresDetalhesCards({ ordem }: OrdemServicoVariationsCardsProps) {
-  return (
-    <SectionCard title="Estações">
-      {ordem.estacoes?.map((estacao) => (
-        <EstacoesCard key={estacao.id} estacao={estacao} />
-      ))}
-    </SectionCard>
-  );
+export function MonitoramentoRoedoresDetalhesCards({
+  ordemServico,
+}: OrdemServicoDetalhesSectionProps) {
+  return <EstacoesMonitoramentoRoedoresSection ordemServico={ordemServico} />;
 }

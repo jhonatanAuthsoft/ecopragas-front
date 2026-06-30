@@ -1,34 +1,38 @@
-import type { OrdemServico } from "@/model/rest/ordem-servico";
+import type {
+  AreaMonitoramentoInsetos,
+  EstacaoMonitoramentoRoedores,
+  TipoServicoOrdem,
+} from "@/model/rest/ordem-servico";
 
 export type OrdemServicoDialogTab = "dados" | "endereco";
 
-export type TipoServicoForm = OrdemServico["tipoServico"];
+export type TipoServicoForm = TipoServicoOrdem;
 
 export type TipoServicoVariacao = "normal" | "monitoramento_insetos" | "monitoramento_roedores";
 
-export type EstacaoMonitoramento = {
+export type EstacaoMonitoramentoFormItem = EstacaoMonitoramentoRoedores & {
   id: string;
-  nome: string;
 };
 
-export type AreaMonitoramentoInsetos = {
+export type AreaMonitoramentoInsetosFormItem = AreaMonitoramentoInsetos & {
   id: string;
-  nome: string;
-  pragaAlvo: string;
+};
+
+export type AreaMonitoramentoInsetosDraft = {
+  areaMonitorada: string;
+  pragasAlvo: string[];
   tratamento: string;
 };
-
-export type AreaMonitoramentoInsetosDraft = Omit<AreaMonitoramentoInsetos, "id">;
 
 export type OrdemServicoFormValues = {
   clienteId: string;
   tipoServico: TipoServicoForm | "";
-  tecnicoId: string;
   valorServico: string;
-  status: OrdemServico["status"] | "";
+  data?: Date;
+  horario: string;
   observacoes: string;
-  estacoesMonitoramento: EstacaoMonitoramento[];
-  areasMonitoramentoInsetos: AreaMonitoramentoInsetos[];
+  estacoesMonitoramento: EstacaoMonitoramentoFormItem[];
+  areasMonitoramentoInsetos: AreaMonitoramentoInsetosFormItem[];
   cep: string;
   estado: string;
   cidade: string;
@@ -48,19 +52,6 @@ export type ServicoEndereco = {
   numero: string;
   complemento: string;
   padrao?: boolean;
-};
-
-export type MockCliente = {
-  id: string;
-  nome: string;
-  cpfCnpj: string;
-  telefone: string;
-  enderecos: ServicoEndereco[];
-};
-
-export type MockTecnico = {
-  id: string;
-  nome: string;
 };
 
 export type ViaCepResponse = {

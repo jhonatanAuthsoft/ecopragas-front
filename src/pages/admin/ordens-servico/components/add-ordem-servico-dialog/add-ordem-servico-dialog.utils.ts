@@ -1,22 +1,27 @@
+import { format } from "date-fns";
 import type { SelectInputOption } from "@/atomic/atm.select-input";
-import type { OrdemServico } from "@/model/rest/ordem-servico";
-import { cleanDigits, formatCurrencyNumber } from "@/utils/formatters";
-import { ENDERECO_FIELDS, MOCK_CLIENTES, MOCK_TECNICOS } from "./add-ordem-servico-dialog.data";
+import type { ClienteEnderecoResponse } from "@/model/rest/cliente";
+import type { CadastrarOrdemServicoInput, OrdemServico } from "@/model/rest/ordem-servico";
+import { formatDateHour } from "@/pages/admin/agendamentos/agendamentos.utils";
+import { cleanDigits, formatCEP, formatCurrency, formatCurrencyNumber } from "@/utils/formatters";
+import {
+  ENDERECO_FIELDS,
+  getTipoServicoVariacao,
+  NOVO_ENDERECO_ID,
+} from "./add-ordem-servico-dialog.data";
 import type {
   OrdemServicoFormValues,
   ServicoEndereco,
   ViaCepResponse,
 } from "./add-ordem-servico-dialog.types";
 
-const REQUIRED_MESSAGE = "Campo obrigatorio";
+const REQUIRED_MESSAGE = "Campo obrigatório";
 
 export const getSelectOptionLabel = (options: SelectInputOption[], value: string) =>
   options.find((option) => option.value === value)?.label ?? value;
 
-const generateNumeroOS = (sequence: number) => {
-  const year = new Date().getFullYear();
-  return `OS-${year}-${String(sequence).padStart(3, "0")}`;
-};
+export const getMultiSelectOptionLabels = (options: SelectInputOption[], values: string[]) =>
+  values.map((value) => getSelectOptionLabel(options, value)).join(", ");
 
 export const formatEnderecoLabel = (endereco: ServicoEndereco) => {
   const complemento = endereco.complemento ? ` - ${endereco.complemento}` : "";
@@ -96,30 +101,129 @@ export const clearAddressFields = (): Pick<
   complemento: "",
 });
 
-export const buildOrdemServicoPayload = (
-  values: OrdemServicoFormValues,
-  selectedEndereco: ServicoEndereco,
-  existingOsCount: number,
-): Omit<OrdemServico, "id"> => {
-  const cliente = MOCK_CLIENTES.find((item) => item.id === values.clienteId);
-  const tecnico = MOCK_TECNICOS.find((item) => item.id === values.tecnicoId);
+export const mapClienteEnderecoToServicoEndereco = (
+  endereco: ClienteEnderecoResponse,
+): ServicoEndereco => ({
+  id: endereco.id ?? "",
+  cep: endereco.cep ?? "",
+  estado: endereco.estado ?? "",
+  cidade: endereco.cidade ?? "",
+  bairro: endereco.bairro ?? "",
+  endereco: endereco.rua ?? "",
+  numero: endereco.numero ?? "",
+  complemento: endereco.complemento ?? "",
+  padrao: endereco.padrao,
+});
+
+const normalizeAddressField = (value?: string | null) => (value ?? "").trim().toLowerCase();
+
+const normalizeCep = (value?: string | null) => cleanDigits(value ?? "");
+
+export const isSameEndereco = (ordem: OrdemServico, endereco: ServicoEndereco): boolean =>
+  normalizeAddressField(ordem.rua) === normalizeAddressField(endereco.endereco) &&
+  normalizeAddressField(ordem.numero) === normalizeAddressField(endereco.numero) &&
+  normalizeAddressField(ordem.complemento) === normalizeAddressField(endereco.complemento) &&
+  normalizeAddressField(ordem.bairro) === normalizeAddressField(endereco.bairro) &&
+  normalizeAddressField(ordem.cidade) === normalizeAddressField(endereco.cidade) &&
+  normalizeAddressField(ordem.estado) === normalizeAddressField(endereco.estado) &&
+  normalizeCep(ordem.cep) === normalizeCep(endereco.cep);
+
+export const resolveInitialEnderecoId = (
+  ordem: OrdemServico,
+  clienteEnderecos: ServicoEndereco[],
+): string => {
+  const match = clienteEnderecos.find((endereco) => isSameEndereco(ordem, endereco));
+  return match?.id ?? NOVO_ENDERECO_ID;
+};
+
+export const mapOrdemServicoToFormValues = (ordem: OrdemServico): OrdemServicoFormValues => {
+  let data: Date | undefined;
+  let horario = "";
+
+  if (ordem.dataHoraServico) {
+    const parsedDate = new Date(ordem.dataHoraServico);
+    data = parsedDate;
+    horario = format(parsedDate, "HH:mm");
+  }
+
+  const areasMonitoramentoInsetos =
+    ordem.dadosEspecificos?.areasMonitoramentoInsetos?.map((area, index) => ({
+      id: `area-${index}`,
+      areaMonitorada: area.areaMonitorada ?? "",
+      pragasAlvo: area.pragasAlvo ?? [],
+      tratamento: area.tratamento ?? "",
+    })) ?? [];
+
+  const estacoesMonitoramento =
+    ordem.dadosEspecificos?.estacoesMonitoramentoRoedores?.map((estacao, index) => ({
+      id: `estacao-${index}`,
+      nome: estacao.nome ?? "",
+    })) ?? [];
 
   return {
-    numeroOS: generateNumeroOS(existingOsCount + 1),
-    cliente: {
-      id: values.clienteId,
-      nome: cliente?.nome ?? "",
-      cpfCnpj: cliente?.cpfCnpj ?? "",
-      telefone: cliente?.telefone ?? "",
-    },
-    tipoServico: values.tipoServico as OrdemServico["tipoServico"],
-    tecnicoId: values.tecnicoId,
-    tecnicoNome: tecnico?.nome ?? "",
-    dataAgendamento: new Date(),
-    horaAgendamento: "09:00",
-    endereco: formatEnderecoLabel(selectedEndereco),
-    status: (values.status || "agendada") as OrdemServico["status"],
+    clienteId: ordem.clienteId ?? "",
+    tipoServico: ordem.tipoServico ?? "",
+    valorServico: ordem.valor != null ? formatCurrency(ordem.valor) : "",
+    data,
+    horario,
+    observacoes: ordem.observacoes ?? "",
+    estacoesMonitoramento,
+    areasMonitoramentoInsetos,
+    cep: ordem.cep ? formatCEP(ordem.cep) : "",
+    estado: ordem.estado ?? "",
+    cidade: ordem.cidade ?? "",
+    bairro: ordem.bairro ?? "",
+    endereco: ordem.rua ?? "",
+    numero: ordem.numero ?? "",
+    complemento: ordem.complemento ?? "",
+  };
+};
+
+export const buildOrdemServicoMutationInput = (
+  values: OrdemServicoFormValues,
+  endereco: ServicoEndereco,
+): CadastrarOrdemServicoInput | null => {
+  if (!values.clienteId || !values.tipoServico) {
+    return null;
+  }
+
+  const dataHoraServico =
+    values.data && values.horario
+      ? formatDateHour(values.data, values.horario)
+      : format(new Date(), "yyyy-MM-dd'T'HH:mm:ss");
+
+  const variacao = getTipoServicoVariacao(values.tipoServico);
+
+  const dadosEspecificos =
+    variacao === "monitoramento_insetos"
+      ? {
+          areasMonitoramentoInsetos: values.areasMonitoramentoInsetos.map((area) => ({
+            areaMonitorada: area.areaMonitorada,
+            pragasAlvo: area.pragasAlvo.length > 0 ? area.pragasAlvo : undefined,
+            tratamento: area.tratamento || undefined,
+          })),
+        }
+      : variacao === "monitoramento_roedores"
+        ? {
+            estacoesMonitoramentoRoedores: values.estacoesMonitoramento.map((estacao) => ({
+              nome: estacao.nome,
+            })),
+          }
+        : undefined;
+
+  return {
+    clienteId: values.clienteId,
+    tipoServico: values.tipoServico,
+    valor: formatCurrencyNumber(values.valorServico),
+    dataHoraServico,
+    rua: endereco.endereco,
+    numero: endereco.numero,
+    complemento: endereco.complemento || undefined,
+    bairro: endereco.bairro,
+    cidade: endereco.cidade,
+    estado: endereco.estado,
+    cep: endereco.cep ? cleanDigits(endereco.cep) : undefined,
     observacoes: values.observacoes || undefined,
-    valorServico: formatCurrencyNumber(values.valorServico),
+    dadosEspecificos,
   };
 };

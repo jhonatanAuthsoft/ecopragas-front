@@ -1,38 +1,31 @@
 import { Check, ChevronDown } from "lucide-react";
 import { useState } from "react";
-import { Body1, Body2, H3, H4, InputLabel } from "@/atomic/atm.typography";
-import { ImageCarousel } from "@/atomic/mol.image-carousel";
+import { Body1, Body2, H3, H4 } from "@/atomic/atm.typography";
+import { InputLabel } from "@/atomic/atm.typography/typography.component";
+import { ImageCarousel } from "@/atomic/mol.image-carousel/image-carousel.component";
 import { cn } from "@/lib/utils";
-import type {
-  ArmadilhaAdesivaTypes,
-  OrdemServico,
-  PortaIscaRaticidaTypes,
-} from "@/model/rest/ordem-servico";
+import type { EstacaoMonitoramentoRoedores } from "@/model/rest/ordem-servico";
+import {
+  ARMADILHA_ADESIVA_LABELS,
+  PORTA_ISCA_RATICIDA_LABELS,
+} from "../../../../ordem-servico-detalhes.labels";
+import {
+  formatMonitoramentoOptionList,
+  getEstacaoArmadilhaAdesivaValues,
+  getEstacaoPortaIscaValues,
+} from "../monitoramento-options.utils";
 import { ControleTable } from "./ControleTable";
 import { PontosVariaveisTable } from "./PontosVariaveisTable";
 
-const PORTA_ISCAS_RATICIDA_LABELS: Record<PortaIscaRaticidaTypes, string> = {
-  isca_consumida: "Isca consumida",
-  isca_danificada: "Isca danificada",
-  isca_extraviada: "Isca extraviada",
-  porta_isca_extraviado: "Porta Isca extraviada",
-  isca_em_conformidade: "Isca em conformidade",
-};
-
-const ARMADILHA_ADESIVA_LABELS: Record<ArmadilhaAdesivaTypes, string> = {
-  cola_danificada: "Cola danificada",
-  porta_adesivo_quebrado: "Porta adesivo quebrado",
-  porta_adesivo_extraviado: "Porta adesivo extraviada",
-  em_conformidade: "Em conformidade",
-};
-
 interface EstacoesCardProps {
-  estacao: OrdemServico["estacoes"][number];
+  estacao: EstacaoMonitoramentoRoedores;
 }
 
 export function EstacoesCard({ estacao }: EstacoesCardProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const estacaoKey = estacao.id ?? estacao.nome ?? "estacao";
+  const estacaoKey = estacao.nome ?? "estacao";
+  const portaIscaSelecionadas = getEstacaoPortaIscaValues(estacao);
+  const armadilhaAdesivaSelecionadas = getEstacaoArmadilhaAdesivaValues(estacao);
 
   return (
     <div className="flex flex-col gap-md p-lg border border-grayscale-light rounded-large">
@@ -49,12 +42,18 @@ export function EstacoesCard({ estacao }: EstacoesCardProps) {
           </div>
 
           {!isOpen ? (
-            <div className="flex gap-2xs">
-              <Body2 className="text-grayscale-dark pr-2xs border-r border-grayscale-light">
-                Porta Isca: {estacao.portaIscaRaticida?.length}
-              </Body2>
+            <div className="flex gap-2xs text-left">
               <Body2 className="text-grayscale-dark">
-                Armadilha Adesiva: {estacao.armadilhaAdesiva?.length}
+                Porta Isca:{" "}
+                {formatMonitoramentoOptionList(portaIscaSelecionadas, PORTA_ISCA_RATICIDA_LABELS)}
+              </Body2>
+              <div className="w-px h-lg bg-grayscale-light" />
+              <Body2 className="text-grayscale-dark">
+                Armadilha Adesiva:{" "}
+                {formatMonitoramentoOptionList(
+                  armadilhaAdesivaSelecionadas,
+                  ARMADILHA_ADESIVA_LABELS,
+                )}
               </Body2>
             </div>
           ) : (
@@ -66,53 +65,18 @@ export function EstacoesCard({ estacao }: EstacoesCardProps) {
       {isOpen && (
         <>
           <div className="flex flex-col gap-md">
-            <InputLabel>Porta Isca Raticida</InputLabel>
-            <div className="flex flex-wrap gap-xs">
-              {Object.entries(PORTA_ISCAS_RATICIDA_LABELS).map(([portaType, portaLabel]) => {
-                const isSelected = estacao.portaIscaRaticida?.includes(
-                  portaType as PortaIscaRaticidaTypes,
-                );
-
-                return (
-                  <div
-                    key={`${estacaoKey}-porta-isca-${portaType}`}
-                    className={cn(
-                      "flex items-center gap-2xs py-xs rounded-small border border-grayscale-medium",
-                      isSelected
-                        ? "px-xs bg-feedback-success-medium text-white"
-                        : "px-lg text-grayscale-dark",
-                    )}
-                  >
-                    {isSelected && <Check />}
-                    <Body1>{portaLabel}</Body1>
-                  </div>
-                );
-              })}
-            </div>
-
-            <InputLabel>Armadilha Adesiva</InputLabel>
-            <div className="flex flex-wrap gap-xs">
-              {Object.entries(ARMADILHA_ADESIVA_LABELS).map(([armadilhaType, armadilhaLabel]) => {
-                const isSelected = estacao.armadilhaAdesiva?.includes(
-                  armadilhaType as ArmadilhaAdesivaTypes,
-                );
-
-                return (
-                  <div
-                    key={`${estacaoKey}-armadilha-adesiva-${armadilhaType}`}
-                    className={cn(
-                      "flex items-center gap-2xs py-xs rounded-small border border-grayscale-medium",
-                      isSelected
-                        ? "px-xs bg-feedback-success-medium text-white"
-                        : "px-lg text-grayscale-dark",
-                    )}
-                  >
-                    {isSelected && <Check />}
-                    <Body1>{armadilhaLabel}</Body1>
-                  </div>
-                );
-              })}
-            </div>
+            <MonitoramentoOptionsGroup
+              label="Porta Isca Raticida"
+              options={PORTA_ISCA_RATICIDA_LABELS}
+              selectedValues={portaIscaSelecionadas}
+              keyPrefix={`${estacaoKey}-porta-isca`}
+            />
+            <MonitoramentoOptionsGroup
+              label="Armadilha Adesiva"
+              options={ARMADILHA_ADESIVA_LABELS}
+              selectedValues={armadilhaAdesivaSelecionadas}
+              keyPrefix={`${estacaoKey}-armadilha-adesiva`}
+            />
           </div>
 
           <div className="w-full h-px bg-grayscale-light" />
@@ -122,17 +86,67 @@ export function EstacoesCard({ estacao }: EstacoesCardProps) {
 
           <div className="w-full h-px bg-grayscale-light" />
 
-          <H4 className="text-grayscale-dark">Pontos Variaveis</H4>
+          <H4 className="text-grayscale-dark">Pontos variáveis</H4>
           <PontosVariaveisTable pontosVariaveis={estacao.pontosVariaveis} />
 
           <div className="w-full h-px bg-grayscale-light" />
 
           <H4>Fotos do serviço</H4>
-          <ImageCarousel images={estacao.fotos} pageSize={4} />
+          <ImageCarousel images={estacao.fotos ?? []} pageSize={3.5} />
           <H4>Observações gerais</H4>
-          <Body1 className="font-normal text-grayscale-dark">{estacao?.observacoes ?? "-"}</Body1>
+          <Body1 className="font-normal text-grayscale-dark">
+            {estacao.observacoesGerais ?? "-"}
+          </Body1>
         </>
       )}
+    </div>
+  );
+}
+
+interface MonitoramentoOptionsGroupProps {
+  label: string;
+  options: Record<string, string>;
+  selectedValues: string[];
+  keyPrefix: string;
+}
+function MonitoramentoOptionsGroup({
+  label,
+  options,
+  selectedValues,
+  keyPrefix,
+}: MonitoramentoOptionsGroupProps) {
+  const selectedSet = new Set(selectedValues);
+
+  return (
+    <div className="flex flex-col gap-xs">
+      <InputLabel>{label}</InputLabel>
+      <div className="flex flex-wrap gap-xs">
+        {Object.entries(options).map(([value, optionLabel]) => (
+          <MonitoramentoOptionBadge
+            key={`${keyPrefix}-${value}`}
+            label={optionLabel}
+            isSelected={selectedSet.has(value)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+interface MonitoramentoOptionBadgeProps {
+  label: string;
+  isSelected: boolean;
+}
+function MonitoramentoOptionBadge({ label, isSelected }: MonitoramentoOptionBadgeProps) {
+  return (
+    <div
+      className={cn(
+        "flex items-center gap-2xs py-xs rounded-small border border-grayscale-medium",
+        isSelected ? "px-xs bg-feedback-success-medium text-white" : "px-lg text-grayscale-dark",
+      )}
+    >
+      {isSelected && <Check className="size-md shrink-0" />}
+      <Body1>{label}</Body1>
     </div>
   );
 }

@@ -1,31 +1,23 @@
 import { useFormContext } from "react-hook-form";
 import { Button } from "@/atomic/atm.button/button.component";
+import { InfiniteSelectInput } from "@/atomic/atm.infinite-select-input";
 import { SelectInput } from "@/atomic/atm.select-input";
 import { TextInput } from "@/atomic/atm.text-input";
 import { TextareaInput } from "@/atomic/atm.textarea-input";
 import { TabsContent } from "@/atomic/mol.tabs/tabs.component";
 import { FormField, RequiredValidator } from "@/atomic/obj.form";
+import { clientesInfiniteSelectConfig } from "@/domain/cliente";
 import { formatCurrency } from "@/utils/formatters";
-import {
-  getClienteOptions,
-  getTecnicoOptions,
-  getTipoServicoVariacao,
-  STATUS_OPTIONS,
-  TIPO_SERVICO_OPTIONS,
-} from "../add-ordem-servico-dialog.data";
+import { getTipoServicoVariacao, TIPO_SERVICO_OPTIONS } from "../add-ordem-servico-dialog.data";
 import type { OrdemServicoFormValues } from "../add-ordem-servico-dialog.types";
 import { MonitoramentoInsetosFields } from "./variations/MonitoramentoInsetosFields";
 import { MonitoramentoRoedoresFields } from "./variations/MonitoramentoRoedoresFields";
 
 interface DadosServicoTabProps {
   onNext: () => void;
-  statusLabel?: string;
 }
 
-export const DadosServicoTab = ({
-  onNext,
-  statusLabel = "Status inicial",
-}: DadosServicoTabProps) => {
+export const DadosServicoTab = ({ onNext }: DadosServicoTabProps) => {
   const { watch } = useFormContext<OrdemServicoFormValues>();
   const tipoServico = watch("tipoServico");
   const variacao = getTipoServicoVariacao(tipoServico);
@@ -38,10 +30,11 @@ export const DadosServicoTab = ({
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <FormField name="clienteId" validators={[RequiredValidator()]}>
-          <SelectInput
+          <InfiniteSelectInput
             label="Cliente"
             placeholder="Selecione o cliente"
-            options={getClienteOptions()}
+            searchPlaceholder="Buscar cliente"
+            queryConfig={clientesInfiniteSelectConfig}
           />
         </FormField>
 
@@ -53,27 +46,11 @@ export const DadosServicoTab = ({
           />
         </FormField>
 
-        <FormField name="tecnicoId" validators={[RequiredValidator()]}>
-          <SelectInput
-            label="Técnico responsável"
-            placeholder="Selecione o tecnico"
-            options={getTecnicoOptions()}
-          />
-        </FormField>
-
         <FormField name="valorServico" validators={[RequiredValidator()]}>
           <TextInput
             label="Valor do serviço (R$)"
             placeholder="R$ 450,00"
             formatter={formatCurrency}
-          />
-        </FormField>
-
-        <FormField name="status" validators={[RequiredValidator()]}>
-          <SelectInput
-            label={statusLabel}
-            placeholder="Selecione o status"
-            options={STATUS_OPTIONS}
           />
         </FormField>
       </div>

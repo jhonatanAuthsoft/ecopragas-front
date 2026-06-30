@@ -6,13 +6,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/atomic/mol.table/table.component";
-import type { OrdemServico } from "@/model/rest/ordem-servico";
+import type { EstacaoPontoVariavel } from "@/model/rest/ordem-servico";
+import { buildDetailRowKey } from "../../../sections/variation-detail.utils";
 
 interface PontosVariaveisTableProps {
-  pontosVariaveis: OrdemServico["estacoes"][number]["pontosVariaveis"];
+  pontosVariaveis?: EstacaoPontoVariavel[];
 }
 
 export function PontosVariaveisTable({ pontosVariaveis }: PontosVariaveisTableProps) {
+  if (!pontosVariaveis?.length) {
+    return null;
+  }
+
   return (
     <div className="px-lg py-md rounded-medium border border-grayscale-light">
       <Table>
@@ -24,8 +29,8 @@ export function PontosVariaveisTable({ pontosVariaveis }: PontosVariaveisTablePr
           </TableRow>
         </TableHeader>
         <TableBody>
-          {pontosVariaveis?.map((item) => (
-            <TableRow key={item.id}>
+          {pontosVariaveis.map((item) => (
+            <TableRow key={buildDetailRowKey("ponto", item.local, item.produto, item.quantidade)}>
               <TableCell>{item.local}</TableCell>
               <TableCell>{item.produto}</TableCell>
               <TableCell>{item.quantidade}</TableCell>

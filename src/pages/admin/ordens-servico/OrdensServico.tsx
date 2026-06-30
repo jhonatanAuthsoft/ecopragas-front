@@ -1,82 +1,33 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { CheckCircleIcon } from "@/assets/icons/check-circle";
-import { ClipboardDocumentListIcon } from "@/assets/icons/clipboard-document-list";
-import { ClockIcon } from "@/assets/icons/clock";
-import { ExclamationCircleIcon } from "@/assets/icons/exclamation-circle";
 import { Button } from "@/atomic/atm.button/button.component";
-import { Body1, H1, H2 } from "@/atomic/atm.typography";
-import {
-  Card,
-  CardContent,
-  CardSubtitle,
-  CardTitleSecondary,
-} from "@/atomic/mol.card/card.component";
+import { Body1, H1 } from "@/atomic/atm.typography";
 import { SearchInput } from "@/atomic/mol.search/search.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
-import type { OrdemServico } from "@/model/rest/ordem-servico";
+import { useGetOrdemServicoMetricas, useListOrdensServico } from "@/domain/ordem-servico";
+import { useDebounce } from "@/hooks/use-debounce";
 import { AddOrdemServicoDialog } from "./components/add-ordem-servico-dialog";
+import { OrdensServicoMetrics } from "./components/OrdensServicoMetrics";
 import { OrdensServicoTable } from "./components/OrdensServicoTable";
-import { OS_MOCKS } from "./ordens-servico.mock";
+
+const PAGE_SIZE = 5;
 
 const OrdensServico = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearch = useDebounce(searchTerm);
+  const [page, setPage] = useState(0);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const [ordensServico, setOrdensServico] = useState<OrdemServico[]>(OS_MOCKS);
+  const { ordensServico, pagination, listOrdensServicoError, isListOrdensServicoLoading } =
+    useListOrdensServico({
+      limit: PAGE_SIZE,
+      offset: page * PAGE_SIZE,
+      searchText: debouncedSearch.trim() || undefined,
+    });
 
-  const filteredOrdens = ordensServico.filter(
-    (os) =>
-      os.numeroOS.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      os.cliente.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      os.tecnicoNome.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const { metricas, metricasError, isMetricasLoading } = useGetOrdemServicoMetricas();
 
-  const handleAddOrdemServico = (os: OrdemServico) => {
-    const newOS: OrdemServico = {
-      ...os,
-      id: Date.now().toString(),
-    };
-    setOrdensServico([newOS, ...ordensServico]);
-    setIsDialogOpen(false);
-  };
-
-  const totalOS = ordensServico.length;
-  const osAgendadas = ordensServico.filter((os) => os.status === "agendada").length;
-  const osEmAndamento = ordensServico.filter((os) => os.status === "em_andamento").length;
-  const osConcluidas = ordensServico.filter((os) => os.status === "concluida").length;
-
-  const stats = [
-    {
-      title: "Total de O.S.",
-      value: totalOS,
-      icon: ClipboardDocumentListIcon,
-      color: "text-brand-primary-medium",
-      bgColor: "bg-brand-cta-light",
-      subtitle: "com base na data atual",
-    },
-    {
-      title: "Agendadas",
-      value: osAgendadas,
-      icon: ClockIcon,
-      color: "text-brand-primary-medium",
-      bgColor: "bg-brand-cta-light",
-    },
-    {
-      title: "Em Andamento",
-      value: osEmAndamento,
-      icon: ExclamationCircleIcon,
-      color: "text-brand-primary-medium",
-      bgColor: "bg-brand-cta-light",
-    },
-    {
-      title: "Concluídas",
-      value: osConcluidas,
-      icon: CheckCircleIcon,
-      color: "text-brand-primary-medium",
-      bgColor: "bg-brand-cta-light",
-    },
-  ];
+  const currentPage = page + 1;
 
   return (
     <MainLayout>
@@ -89,29 +40,21 @@ const OrdensServico = () => {
         </div>
 
         <div className="flex flex-col gap-md">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {stats.map((stat) => {
-              const Icon = stat.icon;
-              return (
-                <Card key={stat.title}>
-                  <CardContent>
-                    <CardTitleSecondary>{stat.title}</CardTitleSecondary>
-                    <H2>{stat.value}</H2>
-                    {stat.subtitle && (
-                      <CardSubtitle className="text-grayscale-dark">{stat.subtitle}</CardSubtitle>
-                    )}
-                  </CardContent>
-
-                  <div className={`rounded-full ${stat.bgColor} p-sm`}>
-                    <Icon className={`size-lg ${stat.color}`} />
-                  </div>
-                </Card>
-              );
-            })}
-          </div>
+          <OrdensServicoMetrics
+            metricas={metricas}
+            isLoading={isMetricasLoading}
+            error={!!metricasError}
+          />
 
           <div className="flex items-center justify-between">
-            <SearchInput placeholder="Buscar  por clientes, Nº O.S." onChange={setSearchTerm} />
+            <SearchInput
+              placeholder="Buscar por clientes, Nº O.S."
+              value={searchTerm}
+              onChange={(value) => {
+                setSearchTerm(value);
+                setPage(0);
+              }}
+            />
             <Button
               variant="primary"
               onClick={() => setIsDialogOpen(true)}
@@ -122,15 +65,17 @@ const OrdensServico = () => {
             </Button>
           </div>
 
-          <OrdensServicoTable ordensServico={filteredOrdens} />
+          <OrdensServicoTable
+            ordensServico={ordensServico}
+            currentPage={currentPage}
+            totalPages={pagination?.totalPages ?? 1}
+            isLoading={isListOrdensServicoLoading}
+            error={!!listOrdensServicoError}
+            onPageChange={(nextPage) => setPage(nextPage - 1)}
+          />
         </div>
 
-        <AddOrdemServicoDialog
-          open={isDialogOpen}
-          onOpenChange={setIsDialogOpen}
-          onAddOrdemServico={handleAddOrdemServico}
-          existingOsCount={ordensServico.length}
-        />
+        <AddOrdemServicoDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
       </div>
     </MainLayout>
   );

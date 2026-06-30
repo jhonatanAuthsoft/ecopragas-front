@@ -7,13 +7,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/atomic/mol.table/table.component";
-import type { OrdemServico } from "@/model/rest/ordem-servico";
+import type { VistoriaItem } from "@/model/rest/ordem-servico";
+import { buildDetailRowKey } from "../variation-detail.utils";
 
 interface VistoriaTableProps {
-  vistoria?: OrdemServico["vistoria"];
+  vistoria?: VistoriaItem[];
 }
 
 export function VistoriaTable({ vistoria }: VistoriaTableProps) {
+  if (!vistoria?.length) {
+    return null;
+  }
+
   return (
     <div className="px-lg py-md rounded-medium border border-grayscale-light">
       <Table>
@@ -26,12 +31,14 @@ export function VistoriaTable({ vistoria }: VistoriaTableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {vistoria?.map((item) => (
-            <TableRow key={item?.id}>
-              <TableCell className="text-grayscale-x-dark">{item?.setor}</TableCell>
-              <TableCell>{item?.situacao}</TableCell>
-              <TableCell>{item?.medidaCorretiva}</TableCell>
-              <TableCell>{item?.avaliacao}</TableCell>
+          {vistoria.map((item) => (
+            <TableRow
+              key={buildDetailRowKey("vistoria", item.setor, item.situacao, item.medidaCorretiva)}
+            >
+              <TableCell className="text-grayscale-x-dark">{item.setor}</TableCell>
+              <TableCell>{item.situacao}</TableCell>
+              <TableCell>{item.medidaCorretiva}</TableCell>
+              <TableCell>{item.avaliacao}</TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -1,3 +1,5 @@
+import type { OrdemServico } from "@/model/rest/ordem-servico";
+
 export const formatCPFCNPJ = (value: string) => {
   const cleanValue = value.replace(/\D/g, "");
 
@@ -106,17 +108,19 @@ export const formatPercentValue = (value?: number, decimals = 0): string => {
   return `${(value ?? 0).toFixed(decimals)}%`;
 };
 
-export const TIPO_SERVICO_LABELS: Record<string, string> = {
-  DEDETIZACAO: "Dedetização",
-  LIMPEZA_CAIXA_AGUA: "Limpeza de Caixa D'Água",
+export const TIPO_SERVICO_LABELS: Record<OrdemServico["tipoServico"], string> = {
   SANITIZACAO: "Sanitização",
-  DESRATIZACAO: "Desratização",
-  OUTROS: "Outros",
+  CONTROLE_PRAGAS_VETORES: "Controle de Pragas e Vetores",
+  HIGIENIZACAO: "Higienização",
+  MONITORAMENTO_INSETOS: "Monitoramento de Insetos",
+  MONITORAMENTO_ROEDORES: "Monitoramento de Roedores",
 };
 
 export const formatTipoServico = (tipo?: string | null): string => {
   if (!tipo) return "Serviço";
-  return TIPO_SERVICO_LABELS[tipo.toUpperCase()] ?? tipo.replace(/_/g, " ");
+  return (
+    TIPO_SERVICO_LABELS[tipo] ?? TIPO_SERVICO_LABELS[tipo.toUpperCase()] ?? tipo.replace(/_/g, " ")
+  );
 };
 
 export const getStatusBadgeClass = (status: string) => {

@@ -5,7 +5,8 @@ import type {
   EditAgendamentoInput,
   ReagendarAgendamentoFormValues,
 } from "@/model/rest/agendamento";
-import { formatDateHour, parseDataHoraServico } from "../../agendamentos.utils";
+import { parseDateTime } from "@/utils/date-time";
+import { formatDateHour } from "../../agendamentos.utils";
 
 interface ReagendarAgendamentoDisplayLabels {
   clienteNome: string;
@@ -16,7 +17,7 @@ interface ReagendarAgendamentoDisplayLabels {
 export const buildReagendarFormValues = (
   agendamento: Agendamento,
 ): CadastrarAgendamentoFormValues => {
-  const { data, horario } = parseDataHoraServico(agendamento.dataHoraServico);
+  const { date, time } = parseDateTime(agendamento.dataHoraServico);
   const tecnicosIds =
     agendamento.tecnicos?.map((tecnico) => tecnico.id ?? "").filter(Boolean) ?? [];
 
@@ -25,8 +26,8 @@ export const buildReagendarFormValues = (
     ordemServicoId: agendamento.ordemServicoId ?? "",
     tecnicosIds,
     recorrencia: agendamento.recorrencia ?? "NENHUMA",
-    data,
-    horario,
+    data: date,
+    horario: time,
   };
 };
 

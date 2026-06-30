@@ -6,6 +6,7 @@ import { BugAntIcon } from "@/assets/icons/bug-ant";
 import { PencilSquareFilledIcon } from "@/assets/icons/pencil-square-filled";
 import { TrashIcon } from "@/assets/icons/trash";
 import { Button } from "@/atomic/atm.button/button.component";
+import { MultiSelectInput } from "@/atomic/atm.multi-select-input";
 import { SelectInput } from "@/atomic/atm.select-input";
 import { TextInput } from "@/atomic/atm.text-input";
 import { Body2, H3, H4, InputCaption } from "@/atomic/atm.typography/typography.component";
@@ -19,7 +20,10 @@ import type {
   AreaMonitoramentoInsetosDraft,
   OrdemServicoFormValues,
 } from "../../add-ordem-servico-dialog.types";
-import { getSelectOptionLabel } from "../../add-ordem-servico-dialog.utils";
+import {
+  getMultiSelectOptionLabels,
+  getSelectOptionLabel,
+} from "../../add-ordem-servico-dialog.utils";
 
 export const MonitoramentoInsetosFields = () => {
   const { watch, setValue } = useFormContext<OrdemServicoFormValues>();
@@ -31,8 +35,8 @@ export const MonitoramentoInsetosFields = () => {
     EMPTY_AREA_MONITORAMENTO_INSETOS_DRAFT,
   );
 
-  const trimmedNome = draft.nome.trim();
-  const canConfirm = trimmedNome.length > 0 && !!draft.pragaAlvo && !!draft.tratamento;
+  const trimmedArea = draft.areaMonitorada.trim();
+  const canConfirm = trimmedArea.length > 0 && draft.pragasAlvo.length > 0 && !!draft.tratamento;
 
   const resetForm = () => {
     setIsFormVisible(false);
@@ -50,8 +54,8 @@ export const MonitoramentoInsetosFields = () => {
     if (!canConfirm) return;
 
     const areaData = {
-      nome: trimmedNome,
-      pragaAlvo: draft.pragaAlvo,
+      areaMonitorada: trimmedArea,
+      pragasAlvo: draft.pragasAlvo,
       tratamento: draft.tratamento,
     };
 
@@ -73,9 +77,9 @@ export const MonitoramentoInsetosFields = () => {
 
     setEditingId(id);
     setDraft({
-      nome: area.nome,
-      pragaAlvo: area.pragaAlvo,
-      tratamento: area.tratamento,
+      areaMonitorada: area.areaMonitorada ?? "",
+      pragasAlvo: area.pragasAlvo ?? [],
+      tratamento: area.tratamento ?? "",
     });
     setIsFormVisible(true);
   };
@@ -120,9 +124,9 @@ export const MonitoramentoInsetosFields = () => {
           areas.map((area) => (
             <AreaCard
               key={area.id}
-              nome={area.nome}
-              pragaAlvo={getSelectOptionLabel(PRAGA_ALVO_OPTIONS, area.pragaAlvo)}
-              tratamento={getSelectOptionLabel(TRATAMENTO_OPTIONS, area.tratamento)}
+              areaMonitorada={area.areaMonitorada ?? ""}
+              pragasAlvo={getMultiSelectOptionLabels(PRAGA_ALVO_OPTIONS, area.pragasAlvo ?? [])}
+              tratamento={getSelectOptionLabel(TRATAMENTO_OPTIONS, area.tratamento ?? "")}
               isEditing={editingId === area.id}
               onEdit={() => handleEdit(area.id)}
               onDelete={() => handleDelete(area.id)}
@@ -175,18 +179,19 @@ const AddNewAreaCard = ({
     <TextInput
       label="Área monitorada"
       placeholder="Ex. Área 1"
-      value={draft.nome}
-      onChange={(value) => onDraftChange({ ...draft, nome: value })}
+      value={draft.areaMonitorada}
+      onChange={(value) => onDraftChange({ ...draft, areaMonitorada: value })}
       onKeyDown={onKeyDown}
     />
 
     <div className="flex flex-col md:flex-row gap-md">
-      <SelectInput
+      <MultiSelectInput
+        className="w-full max-w-[360px]"
         label="Praga alvo"
-        placeholder="Selecione a praga"
+        placeholder="Selecione a(s) praga(s)"
         options={PRAGA_ALVO_OPTIONS}
-        value={draft.pragaAlvo}
-        onChange={(value) => onDraftChange({ ...draft, pragaAlvo: value })}
+        value={draft.pragasAlvo}
+        onChange={(value) => onDraftChange({ ...draft, pragasAlvo: value })}
       />
       <SelectInput
         label="Tratamento"
@@ -216,15 +221,22 @@ const AddNewAreaCard = ({
 );
 
 interface AreaCardProps {
-  nome: string;
-  pragaAlvo: string;
+  areaMonitorada: string;
+  pragasAlvo: string;
   tratamento: string;
   isEditing: boolean;
   onEdit: () => void;
   onDelete: () => void;
 }
 
-const AreaCard = ({ nome, pragaAlvo, tratamento, isEditing, onEdit, onDelete }: AreaCardProps) => (
+const AreaCard = ({
+  areaMonitorada,
+  pragasAlvo,
+  tratamento,
+  isEditing,
+  onEdit,
+  onDelete,
+}: AreaCardProps) => (
   <div
     className={cn(
       "flex flex-col gap-xs p-md border border-grayscale-light rounded-2xl",
@@ -232,7 +244,7 @@ const AreaCard = ({ nome, pragaAlvo, tratamento, isEditing, onEdit, onDelete }: 
     )}
   >
     <div className="flex items-center justify-between">
-      <H4 className="text-grayscale-dark">{nome}</H4>
+      <H4 className="text-grayscale-dark">{areaMonitorada}</H4>
       <div className="flex items-center gap-xs">
         <button type="button" onClick={onEdit} className="cursor-pointer">
           <PencilSquareFilledIcon className="size-lg text-brand-primary-medium" />
@@ -245,7 +257,7 @@ const AreaCard = ({ nome, pragaAlvo, tratamento, isEditing, onEdit, onDelete }: 
 
     <div className="flex items-center gap-2xs">
       <BugAntIcon className="size-md text-grayscale-dark" />
-      <InputCaption>{pragaAlvo}</InputCaption>
+      <InputCaption>{pragasAlvo}</InputCaption>
       <BeakerFilledIcon className="size-md text-grayscale-dark" />
       <InputCaption>{tratamento}</InputCaption>
     </div>

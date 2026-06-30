@@ -3,27 +3,33 @@ import { useState } from "react";
 import { IdentificationIcon } from "@/assets/icons/identification";
 import { MapPinIcon } from "@/assets/icons/map-pin";
 import { PencilSquareFilledIcon } from "@/assets/icons/pencil-square-filled";
-import { PhoneIcon } from "@/assets/icons/phone";
 import { TrashIcon } from "@/assets/icons/trash";
 import { Badge } from "@/atomic/atm.badge/badge.component";
 import { Button } from "@/atomic/atm.button/button.component";
 import { DetailItem } from "@/atomic/atm.detail-item";
 import { Body2, H2, H3 } from "@/atomic/atm.typography";
-import type { OrdemServico } from "@/model/rest/ordem-servico";
-import { formatCPFCNPJ, formatCurrency, formatPhone } from "@/utils/formatters";
+import type { OrdemServico } from "@/model/rest/ordem-servico/ordem-servico.model";
+import { formatCPFCNPJ, formatCurrency } from "@/utils/formatters";
+import { formatOsNumero } from "@/utils/ordem-servico";
 import { DeleteOrdemServicoDialog } from "./components/DeleteOrdemServicoDialog";
 import {
   STATUS_BADGE_COLOR,
   STATUS_LABELS,
   TIPO_SERVICO_LABELS,
 } from "./ordem-servico-detalhes.labels";
-import { formatDataHorario } from "./ordem-servico-detalhes.utils";
+import {
+  formatDataHorario,
+  formatEndereco,
+  formatTecnicosLabel,
+} from "./ordem-servico-detalhes.utils";
 
 interface OrdemServicoDetalhesCardProps {
   ordem: OrdemServico;
   onDelete: () => void;
   onEdit: () => void;
   onDownload: () => void;
+  isDeleteLoading?: boolean;
+  isDownloadLoading?: boolean;
 }
 
 export function OrdemServicoDetalhesCard({
@@ -31,9 +37,15 @@ export function OrdemServicoDetalhesCard({
   onDelete,
   onEdit,
   onDownload,
+  isDeleteLoading = false,
+  isDownloadLoading = false,
 }: OrdemServicoDetalhesCardProps) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const dataHorario = formatDataHorario(ordem);
+  const endereco = formatEndereco(ordem);
+  const dataHorario = formatDataHorario(ordem.dataHoraServico);
+  const tipoServicoLabel = ordem.tipoServico ? TIPO_SERVICO_LABELS[ordem.tipoServico] : "-";
+  const statusLabel = ordem.status ? STATUS_LABELS[ordem.status] : "Criado";
+  const isDone = ordem.status === "CONCLUIDO" || ordem.status === "EM_ANDAMENTO";
 
   return (
     <>
@@ -41,22 +53,31 @@ export function OrdemServicoDetalhesCard({
         <div className="flex flex-col gap-sm">
           <div className="flex justify-between">
             <div className="flex flex-col gap-xs">
-              <Badge color={STATUS_BADGE_COLOR[ordem.status]} className="self-start">
-                {STATUS_LABELS[ordem.status]} - <b>{ordem.numeroOS}</b>
+              <Badge
+                color={ordem.status ? STATUS_BADGE_COLOR[ordem.status] : "neutral"}
+                className="self-start"
+              >
+                {statusLabel} - <b className="ml-2xs">{formatOsNumero(ordem.osNumero)}</b>
               </Badge>
-              <H2>{ordem.cliente.nome}</H2>
+              <H2>{ordem.clienteNome ?? "-"}</H2>
             </div>
 
-            {ordem.status !== "agendada" && (
+            {isDone && (
               <div>
                 <button
                   type="button"
                   onClick={() => setIsDeleteDialogOpen(true)}
                   className="p-sm cursor-pointer"
+                  disabled={isDeleteLoading}
                 >
                   <TrashIcon className="text-feedback-error-medium" />
                 </button>
-                <button type="button" onClick={onDownload} className="p-sm cursor-pointer">
+                <button
+                  type="button"
+                  onClick={onDownload}
+                  disabled={isDownloadLoading}
+                  className="p-sm cursor-pointer disabled:opacity-50"
+                >
                   <Download className="text-brand-secondary-medium" />
                 </button>
               </div>
@@ -64,17 +85,15 @@ export function OrdemServicoDetalhesCard({
           </div>
 
           <div className="flex flex-wrap items-center gap-sm text-grayscale-dark text-sm">
-            <div className="flex items-center gap-2xs">
-              <IdentificationIcon className="size-lg" />
-              <Body2>{formatCPFCNPJ(ordem.cliente.cpfCnpj)}</Body2>
-            </div>
-            <div className="flex items-center gap-2xs">
-              <PhoneIcon className="size-lg" />
-              <Body2>{formatPhone(ordem.cliente.telefone)}</Body2>
-            </div>
+            {ordem.clienteCpfCnpj && (
+              <div className="flex items-center gap-2xs">
+                <IdentificationIcon className="size-lg" />
+                <Body2>{formatCPFCNPJ(ordem.clienteCpfCnpj)}</Body2>
+              </div>
+            )}
             <div className="flex items-center gap-2xs">
               <MapPinIcon className="size-lg" />
-              <Body2>{ordem.endereco}</Body2>
+              <Body2>{endereco}</Body2>
             </div>
           </div>
         </div>
@@ -82,22 +101,27 @@ export function OrdemServicoDetalhesCard({
         <div className="w-full h-[1px] bg-grayscale-light" />
 
         <div className="space-y-4">
-          <H3>Dados do Servico</H3>
+          <H3>Dados do Serviço</H3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-            <DetailItem label="Tipo de Serviço" value={[TIPO_SERVICO_LABELS[ordem.tipoServico]]} />
-            <DetailItem label="Técnico responsável" value={[ordem.tecnicoNome]} />
-            <DetailItem label="Data e horario" value={[dataHorario]} />
+            <DetailItem label="Tipo de Serviço" value={[tipoServicoLabel]} />
+            <DetailItem label="Técnico responsável" value={[formatTecnicosLabel(ordem.tecnicos)]} />
+            <DetailItem label="Data e horário" value={[dataHorario]} />
             <DetailItem
               label="Valor do serviço"
-              value={[<b key="valor-servico">{formatCurrency(ordem.valorServico)}</b>]}
+              value={[
+                <b key="valor-servico">
+                  {ordem.valor != null ? formatCurrency(ordem.valor) : "-"}
+                </b>,
+              ]}
               valueClassName="text-brand-cta-dark"
             />
           </div>
         </div>
 
-        {ordem.status === "agendada" && (
+        {(!isDone || ordem.status !== "CANCELADO") && (
           <>
             <div className="w-full h-[1px] bg-grayscale-light" />
+
             <div className="flex items-center justify-center gap-md">
               <Button
                 className="w-[170px] border-transparent"
@@ -105,6 +129,7 @@ export function OrdemServicoDetalhesCard({
                 size="lg"
                 leftIcon={<TrashIcon className="size-md" />}
                 onClick={() => setIsDeleteDialogOpen(true)}
+                disabled={isDeleteLoading}
               >
                 Excluir
               </Button>
@@ -126,6 +151,7 @@ export function OrdemServicoDetalhesCard({
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
         onConfirm={onDelete}
+        isLoading={isDeleteLoading}
       />
     </>
   );

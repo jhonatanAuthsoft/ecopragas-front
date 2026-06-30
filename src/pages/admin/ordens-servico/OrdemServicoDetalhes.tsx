@@ -1,42 +1,70 @@
 import { ChevronLeft } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/atomic/atm.button/button.component";
+import { Skeleton } from "@/atomic/atm.skeleton/skeleton.component";
 import { H1 } from "@/atomic/atm.typography";
+import { LoadingState } from "@/atomic/obj.loading-state";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
-import type { OrdemServico } from "@/model/rest/ordem-servico";
 import {
-  EditOrdemServicoDialog,
-  getOrdemServicoDetalhesById,
-  OrdemServicoDetalhesCard,
-  OrdemServicoVariationsCards,
-} from "./components/ordem-servico-detalhes";
+  useDeleteOrdemServico,
+  useDownloadOrdensServicoPdf,
+  useGetOrdemServico,
+} from "@/domain/ordem-servico";
+import { downloadFileFromBase64 } from "@/utils/download-file";
+import { formatOsNumero } from "@/utils/ordem-servico";
+import { AddOrdemServicoDialog } from "./components/add-ordem-servico-dialog";
+import { OrdemServicoDetalhesCard } from "./components/ordem-servico-detalhes";
+import { OrdemServicoVariationsCards } from "./components/ordem-servico-detalhes/components/OrdemServicoVariationsCards";
 
 export default function OrdemServicoDetalhes() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [ordem, setOrdem] = useState<OrdemServico>(() => getOrdemServicoDetalhesById(id ?? "4"));
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
-  useEffect(() => {
-    setOrdem(getOrdemServicoDetalhesById(id ?? "4"));
-  }, [id]);
+  const { ordemServico, getOrdemServicoError, isGetOrdemServicoLoading } = useGetOrdemServico({
+    id: id ?? "",
+  });
+
+  const { deleteOrdemServico, isDeleteOrdemServicoLoading } = useDeleteOrdemServico({
+    onSuccess: () => {
+      toast.success("Ordem de serviço excluída com sucesso!");
+      navigate(ROUTES.ADMIN.SERVICE_ORDER.BASE);
+    },
+  });
+
+  const { downloadOrdensServicoPdf, isDownloadOrdensServicoPdfLoading } =
+    useDownloadOrdensServicoPdf({
+      onSuccess: (data) => {
+        if (!data) {
+          toast.error("PDF da ordem de serviço indisponível.");
+          return;
+        }
+
+        if (!ordemServico) return;
+
+        downloadFileFromBase64(
+          data,
+          `${formatOsNumero(ordemServico.osNumero).replace(/\s/g, "_")}.pdf`,
+          "application/pdf",
+        );
+      },
+    });
 
   const handleDelete = () => {
-    toast.info("Em desenvolvimento...");
-    navigate(ROUTES.ADMIN.SERVICE_ORDER.BASE);
+    if (!ordemServico?.id) return;
+    deleteOrdemServico({ id: ordemServico.id });
   };
 
-  const handleEditSubmit = (updatedOrdem: OrdemServico) => {
-    setOrdem(updatedOrdem);
-    setIsEditDialogOpen(false);
-    toast.info("Em desenvolvimento...");
+  const handleEdit = () => {
+    setIsEditDialogOpen(true);
   };
 
   const handleDownload = () => {
-    toast.info("Em desenvolvimento...");
+    if (!ordemServico?.id) return;
+    downloadOrdensServicoPdf({ id: ordemServico.id });
   };
 
   return (
@@ -44,6 +72,7 @@ export default function OrdemServicoDetalhes() {
       <div className="flex flex-col gap-md">
         <div className="flex flex-col self-start gap-xs">
           <Button
+            className="w-fit"
             variant="link"
             size="lg"
             onClick={() => navigate(ROUTES.ADMIN.SERVICE_ORDER.BASE)}
@@ -55,21 +84,42 @@ export default function OrdemServicoDetalhes() {
           <H1>Detalhes do Serviço</H1>
         </div>
 
-        <OrdemServicoDetalhesCard
-          ordem={ordem}
-          onDelete={handleDelete}
-          onEdit={() => setIsEditDialogOpen(true)}
-          onDownload={handleDownload}
-        />
+        <LoadingState
+          loading={isGetOrdemServicoLoading}
+          error={!!getOrdemServicoError}
+          data={!!ordemServico}
+          renderOnlyWhenData
+        >
+          <LoadingState.Shimmer>
+            <Skeleton className="h-[400px] w-full rounded-medium" />
+          </LoadingState.Shimmer>
 
-        {ordem.status === "concluida" && <OrdemServicoVariationsCards ordem={ordem} />}
+          <LoadingState.Error>
+            <div className="text-center py-12">
+              <p className="text-lg font-medium text-foreground">
+                Erro ao carregar ordem de serviço
+              </p>
+              <p className="text-sm text-muted-foreground mt-1">Tente recarregar a página</p>
+            </div>
+          </LoadingState.Error>
 
-        <EditOrdemServicoDialog
-          open={isEditDialogOpen}
-          onOpenChange={setIsEditDialogOpen}
-          ordem={ordem}
-          onSubmit={handleEditSubmit}
-        />
+          <OrdemServicoDetalhesCard
+            ordem={ordemServico}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
+            onDownload={handleDownload}
+            isDeleteLoading={isDeleteOrdemServicoLoading}
+            isDownloadLoading={isDownloadOrdensServicoPdfLoading}
+          />
+
+          <OrdemServicoVariationsCards ordemServico={ordemServico} />
+
+          <AddOrdemServicoDialog
+            open={isEditDialogOpen}
+            onOpenChange={setIsEditDialogOpen}
+            ordemServico={ordemServico}
+          />
+        </LoadingState>
       </div>
     </MainLayout>
   );
