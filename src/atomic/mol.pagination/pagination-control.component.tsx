@@ -7,6 +7,10 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/atomic/mol.pagination/pagination.component";
+import {
+  getPaginationRange,
+  PAGINATION_ELLIPSIS,
+} from "@/atomic/mol.pagination/pagination-control.utils";
 
 interface PaginationControlProps {
   currentPage: number;
@@ -15,15 +19,16 @@ interface PaginationControlProps {
   className?: string;
 }
 
+const ACTIVE_PAGE_CLASSNAME =
+  "bg-brand-primary-medium text-white hover:bg-brand-primary-dark hover:text-white";
+
 export const PaginationControl = ({
   currentPage,
   totalPages,
   onPageChange,
   className,
 }: PaginationControlProps) => {
-  // Logic to show pages (simplified for 3 pages example as per request, but scalable)
-  // For now we keep the visual structure requested: 1, 2, ..., Last Page
-  // We can make this dynamic based on totalPages
+  const pages = getPaginationRange(currentPage, totalPages);
 
   return (
     <div className={className}>
@@ -33,76 +38,32 @@ export const PaginationControl = ({
             <PaginationPrevious
               href="#"
               disabled={currentPage <= 1}
-              onClick={(e) => {
-                e.preventDefault();
+              onClick={(event) => {
+                event.preventDefault();
                 if (currentPage > 1) onPageChange?.(currentPage - 1);
               }}
             />
           </PaginationItem>
 
-          <PaginationItem>
-            <PaginationLink
-              href="#"
-              isActive={currentPage === 1}
-              className={
-                currentPage === 1
-                  ? "bg-brand-primary-medium text-white hover:bg-brand-primary-dark hover:text-white"
-                  : ""
-              }
-              onClick={(e) => {
-                e.preventDefault();
-                onPageChange?.(1);
-              }}
-            >
-              1
-            </PaginationLink>
-          </PaginationItem>
-
-          {totalPages > 1 && (
-            <PaginationItem>
-              <PaginationLink
-                href="#"
-                isActive={currentPage === 2}
-                className={
-                  currentPage === 2
-                    ? "bg-brand-primary-medium text-white hover:bg-brand-primary-dark hover:text-white"
-                    : ""
-                }
-                onClick={(e) => {
-                  e.preventDefault();
-                  onPageChange?.(2);
-                }}
-              >
-                2
-              </PaginationLink>
+          {pages.map((page, index) => (
+            <PaginationItem key={page === PAGINATION_ELLIPSIS ? `ellipsis-${index}` : page}>
+              {page === PAGINATION_ELLIPSIS ? (
+                <PaginationEllipsis />
+              ) : (
+                <PaginationLink
+                  href="#"
+                  isActive={currentPage === page}
+                  className={currentPage === page ? ACTIVE_PAGE_CLASSNAME : ""}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    onPageChange?.(page);
+                  }}
+                >
+                  {page}
+                </PaginationLink>
+              )}
             </PaginationItem>
-          )}
-
-          {totalPages > 3 && (
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-          )}
-
-          {totalPages > 2 && (
-            <PaginationItem>
-              <PaginationLink
-                href="#"
-                isActive={currentPage === totalPages}
-                className={
-                  currentPage === totalPages
-                    ? "bg-brand-primary-medium text-white hover:bg-brand-primary-dark hover:text-white"
-                    : ""
-                }
-                onClick={(e) => {
-                  e.preventDefault();
-                  onPageChange?.(totalPages);
-                }}
-              >
-                {totalPages}
-              </PaginationLink>
-            </PaginationItem>
-          )}
+          ))}
 
           <PaginationItem>
             <PaginationNext
