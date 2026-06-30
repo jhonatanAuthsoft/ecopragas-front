@@ -45,8 +45,7 @@ export function OrdemServicoDetalhesCard({
   const dataHorario = formatDataHorario(ordem.dataHoraServico);
   const tipoServicoLabel = ordem.tipoServico ? TIPO_SERVICO_LABELS[ordem.tipoServico] : "-";
   const statusLabel = ordem.status ? STATUS_LABELS[ordem.status] : "Criado";
-  const isDone =
-    ordem.status === "CONCLUIDO" || ordem.status === "EM_ANDAMENTO" || ordem.status === "CANCELADO";
+  const isDone = ordem.status === "CONCLUIDO" || ordem.status === "EM_ANDAMENTO";
 
   return (
     <>
@@ -102,11 +101,11 @@ export function OrdemServicoDetalhesCard({
         <div className="w-full h-[1px] bg-grayscale-light" />
 
         <div className="space-y-4">
-          <H3>Dados do Servico</H3>
+          <H3>Dados do Serviço</H3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-            <DetailItem label="Tipo de Servico" value={[tipoServicoLabel]} />
-            <DetailItem label="Tecnico responsavel" value={[formatTecnicosLabel(ordem.tecnicos)]} />
-            <DetailItem label="Data e horario" value={[dataHorario]} />
+            <DetailItem label="Tipo de Serviço" value={[tipoServicoLabel]} />
+            <DetailItem label="Técnico responsável" value={[formatTecnicosLabel(ordem.tecnicos)]} />
+            <DetailItem label="Data e horário" value={[dataHorario]} />
             <DetailItem
               label="Valor do serviço"
               value={[
@@ -119,7 +118,7 @@ export function OrdemServicoDetalhesCard({
           </div>
         </div>
 
-        {!isDone && (
+        {(!isDone || ordem.status !== "CANCELADO") && (
           <>
             <div className="w-full h-[1px] bg-grayscale-light" />
 

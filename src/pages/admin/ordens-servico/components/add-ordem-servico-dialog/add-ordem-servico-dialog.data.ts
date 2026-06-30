@@ -12,7 +12,7 @@ export const DEFAULT_VALUES: OrdemServicoFormValues = {
   tipoServico: "",
   valorServico: "",
   data: undefined,
-  horario: undefined,
+  horario: "",
   observacoes: "",
   estacoesMonitoramento: [],
   areasMonitoramentoInsetos: [],
@@ -75,8 +75,8 @@ export const TRATAMENTO_OPTIONS: SelectInputOption[] = [
 ];
 
 export const EMPTY_AREA_MONITORAMENTO_INSETOS_DRAFT: AreaMonitoramentoInsetosDraft = {
-  nome: "",
-  pragaAlvo: [],
+  areaMonitorada: "",
+  pragasAlvo: [],
   tratamento: "",
 };
 

@@ -22,11 +22,11 @@ import { formatTecnicosLabel } from "./ordem-servico-detalhes/ordem-servico-deta
 const ORDENS_SERVICO_TABLE_COLUMNS = [
   "N O.S.",
   "Cliente",
-  "Servico",
-  "Tecnico",
+  "Serviço",
+  "Técnico",
   "Data",
-  "Horario",
-  "Endereco",
+  "Horário",
+  "Endereço",
   "Valor",
   null,
 ];

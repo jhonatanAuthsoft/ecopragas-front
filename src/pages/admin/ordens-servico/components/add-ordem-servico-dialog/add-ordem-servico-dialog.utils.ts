@@ -149,8 +149,8 @@ export const mapOrdemServicoToFormValues = (ordem: OrdemServico): OrdemServicoFo
   const areasMonitoramentoInsetos =
     ordem.dadosEspecificos?.areasMonitoramentoInsetos?.map((area, index) => ({
       id: `area-${index}`,
-      nome: area.areaMonitorada ?? "",
-      pragaAlvo: area.pragasAlvo ?? [],
+      areaMonitorada: area.areaMonitorada ?? "",
+      pragasAlvo: area.pragasAlvo ?? [],
       tratamento: area.tratamento ?? "",
     })) ?? [];
 
@@ -198,8 +198,8 @@ export const buildOrdemServicoMutationInput = (
     variacao === "monitoramento_insetos"
       ? {
           areasMonitoramentoInsetos: values.areasMonitoramentoInsetos.map((area) => ({
-            areaMonitorada: area.nome,
-            pragasAlvo: area.pragaAlvo.length > 0 ? area.pragaAlvo : undefined,
+            areaMonitorada: area.areaMonitorada,
+            pragasAlvo: area.pragasAlvo.length > 0 ? area.pragasAlvo : undefined,
             tratamento: area.tratamento || undefined,
           })),
         }

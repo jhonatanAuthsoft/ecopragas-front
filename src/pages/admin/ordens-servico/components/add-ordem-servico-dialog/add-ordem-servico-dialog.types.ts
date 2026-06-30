@@ -1,26 +1,29 @@
-import type { OrdemServico } from "@/model/rest/ordem-servico";
+import type {
+  AreaMonitoramentoInsetos,
+  EstacaoMonitoramentoRoedores,
+  TipoServicoOrdem,
+} from "@/model/rest/ordem-servico";
 
 export type OrdemServicoDialogTab = "dados" | "endereco";
 
-export type TipoServicoForm = NonNullable<OrdemServico["tipoServico"]>;
+export type TipoServicoForm = TipoServicoOrdem;
 
 export type TipoServicoVariacao = "normal" | "monitoramento_insetos" | "monitoramento_roedores";
 
-export type EstacaoMonitoramento = {
+export type EstacaoMonitoramentoFormItem = EstacaoMonitoramentoRoedores & {
   id: string;
-  nome: string;
 };
 
-export type AreaMonitoramentoInsetos = {
+export type AreaMonitoramentoInsetosFormItem = AreaMonitoramentoInsetos & {
   id: string;
-  nome: string;
-  pragaAlvo: string[];
+};
+
+export type AreaMonitoramentoInsetosDraft = {
+  areaMonitorada: string;
+  pragasAlvo: string[];
   tratamento: string;
 };
 
-export type AreaMonitoramentoInsetosDraft = Omit<AreaMonitoramentoInsetos, "id">;
-
-// TODO: organizar nos models
 export type OrdemServicoFormValues = {
   clienteId: string;
   tipoServico: TipoServicoForm | "";
@@ -28,8 +31,8 @@ export type OrdemServicoFormValues = {
   data?: Date;
   horario: string;
   observacoes: string;
-  estacoesMonitoramento: EstacaoMonitoramento[];
-  areasMonitoramentoInsetos: AreaMonitoramentoInsetos[];
+  estacoesMonitoramento: EstacaoMonitoramentoFormItem[];
+  areasMonitoramentoInsetos: AreaMonitoramentoInsetosFormItem[];
   cep: string;
   estado: string;
   cidade: string;

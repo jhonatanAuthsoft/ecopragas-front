@@ -117,7 +117,7 @@ export const TIPO_SERVICO_LABELS: Record<OrdemServico["tipoServico"], string> = 
 };
 
 export const formatTipoServico = (tipo?: string | null): string => {
-  if (!tipo) return "Servico";
+  if (!tipo) return "Serviço";
   return (
     TIPO_SERVICO_LABELS[tipo] ?? TIPO_SERVICO_LABELS[tipo.toUpperCase()] ?? tipo.replace(/_/g, " ")
   );

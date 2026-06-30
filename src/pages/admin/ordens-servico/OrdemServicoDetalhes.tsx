@@ -17,6 +17,7 @@ import { downloadFileFromBase64 } from "@/utils/download-file";
 import { formatOsNumero } from "@/utils/ordem-servico";
 import { AddOrdemServicoDialog } from "./components/add-ordem-servico-dialog";
 import { OrdemServicoDetalhesCard } from "./components/ordem-servico-detalhes";
+import { OrdemServicoVariationsCards } from "./components/ordem-servico-detalhes/components/OrdemServicoVariationsCards";
 
 export default function OrdemServicoDetalhes() {
   const { id } = useParams();
@@ -110,6 +111,8 @@ export default function OrdemServicoDetalhes() {
             isDeleteLoading={isDeleteOrdemServicoLoading}
             isDownloadLoading={isDownloadOrdensServicoPdfLoading}
           />
+
+          <OrdemServicoVariationsCards ordemServico={ordemServico} />
 
           <AddOrdemServicoDialog
             open={isEditDialogOpen}
