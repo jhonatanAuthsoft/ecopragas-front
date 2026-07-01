@@ -54,9 +54,9 @@ export const FileUpload = ({
   const inputId = `file-upload-input-${id}`;
 
   return (
-    <div className={cn("flex flex-col gap-md", className)}>
+    <div className={cn("flex flex-col gap-md w-full", className)}>
       <div
-        className="border-2 border-dashed border-grayscale-light rounded-xl p-xl flex flex-col items-center justify-center gap-sm bg-grayscale-light/5 cursor-pointer hover:bg-grayscale-light/10 transition-colors"
+        className="border-2 border-dashed border-grayscale-light w-full rounded-xl p-xl flex flex-col items-center justify-center gap-sm bg-grayscale-light/5 cursor-pointer hover:bg-grayscale-light/10 transition-colors"
         onClick={() => document.getElementById(inputId)?.click()}
       >
         <div className="bg-grayscale-light/20 p-sm rounded-full">

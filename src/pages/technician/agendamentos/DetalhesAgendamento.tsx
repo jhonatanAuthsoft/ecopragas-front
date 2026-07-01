@@ -14,8 +14,12 @@ import {
   Upload,
   User,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { format } from "date-fns";
+import { serverRequest } from "@/rest/server-request";
+import { formatTipoServico, formatPhone } from "@/utils/formatters";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 import { Badge } from "@/atomic/atm.badge/badge.component";
 import { Button } from "@/atomic/atm.button/button.component";
 import { Checkbox } from "@/atomic/atm.checkbox/checkbox.component";
@@ -53,101 +57,64 @@ import { ROUTES } from "@/constants/routes";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 
+const mapStatus = (status: string) => {
+  switch (status) {
+    case "AGENDADO": return "Agendada";
+    case "EM_ANDAMENTO": return "Em Andamento";
+    case "CONCLUIDO": return "Concluída";
+    case "CANCELADO": return "Cancelada";
+    default: return "Agendada";
+  }
+};
+
 const DetalhesAgendamento = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [isStarted, setIsStarted] = useState(false);
   const isMobile = useIsMobile();
 
-  // MOCK: Em uma aplicação real, buscaríamos os dados pelo ID
-  const MOCK_AGENDAMENTOS = [
-    {
-      id: "1",
-      osNumber: "OS-2025-001",
-      status: "Agendada",
-      clientName: "João Silva de Jesus da Souza",
-      cpf: "000.000.000-00",
-      phone: "(11) 0000-0000",
-      address: "Rio da Dona, 139, 44380-00, Cruz das Almas - Ba",
-      serviceType: "Controle de Pragas e Vetores",
-      technician: "João Carlos Silva",
-      date: "03/12/2025",
-      time: "08:00",
-      value: "R$ 400,00",
-    },
-    {
-      id: "2",
-      osNumber: "OS-2025-002",
-      status: "Agendada",
-      clientName: "Maria Santos",
-      cpf: "111.111.111-11",
-      phone: "(11) 9999-9999",
-      address: "Av. Principal, 123 - Centro",
-      serviceType: "Limpeza de caixa d'água",
-      technician: "João Carlos Silva",
-      date: "04/12/2025",
-      time: "10:30",
-      value: "R$ 250,00",
-    },
-    {
-      id: "3",
-      osNumber: "OS-2025-003",
-      status: "Agendada",
-      clientName: "Condomínio Solar",
-      cpf: "222.222.222-22",
-      phone: "(11) 8888-8888",
-      address: "Rua das Flores, 456 - Jardim",
-      serviceType: "Desinsetização",
-      technician: "João Carlos Silva",
-      date: "05/12/2025",
-      time: "14:00",
-      value: "R$ 800,00",
-    },
-    {
-      id: "4",
-      osNumber: "OS-2025-004",
-      status: "Agendada",
-      clientName: "Academia Fit",
-      cpf: "333.333.333-33",
-      phone: "(11) 7777-7777",
-      address: "Rua da Saúde, 789 - Centro",
-      serviceType: "Higienização",
-      technician: "João Carlos Silva",
-      date: "06/12/2025",
-      time: "16:00",
-      value: "R$ 500,00",
-    },
-    {
-      id: "5",
-      osNumber: "OS-2025-005",
-      status: "Agendada",
-      clientName: "Restaurante Gourmet",
-      cpf: "444.444.444-44",
-      phone: "(11) 6666-6666",
-      address: "Rua do Sabor, 101 - Gastronomia",
-      serviceType: "Monitoramento de Insetos",
-      technician: "João Carlos Silva",
-      date: "07/12/2025",
-      time: "18:00",
-      value: "R$ 350,00",
-    },
-    {
-      id: "6",
-      osNumber: "OS-2025-006",
-      status: "Agendada",
-      clientName: "Armazém Central",
-      cpf: "555.555.555-55",
-      phone: "(11) 5555-5555",
-      address: "Av. Industrial, 500 - Galpão 3",
-      serviceType: "Monitoramento de Roedores",
-      technician: "João Carlos Silva",
-      date: "08/12/2025",
-      time: "19:30",
-      value: "R$ 600,00",
-    },
-  ];
+  const [agendamento, setAgendamento] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const agendamento = MOCK_AGENDAMENTOS.find((a) => a.id === id) || MOCK_AGENDAMENTOS[0];
+  useEffect(() => {
+    const fetchAgendamento = async () => {
+      if (!id) return;
+      setIsLoading(true);
+      try {
+        const response = await serverRequest.get(`/tecnico/agenda/${id}`);
+        if (response.data.success) {
+          const data = response.data.data;
+          
+          const formatToBRL = (value: number) => {
+             return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+          };
+
+          const mappedAgendamento = {
+             id: data.id,
+             osNumber: `OS-${(data.osNumero || 0).toString().padStart(6, '0')}`,
+             status: mapStatus(data.status || ""),
+             clientName: data.clienteNome,
+             cpf: "", // Not provided by the API DTO
+             phone: data.clienteTelefone ? formatPhone(data.clienteTelefone) : "",
+             address: `${data.rua || ""}, ${data.numero || ""} - ${data.bairro || ""}, ${data.cidade || ""} - ${data.estado || ""}`,
+             serviceType: formatTipoServico(data.tipoServico),
+             technician: data.tecnicos && data.tecnicos.length > 0 ? data.tecnicos[0].nome : "Não definido",
+             date: data.dataHoraServico ? format(new Date(data.dataHoraServico), "dd/MM/yyyy") : "",
+             time: data.dataHoraServico ? format(new Date(data.dataHoraServico), "HH:mm") : "",
+             value: formatToBRL(data.valor || 0),
+          };
+          setAgendamento(mappedAgendamento);
+        }
+      } catch (error) {
+        console.error("Failed to fetch agendamento:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchAgendamento();
+  }, [id]);
+
+
 
   const [selectedPests, setSelectedPests] = useState<string[]>(["Aranha"]);
 
@@ -224,6 +191,7 @@ const DetalhesAgendamento = () => {
 
   const [uploadedFilesAntes, setUploadedFilesAntes] = useState<File[]>([]);
   const [uploadedFilesDepois, setUploadedFilesDepois] = useState<File[]>([]);
+  const [fotosLocal, setFotosLocal] = useState<File[]>([]);
   const [hasPool, setHasPool] = useState<boolean | undefined>(undefined);
   const [hasPet, setHasPet] = useState<boolean | undefined>(undefined);
   const [localHygiene, setLocalHygiene] = useState<boolean | undefined>(undefined);
@@ -251,6 +219,179 @@ const DetalhesAgendamento = () => {
   const removeRodentStation = (stationIdToRemove: number) => {
     setRodentStations((prev) => prev.filter((id) => id !== stationIdToRemove));
   };
+
+
+  const [pontoReferencia, setPontoReferencia] = useState("");
+  const [tempoDuracaoEstimado, setTempoDuracaoEstimado] = useState("");
+  const [numeroTecnicos, setNumeroTecnicos] = useState("");
+  const [localizacaoReservatorio, setLocalizacaoReservatorio] = useState("");
+  const [materialReservatorio, setMaterialReservatorio] = useState("");
+  const [volumeReservatorio, setVolumeReservatorio] = useState("");
+  const [desinfeccao, setDesinfeccao] = useState("");
+  const [situacaoReservatorio, setSituacaoReservatorio] = useState("");
+  const [principioAtivo, setPrincipioAtivo] = useState("");
+  const [produto, setProduto] = useState("");
+  const [concentracao, setConcentracao] = useState("");
+  const [diluente, setDiluente] = useState("");
+  const [volumeProduto, setVolumeProduto] = useState("");
+  const [setorProduto, setSetorProduto] = useState("");
+  const [equipamentoProduto, setEquipamentoProduto] = useState("");
+  const [registroMs, setRegistroMs] = useState("");
+  const [setorDescricao, setSetorDescricao] = useState("");
+  const [nivelInfestacao, setNivelInfestacao] = useState("");
+  const [equipamentoDescricao, setEquipamentoDescricao] = useState("");
+  const [setorVistoria, setSetorVistoria] = useState("");
+  const [situacaoVistoria, setSituacaoVistoria] = useState("");
+  const [medidaCorretiva, setMedidaCorretiva] = useState("");
+  const [avaliacaoVistoria, setAvaliacaoVistoria] = useState("");
+  const [observacoesGerais, setObservacoesGerais] = useState("");
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const handleFinalizarServico = async () => {
+    if (!id || !agendamento) return;
+    
+    setIsSubmitting(true);
+    try {
+      const payload: any = {};
+      
+      const st = agendamento.serviceType;
+
+      // registroServico is common
+      payload.registroServico = {
+        imagens: [], // Not fully implemented yet
+        observacoesGerais: observacoesGerais,
+        imagensAntes: await Promise.all(uploadedFilesAntes.map(fileToBase64)),
+        imagensDepois: await Promise.all(uploadedFilesDepois.map(fileToBase64)),
+      };
+
+      if (st === "Higienização") {
+        payload.higienizacaoProduto = {
+          tipoEquipamento: selectedEquipment.join(", "),
+          nivelChuva: hasRain !== undefined ? (hasRain ? "sim" : "não") : "",
+          tempoDuracaoEstimado,
+          numeroTecnicos: numeroTecnicos ? Number(numeroTecnicos) : undefined,
+          volume: "",
+          realizarColeta: performCollection ?? false,
+          fecharRegistro: closeRegistry ?? false,
+        };
+        payload.fotosLocal = await Promise.all(fotosLocal.map(fileToBase64));
+        payload.reservatorios = [
+          {
+            reservatorio: localizacaoReservatorio,
+            material: materialReservatorio,
+            volume: volumeReservatorio,
+            desinfeccao,
+            situacao: situacaoReservatorio,
+            vetores: false, // Default or add state
+            residuos: false, // Default or add state
+            fendas: false, // Default or add state
+            boia: floatCondition || "",
+            cobertura: coverageCondition || "",
+            pintura: paintingCondition || "",
+            revestimentoInterno: internalCoating || "",
+            sistemaLadrao: overflowSystem === "correto",
+          }
+        ];
+      } else if (st === "Controle de Pragas e Vetores") {
+        payload.diagnosticoLocal = {
+          pragasAlvo: selectedPests,
+          areaExterna: areaExterna.join(", "),
+          areaVacinal: areaVicinal.length > 0,
+          pontoReferencia: pontoReferencia,
+          piscina: hasPool ?? false,
+          pet: hasPet ?? false,
+        };
+        payload.dadosProduto = {
+          principioAtivo,
+          produto,
+          concentracao,
+          diluente,
+          volume: volumeProduto,
+          setor: setorProduto,
+          equipamento: equipamentoProduto,
+        };
+        payload.descricaoServico = [
+          {
+            setor: setorDescricao,
+            higieneLocal: localHygiene !== undefined ? (localHygiene ? "boa" : "ruim") : "",
+            nivelInfestacao,
+            equipamento: equipamentoDescricao,
+          }
+        ];
+      } else if (st === "Monitoramento de Insetos") {
+        payload.areasMonitoramentoInsetos = [];
+      } else if (st === "Monitoramento de Roedores") {
+        payload.estacoesMonitoramentoRoedores = [];
+      } else {
+        // Outros
+        payload.diagnosticoLocal = {
+          pragasAlvo: selectedPests,
+          areaExterna: areaExterna.join(", "),
+          areaVacinal: areaVicinal.length > 0,
+          pontoReferencia,
+          piscina: hasPool ?? false,
+          pet: hasPet ?? false,
+        };
+        payload.produtos = [
+          {
+            principioAtivo,
+            produto,
+            concentracao,
+            diluente,
+            volume: volumeProduto,
+            setor: setorProduto,
+            equipamento: equipamentoProduto,
+          }
+        ];
+        payload.vistoria = [
+          {
+            setor: setorVistoria,
+            situacao: situacaoVistoria,
+            medidaCorretiva,
+            avaliacao: avaliacaoVistoria,
+          }
+        ];
+      }
+
+      const response = await serverRequest.put(`/tecnico/agenda/${id}/checklist`, payload);
+      if (response.data.success) {
+        // Concluir agendamento
+        const concludePayload = {
+          observacoes: observacoesGerais || "Serviço concluído sem observações."
+        };
+        const concludeResponse = await serverRequest.put(`/tecnico/agenda/${id}/concluir`, concludePayload);
+        
+        if (concludeResponse.data.success) {
+          toast.success("Serviço finalizado com sucesso!");
+          navigate(ROUTES.TECHNICIAN_SCHEDULING);
+        } else {
+          toast.error("Checklist salvo, mas erro ao concluir agendamento.");
+        }
+      }
+    } catch (error) {
+      console.error("Failed to submit checklist:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (isLoading || !agendamento) {
+    return (
+      <MainLayout>
+        <div className="flex justify-center p-8">Carregando detalhes...</div>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
@@ -289,7 +430,7 @@ const DetalhesAgendamento = () => {
             <div className="flex flex-col gap-lg">
               {/* Diagnóstico do Local */}
               <Card className="rounded-large! border-muted-foreground/20 bg-background overflow-hidden p-xl">
-                <div className="flex flex-col gap-md">
+                <div className="flex flex-col gap-md w-full">
                   <H3 className="text-grayscale-dark font-bold text-lg">Diagnóstico do Local</H3>
 
                   <div className="flex flex-col gap-sm">
@@ -412,8 +553,8 @@ const DetalhesAgendamento = () => {
                         ]}
                       />
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-                        <TextInput label="Tempo de duração estimado" placeholder="Ex: 2 horas" />
-                        <TextInput label="Número de Técnicos" placeholder="Ex: 2" type="number" />
+                        <TextInput label="Tempo de duração estimado" placeholder="Ex: 2 horas" value={tempoDuracaoEstimado} onChange={setTempoDuracaoEstimado} />
+                        <TextInput label="Número de Técnicos" placeholder="Ex: 2" type="number" value={numeroTecnicos} onChange={setNumeroTecnicos} />
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
                         <SelectorGroup
@@ -450,7 +591,7 @@ const DetalhesAgendamento = () => {
 
                       <FileUpload
                         id="fotos-local-servico"
-                        onFilesChange={(files) => console.log("Local files:", files)}
+                        onFilesChange={setFotosLocal}
                       />
                     </>
                   )}
@@ -463,7 +604,7 @@ const DetalhesAgendamento = () => {
                       </H3>
                       <TextInput
                         label="Ponto de referência"
-                        placeholder="Informe um ponto de referência"
+                        placeholder="Informe um ponto de referência" value={pontoReferencia} onChange={setPontoReferencia}
                         className="w-full"
                       />
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
@@ -604,12 +745,12 @@ const DetalhesAgendamento = () => {
               {/* Dados do Produto / Reservatório */}
               {agendamento.serviceType === "Higienização" ? (
                 <Card className="rounded-large! border-muted-foreground/20 bg-background overflow-hidden p-xl">
-                  <div className="flex flex-col gap-md">
+                  <div className="flex flex-col gap-md w-full">
                     <H3 className="text-grayscale-dark font-bold text-lg">Reservatório</H3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
                       <div className="md:col-span-2">
-                        <TextInput label="Localização" placeholder="Informe a localização" />
+                        <TextInput label="Localização" placeholder="Informe a localização" value={localizacaoReservatorio} onChange={setLocalizacaoReservatorio} />
                       </div>
                       <SelectInput
                         label="Material do Reservatório"
@@ -626,8 +767,10 @@ const DetalhesAgendamento = () => {
                         label="Volume do reservatório (em litros)"
                         placeholder="Ex: 500"
                         type="number"
+                        value={volumeReservatorio}
+                        onChange={setVolumeReservatorio}
                       />
-                      <TextInput label="Desinfecção(g)" placeholder="Ex: 10" />
+                      <TextInput label="Desinfecção(g)" placeholder="Ex: 10" value={desinfeccao} onChange={setDesinfeccao} />
                       <SelectInput
                         label="Situação do reservatórios"
                         placeholder="Selecione a situação"
@@ -723,7 +866,7 @@ const DetalhesAgendamento = () => {
                 </Card>
               ) : (
                 <Card className="rounded-large! border-muted-foreground/20 bg-background overflow-hidden p-xl">
-                  <div className="flex flex-col gap-md">
+                  <div className="flex flex-col gap-md w-full">
                     <H3 className="text-grayscale-dark font-bold text-lg">Dados do Produto</H3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
@@ -732,14 +875,16 @@ const DetalhesAgendamento = () => {
                           <TextInput
                             label="Princípio Ativo"
                             placeholder="Digite o princípio ativo"
-                          />
-                          <TextInput label="Concentração" placeholder="Digite a concentração" />
-                          <TextInput label="Diluente" placeholder="Digite o diluente" />
-                          <TextInput label="Volume" placeholder="Digite o volume" />
-                          <TextInput label="Setor" placeholder="Digite o setor" />
+                          value={principioAtivo} onChange={setPrincipioAtivo} />
+                          <TextInput label="Concentração" placeholder="Digite a concentração" value={concentracao} onChange={setConcentracao} />
+                          <TextInput label="Diluente" placeholder="Digite o diluente" value={diluente} onChange={setDiluente} />
+                          <TextInput label="Volume" placeholder="Digite o volume" value={volumeProduto} onChange={setVolumeProduto} />
+                          <TextInput label="Setor" placeholder="Digite o setor" value={setorProduto} onChange={setSetorProduto} />
                           <TextInput
                             label="Equipamento utilizado"
                             placeholder="Digite o equipamento"
+                            value={equipamentoProduto}
+                            onChange={setEquipamentoProduto}
                           />
                         </>
                       ) : (
@@ -747,16 +892,18 @@ const DetalhesAgendamento = () => {
                           <TextInput
                             label="Princípio Ativo"
                             placeholder="Digite o princípio ativo"
-                          />
-                          <TextInput label="Produto" placeholder="Digite o nome do produto" />
-                          <TextInput label="Diluente" placeholder="Digite o diluente" />
-                          <TextInput label="Volume" placeholder="Digite o volume" />
-                          <TextInput label="Setor" placeholder="Digite o setor" />
-                          <TextInput label="Equipamento" placeholder="Digite o equipamento" />
+                          value={principioAtivo} onChange={setPrincipioAtivo} />
+                          <TextInput label="Produto" placeholder="Digite o nome do produto" value={produto} onChange={setProduto} />
+                          <TextInput label="Diluente" placeholder="Digite o diluente" value={diluente} onChange={setDiluente} />
+                          <TextInput label="Volume" placeholder="Digite o volume" value={volumeProduto} onChange={setVolumeProduto} />
+                          <TextInput label="Setor" placeholder="Digite o setor" value={setorProduto} onChange={setSetorProduto} />
+                          <TextInput label="Equipamento" placeholder="Digite o equipamento" value={equipamentoProduto} onChange={setEquipamentoProduto} />
                           <TextInput
                             label="Registro MS"
                             placeholder="Informe o registro"
                             className="md:col-span-1"
+                            value={registroMs}
+                            onChange={setRegistroMs}
                           />
                         </>
                       )}
@@ -776,11 +923,11 @@ const DetalhesAgendamento = () => {
               {/* Vistoria / Descrição do Serviço */}
               {agendamento.serviceType === "Controle de Pragas e Vetores" && (
                 <Card className="rounded-large! border-muted-foreground/20 bg-background overflow-hidden p-xl">
-                  <div className="flex flex-col gap-md">
+                  <div className="flex flex-col gap-md w-full">
                     <H3 className="text-grayscale-dark font-bold text-lg">Descrição do serviço</H3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-                      <TextInput label="Setor" placeholder="Digite o setor" />
+                      <TextInput label="Setor" placeholder="Digite o setor" value={setorDescricao} onChange={setSetorDescricao} />
                       <SelectorGroup
                         label="Higiene do local"
                         value={localHygiene}
@@ -790,8 +937,8 @@ const DetalhesAgendamento = () => {
                           { label: "Ruim", value: false },
                         ]}
                       />
-                      <TextInput label="Nível de infestação" placeholder="Informe o nível" />
-                      <TextInput label="Equipamento utilizado" placeholder="Digite o equipamento" />
+                      <TextInput label="Nível de infestação" placeholder="Informe o nível" value={nivelInfestacao} onChange={setNivelInfestacao} />
+                      <TextInput label="Equipamento utilizado" placeholder="Digite o equipamento" value={equipamentoDescricao} onChange={setEquipamentoDescricao} />
                     </div>
 
                     <Button
@@ -809,13 +956,13 @@ const DetalhesAgendamento = () => {
                 agendamento.serviceType,
               ) && (
                 <Card className="rounded-large! border-muted-foreground/20 bg-background overflow-hidden p-xl">
-                  <div className="flex flex-col gap-md">
+                  <div className="flex flex-col gap-md w-full">
                     <H3 className="text-grayscale-dark font-bold text-lg">Vistoria</H3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-                      <TextInput label="Setor" placeholder="Digite o setor" />
-                      <TextInput label="Situação" placeholder="Informe a situação" />
-                      <TextInput label="Medida Corretiva" placeholder="Informe a medida" />
+                      <TextInput label="Setor" placeholder="Digite o setor" value={setorVistoria} onChange={setSetorVistoria} />
+                      <TextInput label="Situação" placeholder="Informe a situação" value={situacaoVistoria} onChange={setSituacaoVistoria} />
+                      <TextInput label="Medida Corretiva" placeholder="Informe a medida" value={medidaCorretiva} onChange={setMedidaCorretiva} />
                       <SelectInput
                         label="Avaliação"
                         placeholder="Selecione o estado"
@@ -842,6 +989,8 @@ const DetalhesAgendamento = () => {
               <ServicoFotos
                 onFilesAntesChange={setUploadedFilesAntes}
                 onFilesDepoisChange={setUploadedFilesDepois}
+                observacoesGerais={observacoesGerais}
+                onChangeObservacoes={setObservacoesGerais}
               />
 
               {/* Footer Actions */}
@@ -853,7 +1002,7 @@ const DetalhesAgendamento = () => {
                 >
                   Cancelar
                 </Button>
-                <Button className="bg-brand-cta-dark hover:bg-brand-cta-dark/90 text-white w-full md:w-auto md:min-w-[200px] h-[48px] rounded-small px-xl font-bold text-md">
+                <Button onClick={handleFinalizarServico} disabled={isSubmitting} className="bg-brand-cta-dark hover:bg-brand-cta-dark/90 text-white w-full md:w-auto md:min-w-[200px] h-[48px] rounded-small px-xl font-bold text-md">
                   <Check className="mr-xs" size={20} />
                   Finalizar serviço
                 </Button>
@@ -920,7 +1069,7 @@ const DetalhesAgendamento = () => {
               >
                 Cancelar
               </Button>
-              <Button className="bg-brand-cta-dark hover:bg-brand-cta-dark/90 text-white w-full md:w-auto md:min-w-[200px] h-[48px] rounded-small px-xl font-bold text-md">
+              <Button onClick={handleFinalizarServico} disabled={isSubmitting} className="bg-brand-cta-dark hover:bg-brand-cta-dark/90 text-white w-full md:w-auto md:min-w-[200px] h-[48px] rounded-small px-xl font-bold text-md">
                 <Check className="mr-xs" size={20} />
                 Finalizar serviço
               </Button>
@@ -975,7 +1124,7 @@ const DetalhesAgendamento = () => {
               >
                 Cancelar
               </Button>
-              <Button className="bg-brand-cta-dark hover:bg-brand-cta-dark/90 text-white w-full md:w-auto md:min-w-[200px] h-[48px] rounded-small px-xl font-bold text-md">
+              <Button onClick={handleFinalizarServico} disabled={isSubmitting} className="bg-brand-cta-dark hover:bg-brand-cta-dark/90 text-white w-full md:w-auto md:min-w-[200px] h-[48px] rounded-small px-xl font-bold text-md">
                 <Check className="mr-xs" size={20} />
                 Finalizar serviço
               </Button>
