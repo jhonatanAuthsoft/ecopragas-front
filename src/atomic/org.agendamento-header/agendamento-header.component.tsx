@@ -31,7 +31,7 @@ export const AgendamentoHeader = ({ agendamento, className, children }: Agendame
                 variant="secondary"
                 className="bg-brand-secondary-medium/10 text-brand-secondary-medium border-brand-secondary-medium/20 px-md py-1"
               >
-                {agendamento.status} - {agendamento.osNumber}
+                {agendamento.status}
               </Badge>
             </div>
             <div className="flex flex-col gap-sm">

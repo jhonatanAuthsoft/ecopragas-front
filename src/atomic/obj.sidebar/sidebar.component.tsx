@@ -18,6 +18,7 @@ import { useLogout } from "@/domain/auth";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth";
 import { useSidebarStore } from "@/store/sidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { accountItemStyle } from "./sidebar.style";
 
 const ADMIN_MENU = [
@@ -73,9 +74,11 @@ const isNavItemActive = (pathname: string, path: string) => {
   return pathname === path || pathname.startsWith(`${path}/`);
 };
 
-export const Sidebar = ({ className }: { className?: string }) => {
+export const Sidebar = ({ className, isMobileSheet }: { className?: string; isMobileSheet?: boolean }) => {
   const location = useLocation();
-  const isMinimized = useSidebarStore((state) => state.isMinimized);
+  const isStoreMinimized = useSidebarStore((state) => state.isMinimized);
+  const isMobile = useIsMobile();
+  const isMinimized = isMobileSheet ? false : isStoreMinimized;
   const toggleMinimized = useSidebarStore((state) => state.toggleMinimized);
   const user = useAuthStore((state) => state.user);
 
@@ -90,8 +93,9 @@ export const Sidebar = ({ className }: { className?: string }) => {
   return (
     <aside
       className={cn(
-        "fixed inset-y-0 left-0 z-10 h-screen border-r border-border bg-sidebar transition-all duration-300",
-        isMinimized ? "w-[100px]" : "w-[256px]",
+        "z-10 border-r border-border bg-sidebar transition-all duration-300",
+        isMobileSheet ? "relative w-[256px] h-full" : "fixed inset-y-0 left-0 h-screen hidden md:block",
+        !isMobileSheet && (isMinimized ? "w-[100px]" : "w-[256px]"),
         className,
       )}
     >
@@ -112,15 +116,17 @@ export const Sidebar = ({ className }: { className?: string }) => {
         <nav className={cn("flex-1 overflow-hidden py-xl", isMinimized ? "px-2" : "px-md")}>
           <ul className="flex flex-col gap-md">
             <li>
-              {isMinimized ? (
-                <Tooltip>
-                  <TooltipTrigger className="w-full">
-                    <ToggleButton isMinimized={isMinimized} toggleMinimized={toggleMinimized} />
-                  </TooltipTrigger>
-                  <TooltipContent side="right">Expandir</TooltipContent>
-                </Tooltip>
-              ) : (
-                <ToggleButton isMinimized={isMinimized} toggleMinimized={toggleMinimized} />
+              {(!isMobile && !isMobileSheet) && (
+                isMinimized ? (
+                  <Tooltip>
+                    <TooltipTrigger className="w-full">
+                      <ToggleButton isMinimized={isMinimized} toggleMinimized={toggleMinimized} />
+                    </TooltipTrigger>
+                    <TooltipContent side="right">Expandir</TooltipContent>
+                  </Tooltip>
+                ) : (
+                  <ToggleButton isMinimized={isMinimized} toggleMinimized={toggleMinimized} />
+                )
               )}
             </li>
             {menuItems.map((item) => (

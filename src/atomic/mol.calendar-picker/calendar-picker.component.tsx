@@ -180,7 +180,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
 
     for (let i = firstDayOfMonth - 1; i >= 0; i--) {
       days.push({
-        date: new Date(viewYear, viewMonth, prevMonthLastDay - i),
+        date: new Date(viewYear, viewMonth - 1, prevMonthLastDay - i),
         isCurrentMonth: false,
       });
     }
@@ -483,7 +483,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
         {calendarDays.map((item, idx) => {
           if (!item.isCurrentMonth) {
             return (
-              <div key={`calendar-day-placeholder-${item.date.toISOString()}`} className="h-9" />
+              <div key={`calendar-day-placeholder-${item.date.toISOString()}-${idx}`} className="h-9" />
             );
           }
 

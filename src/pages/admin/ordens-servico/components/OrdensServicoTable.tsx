@@ -1,6 +1,8 @@
 import { format } from "date-fns";
 import { ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
 import {
   Table,
@@ -38,6 +40,7 @@ interface OrdensServicoTableProps {
   isLoading?: boolean;
   error?: boolean;
   onPageChange: (page: number) => void;
+  disableClick?: boolean;
 }
 
 export const OrdensServicoTable = ({
@@ -47,9 +50,11 @@ export const OrdensServicoTable = ({
   isLoading,
   error,
   onPageChange,
+  disableClick,
 }: OrdensServicoTableProps) => {
   const navigate = useNavigate();
   const resolvedTotalPages = totalPages ?? 1;
+  const isMobile = useIsMobile();
 
   return (
     <LoadingState loading={isLoading} error={error} data={ordensServico.length > 0}>
@@ -71,7 +76,43 @@ export const OrdensServicoTable = ({
         </div>
       </LoadingState.NoData>
 
-      <div className="rounded-xs border border-border p-lg">
+      <div className={cn("rounded-xs", !isMobile && "border border-border p-lg")}>
+                {isMobile ? (
+        <div className="flex flex-col gap-4">
+          {ordensServico.map((os) => {
+            const { date, time } = parseDateTime(os.dataHoraServico);
+            return (
+              <div
+                key={os.id}
+                className={cn(
+                  "flex flex-col gap-2 rounded-md border border-border p-4 bg-background shadow-sm",
+                  !disableClick && "cursor-pointer active:bg-grayscale-x-light"
+                )}
+                onClick={() =>
+                  !disableClick && navigate(ROUTES.ADMIN.SERVICE_ORDER.DETAILS.replace(":id", os.id ?? ""))
+                }
+              >
+                <div className="flex justify-between items-start">
+                  <span className="font-semibold text-foreground text-base">{formatTipoServico(os.tipoServico)}</span>
+                  <span className="text-brand-secondary-medium font-bold text-base">{formatCurrency(os.valor)}</span>
+                </div>
+                
+                <div className="flex justify-between items-center mt-1 text-sm">
+                  <span className="text-muted-foreground">{date ? format(date, "dd/MM/yyyy") : "-"} às {time || "-"}</span>
+                </div>
+                
+                {!disableClick && (
+                   <div className="mt-2 flex justify-center w-full pt-3 border-t border-border/50">
+                      <span className="text-xs text-brand-secondary-medium font-medium flex items-center">
+                         Ver Detalhes <ChevronRight className="size-4 ml-1" />
+                      </span>
+                   </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+) : (
         <Table>
           <TableHeader>
             <TableRow>
@@ -83,7 +124,7 @@ export const OrdensServicoTable = ({
               <TableHead>Horário</TableHead>
               <TableHead>Endereço</TableHead>
               <TableHead>Valor</TableHead>
-              <TableHead />
+              {!disableClick && <TableHead />}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -93,9 +134,9 @@ export const OrdensServicoTable = ({
               return (
                 <TableRow
                   key={os.id}
-                  className="cursor-pointer"
+                  className={disableClick ? "" : "cursor-pointer"}
                   onClick={() =>
-                    navigate(ROUTES.ADMIN.SERVICE_ORDER.DETAILS.replace(":id", os.id ?? ""))
+                    !disableClick && navigate(ROUTES.ADMIN.SERVICE_ORDER.DETAILS.replace(":id", os.id ?? ""))
                   }
                 >
                   <TableCell className="text-grayscale-x-dark">
@@ -114,14 +155,17 @@ export const OrdensServicoTable = ({
                   <TableCell className="text-brand-secondary-medium">
                     <b>{formatCurrency(os.valor)}</b>
                   </TableCell>
-                  <TableCell>
-                    <ChevronRight className="size-md" />
-                  </TableCell>
+                  {!disableClick && (
+                    <TableCell>
+                      <ChevronRight className="size-md" />
+                    </TableCell>
+                  )}
                 </TableRow>
               );
             })}
           </TableBody>
         </Table>
+)}
 
         {resolvedTotalPages > 1 && (
           <PaginationControl
