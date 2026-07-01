@@ -13,7 +13,7 @@ import {
   useDownloadOrdensServicoPdf,
   useGetOrdemServico,
 } from "@/domain/ordem-servico";
-import { downloadFileFromBase64 } from "@/utils/download-file";
+import { downloadFile } from "@/utils/download-file";
 import { formatOsNumero } from "@/utils/ordem-servico";
 import { AddOrdemServicoDialog } from "./components/add-ordem-servico-dialog";
 import { OrdemServicoDetalhesCard } from "./components/ordem-servico-detalhes";
@@ -37,18 +37,17 @@ export default function OrdemServicoDetalhes() {
 
   const { downloadOrdensServicoPdf, isDownloadOrdensServicoPdfLoading } =
     useDownloadOrdensServicoPdf({
-      onSuccess: (data) => {
-        if (!data) {
+      onSuccess: (blob) => {
+        if (!blob || blob.size === 0) {
           toast.error("PDF da ordem de serviço indisponível.");
           return;
         }
 
         if (!ordemServico) return;
 
-        downloadFileFromBase64(
-          data,
+        downloadFile(
+          new Blob([blob], { type: "application/pdf" }),
           `${formatOsNumero(ordemServico.osNumero).replace(/\s/g, "_")}.pdf`,
-          "application/pdf",
         );
       },
     });

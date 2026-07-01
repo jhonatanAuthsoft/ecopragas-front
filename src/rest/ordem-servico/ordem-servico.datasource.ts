@@ -50,6 +50,7 @@ export async function editOrdemServicoDatasource(
 export async function downloadOrdensServicoPdfDatasource({ id }: DownloadOrdensServicoPdfParams) {
   const { data } = await serverRequest.get<DownloadOrdensServicoPdfResponse>(
     `/ordens-servico/${id}/pdf`,
+    { responseType: "blob" },
   );
   return data;
 }

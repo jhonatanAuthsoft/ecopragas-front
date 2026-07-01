@@ -118,7 +118,7 @@ export function OrdemServicoDetalhesCard({
           </div>
         </div>
 
-        {(!isDone || ordem.status !== "CANCELADO") && (
+        {(!isDone || ordem.status === "CANCELADO") && (
           <>
             <div className="w-full h-[1px] bg-grayscale-light" />
 
