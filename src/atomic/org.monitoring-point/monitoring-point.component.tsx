@@ -79,27 +79,7 @@ const MonitoringPointDetails = ({ onEdit }: { onEdit: () => void }) => {
           ))}
         </div>
 
-        {/* Pagination Mock */}
-        <div className="flex items-center justify-center gap-md text-xs text-grayscale-medium pt-sm">
-          <button className="flex items-center gap-xs text-grayscale-light hover:text-grayscale-medium transition-colors">
-            <ArrowLeft size={12} /> Anterior
-          </button>
-          <div className="flex items-center gap-sm">
-            <button className="w-6 h-6 rounded-sm bg-brand-primary-medium text-white flex items-center justify-center">
-              1
-            </button>
-            <button className="w-6 h-6 rounded-sm hover:bg-grayscale-light/20 flex items-center justify-center text-grayscale-dark">
-              2
-            </button>
-            <span>...</span>
-            <button className="w-6 h-6 rounded-sm hover:bg-grayscale-light/20 flex items-center justify-center text-grayscale-dark">
-              3
-            </button>
-          </div>
-          <button className="flex items-center gap-xs text-grayscale-x-dark hover:text-grayscale-dark transition-colors font-medium">
-            Seguinte <ArrowRight size={12} />
-          </button>
-        </div>
+
       </div>
 
       <div className="flex flex-col gap-xs pt-md">

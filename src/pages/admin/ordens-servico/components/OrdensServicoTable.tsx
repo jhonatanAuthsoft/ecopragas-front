@@ -41,6 +41,7 @@ interface OrdensServicoTableProps {
   error?: boolean;
   onPageChange: (page: number) => void;
   disableClick?: boolean;
+  hideValor?: boolean;
 }
 
 export const OrdensServicoTable = ({
@@ -51,6 +52,7 @@ export const OrdensServicoTable = ({
   error,
   onPageChange,
   disableClick,
+  hideValor,
 }: OrdensServicoTableProps) => {
   const navigate = useNavigate();
   const resolvedTotalPages = totalPages ?? 1;
@@ -59,7 +61,7 @@ export const OrdensServicoTable = ({
   return (
     <LoadingState loading={isLoading} error={error} data={ordensServico.length > 0}>
       <LoadingState.Shimmer>
-        <TableSkeleton columns={ORDENS_SERVICO_TABLE_COLUMNS} />
+        <TableSkeleton columns={hideValor ? ORDENS_SERVICO_TABLE_COLUMNS.filter(c => c !== "Valor") : ORDENS_SERVICO_TABLE_COLUMNS} />
       </LoadingState.Shimmer>
 
       <LoadingState.Error>
@@ -94,7 +96,7 @@ export const OrdensServicoTable = ({
               >
                 <div className="flex justify-between items-start">
                   <span className="font-semibold text-foreground text-base">{formatTipoServico(os.tipoServico)}</span>
-                  <span className="text-brand-secondary-medium font-bold text-base">{formatCurrency(os.valor)}</span>
+                  {!hideValor && <span className="text-brand-secondary-medium font-bold text-base">{formatCurrency(os.valor)}</span>}
                 </div>
                 
                 <div className="flex justify-between items-center mt-1 text-sm">
@@ -123,7 +125,7 @@ export const OrdensServicoTable = ({
               <TableHead>Data</TableHead>
               <TableHead>Horário</TableHead>
               <TableHead>Endereço</TableHead>
-              <TableHead>Valor</TableHead>
+              {!hideValor && <TableHead>Valor</TableHead>}
               {!disableClick && <TableHead />}
             </TableRow>
           </TableHeader>
@@ -152,9 +154,11 @@ export const OrdensServicoTable = ({
                   <TableCell className="max-w-[100px] xl:max-w-[200px]" textClassName="truncate">
                     {formatEnderecoFromOrdemServico(os)}
                   </TableCell>
-                  <TableCell className="text-brand-secondary-medium">
-                    <b>{formatCurrency(os.valor)}</b>
-                  </TableCell>
+                  {!hideValor && (
+                    <TableCell className="text-brand-secondary-medium">
+                      <b>{formatCurrency(os.valor)}</b>
+                    </TableCell>
+                  )}
                   {!disableClick && (
                     <TableCell>
                       <ChevronRight className="size-md" />

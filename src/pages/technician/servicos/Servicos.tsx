@@ -105,6 +105,7 @@ const Servicos = () => {
           totalPages={totalPages}
           onPageChange={setCurrentPage}
           disableClick={true}
+          hideValor={true}
         />
       </div>
     </MainLayout>
