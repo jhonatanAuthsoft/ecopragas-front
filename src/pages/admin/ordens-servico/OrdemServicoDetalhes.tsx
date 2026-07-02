@@ -110,8 +110,9 @@ export default function OrdemServicoDetalhes() {
             isDeleteLoading={isDeleteOrdemServicoLoading}
             isDownloadLoading={isDownloadOrdensServicoPdfLoading}
           />
-
-          <OrdemServicoVariationsCards ordemServico={ordemServico} />
+          {(ordemServico?.status === "CONCLUIDO" || ordemServico?.status === "CANCELADO") && (
+            <OrdemServicoVariationsCards ordemServico={ordemServico} />
+          )}
 
           <AddOrdemServicoDialog
             open={isEditDialogOpen}
