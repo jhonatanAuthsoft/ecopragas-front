@@ -35,7 +35,7 @@ export function AgendamentoDetalhesCard({
 }: AgendamentoDetalhesCardProps) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const endereco = formatEndereco(agendamento);
-  const dataHorario = formatDataHorario(agendamento.dataHoraServico);
+  const dataHorario = formatDataHorario(agendamento.dataHoraAgendamento);
   const recorrenciaLabel = getBadgeRecorrenciaLabel(agendamento.recorrencia);
   const statusLabel = agendamento.status ? STATUS_LABELS[agendamento.status] : null;
   const isAgendado = agendamento.status === "AGENDADO";
@@ -91,7 +91,7 @@ export function AgendamentoDetalhesCard({
             />
             <DetailItem
               label="Data e horário"
-              value={[agendamento.dataHoraServico ? dataHorario : "-"]}
+              value={[agendamento.dataHoraAgendamento ? dataHorario : "-"]}
             />
             <DetailItem
               label="Valor do serviço"

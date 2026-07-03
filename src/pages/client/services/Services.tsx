@@ -56,8 +56,8 @@ const Services = () => {
   const rawMappedServices = ultimosServicos.map(
     (servico: (typeof ultimosServicos)[0] & { status?: string }) => {
       let formattedTime = "--/--/----";
-      if (servico.dataHoraServico) {
-        const date = new Date(servico.dataHoraServico);
+      if (servico.dataHoraAgendamento) {
+        const date = new Date(servico.dataHoraAgendamento);
         formattedTime =
           date.toLocaleDateString("pt-BR") +
           " às " +

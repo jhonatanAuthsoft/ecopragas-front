@@ -1,6 +1,7 @@
 import { DetailItem } from "@/atomic/atm.detail-item";
 import { Body2, H3 } from "@/atomic/atm.typography";
 import type { Cliente } from "@/model/rest/cliente";
+import { formatTecnicosLabel } from "@/pages/admin/agendamentos/agendamentos.utils";
 import { formatCurrency } from "@/utils/formatters";
 import {
   formatUltimoServicoDataHora,
@@ -28,11 +29,12 @@ export const ClienteUltimoServicoSection = ({ cliente }: ClienteUltimoServicoSec
             />
             <DetailItem
               label="Técnico Responsável"
-              value={[ultimoServico.tecnicoResponsavel ?? "-"]}
+              // TODO: Adicionar técnicos responsáveis
+              value={[formatTecnicosLabel(ultimoServico.tecnicos)]}
             />
             <DetailItem
               label="Data e horário"
-              value={[formatUltimoServicoDataHora(ultimoServico.dataHoraServico)]}
+              value={[formatUltimoServicoDataHora(ultimoServico.dataHoraAgendamento)]}
             />
             <DetailItem
               label="Valor do serviço"

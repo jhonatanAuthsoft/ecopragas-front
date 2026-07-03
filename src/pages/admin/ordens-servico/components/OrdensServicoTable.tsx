@@ -82,7 +82,7 @@ export const OrdensServicoTable = ({
                 {isMobile ? (
         <div className="flex flex-col gap-4">
           {ordensServico.map((os) => {
-            const { date, time } = parseDateTime(os.dataHoraServico);
+            const { date, time } = parseDateTime(os.dataHoraAgendamento);
             return (
               <div
                 key={os.id}
@@ -131,7 +131,7 @@ export const OrdensServicoTable = ({
           </TableHeader>
           <TableBody>
             {ordensServico.map((os) => {
-              const { date, time } = parseDateTime(os.dataHoraServico);
+              const { date, time } = parseDateTime(os.dataHoraAgendamento);
 
               return (
                 <TableRow

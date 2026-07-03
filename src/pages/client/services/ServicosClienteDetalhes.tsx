@@ -36,7 +36,9 @@ const ServicosClienteDetalhes = () => {
     return <Navigate to={ROUTES.CLIENT_SERVICES} />;
   }
 
-  const dataObj = servicoData.dataHoraServico ? new Date(servicoData.dataHoraServico) : null;
+  const dataObj = servicoData.dataHoraAgendamento
+    ? new Date(servicoData.dataHoraAgendamento)
+    : null;
   const formattedTime = dataObj
     ? `${dataObj.toLocaleDateString("pt-BR")} - ${dataObj.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`
     : "--/--/---- --:--";

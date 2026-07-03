@@ -49,7 +49,9 @@ const DetalhesAgendamento = () => {
 
   // console.log(agendamentoRaw);
 
-  const dataObj = agendamentoRaw.dataHoraServico ? new Date(agendamentoRaw.dataHoraServico) : null;
+  const dataObj = agendamentoRaw.dataHoraAgendamento
+    ? new Date(agendamentoRaw.dataHoraAgendamento)
+    : null;
   const status = mapStatusDaApi(agendamentoRaw.status ?? "");
 
   const enderecoArray = [

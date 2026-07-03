@@ -37,12 +37,12 @@ export function hasUltimoServico(cliente: Cliente): boolean {
   return !!getUltimoServico(cliente);
 }
 
-export function formatUltimoServicoDataHora(dataHoraServico?: string): string {
-  if (!dataHoraServico) {
+export function formatUltimoServicoDataHora(dataHoraAgendamento?: string): string {
+  if (!dataHoraAgendamento) {
     return "-";
   }
 
-  const parsed = new Date(dataHoraServico);
+  const parsed = new Date(dataHoraAgendamento);
 
   if (Number.isNaN(parsed.getTime())) {
     return "-";

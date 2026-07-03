@@ -886,7 +886,7 @@ export interface components {
             dadosEspecificos?: components["schemas"]["OrdemServicoDetalhesDTO"];
             tecnicos?: components["schemas"]["TecnicoResumoDTO"][];
             /** Format: date-time */
-            dataHoraServico?: string;
+            dataHoraAgendamento?: string;
             /** @enum {string} */
             recorrencia?: "NENHUMA" | "SEMANAL" | "MENSAL" | "TRIMESTRAL" | "SEMESTRAL" | "ANUAL";
             /** @enum {string} */
@@ -1071,6 +1071,8 @@ export interface components {
             /** @enum {string} */
             status?: "AGENDADO" | "EM_ANDAMENTO" | "CONCLUIDO" | "CANCELADO";
             /** Format: date-time */
+            dataHoraAgendamento?: string;
+            /** Format: date-time */
             createdAt?: string;
             /** Format: date-time */
             updatedAt?: string;
@@ -1197,7 +1199,7 @@ export interface components {
             tipoServico?: "SANITIZACAO" | "CONTROLE_PRAGAS_VETORES" | "HIGIENIZACAO" | "MONITORAMENTO_INSETOS" | "MONITORAMENTO_ROEDORES";
             valor?: number;
             /** Format: date-time */
-            dataHoraServico?: string;
+            dataHoraAgendamento?: string;
         };
         StandardResponseClienteResponseDTO: {
             success?: boolean;
@@ -1512,7 +1514,7 @@ export interface components {
             tipoServico?: "SANITIZACAO" | "CONTROLE_PRAGAS_VETORES" | "HIGIENIZACAO" | "MONITORAMENTO_INSETOS" | "MONITORAMENTO_ROEDORES";
             valor?: number;
             /** Format: date-time */
-            dataHoraServico?: string;
+            dataHoraAgendamento?: string;
             rua?: string;
             numero?: string;
             complemento?: string;

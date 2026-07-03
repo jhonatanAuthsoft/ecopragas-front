@@ -42,7 +42,7 @@ export function OrdemServicoDetalhesCard({
 }: OrdemServicoDetalhesCardProps) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const endereco = formatEndereco(ordem);
-  const dataHorario = formatDataHorario(ordem.dataHoraServico);
+  const dataHorario = formatDataHorario(ordem.dataHoraAgendamento);
   const tipoServicoLabel = ordem.tipoServico ? TIPO_SERVICO_LABELS[ordem.tipoServico] : "-";
   const statusLabel = ordem.status ? STATUS_LABELS[ordem.status] : "Criado";
   const isDone =
