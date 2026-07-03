@@ -9,11 +9,15 @@ import { DetailItem } from "@/atomic/atm.detail-item";
 import { Body2, H2, H3 } from "@/atomic/atm.typography";
 import { cn } from "@/lib/utils";
 import type { Agendamento } from "@/model/rest/agendamento";
-import { formatCurrency, formatPhone } from "@/utils/formatters";
+import { formatCurrency, formatPhone, getStatusBadgeClass } from "@/utils/formatters";
 import { formatOsNumero } from "@/utils/ordem-servico";
 import { formatTecnicosLabel } from "../../agendamentos.utils";
 import { DeleteAgendamentoDialog } from "../DeleteAgendamentoDialog";
-import { getBadgeRecorrenciaLabel, TIPO_SERVICO_LABELS } from "./agendamento-detalhes.labels";
+import {
+  getBadgeRecorrenciaLabel,
+  STATUS_LABELS,
+  TIPO_SERVICO_LABELS,
+} from "./agendamento-detalhes.labels";
 import { formatDataHorario, formatEndereco } from "./agendamento-detalhes.utils";
 
 interface AgendamentoDetalhesCardProps {
@@ -33,15 +37,21 @@ export function AgendamentoDetalhesCard({
   const endereco = formatEndereco(agendamento);
   const dataHorario = formatDataHorario(agendamento.dataHoraServico);
   const recorrenciaLabel = getBadgeRecorrenciaLabel(agendamento.recorrencia);
+  const statusLabel = agendamento.status ? STATUS_LABELS[agendamento.status] : null;
   const isAgendado = agendamento.status === "AGENDADO";
 
   return (
     <>
       <div className="flex flex-col gap-lg p-lg bg-white rounded-medium shadow-sm border border-grayscale-light">
         <div className="flex flex-col gap-sm pb-sm border-b border-grayscale-light">
-          <Badge color="blue" className="self-start">
-            {recorrenciaLabel} - <b className="ml-2xs">{formatOsNumero(agendamento.osNumero)}</b>
-          </Badge>
+          <div className="flex items-center gap-xs flex-wrap">
+            <Badge color="blue" className="self-start">
+              {recorrenciaLabel} - <b className="ml-2xs">{formatOsNumero(agendamento.osNumero)}</b>
+            </Badge>
+            {statusLabel && (
+              <Badge className={`${getStatusBadgeClass(statusLabel)}`}>{statusLabel}</Badge>
+            )}
+          </div>
 
           <H2>{agendamento.tipoServico ? TIPO_SERVICO_LABELS[agendamento.tipoServico] : "-"}</H2>
 
