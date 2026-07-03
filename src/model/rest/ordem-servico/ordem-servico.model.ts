@@ -42,8 +42,7 @@ export type EditOrdemServicoResponse =
 
 export type DownloadOrdensServicoPdfParams =
   operations["ordem_servico_baixar_pdf"]["parameters"]["path"];
-export type DownloadOrdensServicoPdfResponse =
-  operations["ordem_servico_baixar_pdf"]["responses"][200]["content"]["application/json"];
+export type DownloadOrdensServicoPdfResponse = Blob;
 
 export type GetOrdemServicoMetricasParams =
   operations["ordem_servico_obter_metricas"]["parameters"]["query"];

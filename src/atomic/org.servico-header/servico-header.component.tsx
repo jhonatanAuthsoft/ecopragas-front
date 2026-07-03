@@ -1,7 +1,7 @@
 import { Button } from "@/atomic/atm.button/button.component";
 import { DetailItem } from "@/atomic/atm.detail-item/detail-item.component";
 import { Separator } from "@/atomic/atm.separator/separator.component";
-import { H4 } from "@/atomic/atm.typography";
+import { H3 } from "@/atomic/atm.typography";
 
 export interface ServicoHeaderProps {
   agendamento: {
@@ -16,11 +16,10 @@ export interface ServicoHeaderProps {
 
 export const ServicoHeader = ({ agendamento, onStart }: ServicoHeaderProps) => {
   return (
-    <div className="flex flex-col gap-md">
-      <div className="flex flex-col gap-md pt-md">
-        <H4 className="text-grayscale-medium font-medium tracking-wider text-xxs uppercase">
-          Dados do Serviço
-        </H4>
+    <div>
+      <Separator className="bg-muted-foreground/20" />
+      <div className="flex flex-col gap-md pt-lg">
+        <H3 className="font-normal">Dados do Serviço</H3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-y-md gap-x-xl">
           <DetailItem label="Tipo de Serviço" value={[agendamento.serviceType]} className="gap-1" />
@@ -46,13 +45,10 @@ export const ServicoHeader = ({ agendamento, onStart }: ServicoHeaderProps) => {
         </div>
       </div>
 
-      <Separator className="bg-muted-foreground/20" />
+      <Separator className="bg-muted-foreground/20 mt-sm" />
 
-      <div className="flex justify-center pt-md">
-        <Button
-          className="bg-brand-cta-dark hover:bg-brand-cta-dark/90 text-white min-w-[200px] h-[48px] rounded-small px-xl font-bold text-md"
-          onClick={onStart}
-        >
+      <div className="flex justify-center pt-lg">
+        <Button className="w-full md:w-auto md:px-2xl!" onClick={onStart} size="lg">
           Iniciar Serviço
         </Button>
       </div>

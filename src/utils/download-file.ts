@@ -11,7 +11,7 @@ export function triggerDownload(href: string, fileName: string) {
 export function downloadFile(file: Blob | File, fileName: string) {
   const objectUrl = URL.createObjectURL(file);
   triggerDownload(objectUrl, fileName);
-  URL.revokeObjectURL(objectUrl);
+  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 100);
 }
 
 const decodeBase64 = (base64: string): Uint8Array => {

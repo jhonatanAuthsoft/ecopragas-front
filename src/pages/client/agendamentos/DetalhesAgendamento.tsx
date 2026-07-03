@@ -1,13 +1,22 @@
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ChevronLeft, IdCard, MapPin, Phone } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { IdentificationIcon } from "@/assets/icons/identification";
+import { MapPinIcon } from "@/assets/icons/map-pin";
+import { PhoneIcon } from "@/assets/icons/phone";
 import { Badge } from "@/atomic/atm.badge/badge.component";
 import { Button } from "@/atomic/atm.button/button.component";
 import { Body1, Body2, H1, H2, H3 } from "@/atomic/atm.typography";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
-import { formatCPFCNPJ, formatTipoServico, getStatusBadgeClass } from "@/utils/formatters";
+import { formatTecnicosLabel } from "@/pages/admin/agendamentos/agendamentos.utils";
+import {
+  formatCPFCNPJ,
+  formatPhone,
+  formatTipoServico,
+  getStatusBadgeClass,
+} from "@/utils/formatters";
 
 type AgendamentoStatus = "agendada" | "em_andamento" | "concluida" | "cancelada";
 
@@ -38,6 +47,8 @@ const DetalhesAgendamento = () => {
     return <Navigate to={ROUTES.CLIENT_SCHEDULING} />;
   }
 
+  // console.log(agendamentoRaw);
+
   const dataObj = agendamentoRaw.dataHoraServico ? new Date(agendamentoRaw.dataHoraServico) : null;
   const status = mapStatusDaApi(agendamentoRaw.status ?? "");
 
@@ -59,12 +70,14 @@ const DetalhesAgendamento = () => {
     data: dataObj ? format(dataObj, "dd/MM/yyyy", { locale: ptBR }) : "--/--/----",
     horario: dataObj ? format(dataObj, "HH:mm") : "--:--",
     status: status,
-    tecnico: agendamentoRaw.tecnicoResponsavel ?? "Não definido",
+    tecnico: formatTecnicosLabel(agendamentoRaw.tecnicos) ?? "Não definido",
     endereco: enderecoFormatado,
     cpf: agendamentoRaw.clienteCpfCnpj
       ? formatCPFCNPJ(agendamentoRaw.clienteCpfCnpj)
       : "Não informado",
-    telefone: "Não informado",
+    telefone: agendamentoRaw.clienteTelefone
+      ? formatPhone(agendamentoRaw.clienteTelefone)
+      : "Não informado",
   };
 
   return (
@@ -94,16 +107,16 @@ const DetalhesAgendamento = () => {
             <div className="flex flex-col gap-xs">
               <H2 className="capitalize">{agendamento.servico}</H2>
               <div className="flex flex-wrap items-center gap-md">
-                <div className="flex items-center gap-xs text-grayscale-dark">
-                  <IdCard size={14} className="shrink-0 text-grayscale-medium" />
+                <div className="flex items-center gap-2xs text-grayscale-dark">
+                  <IdentificationIcon className="shrink-0 size-lg text-grayscale-medium" />
                   <Body2>{agendamento.cpf}</Body2>
                 </div>
-                <div className="flex items-center gap-xs text-grayscale-dark">
-                  <Phone size={14} className="shrink-0 text-grayscale-medium" />
+                <div className="flex items-center gap-2xs text-grayscale-dark">
+                  <PhoneIcon className="shrink-0 size-lg text-grayscale-medium" />
                   <Body2>{agendamento.telefone}</Body2>
                 </div>
-                <div className="flex items-center gap-xs text-grayscale-dark">
-                  <MapPin size={14} className="shrink-0 text-grayscale-medium" />
+                <div className="flex items-center gap-2xs text-grayscale-dark">
+                  <MapPinIcon className="shrink-0 size-lg text-grayscale-medium" />
                   <Body2>{agendamento.endereco}</Body2>
                 </div>
               </div>

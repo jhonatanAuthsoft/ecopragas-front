@@ -133,7 +133,12 @@ export const getStatusBadgeClass = (status: string) => {
   if (s.includes("andamento")) {
     return "bg-feedback-warning-light text-feedback-warning-dark border-brand-accessory-orange";
   }
-  if (s.includes("concluída") || s.includes("concluida") || s.includes("concluido")) {
+  if (
+    s.includes("concluída") ||
+    s.includes("concluida") ||
+    s.includes("concluido") ||
+    s.includes("concluído")
+  ) {
     return "bg-feedback-success-light text-feedback-success-dark border-feedback-success-medium";
   }
   if (s.includes("cancelada") || s.includes("cancelado")) {
