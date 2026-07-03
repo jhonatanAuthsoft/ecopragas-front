@@ -29,6 +29,7 @@ export const ClienteUltimoServicoSection = ({ cliente }: ClienteUltimoServicoSec
             />
             <DetailItem
               label="Técnico Responsável"
+              // TODO: Adicionar técnicos responsáveis
               value={[formatTecnicosLabel(ultimoServico.tecnicos)]}
             />
             <DetailItem
