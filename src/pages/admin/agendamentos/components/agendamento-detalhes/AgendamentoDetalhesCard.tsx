@@ -10,6 +10,7 @@ import { Body2, H2, H3 } from "@/atomic/atm.typography";
 import { cn } from "@/lib/utils";
 import type { Agendamento } from "@/model/rest/agendamento";
 import { formatCurrency, formatPhone } from "@/utils/formatters";
+import { formatOsNumero } from "@/utils/ordem-servico";
 import { formatTecnicosLabel } from "../../agendamentos.utils";
 import { DeleteAgendamentoDialog } from "../DeleteAgendamentoDialog";
 import { getBadgeRecorrenciaLabel, TIPO_SERVICO_LABELS } from "./agendamento-detalhes.labels";
@@ -39,8 +40,7 @@ export function AgendamentoDetalhesCard({
       <div className="flex flex-col gap-lg p-lg bg-white rounded-medium shadow-sm border border-grayscale-light">
         <div className="flex flex-col gap-sm pb-sm border-b border-grayscale-light">
           <Badge color="blue" className="self-start">
-            {/* TODO: adicionar ao atualizar back */}
-            {recorrenciaLabel} - <b>{agendamento.ordemServicoId ?? "-"}</b>
+            {recorrenciaLabel} - <b className="ml-2xs">{formatOsNumero(agendamento.osNumero)}</b>
           </Badge>
 
           <H2>{agendamento.tipoServico ? TIPO_SERVICO_LABELS[agendamento.tipoServico] : "-"}</H2>
