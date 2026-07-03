@@ -108,8 +108,8 @@ const DetalhesAgendamento = () => {
             serviceType: formatTipoServico(data.tipoServico),
             technician:
               data.tecnicos && data.tecnicos.length > 0 ? data.tecnicos[0].nome : "Não definido",
-            date: data.dataHoraServico ? format(new Date(data.dataHoraServico), "dd/MM/yyyy") : "",
-            time: data.dataHoraServico ? format(new Date(data.dataHoraServico), "HH:mm") : "",
+            date: (data.dataHoraServico || data.dataHoraAgendamento) ? format(new Date(data.dataHoraServico || data.dataHoraAgendamento), "dd/MM/yyyy") : "",
+            time: (data.dataHoraServico || data.dataHoraAgendamento) ? format(new Date(data.dataHoraServico || data.dataHoraAgendamento), "HH:mm") : "",
             value: formatToBRL(data.valor || 0),
           };
           setAgendamento(mappedAgendamento);
@@ -205,72 +205,19 @@ const DetalhesAgendamento = () => {
   const [hasRain, setHasRain] = useState<boolean | undefined>(undefined);
   const [performCollection, setPerformCollection] = useState<boolean | undefined>(undefined);
   const [closeRegistry, setCloseRegistry] = useState<boolean | undefined>(undefined);
-  type Reservoir = {
-    id: string;
-    localizacao: string;
-    material: string;
-    volume: string;
-    desinfeccao: string;
-    situacao: string;
-    instalacaoCorreta: boolean | undefined;
-    condicaoBoia: string | undefined;
-    condicaoCobertura: string | undefined;
-    estrutura: string | undefined;
-    pintura: string | undefined;
-    revestimentoInterno: string | undefined;
-    sistemaLadrao: string | undefined;
-  };
+  const [reservoirInstallation, setReservoirInstallation] = useState<boolean | undefined>(
+    undefined,
+  );
 
-  const initialReservoir: Reservoir = {
-    id: "",
-    localizacao: "",
-    material: "",
-    volume: "",
-    desinfeccao: "",
-    situacao: "",
-    instalacaoCorreta: undefined,
-    condicaoBoia: undefined,
-    condicaoCobertura: undefined,
-    estrutura: undefined,
-    pintura: undefined,
-    revestimentoInterno: undefined,
-    sistemaLadrao: undefined,
-  };
-
-  const [reservoirs, setReservoirs] = useState<Reservoir[]>([]);
-  const [currentReservoir, setCurrentReservoir] = useState<Reservoir>({
-    ...initialReservoir,
-    id: "draft",
-  });
-
-  const addReservoir = () => {
-    setReservoirs((prev) => [...prev, { ...currentReservoir, id: Date.now().toString() }]);
-    setCurrentReservoir({ ...initialReservoir, id: "draft" });
-  };
-
-  const removeReservoir = (id: string) => {
-    setReservoirs((prev) => prev.filter((r) => r.id !== id));
-  };
-
-  const updateReservoir = (
-    id: string,
-    field: keyof Reservoir,
-    value: string | boolean | string[] | File[],
-  ) => {
-    setReservoirs((prev) => prev.map((r) => (r.id === id ? { ...r, [field]: value } : r)));
-  };
-
-  const updateCurrentReservoir = (
-    field: keyof Reservoir,
-    value: string | boolean | string[] | File[],
-  ) => {
-    setCurrentReservoir((prev) => ({ ...prev, [field]: value }));
-  };
+  const [floatCondition, setFloatCondition] = useState<string | undefined>(undefined);
+  const [coverageCondition, setCoverageCondition] = useState<string | undefined>(undefined);
+  const [reservoirStructure, setReservoirStructure] = useState<string | undefined>(undefined);
+  const [paintingCondition, setPaintingCondition] = useState<string | undefined>(undefined);
+  const [internalCoating, setInternalCoating] = useState<string | undefined>(undefined);
+  const [overflowSystem, setOverflowSystem] = useState<string | undefined>(undefined);
 
   const [monitoringPoints, setMonitoringPoints] = useState<number[]>([1, 2, 3]);
   const [rodentStations, setRodentStations] = useState<number[]>([1, 2, 3]);
-  const [monitoringPointsData, setMonitoringPointsData] = useState<Record<number, any>>({});
-  const [rodentStationsData, setRodentStationsData] = useState<Record<number, any>>({});
 
   const removePoint = (pointIdToRemove: number) => {
     setMonitoringPoints((prev) => prev.filter((id) => id !== pointIdToRemove));
@@ -283,116 +230,40 @@ const DetalhesAgendamento = () => {
   const [pontoReferencia, setPontoReferencia] = useState("");
   const [tempoDuracaoEstimado, setTempoDuracaoEstimado] = useState("");
   const [numeroTecnicos, setNumeroTecnicos] = useState("");
-  type Product = {
-    id: string;
-    principioAtivo: string;
-    produto: string;
-    concentracao: string;
-    diluente: string;
-    volume: string;
-    setor: string;
-    equipamento: string;
-    registroMs: string;
-  };
+  type Reservoir = { id: string; localizacao: string; material: string; volume: string; desinfeccao: string; situacao: string; condicaoBoia: string; condicaoTampas: string; condicaoPintura: string; revestimento: string; sistemaLadrao: string; fotos: (File | { url?: string; base64?: string } | string)[]; };
+  type Product = { id: string; principioAtivo: string; produto: string; concentracao: string; diluente: string; volume: string; setor: string; equipamento: string; registroMs: string; };
+  type DescricaoServico = { id: string; setor: string; higieneLocal: boolean | undefined; nivelInfestacao: string; equipamento: string; };
+  type Vistoria = { id: string; setor: string; situacao: string; medidaCorretiva: string; avaliacao: string; };
 
-  const initialProduct: Product = {
-    id: "",
-    principioAtivo: "",
-    produto: "",
-    concentracao: "",
-    diluente: "",
-    volume: "",
-    setor: "",
-    equipamento: "",
-    registroMs: "",
-  };
-
+  const [reservoirs, setReservoirs] = useState<Reservoir[]>([]);
+  const [currentReservoir, setCurrentReservoir] = useState<Reservoir>({ id: "draft", localizacao: "", material: "", volume: "", desinfeccao: "", situacao: "", condicaoBoia: "", condicaoTampas: "", condicaoPintura: "", revestimento: "", sistemaLadrao: "", fotos: [] });
   const [products, setProducts] = useState<Product[]>([]);
-  const [currentProduct, setCurrentProduct] = useState<Product>({ ...initialProduct, id: "draft" });
-
-  const addProduct = () => {
-    setProducts((prev) => [...prev, { ...currentProduct, id: Date.now().toString() }]);
-    setCurrentProduct({ ...initialProduct, id: "draft" });
-  };
-
-  const removeProduct = (id: string) => {
-    setProducts((prev) => prev.filter((p) => p.id !== id));
-  };
-
-  const updateProduct = (id: string, field: keyof Product, value: string | string[] | File[]) => {
-    setProducts((prev) => prev.map((p) => (p.id === id ? { ...p, [field]: value } : p)));
-  };
-
-  const updateCurrentProduct = (field: keyof Product, value: string | string[] | File[]) => {
-    setCurrentProduct((prev) => ({ ...prev, [field]: value }));
-  };
-  type DescricaoServico = {
-    id: string;
-    setor: string;
-    higieneLocal: boolean | undefined;
-    nivelInfestacao: string;
-    equipamento: string;
-  };
-
-  const initialDescricao: DescricaoServico = {
-    id: "",
-    setor: "",
-    higieneLocal: undefined,
-    nivelInfestacao: "",
-    equipamento: "",
-  };
-
+  const [currentProduct, setCurrentProduct] = useState<Product>({ id: "draft", principioAtivo: "", produto: "", concentracao: "", diluente: "", volume: "", setor: "", equipamento: "", registroMs: "" });
   const [descricoes, setDescricoes] = useState<DescricaoServico[]>([]);
-  const [currentDescricao, setCurrentDescricao] = useState<DescricaoServico>({
-    ...initialDescricao,
-    id: "draft",
-  });
-
-  const addDescricao = () => {
-    setDescricoes((prev) => [...prev, { ...currentDescricao, id: Date.now().toString() }]);
-    setCurrentDescricao({ ...initialDescricao, id: "draft" });
-  };
-  const removeDescricao = (id: string) => setDescricoes((prev) => prev.filter((d) => d.id !== id));
-  const updateDescricao = (id: string, field: keyof DescricaoServico, value: string) => {
-    setDescricoes((prev) => prev.map((d) => (d.id === id ? { ...d, [field]: value } : d)));
-  };
-  const updateCurrentDescricao = (field: keyof DescricaoServico, value: string) => {
-    setCurrentDescricao((prev) => ({ ...prev, [field]: value }));
-  };
-
-  type Vistoria = {
-    id: string;
-    setor: string;
-    situacao: string;
-    medidaCorretiva: string;
-    avaliacao: string;
-  };
-
-  const initialVistoria: Vistoria = {
-    id: "",
-    setor: "",
-    situacao: "",
-    medidaCorretiva: "",
-    avaliacao: "",
-  };
-
+  const [currentDescricao, setCurrentDescricao] = useState<DescricaoServico>({ id: "draft", setor: "", higieneLocal: undefined, nivelInfestacao: "", equipamento: "" });
   const [vistorias, setVistorias] = useState<Vistoria[]>([]);
-  const [currentVistoria, setCurrentVistoria] = useState<Vistoria>({
-    ...initialVistoria,
-    id: "draft",
-  });
+  const [currentVistoria, setCurrentVistoria] = useState<Vistoria>({ id: "draft", setor: "", situacao: "", medidaCorretiva: "", avaliacao: "" });
 
-  const addVistoria = () => {
-    setVistorias((prev) => [...prev, { ...currentVistoria, id: Date.now().toString() }]);
-    setCurrentVistoria({ ...initialVistoria, id: "draft" });
-  };
-  const removeVistoria = (id: string) => setVistorias((prev) => prev.filter((v) => v.id !== id));
-  const updateVistoria = (id: string, field: keyof Vistoria, value: string) => {
-    setVistorias((prev) => prev.map((v) => (v.id === id ? { ...v, [field]: value } : v)));
-  };
-  const updateCurrentVistoria = (field: keyof Vistoria, value: string) => {
-    setCurrentVistoria((prev) => ({ ...prev, [field]: value }));
-  };
+  const updateCurrentReservoir = (f: keyof Reservoir, v: any) => setCurrentReservoir(p => ({ ...p, [f]: v }));
+  const updateCurrentProduct = (f: keyof Product, v: any) => setCurrentProduct(p => ({ ...p, [f]: v }));
+  const updateCurrentDescricao = (f: keyof DescricaoServico, v: any) => setCurrentDescricao(p => ({ ...p, [f]: v }));
+  const updateCurrentVistoria = (f: keyof Vistoria, v: any) => setCurrentVistoria(p => ({ ...p, [f]: v }));
+
+  const addReservoir = () => { setReservoirs(p => [...p, { ...currentReservoir, id: Date.now().toString() }]); setCurrentReservoir({ id: "draft", localizacao: "", material: "", volume: "", desinfeccao: "", situacao: "", condicaoBoia: "", condicaoTampas: "", condicaoPintura: "", revestimento: "", sistemaLadrao: "", fotos: [] }); };
+  const removeReservoir = (id: string) => setReservoirs(p => p.filter(r => r.id !== id));
+  const updateReservoir = (id: string, f: keyof Reservoir, v: any) => setReservoirs(p => p.map(r => r.id === id ? { ...r, [f]: v } : r));
+
+  const addProduct = () => { setProducts(p => [...p, { ...currentProduct, id: Date.now().toString() }]); setCurrentProduct({ id: "draft", principioAtivo: "", produto: "", concentracao: "", diluente: "", volume: "", setor: "", equipamento: "", registroMs: "" }); };
+  const removeProduct = (id: string) => setProducts(p => p.filter(pr => pr.id !== id));
+  const updateProduct = (id: string, f: keyof Product, v: any) => setProducts(p => p.map(pr => pr.id === id ? { ...pr, [f]: v } : pr));
+
+  const addDescricao = () => { setDescricoes(p => [...p, { ...currentDescricao, id: Date.now().toString() }]); setCurrentDescricao({ id: "draft", setor: "", higieneLocal: undefined, nivelInfestacao: "", equipamento: "" }); };
+  const removeDescricao = (id: string) => setDescricoes(p => p.filter(d => d.id !== id));
+  const updateDescricao = (id: string, f: keyof DescricaoServico, v: any) => setDescricoes(p => p.map(d => d.id === id ? { ...d, [f]: v } : d));
+
+  const addVistoria = () => { setVistorias(p => [...p, { ...currentVistoria, id: Date.now().toString() }]); setCurrentVistoria({ id: "draft", setor: "", situacao: "", medidaCorretiva: "", avaliacao: "" }); };
+  const removeVistoria = (id: string) => setVistorias(p => p.filter(v => v.id !== id));
+  const updateVistoria = (id: string, f: keyof Vistoria, v: any) => setVistorias(p => p.map(v_ => v_.id === id ? { ...v_, [f]: v } : v_));
   const [observacoesGerais, setObservacoesGerais] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -405,267 +276,55 @@ const DetalhesAgendamento = () => {
       reader.onerror = (error) => reject(error);
     });
   };
-
-  const renderReservoirForm = (
-    res: Reservoir,
-    onChange: (field: keyof Reservoir, value: string | boolean | string[] | File[]) => void,
-  ) => (
-    <>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-        <div className="md:col-span-2">
-          <TextInput
-            label="Localização"
-            placeholder="Informe a localização"
-            value={res.localizacao}
-            onChange={(v) => onChange("localizacao", v)}
-          />
-        </div>
-        <SelectInput
-          label="Material do Reservatório"
-          placeholder="Selecione o material"
-          value={res.material}
-          onChange={(v) => onChange("material", v)}
-          options={[
-            { label: "Concreto", value: "concreto" },
-            { label: "Fibra", value: "fibra" },
-            { label: "Amianto", value: "amianto" },
-            { label: "PVC", value: "pvc" },
-            { label: "Fibrocimento", value: "fibrocimento" },
-          ]}
-        />
-        <TextInput
-          label="Volume do reservatório (em litros)"
-          placeholder="Ex: 500"
-          type="number"
-          value={res.volume}
-          onChange={(v) => onChange("volume", v)}
-        />
-        <TextInput
-          label="Desinfecção(g)"
-          placeholder="Ex: 10"
-          value={res.desinfeccao}
-          onChange={(v) => onChange("desinfeccao", v)}
-        />
-        <SelectInput
-          label="Situação do reservatórios"
-          placeholder="Selecione a situação"
-          value={res.situacao}
-          onChange={(v) => onChange("situacao", v)}
-          options={[
-            { label: "Externo", value: "externo" },
-            { label: "Interno", value: "interno" },
-            { label: "Enterrada", value: "enterrada" },
-            { label: "Semi-enterrada", value: "semi-enterrada" },
-          ]}
-        />
-        <SelectorGroup
-          label="Instalação do reservatório"
-          value={res.instalacaoCorreta}
-          onChange={(v) => onChange("instalacaoCorreta", v)}
-          options={[
-            { label: "Correto", value: true },
-            { label: "Incorreto", value: false },
-          ]}
-        />
-      </div>
-
-      <Separator className="bg-muted-foreground/20" />
-      <H3 className="text-grayscale-dark font-bold text-lg">Condições dos componentes</H3>
-
-      <div className="flex flex-col gap-md">
-        <SelectorGroup
-          label="Condições da boia"
-          value={res.condicaoBoia}
-          onChange={(v) => onChange("condicaoBoia", v)}
-          options={[
-            { label: "Bom estado", value: "bom" },
-            { label: "Comprometida", value: "comprometida" },
-          ]}
-        />
-        <SelectorGroup
-          label="Condições da cobertura"
-          value={res.condicaoCobertura}
-          onChange={(v) => onChange("condicaoCobertura", v)}
-          options={[
-            { label: "Totalmente coberta", value: "total" },
-            { label: "Parcialmente", value: "parcial" },
-            { label: "Coberta", value: "coberta" },
-          ]}
-        />
-        <SelectorGroup
-          label="Estrutura do reservatório"
-          value={res.estrutura}
-          onChange={(v) => onChange("estrutura", v)}
-          options={[
-            { label: "Bom estado", value: "bom" },
-            { label: "Comprometida", value: "comprometida" },
-          ]}
-        />
-        <SelectorGroup
-          label="Pintura"
-          value={res.pintura}
-          onChange={(v) => onChange("pintura", v)}
-          options={[
-            { label: "Bom estado", value: "bom" },
-            { label: "Comprometida", value: "comprometida" },
-          ]}
-        />
-        <SelectorGroup
-          label="Revestimento interno"
-          value={res.revestimentoInterno}
-          onChange={(v) => onChange("revestimentoInterno", v)}
-          options={[
-            { label: "Bom estado", value: "bom" },
-            { label: "Ruim", value: "ruim" },
-          ]}
-        />
-        <SelectorGroup
-          label="Sistema de ladrão"
-          value={res.sistemaLadrao}
-          onChange={(v) => onChange("sistemaLadrao", v)}
-          options={[
-            { label: "Correto", value: "correto" },
-            { label: "Incorreto", value: "incorreto" },
-          ]}
-        />
-      </div>
-    </>
+  const renderReservoirForm = (res: Reservoir, onChange: (f: keyof Reservoir, v: any) => void) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
+      <div className="md:col-span-2"><TextInput label="Localização" placeholder="Informe a localização" value={res.localizacao} onChange={(v) => onChange('localizacao', v)} /></div>
+      <SelectInput label="Material do Reservatório" placeholder="Selecione o material" value={res.material} onChange={(v) => onChange('material', v)} options={[{ label: "Concreto", value: "concreto" }, { label: "Fibra", value: "fibra" }, { label: "Amianto", value: "amianto" }, { label: "PVC", value: "pvc" }, { label: "Fibrocimento", value: "fibrocimento" }]} />
+      <TextInput label="Volume (L)" placeholder="Ex: 500" type="number" value={res.volume} onChange={(v) => onChange('volume', v)} />
+      <TextInput label="Desinfecção(g)" placeholder="Ex: 10" value={res.desinfeccao} onChange={(v) => onChange('desinfeccao', v)} />
+      <SelectInput label="Situação" placeholder="Selecione a situação" value={res.situacao} onChange={(v) => onChange('situacao', v)} options={[{ label: "Externo", value: "externo" }, { label: "Interno", value: "interno" }, { label: "Enterrada", value: "enterrada" }, { label: "Semi-enterrada", value: "semi-enterrada" }]} />
+      <div className="md:col-span-2"><Separator className="my-2" /></div>
+      <TextInput label="Condição da bóia" placeholder="Informe a condição" value={res.condicaoBoia} onChange={(v) => onChange('condicaoBoia', v)} />
+      <TextInput label="Condição das tampas" placeholder="Informe a condição" value={res.condicaoTampas} onChange={(v) => onChange('condicaoTampas', v)} />
+      <TextInput label="Condição da pintura externa" placeholder="Informe a condition" value={res.condicaoPintura} onChange={(v) => onChange('condicaoPintura', v)} />
+      <TextInput label="Revestimento interno" placeholder="Informe o revestimento" value={res.revestimento} onChange={(v) => onChange('revestimento', v)} />
+      <SelectorGroup label="Sistema ladrão" value={res.sistemaLadrao} onChange={(v) => onChange('sistemaLadrao', v)} options={[{ label: "Correto", value: "correto" }, { label: "Incorreto", value: "incorreto" }]} />
+      <div className="md:col-span-2"><FileUpload id={`fotos-reservatorio-${res.id}`} label="Fotos do Reservatório" initialFiles={res.fotos as File[]} onFilesChange={(f) => onChange('fotos', f)} /></div>
+    </div>
   );
 
-  const renderProductForm = (
-    prod: Product,
-    onChange: (field: keyof Product, value: string | string[] | File[]) => void,
-  ) => (
+  const renderProductForm = (prod: Product, onChange: (f: keyof Product, v: any) => void) => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-      <TextInput
-        label="Princípio Ativo"
-        placeholder="Digite o princípio ativo"
-        value={prod.principioAtivo}
-        onChange={(v) => onChange("principioAtivo", v)}
-      />
+      <TextInput label="Princípio Ativo" placeholder="Digite o princípio ativo" value={prod.principioAtivo} onChange={(v) => onChange('principioAtivo', v)} />
       {agendamento?.serviceType !== "Controle de Pragas e Vetores" && (
-        <TextInput
-          label="Produto"
-          placeholder="Digite o nome do produto"
-          value={prod.produto}
-          onChange={(v) => onChange("produto", v)}
-        />
+        <TextInput label="Produto" placeholder="Digite o produto" value={prod.produto} onChange={(v) => onChange('produto', v)} />
       )}
-      <TextInput
-        label="Concentração"
-        placeholder="Digite a concentração"
-        value={prod.concentracao}
-        onChange={(v) => onChange("concentracao", v)}
-      />
-      <TextInput
-        label="Diluente"
-        placeholder="Digite o diluente"
-        value={prod.diluente}
-        onChange={(v) => onChange("diluente", v)}
-      />
-      <TextInput
-        label="Volume"
-        placeholder="Digite o volume"
-        value={prod.volume}
-        onChange={(v) => onChange("volume", v)}
-      />
-      <TextInput
-        label="Setor"
-        placeholder="Digite o setor"
-        value={prod.setor}
-        onChange={(v) => onChange("setor", v)}
-      />
-      <TextInput
-        label={
-          agendamento?.serviceType === "Controle de Pragas e Vetores"
-            ? "Equipamento utilizado"
-            : "Equipamento"
-        }
-        placeholder="Digite o equipamento"
-        value={prod.equipamento}
-        onChange={(v) => onChange("equipamento", v)}
-      />
+      <TextInput label="Concentração" placeholder="Digite a concentração" value={prod.concentracao} onChange={(v) => onChange('concentracao', v)} />
+      <TextInput label="Diluente" placeholder="Digite o diluente" value={prod.diluente} onChange={(v) => onChange('diluente', v)} />
+      <TextInput label="Volume" placeholder="Digite o volume" value={prod.volume} onChange={(v) => onChange('volume', v)} />
+      <TextInput label="Setor" placeholder="Digite o setor" value={prod.setor} onChange={(v) => onChange('setor', v)} />
+      <TextInput label="Equipamento utilizado" placeholder="Digite o equipamento" value={prod.equipamento} onChange={(v) => onChange('equipamento', v)} />
       {agendamento?.serviceType !== "Controle de Pragas e Vetores" && (
-        <TextInput
-          label="Registro MS"
-          placeholder="Informe o registro"
-          className="md:col-span-1"
-          value={prod.registroMs}
-          onChange={(v) => onChange("registroMs", v)}
-        />
+        <TextInput label="Registro MS" placeholder="Informe o registro" value={prod.registroMs} onChange={(v) => onChange('registroMs', v)} />
       )}
     </div>
   );
 
-  const renderDescricaoForm = (
-    desc: DescricaoServico,
-    onChange: (field: keyof DescricaoServico, value: string) => void,
-  ) => (
+  const renderDescricaoForm = (desc: DescricaoServico, onChange: (f: keyof DescricaoServico, v: any) => void) => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-      <TextInput
-        label="Setor"
-        placeholder="Digite o setor"
-        value={desc.setor}
-        onChange={(v) => onChange("setor", v)}
-      />
-      <SelectorGroup
-        label="Higiene do local"
-        value={desc.higieneLocal}
-        onChange={(v) => onChange("higieneLocal", v)}
-        options={[
-          { label: "Boa", value: true },
-          { label: "Ruim", value: false },
-        ]}
-      />
-      <TextInput
-        label="Nível de infestação"
-        placeholder="Informe o nível"
-        value={desc.nivelInfestacao}
-        onChange={(v) => onChange("nivelInfestacao", v)}
-      />
-      <TextInput
-        label="Equipamento utilizado"
-        placeholder="Digite o equipamento"
-        value={desc.equipamento}
-        onChange={(v) => onChange("equipamento", v)}
-      />
+      <TextInput label="Setor" placeholder="Digite o setor" value={desc.setor} onChange={(v) => onChange('setor', v)} />
+      <SelectorGroup label="Higiene do local" value={desc.higieneLocal} onChange={(v) => onChange('higieneLocal', v)} options={[{ label: "Boa", value: true }, { label: "Ruim", value: false }]} />
+      <TextInput label="Nível de infestação" placeholder="Informe o nível" value={desc.nivelInfestacao} onChange={(v) => onChange('nivelInfestacao', v)} />
+      <TextInput label="Equipamento utilizado" placeholder="Digite o equipamento" value={desc.equipamento} onChange={(v) => onChange('equipamento', v)} />
     </div>
   );
 
-  const renderVistoriaForm = (
-    vist: Vistoria,
-    onChange: (field: keyof Vistoria, value: string) => void,
-  ) => (
+  const renderVistoriaForm = (vist: Vistoria, onChange: (f: keyof Vistoria, v: any) => void) => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-      <TextInput
-        label="Setor"
-        placeholder="Digite o setor"
-        value={vist.setor}
-        onChange={(v) => onChange("setor", v)}
-      />
-      <TextInput
-        label="Situação"
-        placeholder="Informe a situação"
-        value={vist.situacao}
-        onChange={(v) => onChange("situacao", v)}
-      />
-      <TextInput
-        label="Medida Corretiva"
-        placeholder="Informe a medida"
-        value={vist.medidaCorretiva}
-        onChange={(v) => onChange("medidaCorretiva", v)}
-      />
-      <SelectInput
-        label="Avaliação"
-        placeholder="Selecione o estado"
-        value={vist.avaliacao}
-        onChange={(v) => onChange("avaliacao", v)}
-        options={[
-          { label: "Aplicado", value: "aplicado" },
-          { label: "Controlado", value: "controlado" },
-          { label: "Não controlado", value: "nao-controlado" },
-        ]}
-      />
+      <TextInput label="Setor" placeholder="Digite o setor" value={vist.setor} onChange={(v) => onChange('setor', v)} />
+      <TextInput label="Situação" placeholder="Informe a situação" value={vist.situacao} onChange={(v) => onChange('situacao', v)} />
+      <TextInput label="Medida corretiva" placeholder="Informe a medida" value={vist.medidaCorretiva} onChange={(v) => onChange('medidaCorretiva', v)} />
+      <TextInput label="Avaliação" placeholder="Informe a avaliação" value={vist.avaliacao} onChange={(v) => onChange('avaliacao', v)} />
     </div>
   );
 
@@ -755,49 +414,9 @@ const DetalhesAgendamento = () => {
           avaliacao: v.avaliacao,
         }));
       } else if (st === "Monitoramento de Insetos") {
-        const convertFoto = async (file: File | string | { url?: string; base64?: string }) => {
-          if (file instanceof File || file instanceof Blob) return await fileToBase64(file as File);
-          if (typeof file === "string") return file;
-          if (file && file.base64) return `data:image/jpeg;base64,${file.base64}`;
-          if (file && file.url) return file.url;
-          return "";
-        };
-        payload.areasMonitoramentoInsetos = await Promise.all(
-          Object.values(monitoringPointsData).map(async (area: Record<string, unknown>) => ({
-            grauInfestacao: area.grauInfestacao,
-            produtoUtilizado: area.produtoUtilizado,
-            adesivaTrocada: area.adesivaTrocada,
-            produto: area.produto,
-            dosagem: area.dosagem,
-            refilLuminosa: area.refilLuminosa,
-            quantidadeRefil: area.quantidadeRefil,
-            observacoes: area.observacoes,
-            fotos: area.fotos ? await Promise.all(area.fotos.map(convertFoto)) : [],
-          })),
-        );
+        payload.areasMonitoramentoInsetos = [];
       } else if (st === "Monitoramento de Roedores") {
-        const convertFoto = async (file: File | string | { url?: string; base64?: string }) => {
-          if (file instanceof File || file instanceof Blob) return await fileToBase64(file as File);
-          if (typeof file === "string") return file;
-          if (file && file.base64) return `data:image/jpeg;base64,${file.base64}`;
-          if (file && file.url) return file.url;
-          return "";
-        };
-        payload.estacoesMonitoramentoRoedores = await Promise.all(
-          Object.values(rodentStationsData).map(async (station: Record<string, unknown>) => ({
-            portaIsca: station.portaIsca,
-            adhesiveTrap: station.adhesiveTrap,
-            controles: station.controles || [],
-            pontos: station.pontos || [],
-            observacoes: station.observacoes,
-            fotosServico: station.fotosServico
-              ? await Promise.all(station.fotosServico.map(convertFoto))
-              : [],
-            fotosPortaIsca: station.fotosPortaIsca
-              ? await Promise.all(station.fotosPortaIsca.map(convertFoto))
-              : [],
-          })),
-        );
+        payload.estacoesMonitoramentoRoedores = [];
       } else {
         // Outros
         payload.diagnosticoLocal = {
@@ -808,25 +427,21 @@ const DetalhesAgendamento = () => {
           piscina: hasPool ?? false,
           pet: hasPet ?? false,
         };
-        payload.produtos = [
-          {
-            principioAtivo,
-            produto,
-            concentracao,
-            diluente,
-            volume: volumeProduto,
-            setor: setorProduto,
-            equipamento: equipamentoProduto,
-          },
-        ];
-        payload.vistoria = [
-          {
-            setor: setorVistoria,
-            situacao: situacaoVistoria,
-            medidaCorretiva,
-            avaliacao: avaliacaoVistoria,
-          },
-        ];
+        payload.produtos = products.map((p) => ({
+          principioAtivo: p.principioAtivo,
+          produto: p.produto,
+          concentracao: p.concentracao,
+          diluente: p.diluente,
+          volume: p.volume,
+          setor: p.setor,
+          equipamento: p.equipamento,
+        }));
+        payload.vistoria = vistorias.map((v) => ({
+          setor: v.setor,
+          situacao: v.situacao,
+          medidaCorretiva: v.medidaCorretiva,
+          avaliacao: v.avaliacao,
+        }));
       }
 
       const response = await serverRequest.put(`/tecnico/agenda/${id}/checklist`, payload);
@@ -866,7 +481,7 @@ const DetalhesAgendamento = () => {
     <MainLayout>
       <div
         className={cn(
-          "flex flex-col gap-md pb-xl",
+          "flex flex-col gap-lg pb-xl",
           isMobile && "bg-grayscale-x-light -mx-lg -mt-xl p-lg pt-xl min-h-screen",
         )}
       >
@@ -1223,12 +838,8 @@ const DetalhesAgendamento = () => {
                   <div className="flex flex-col gap-md w-full">
                     <H3 className="text-grayscale-dark font-bold text-lg">Reservatório</H3>
 
-                    <H3 className="text-grayscale-dark font-bold text-lg">
-                      Condições dos componentes
-                    </H3>
-
                     <div className="flex flex-col gap-md">
-                      {renderReservoirForm(currentReservoir, updateCurrentReservoir)}
+                      {renderReservoirForm(currentReservoir, (field, value) => updateCurrentReservoir(field, value))}
                     </div>
 
                     <Button
@@ -1370,7 +981,7 @@ const DetalhesAgendamento = () => {
                       className="w-fit p-0 h-auto text-brand-cta-dark hover:no-underline gap-xs text-xs font-medium mt-md mb-md"
                     >
                       <Plus size={16} />
-                      Adicionar novo setor à lista
+                      Adicionar setor à lista
                     </Button>
 
                     {descricoes.length > 0 && (
@@ -1378,7 +989,7 @@ const DetalhesAgendamento = () => {
                         {descricoes.map((desc, index) => (
                           <AccordionItem
                             key={desc.id}
-                            value={`descricao-${desc.id}`}
+                            value={`desc-${desc.id}`}
                             className="bg-white rounded-large! border border-muted-foreground/20 px-xl"
                           >
                             <AccordionTrigger className="hover:no-underline py-md">
@@ -1427,34 +1038,8 @@ const DetalhesAgendamento = () => {
                   <div className="flex flex-col gap-md w-full">
                     <H3 className="text-grayscale-dark font-bold text-lg">Vistoria</H3>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-                      <TextInput
-                        label="Setor"
-                        placeholder="Digite o setor"
-                        value={setorVistoria}
-                        onChange={setSetorVistoria}
-                      />
-                      <TextInput
-                        label="Situação"
-                        placeholder="Informe a situação"
-                        value={situacaoVistoria}
-                        onChange={setSituacaoVistoria}
-                      />
-                      <TextInput
-                        label="Medida Corretiva"
-                        placeholder="Informe a medida"
-                        value={medidaCorretiva}
-                        onChange={setMedidaCorretiva}
-                      />
-                      <SelectInput
-                        label="Avaliação"
-                        placeholder="Selecione o estado"
-                        options={[
-                          { label: "Aplicado", value: "aplicado" },
-                          { label: "Controlado", value: "controlado" },
-                          { label: "Não controlado", value: "nao-controlado" },
-                        ]}
-                      />
+                    <div className="flex flex-col gap-md">
+                      {renderVistoriaForm(currentVistoria, (field, value) => updateCurrentVistoria(field, value))}
                     </div>
 
                     <Button
@@ -1463,7 +1048,7 @@ const DetalhesAgendamento = () => {
                       className="w-fit p-0 h-auto text-brand-cta-dark hover:no-underline gap-xs text-xs font-medium mt-md mb-md"
                     >
                       <Plus size={16} />
-                      Adicionar novo setor à lista
+                      Adicionar setor à lista
                     </Button>
 
                     {vistorias.length > 0 && (
@@ -1471,7 +1056,7 @@ const DetalhesAgendamento = () => {
                         {vistorias.map((vist, index) => (
                           <AccordionItem
                             key={vist.id}
-                            value={`vistoria-${vist.id}`}
+                            value={`vist-${vist.id}`}
                             className="bg-white rounded-large! border border-muted-foreground/20 px-xl"
                           >
                             <AccordionTrigger className="hover:no-underline py-md">
@@ -1585,13 +1170,7 @@ const DetalhesAgendamento = () => {
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="flex flex-col gap-md pb-xl">
-                      <MonitoringPointContainer
-                        pointId={point}
-                        externalData={monitoringPointsData[point]}
-                        onExternalSave={(d) =>
-                          setMonitoringPointsData((prev) => ({ ...prev, [point]: d }))
-                        }
-                      />
+                      <MonitoringPointContainer pointId={point} />
                     </AccordionContent>
                   </AccordionItem>
                 ))}
@@ -1650,13 +1229,7 @@ const DetalhesAgendamento = () => {
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="flex flex-col gap-md pb-xl">
-                      <RodentStationContainer
-                        stationId={station}
-                        externalData={rodentStationsData[station]}
-                        onExternalSave={(d) =>
-                          setRodentStationsData((prev) => ({ ...prev, [station]: d }))
-                        }
-                      />
+                      <RodentStationContainer stationId={station} />
                     </AccordionContent>
                   </AccordionItem>
                 ))}
