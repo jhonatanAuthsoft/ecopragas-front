@@ -871,6 +871,7 @@ export interface components {
             /** Format: uuid */
             clienteId?: string;
             clienteNome?: string;
+            clienteCpfCnpj?: string;
             clienteTelefone?: string;
             valor?: number;
             /** @enum {string} */

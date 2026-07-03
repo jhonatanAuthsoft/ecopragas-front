@@ -55,7 +55,7 @@ import { ROUTES } from "@/constants/routes";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { serverRequest } from "@/rest/server-request";
-import { formatPhone, formatTipoServico } from "@/utils/formatters";
+import { formatCPFCNPJ, formatPhone, formatTipoServico } from "@/utils/formatters";
 import { formatOsNumero } from "@/utils/ordem-servico";
 
 const mapStatus = (status: string) => {
@@ -102,8 +102,8 @@ const DetalhesAgendamento = () => {
             osNumber: formatOsNumero(data.osNumero),
             status: mapStatus(data.status || ""),
             clientName: data.clienteNome,
-            cpf: "", // Not provided by the API DTO
-            phone: data.clienteTelefone ? formatPhone(data.clienteTelefone) : "",
+            cpf: data.clienteCpfCnpj ? formatCPFCNPJ(data.clienteCpfCnpj) : "-",
+            phone: data.clienteTelefone ? formatPhone(data.clienteTelefone) : "-",
             address: `${data.rua || ""}, ${data.numero || ""} - ${data.bairro || ""}, ${data.cidade || ""} - ${data.estado || ""}`,
             serviceType: formatTipoServico(data.tipoServico),
             technician:
