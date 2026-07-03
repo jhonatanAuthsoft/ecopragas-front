@@ -25,7 +25,7 @@ export const AgendamentoHeader = ({ agendamento, className, children }: Agendame
         className || ""
       }`}
     >
-      <div className="p-sm flex flex-col gap-md w-full">
+      <div className="p-md flex flex-col gap-md w-full">
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-xs">
             <div className="flex">

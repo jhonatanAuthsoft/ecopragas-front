@@ -697,23 +697,33 @@ const DetalhesAgendamento = () => {
           fecharRegistro: closeRegistry ?? false,
         };
         payload.fotosLocal = await Promise.all(fotosLocal.map(fileToBase64));
-        payload.reservatorios = [
-          {
-            reservatorio: localizacaoReservatorio,
-            material: materialReservatorio,
-            volume: volumeReservatorio,
-            desinfeccao,
-            situacao: situacaoReservatorio,
-            vetores: false, // Default or add state
-            residuos: false, // Default or add state
-            fendas: false, // Default or add state
-            boia: floatCondition || "",
-            cobertura: coverageCondition || "",
-            pintura: paintingCondition || "",
-            revestimentoInterno: internalCoating || "",
-            sistemaLadrao: overflowSystem === "correto",
-          },
-        ];
+        payload.reservatorios = await Promise.all(
+          reservoirs.map(async (res) => {
+            const fotos = await Promise.all((res.fotos || []).map(async (f) => {
+              if (f instanceof File) return await fileToBase64(f);
+              if (typeof f === 'string') return f;
+              if (typeof f === 'object' && (f as any).base64) return `data:image/jpeg;base64,${(f as any).base64}`;
+              if (typeof f === 'object' && (f as any).url) return (f as any).url;
+              return "";
+            }));
+            return {
+              reservatorio: res.localizacao,
+              material: res.material,
+              volume: res.volume,
+              desinfeccao: res.desinfeccao,
+              situacao: res.situacao,
+              vetores: false,
+              residuos: false,
+              fendas: false,
+              boia: res.condicaoBoia || "",
+              cobertura: res.condicaoTampas || "",
+              pintura: res.condicaoPintura || "",
+              revestimentoInterno: res.revestimento || "",
+              sistemaLadrao: res.sistemaLadrao === "correto",
+              fotos
+            };
+          })
+        );
       } else if (st === "Controle de Pragas e Vetores") {
         payload.diagnosticoLocal = {
           pragasAlvo: selectedPests,
@@ -723,23 +733,27 @@ const DetalhesAgendamento = () => {
           piscina: hasPool ?? false,
           pet: hasPet ?? false,
         };
-        payload.dadosProduto = {
-          principioAtivo,
-          produto,
-          concentracao,
-          diluente,
-          volume: volumeProduto,
-          setor: setorProduto,
-          equipamento: equipamentoProduto,
-        };
-        payload.descricaoServico = [
-          {
-            setor: setorDescricao,
-            higieneLocal: localHygiene !== undefined ? (localHygiene ? "boa" : "ruim") : "",
-            nivelInfestacao,
-            equipamento: equipamentoDescricao,
-          },
-        ];
+        payload.dadosProduto = products.map((p) => ({
+          principioAtivo: p.principioAtivo,
+          produto: p.produto,
+          concentracao: p.concentracao,
+          diluente: p.diluente,
+          volume: p.volume,
+          setor: p.setor,
+          equipamento: p.equipamento,
+        }));
+        payload.descricaoServico = descricoes.map((d) => ({
+          setor: d.setor,
+          higieneLocal: d.higieneLocal !== undefined ? (d.higieneLocal ? "boa" : "ruim") : "",
+          nivelInfestacao: d.nivelInfestacao,
+          equipamento: d.equipamento,
+        }));
+        payload.vistorias = vistorias.map((v) => ({
+          setor: v.setor,
+          situacao: v.situacao,
+          medidaCorretiva: v.medidaCorretiva,
+          avaliacao: v.avaliacao,
+        }));
       } else if (st === "Monitoramento de Insetos") {
         const convertFoto = async (file: File | string | { url?: string; base64?: string }) => {
           if (file instanceof File || file instanceof Blob) return await fileToBase64(file as File);
@@ -1209,61 +1223,6 @@ const DetalhesAgendamento = () => {
                   <div className="flex flex-col gap-md w-full">
                     <H3 className="text-grayscale-dark font-bold text-lg">Reservatório</H3>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-                      <div className="md:col-span-2">
-                        <TextInput
-                          label="Localização"
-                          placeholder="Informe a localização"
-                          value={localizacaoReservatorio}
-                          onChange={setLocalizacaoReservatorio}
-                        />
-                      </div>
-                      <SelectInput
-                        label="Material do Reservatório"
-                        placeholder="Selecione o material"
-                        options={[
-                          { label: "Concreto", value: "concreto" },
-                          { label: "Fibra", value: "fibra" },
-                          { label: "Amianto", value: "amianto" },
-                          { label: "PVC", value: "pvc" },
-                          { label: "Fibrocimento", value: "fibrocimento" },
-                        ]}
-                      />
-                      <TextInput
-                        label="Volume do reservatório (em litros)"
-                        placeholder="Ex: 500"
-                        type="number"
-                        value={volumeReservatorio}
-                        onChange={setVolumeReservatorio}
-                      />
-                      <TextInput
-                        label="Desinfecção(g)"
-                        placeholder="Ex: 10"
-                        value={desinfeccao}
-                        onChange={setDesinfeccao}
-                      />
-                      <SelectInput
-                        label="Situação do reservatórios"
-                        placeholder="Selecione a situação"
-                        options={[
-                          { label: "Externo", value: "externo" },
-                          { label: "Interno", value: "interno" },
-                          { label: "Enterrada", value: "enterrada" },
-                          { label: "Semi-enterrada", value: "semi-enterrada" },
-                        ]}
-                      />
-                      <SelectorGroup
-                        label="Instalação do reservatório"
-                        value={reservoirInstallation}
-                        onChange={setReservoirInstallation}
-                        options={[
-                          { label: "Correto", value: true },
-                          { label: "Incorreto", value: false },
-                        ]}
-                      />
-                    </div>
-
-                    <Separator className="bg-muted-foreground/20" />
                     <H3 className="text-grayscale-dark font-bold text-lg">
                       Condições dos componentes
                     </H3>
@@ -1331,93 +1290,8 @@ const DetalhesAgendamento = () => {
                   <div className="flex flex-col gap-md w-full">
                     <H3 className="text-grayscale-dark font-bold text-lg">Dados do Produto</H3>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-                      {agendamento.serviceType === "Controle de Pragas e Vetores" ? (
-                        <>
-                          <TextInput
-                            label="Princípio Ativo"
-                            placeholder="Digite o princípio ativo"
-                            value={principioAtivo}
-                            onChange={setPrincipioAtivo}
-                          />
-                          <TextInput
-                            label="Concentração"
-                            placeholder="Digite a concentração"
-                            value={concentracao}
-                            onChange={setConcentracao}
-                          />
-                          <TextInput
-                            label="Diluente"
-                            placeholder="Digite o diluente"
-                            value={diluente}
-                            onChange={setDiluente}
-                          />
-                          <TextInput
-                            label="Volume"
-                            placeholder="Digite o volume"
-                            value={volumeProduto}
-                            onChange={setVolumeProduto}
-                          />
-                          <TextInput
-                            label="Setor"
-                            placeholder="Digite o setor"
-                            value={setorProduto}
-                            onChange={setSetorProduto}
-                          />
-                          <TextInput
-                            label="Equipamento utilizado"
-                            placeholder="Digite o equipamento"
-                            value={equipamentoProduto}
-                            onChange={setEquipamentoProduto}
-                          />
-                        </>
-                      ) : (
-                        <>
-                          <TextInput
-                            label="Princípio Ativo"
-                            placeholder="Digite o princípio ativo"
-                            value={principioAtivo}
-                            onChange={setPrincipioAtivo}
-                          />
-                          <TextInput
-                            label="Produto"
-                            placeholder="Digite o nome do produto"
-                            value={produto}
-                            onChange={setProduto}
-                          />
-                          <TextInput
-                            label="Diluente"
-                            placeholder="Digite o diluente"
-                            value={diluente}
-                            onChange={setDiluente}
-                          />
-                          <TextInput
-                            label="Volume"
-                            placeholder="Digite o volume"
-                            value={volumeProduto}
-                            onChange={setVolumeProduto}
-                          />
-                          <TextInput
-                            label="Setor"
-                            placeholder="Digite o setor"
-                            value={setorProduto}
-                            onChange={setSetorProduto}
-                          />
-                          <TextInput
-                            label="Equipamento"
-                            placeholder="Digite o equipamento"
-                            value={equipamentoProduto}
-                            onChange={setEquipamentoProduto}
-                          />
-                          <TextInput
-                            label="Registro MS"
-                            placeholder="Informe o registro"
-                            className="md:col-span-1"
-                            value={registroMs}
-                            onChange={setRegistroMs}
-                          />
-                        </>
-                      )}
+                    <div className="flex flex-col gap-md">
+                      {renderProductForm(currentProduct, (field, value) => updateCurrentProduct(field, value))}
                     </div>
 
                     <Button
@@ -1486,34 +1360,8 @@ const DetalhesAgendamento = () => {
                   <div className="flex flex-col gap-md w-full">
                     <H3 className="text-grayscale-dark font-bold text-lg">Descrição do serviço</H3>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-                      <TextInput
-                        label="Setor"
-                        placeholder="Digite o setor"
-                        value={setorDescricao}
-                        onChange={setSetorDescricao}
-                      />
-                      <SelectorGroup
-                        label="Higiene do local"
-                        value={localHygiene}
-                        onChange={setLocalHygiene}
-                        options={[
-                          { label: "Boa", value: true },
-                          { label: "Ruim", value: false },
-                        ]}
-                      />
-                      <TextInput
-                        label="Nível de infestação"
-                        placeholder="Informe o nível"
-                        value={nivelInfestacao}
-                        onChange={setNivelInfestacao}
-                      />
-                      <TextInput
-                        label="Equipamento utilizado"
-                        placeholder="Digite o equipamento"
-                        value={equipamentoDescricao}
-                        onChange={setEquipamentoDescricao}
-                      />
+                    <div className="flex flex-col gap-md">
+                      {renderDescricaoForm(currentDescricao, (field, value) => updateCurrentDescricao(field, value))}
                     </div>
 
                     <Button
