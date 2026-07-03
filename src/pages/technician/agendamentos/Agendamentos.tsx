@@ -95,18 +95,15 @@ const Agendamentos = () => {
         // Assuming response might be paginated or array
         const items = Array.isArray(data) ? data : data.content || data.items || [];
 
-        const formattedData: SchedulingCardProps[] = items.map((item: any) => {
-          const dateStr = item.dataHoraAgendamento || item.dataHoraServico;
-          return {
-            id: item.id,
-            time: dateStr ? format(new Date(dateStr), "HH:mm") : "--:--",
-            title: formatTipoServico(item.tipoServico),
-            status: mapStatus(item.status),
-            clientName: item.clienteNome,
-            phone: item.clienteTelefone ? formatPhone(item.clienteTelefone) : "",
-            address: `${item.rua}, ${item.numero} - ${item.bairro}, ${item.cidade} - ${item.estado}`,
-          };
-        });
+        const formattedData: SchedulingCardProps[] = items.map((item: any) => ({
+          id: item.id,
+          time: format(new Date(item.dataHoraServico), "HH:mm"),
+          title: formatTipoServico(item.tipoServico),
+          status: mapStatus(item.status),
+          clientName: item.clienteNome,
+          phone: item.clienteTelefone ? formatPhone(item.clienteTelefone) : "",
+          address: `${item.rua}, ${item.numero} - ${item.bairro}, ${item.cidade} - ${item.estado}`,
+        }));
 
         setSchedulings(formattedData);
 

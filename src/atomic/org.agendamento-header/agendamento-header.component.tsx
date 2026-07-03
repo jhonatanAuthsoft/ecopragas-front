@@ -25,10 +25,10 @@ export const AgendamentoHeader = ({ agendamento, className, children }: Agendame
         className || ""
       }`}
     >
-      <div className="p-md flex flex-col gap-md w-full">
+      <div className="flex flex-col gap-md w-full p-md md:p-lg">
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-xs">
-            <div className="flex">
+            <div className="flex pt-xs">
               <Badge color="blue">
                 {agendamento.status} - <b className="ml-2xs">{agendamento.osNumber}</b>
               </Badge>
