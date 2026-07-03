@@ -1,9 +1,9 @@
-import { Sidebar } from "@/atomic/obj.sidebar/sidebar.component";
-import { cn } from "@/lib/utils";
-import { useSidebarStore } from "@/store/sidebar";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/atomic/mol.sheet/sheet.component";
+import { Sidebar } from "@/atomic/obj.sidebar/sidebar.component";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
+import { useSidebarStore } from "@/store/sidebar";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -15,12 +15,12 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   const isMinimized = isStoreMinimized;
 
   return (
-        <div className="min-h-screen w-full overflow-x-hidden">
+    <div className="min-h-screen w-full overflow-x-hidden">
       {!isMobile && <Sidebar />}
       <div
         className={cn(
           "flex flex-col min-h-screen transition-[margin-left] duration-300 bg-grayscale-x-light",
-          !isMobile && (isMinimized ? "ml-[100px]" : "ml-[256px]")
+          !isMobile && (isMinimized ? "ml-[100px]" : "ml-[256px]"),
         )}
       >
         {isMobile && (
@@ -39,7 +39,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
             <div className="w-6" /> {/* spacer for center alignment */}
           </header>
         )}
-        <main className="flex-1 px-lg py-xl">{children}</main>
+        <main className="flex-1 px-md md:px-lg py-md md:py-xl">{children}</main>
       </div>
     </div>
   );

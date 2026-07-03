@@ -1,6 +1,8 @@
-import { IdCard, MapPin, Phone } from "lucide-react";
+import { IdentificationIcon } from "@/assets/icons/identification";
+import { MapPinIcon } from "@/assets/icons/map-pin";
+import { PhoneIcon } from "@/assets/icons/phone";
 import { Badge } from "@/atomic/atm.badge/badge.component";
-import { Body2, H3 } from "@/atomic/atm.typography";
+import { Body2, H2 } from "@/atomic/atm.typography";
 import { Card } from "@/atomic/mol.card/card.component";
 
 export interface AgendamentoHeaderProps {
@@ -19,36 +21,33 @@ export interface AgendamentoHeaderProps {
 export const AgendamentoHeader = ({ agendamento, className, children }: AgendamentoHeaderProps) => {
   return (
     <Card
-      className={`rounded-large! border-muted-foreground/20 bg-background overflow-hidden ${
+      className={`rounded-large! border-muted-foreground/20 bg-background overflow-hidden p-0! ${
         className || ""
       }`}
     >
-      <div className="p-xl pt-md flex flex-col gap-md w-full">
+      <div className="flex flex-col gap-md w-full p-md md:p-lg">
         <div className="flex justify-between items-start">
-          <div className="flex flex-col gap-md">
+          <div className="flex flex-col gap-xs">
             <div className="flex pt-xs">
-              <Badge
-                variant="secondary"
-                className="bg-brand-secondary-medium/10 text-brand-secondary-medium border-brand-secondary-medium/20 px-md py-1"
-              >
-                {agendamento.status}
+              <Badge color="blue">
+                {agendamento.status} - <b className="ml-2xs">{agendamento.osNumber}</b>
               </Badge>
             </div>
             <div className="flex flex-col gap-sm">
-              <H3 className="text-grayscale-dark font-bold text-lg">{agendamento.clientName}</H3>
+              <H2 className="font-bold">{agendamento.clientName}</H2>
 
-              <div className="flex flex-wrap gap-x-md gap-y-xs text-grayscale-dark">
-                <div className="flex items-center gap-xs">
-                  <IdCard size={16} />
-                  <Body2>{agendamento.cpf}</Body2>
+              <div className="flex flex-wrap items-center gap-sm text-grayscale-dark">
+                <div className="flex items-center gap-2xs">
+                  <IdentificationIcon className="shrink-0 size-lg" />
+                  <Body2>{agendamento.cpf || "-"}</Body2>
                 </div>
-                <div className="flex items-center gap-xs">
-                  <Phone size={16} />
-                  <Body2>{agendamento.phone}</Body2>
+                <div className="flex items-center gap-2xs">
+                  <PhoneIcon className="shrink-0 size-lg" />
+                  <Body2>{agendamento.phone || "-"}</Body2>
                 </div>
-                <div className="flex items-center gap-xs">
-                  <MapPin size={16} />
-                  <Body2>{agendamento.address}</Body2>
+                <div className="flex items-center gap-2xs">
+                  <MapPinIcon className="shrink-0 size-lg" />
+                  <Body2>{agendamento.address || "-"}</Body2>
                 </div>
               </div>
             </div>
