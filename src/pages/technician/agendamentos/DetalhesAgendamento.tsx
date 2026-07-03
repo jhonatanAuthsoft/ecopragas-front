@@ -495,7 +495,7 @@ const DetalhesAgendamento = () => {
                                     ? toggleEquipment(item)
                                     : togglePest(item)
                                 }
-                                className="flex items-center gap-sm px-sm py-xs hover:bg-grayscale-light/10 rounded-sm transition-colors text-left"
+                                className="flex w-full items-center gap-sm px-sm py-xs hover:bg-grayscale-light/10 rounded-sm transition-colors text-left"
                               >
                                 <Checkbox
                                   checked={
@@ -503,11 +503,7 @@ const DetalhesAgendamento = () => {
                                       ? selectedEquipment.includes(item)
                                       : selectedPests.includes(item)
                                   }
-                                  onCheckedChange={() =>
-                                    agendamento.serviceType === "Higienização"
-                                      ? toggleEquipment(item)
-                                      : togglePest(item)
-                                  }
+                                  className="pointer-events-none"
                                 />
                                 <span className="text-xs text-grayscale-dark">{item}</span>
                               </button>
@@ -691,11 +687,11 @@ const DetalhesAgendamento = () => {
                                   key={option}
                                   type="button"
                                   onClick={() => toggleAreaExterna(option)}
-                                  className="flex items-center gap-sm px-sm py-xs hover:bg-grayscale-light/10 rounded-sm transition-colors text-left"
+                                  className="flex w-full items-center gap-sm px-sm py-xs hover:bg-grayscale-light/10 rounded-sm transition-colors text-left"
                                 >
                                   <Checkbox
                                     checked={areaExterna.includes(option)}
-                                    onCheckedChange={() => toggleAreaExterna(option)}
+                                    className="pointer-events-none"
                                   />
                                   <span className="text-xs text-grayscale-dark">{option}</span>
                                 </button>
@@ -743,11 +739,11 @@ const DetalhesAgendamento = () => {
                                   key={option}
                                   type="button"
                                   onClick={() => toggleAreaVicinal(option)}
-                                  className="flex items-center gap-sm px-sm py-xs hover:bg-grayscale-light/10 rounded-sm transition-colors text-left"
+                                  className="flex w-full items-center gap-sm px-sm py-xs hover:bg-grayscale-light/10 rounded-sm transition-colors text-left"
                                 >
                                   <Checkbox
                                     checked={areaVicinal.includes(option)}
-                                    onCheckedChange={() => toggleAreaVicinal(option)}
+                                    className="pointer-events-none"
                                   />
                                   <span className="text-xs text-grayscale-dark">{option}</span>
                                 </button>
