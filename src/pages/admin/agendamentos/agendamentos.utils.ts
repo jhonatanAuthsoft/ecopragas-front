@@ -59,11 +59,11 @@ export const getTecnicosNomes = (agendamento: Pick<Agendamento, "tecnicos">): st
 export const mapAgendamentoToAgendaWeeklyItem = (
   agendamento: Agendamento,
 ): AdminAgendaWeeklyItem | null => {
-  if (!agendamento.id || !agendamento.dataHoraServico) {
+  if (!agendamento.id || !agendamento.dataHoraAgendamento) {
     return null;
   }
 
-  const dataObj = new Date(agendamento.dataHoraServico);
+  const dataObj = new Date(agendamento.dataHoraAgendamento);
 
   if (Number.isNaN(dataObj.getTime())) {
     return null;

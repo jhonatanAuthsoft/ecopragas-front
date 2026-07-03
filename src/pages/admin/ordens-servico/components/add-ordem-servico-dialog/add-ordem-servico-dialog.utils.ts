@@ -140,8 +140,8 @@ export const mapOrdemServicoToFormValues = (ordem: OrdemServico): OrdemServicoFo
   let data: Date | undefined;
   let horario = "";
 
-  if (ordem.dataHoraServico) {
-    const parsedDate = new Date(ordem.dataHoraServico);
+  if (ordem.dataHoraAgendamento) {
+    const parsedDate = new Date(ordem.dataHoraAgendamento);
     data = parsedDate;
     horario = format(parsedDate, "HH:mm");
   }

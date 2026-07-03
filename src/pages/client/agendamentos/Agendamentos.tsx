@@ -119,7 +119,7 @@ const Agendamentos = () => {
     if (!agendamentosData?.data) return [];
 
     return agendamentosData.data.map((item) => {
-      const dataObj = item.dataHoraServico ? new Date(item.dataHoraServico) : null;
+      const dataObj = item.dataHoraAgendamento ? new Date(item.dataHoraAgendamento) : null;
       return {
         id: item.id,
         servico: formatTipoServico(item.tipoServico),

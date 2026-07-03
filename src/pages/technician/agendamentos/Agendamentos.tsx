@@ -97,7 +97,7 @@ const Agendamentos = () => {
 
         const formattedData: SchedulingCardProps[] = items.map((item: any) => ({
           id: item.id,
-          time: format(new Date(item.dataHoraServico), "HH:mm"),
+          time: format(new Date(item.dataHoraAgendamento), "HH:mm"),
           title: formatTipoServico(item.tipoServico),
           status: mapStatus(item.status),
           clientName: item.clienteNome,

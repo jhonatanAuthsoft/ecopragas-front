@@ -22,12 +22,12 @@ export const formatEndereco = (
   return partes.length > 0 ? partes.join(", ") : "-";
 };
 
-export const formatDataHorario = (dataHoraServico?: string): string => {
-  if (!dataHoraServico) {
+export const formatDataHorario = (dataHoraAgendamento?: string): string => {
+  if (!dataHoraAgendamento) {
     return "-";
   }
 
-  const data = new Date(dataHoraServico);
+  const data = new Date(dataHoraAgendamento);
 
   if (Number.isNaN(data.getTime())) {
     return "-";

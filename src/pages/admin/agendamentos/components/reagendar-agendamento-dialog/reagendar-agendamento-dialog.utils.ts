@@ -17,7 +17,7 @@ interface ReagendarAgendamentoDisplayLabels {
 export const buildReagendarFormValues = (
   agendamento: Agendamento,
 ): CadastrarAgendamentoFormValues => {
-  const { date, time } = parseDateTime(agendamento.dataHoraServico);
+  const { date, time } = parseDateTime(agendamento.dataHoraAgendamento);
   const tecnicosIds =
     agendamento.tecnicos?.map((tecnico) => tecnico.id ?? "").filter(Boolean) ?? [];
 

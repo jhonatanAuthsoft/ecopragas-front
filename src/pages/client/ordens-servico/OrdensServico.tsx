@@ -1,8 +1,7 @@
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { ArrowUpRightFromSquare } from "lucide-react";
-import { useEffect, useState, useMemo } from "react";
-import { useDebounce } from "@/hooks/use-debounce";
+import { useEffect, useMemo, useState } from "react";
 import { Body1, H1 } from "@/atomic/atm.typography";
 import { CalendarDropdown } from "@/atomic/mol.calendar-dropdown";
 import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
@@ -17,6 +16,8 @@ import {
 } from "@/atomic/mol.table/table.component";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { useGetHistoricoOsPortal, useVisualizarPdfOsPortal } from "@/domain/cliente";
+import { useDebounce } from "@/hooks/use-debounce";
+import { formatTecnicosLabel } from "@/pages/admin/ordens-servico/components/ordem-servico-detalhes/ordem-servico-detalhes.utils";
 import { formatTipoServico } from "@/utils/formatters";
 
 const OrdensServico = () => {
@@ -35,7 +36,7 @@ const OrdensServico = () => {
 
   const searchFilters = useMemo(() => {
     if (!debouncedSearchTerm) return {};
-    
+
     const trimmed = debouncedSearchTerm.trim();
     if (/^\d+$/.test(trimmed)) {
       return { numero: Number(trimmed) };
@@ -44,13 +45,13 @@ const OrdensServico = () => {
     const normalized = trimmed.toLowerCase();
     const serviceMap: Record<string, string> = {
       dedetizacao: "DEDETIZACAO",
-      "dedetização": "DEDETIZACAO",
-      "limpeza": "LIMPEZA_CAIXA_AGUA",
-      "caixa": "LIMPEZA_CAIXA_AGUA",
+      dedetização: "DEDETIZACAO",
+      limpeza: "LIMPEZA_CAIXA_AGUA",
+      caixa: "LIMPEZA_CAIXA_AGUA",
       sanitizacao: "SANITIZACAO",
-      "sanitização": "SANITIZACAO",
+      sanitização: "SANITIZACAO",
       desratizacao: "DESRATIZACAO",
-      "desratização": "DESRATIZACAO",
+      desratização: "DESRATIZACAO",
       outros: "OUTROS",
     };
 
@@ -177,15 +178,15 @@ const OrdensServico = () => {
                         {formatTipoServico(os.tipoServico)}
                       </TableCell>
                       <TableCell className="text-muted-foreground">
-                        {os.tecnicoResponsavel}
+                        {formatTecnicosLabel(os.tecnicos)}
                       </TableCell>
                       <TableCell>
-                        {os.dataHoraServico
-                          ? format(new Date(os.dataHoraServico), "dd/MM/yyyy", { locale: ptBR })
+                        {os.dataHoraAgendamento
+                          ? format(new Date(os.dataHoraAgendamento), "dd/MM/yyyy", { locale: ptBR })
                           : "--/--/----"}{" "}
                         às{" "}
-                        {os.dataHoraServico
-                          ? format(new Date(os.dataHoraServico), "HH:mm")
+                        {os.dataHoraAgendamento
+                          ? format(new Date(os.dataHoraAgendamento), "HH:mm")
                           : "--:--"}
                       </TableCell>
                       <TableCell
