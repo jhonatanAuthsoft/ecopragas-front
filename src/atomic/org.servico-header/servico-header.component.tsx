@@ -16,9 +16,8 @@ export interface ServicoHeaderProps {
 
 export const ServicoHeader = ({ agendamento, onStart }: ServicoHeaderProps) => {
   return (
-    <div>
-      <Separator className="bg-muted-foreground/20" />
-      <div className="flex flex-col gap-md">
+    <div className="flex flex-col gap-md">
+      <div className="flex flex-col gap-md pt-md">
         <H4 className="text-grayscale-medium font-medium tracking-wider text-xxs uppercase">
           Dados do Serviço
         </H4>

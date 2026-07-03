@@ -23,10 +23,10 @@ export const AgendamentoHeader = ({ agendamento, className, children }: Agendame
         className || ""
       }`}
     >
-      <div className="p-xl pt-md flex flex-col gap-md w-full">
+      <div className="p-sm flex flex-col gap-md w-full">
         <div className="flex justify-between items-start">
-          <div className="flex flex-col gap-md">
-            <div className="flex pt-xs">
+          <div className="flex flex-col gap-xs">
+            <div className="flex">
               <Badge
                 variant="secondary"
                 className="bg-brand-secondary-medium/10 text-brand-secondary-medium border-brand-secondary-medium/20 px-md py-1"

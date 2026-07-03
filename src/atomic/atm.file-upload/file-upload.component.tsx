@@ -5,10 +5,11 @@ import { cn } from "@/lib/utils";
 export interface FileUploadProps {
   id: string;
   label?: string;
-  onFilesChange?: (files: File[]) => void;
+  onFilesChange?: (files: any[]) => void;
   maxFiles?: number;
   accept?: string;
   className?: string;
+  initialFiles?: any[];
 }
 
 export const FileUpload = ({
@@ -16,8 +17,19 @@ export const FileUpload = ({
   onFilesChange,
   accept = "image/*,application/pdf",
   className,
+  initialFiles = [],
 }: FileUploadProps) => {
-  const [photos, setPhotos] = useState<{ id: string; url: string; file: File }[]>([]);
+  const [photos, setPhotos] = useState<{ id: string; url: string; file: any }[]>(
+    initialFiles.map(file => ({
+      id: Math.random().toString(36).substr(2, 9),
+      url: file instanceof File || file instanceof Blob 
+        ? URL.createObjectURL(file) 
+        : typeof file === "string" 
+          ? file 
+          : file.url || (file.base64 ? `data:image/jpeg;base64,${file.base64}` : ""),
+      file,
+    }))
+  );
 
   const handleFileChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
