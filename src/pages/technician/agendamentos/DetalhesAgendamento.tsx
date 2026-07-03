@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import {
   ArrowLeft,
   ArrowRight,
@@ -14,10 +15,7 @@ import {
   Upload,
   User,
 } from "lucide-react";
-import { useState, useEffect } from "react";
-import { format } from "date-fns";
-import { serverRequest } from "@/rest/server-request";
-import { formatTipoServico, formatPhone } from "@/utils/formatters";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Badge } from "@/atomic/atm.badge/badge.component";
@@ -56,14 +54,22 @@ import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { serverRequest } from "@/rest/server-request";
+import { formatCPFCNPJ, formatPhone, formatTipoServico } from "@/utils/formatters";
+import { formatOsNumero } from "@/utils/ordem-servico";
 
 const mapStatus = (status: string) => {
   switch (status) {
-    case "AGENDADO": return "Agendada";
-    case "EM_ANDAMENTO": return "Em Andamento";
-    case "CONCLUIDO": return "Concluída";
-    case "CANCELADO": return "Cancelada";
-    default: return "Agendada";
+    case "AGENDADO":
+      return "Agendada";
+    case "EM_ANDAMENTO":
+      return "Em Andamento";
+    case "CONCLUIDO":
+      return "Concluída";
+    case "CANCELADO":
+      return "Cancelada";
+    default:
+      return "Agendada";
   }
 };
 
@@ -84,24 +90,27 @@ const DetalhesAgendamento = () => {
         const response = await serverRequest.get(`/tecnico/agenda/${id}`);
         if (response.data.success) {
           const data = response.data.data;
-          
+
           const formatToBRL = (value: number) => {
-             return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+            return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(
+              value,
+            );
           };
 
           const mappedAgendamento = {
-             id: data.id,
-             osNumber: `OS-${(data.osNumero || 0).toString().padStart(6, '0')}`,
-             status: mapStatus(data.status || ""),
-             clientName: data.clienteNome,
-             cpf: "", // Not provided by the API DTO
-             phone: data.clienteTelefone ? formatPhone(data.clienteTelefone) : "",
-             address: `${data.rua || ""}, ${data.numero || ""} - ${data.bairro || ""}, ${data.cidade || ""} - ${data.estado || ""}`,
-             serviceType: formatTipoServico(data.tipoServico),
-             technician: data.tecnicos && data.tecnicos.length > 0 ? data.tecnicos[0].nome : "Não definido",
-             date: data.dataHoraServico ? format(new Date(data.dataHoraServico), "dd/MM/yyyy") : "",
-             time: data.dataHoraServico ? format(new Date(data.dataHoraServico), "HH:mm") : "",
-             value: formatToBRL(data.valor || 0),
+            id: data.id,
+            osNumber: formatOsNumero(data.osNumero),
+            status: mapStatus(data.status || ""),
+            clientName: data.clienteNome,
+            cpf: data.clienteCpfCnpj ? formatCPFCNPJ(data.clienteCpfCnpj) : "-",
+            phone: data.clienteTelefone ? formatPhone(data.clienteTelefone) : "-",
+            address: `${data.rua || ""}, ${data.numero || ""} - ${data.bairro || ""}, ${data.cidade || ""} - ${data.estado || ""}`,
+            serviceType: formatTipoServico(data.tipoServico),
+            technician:
+              data.tecnicos && data.tecnicos.length > 0 ? data.tecnicos[0].nome : "Não definido",
+            date: data.dataHoraServico ? format(new Date(data.dataHoraServico), "dd/MM/yyyy") : "",
+            time: data.dataHoraServico ? format(new Date(data.dataHoraServico), "HH:mm") : "",
+            value: formatToBRL(data.valor || 0),
           };
           setAgendamento(mappedAgendamento);
         }
@@ -113,8 +122,6 @@ const DetalhesAgendamento = () => {
     };
     fetchAgendamento();
   }, [id]);
-
-
 
   const [selectedPests, setSelectedPests] = useState<string[]>(["Aranha"]);
 
@@ -220,7 +227,6 @@ const DetalhesAgendamento = () => {
     setRodentStations((prev) => prev.filter((id) => id !== stationIdToRemove));
   };
 
-
   const [pontoReferencia, setPontoReferencia] = useState("");
   const [tempoDuracaoEstimado, setTempoDuracaoEstimado] = useState("");
   const [numeroTecnicos, setNumeroTecnicos] = useState("");
@@ -259,11 +265,11 @@ const DetalhesAgendamento = () => {
 
   const handleFinalizarServico = async () => {
     if (!id || !agendamento) return;
-    
+
     setIsSubmitting(true);
     try {
       const payload: any = {};
-      
+
       const st = agendamento.serviceType;
 
       // registroServico is common
@@ -300,7 +306,7 @@ const DetalhesAgendamento = () => {
             pintura: paintingCondition || "",
             revestimentoInterno: internalCoating || "",
             sistemaLadrao: overflowSystem === "correto",
-          }
+          },
         ];
       } else if (st === "Controle de Pragas e Vetores") {
         payload.diagnosticoLocal = {
@@ -326,7 +332,7 @@ const DetalhesAgendamento = () => {
             higieneLocal: localHygiene !== undefined ? (localHygiene ? "boa" : "ruim") : "",
             nivelInfestacao,
             equipamento: equipamentoDescricao,
-          }
+          },
         ];
       } else if (st === "Monitoramento de Insetos") {
         payload.areasMonitoramentoInsetos = [];
@@ -351,7 +357,7 @@ const DetalhesAgendamento = () => {
             volume: volumeProduto,
             setor: setorProduto,
             equipamento: equipamentoProduto,
-          }
+          },
         ];
         payload.vistoria = [
           {
@@ -359,7 +365,7 @@ const DetalhesAgendamento = () => {
             situacao: situacaoVistoria,
             medidaCorretiva,
             avaliacao: avaliacaoVistoria,
-          }
+          },
         ];
       }
 
@@ -367,10 +373,13 @@ const DetalhesAgendamento = () => {
       if (response.data.success) {
         // Concluir agendamento
         const concludePayload = {
-          observacoes: observacoesGerais || "Serviço concluído sem observações."
+          observacoes: observacoesGerais || "Serviço concluído sem observações.",
         };
-        const concludeResponse = await serverRequest.put(`/tecnico/agenda/${id}/concluir`, concludePayload);
-        
+        const concludeResponse = await serverRequest.put(
+          `/tecnico/agenda/${id}/concluir`,
+          concludePayload,
+        );
+
         if (concludeResponse.data.success) {
           toast.success("Serviço finalizado com sucesso!");
           navigate(ROUTES.TECHNICIAN_SCHEDULING);
@@ -553,8 +562,19 @@ const DetalhesAgendamento = () => {
                         ]}
                       />
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-                        <TextInput label="Tempo de duração estimado" placeholder="Ex: 2 horas" value={tempoDuracaoEstimado} onChange={setTempoDuracaoEstimado} />
-                        <TextInput label="Número de Técnicos" placeholder="Ex: 2" type="number" value={numeroTecnicos} onChange={setNumeroTecnicos} />
+                        <TextInput
+                          label="Tempo de duração estimado"
+                          placeholder="Ex: 2 horas"
+                          value={tempoDuracaoEstimado}
+                          onChange={setTempoDuracaoEstimado}
+                        />
+                        <TextInput
+                          label="Número de Técnicos"
+                          placeholder="Ex: 2"
+                          type="number"
+                          value={numeroTecnicos}
+                          onChange={setNumeroTecnicos}
+                        />
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
                         <SelectorGroup
@@ -589,10 +609,7 @@ const DetalhesAgendamento = () => {
                         </Body2>
                       </div>
 
-                      <FileUpload
-                        id="fotos-local-servico"
-                        onFilesChange={setFotosLocal}
-                      />
+                      <FileUpload id="fotos-local-servico" onFilesChange={setFotosLocal} />
                     </>
                   )}
 
@@ -604,7 +621,9 @@ const DetalhesAgendamento = () => {
                       </H3>
                       <TextInput
                         label="Ponto de referência"
-                        placeholder="Informe um ponto de referência" value={pontoReferencia} onChange={setPontoReferencia}
+                        placeholder="Informe um ponto de referência"
+                        value={pontoReferencia}
+                        onChange={setPontoReferencia}
                         className="w-full"
                       />
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
@@ -750,7 +769,12 @@ const DetalhesAgendamento = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
                       <div className="md:col-span-2">
-                        <TextInput label="Localização" placeholder="Informe a localização" value={localizacaoReservatorio} onChange={setLocalizacaoReservatorio} />
+                        <TextInput
+                          label="Localização"
+                          placeholder="Informe a localização"
+                          value={localizacaoReservatorio}
+                          onChange={setLocalizacaoReservatorio}
+                        />
                       </div>
                       <SelectInput
                         label="Material do Reservatório"
@@ -770,7 +794,12 @@ const DetalhesAgendamento = () => {
                         value={volumeReservatorio}
                         onChange={setVolumeReservatorio}
                       />
-                      <TextInput label="Desinfecção(g)" placeholder="Ex: 10" value={desinfeccao} onChange={setDesinfeccao} />
+                      <TextInput
+                        label="Desinfecção(g)"
+                        placeholder="Ex: 10"
+                        value={desinfeccao}
+                        onChange={setDesinfeccao}
+                      />
                       <SelectInput
                         label="Situação do reservatórios"
                         placeholder="Selecione a situação"
@@ -875,11 +904,33 @@ const DetalhesAgendamento = () => {
                           <TextInput
                             label="Princípio Ativo"
                             placeholder="Digite o princípio ativo"
-                          value={principioAtivo} onChange={setPrincipioAtivo} />
-                          <TextInput label="Concentração" placeholder="Digite a concentração" value={concentracao} onChange={setConcentracao} />
-                          <TextInput label="Diluente" placeholder="Digite o diluente" value={diluente} onChange={setDiluente} />
-                          <TextInput label="Volume" placeholder="Digite o volume" value={volumeProduto} onChange={setVolumeProduto} />
-                          <TextInput label="Setor" placeholder="Digite o setor" value={setorProduto} onChange={setSetorProduto} />
+                            value={principioAtivo}
+                            onChange={setPrincipioAtivo}
+                          />
+                          <TextInput
+                            label="Concentração"
+                            placeholder="Digite a concentração"
+                            value={concentracao}
+                            onChange={setConcentracao}
+                          />
+                          <TextInput
+                            label="Diluente"
+                            placeholder="Digite o diluente"
+                            value={diluente}
+                            onChange={setDiluente}
+                          />
+                          <TextInput
+                            label="Volume"
+                            placeholder="Digite o volume"
+                            value={volumeProduto}
+                            onChange={setVolumeProduto}
+                          />
+                          <TextInput
+                            label="Setor"
+                            placeholder="Digite o setor"
+                            value={setorProduto}
+                            onChange={setSetorProduto}
+                          />
                           <TextInput
                             label="Equipamento utilizado"
                             placeholder="Digite o equipamento"
@@ -892,12 +943,39 @@ const DetalhesAgendamento = () => {
                           <TextInput
                             label="Princípio Ativo"
                             placeholder="Digite o princípio ativo"
-                          value={principioAtivo} onChange={setPrincipioAtivo} />
-                          <TextInput label="Produto" placeholder="Digite o nome do produto" value={produto} onChange={setProduto} />
-                          <TextInput label="Diluente" placeholder="Digite o diluente" value={diluente} onChange={setDiluente} />
-                          <TextInput label="Volume" placeholder="Digite o volume" value={volumeProduto} onChange={setVolumeProduto} />
-                          <TextInput label="Setor" placeholder="Digite o setor" value={setorProduto} onChange={setSetorProduto} />
-                          <TextInput label="Equipamento" placeholder="Digite o equipamento" value={equipamentoProduto} onChange={setEquipamentoProduto} />
+                            value={principioAtivo}
+                            onChange={setPrincipioAtivo}
+                          />
+                          <TextInput
+                            label="Produto"
+                            placeholder="Digite o nome do produto"
+                            value={produto}
+                            onChange={setProduto}
+                          />
+                          <TextInput
+                            label="Diluente"
+                            placeholder="Digite o diluente"
+                            value={diluente}
+                            onChange={setDiluente}
+                          />
+                          <TextInput
+                            label="Volume"
+                            placeholder="Digite o volume"
+                            value={volumeProduto}
+                            onChange={setVolumeProduto}
+                          />
+                          <TextInput
+                            label="Setor"
+                            placeholder="Digite o setor"
+                            value={setorProduto}
+                            onChange={setSetorProduto}
+                          />
+                          <TextInput
+                            label="Equipamento"
+                            placeholder="Digite o equipamento"
+                            value={equipamentoProduto}
+                            onChange={setEquipamentoProduto}
+                          />
                           <TextInput
                             label="Registro MS"
                             placeholder="Informe o registro"
@@ -927,7 +1005,12 @@ const DetalhesAgendamento = () => {
                     <H3 className="text-grayscale-dark font-bold text-lg">Descrição do serviço</H3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-                      <TextInput label="Setor" placeholder="Digite o setor" value={setorDescricao} onChange={setSetorDescricao} />
+                      <TextInput
+                        label="Setor"
+                        placeholder="Digite o setor"
+                        value={setorDescricao}
+                        onChange={setSetorDescricao}
+                      />
                       <SelectorGroup
                         label="Higiene do local"
                         value={localHygiene}
@@ -937,8 +1020,18 @@ const DetalhesAgendamento = () => {
                           { label: "Ruim", value: false },
                         ]}
                       />
-                      <TextInput label="Nível de infestação" placeholder="Informe o nível" value={nivelInfestacao} onChange={setNivelInfestacao} />
-                      <TextInput label="Equipamento utilizado" placeholder="Digite o equipamento" value={equipamentoDescricao} onChange={setEquipamentoDescricao} />
+                      <TextInput
+                        label="Nível de infestação"
+                        placeholder="Informe o nível"
+                        value={nivelInfestacao}
+                        onChange={setNivelInfestacao}
+                      />
+                      <TextInput
+                        label="Equipamento utilizado"
+                        placeholder="Digite o equipamento"
+                        value={equipamentoDescricao}
+                        onChange={setEquipamentoDescricao}
+                      />
                     </div>
 
                     <Button
@@ -960,9 +1053,24 @@ const DetalhesAgendamento = () => {
                     <H3 className="text-grayscale-dark font-bold text-lg">Vistoria</H3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-                      <TextInput label="Setor" placeholder="Digite o setor" value={setorVistoria} onChange={setSetorVistoria} />
-                      <TextInput label="Situação" placeholder="Informe a situação" value={situacaoVistoria} onChange={setSituacaoVistoria} />
-                      <TextInput label="Medida Corretiva" placeholder="Informe a medida" value={medidaCorretiva} onChange={setMedidaCorretiva} />
+                      <TextInput
+                        label="Setor"
+                        placeholder="Digite o setor"
+                        value={setorVistoria}
+                        onChange={setSetorVistoria}
+                      />
+                      <TextInput
+                        label="Situação"
+                        placeholder="Informe a situação"
+                        value={situacaoVistoria}
+                        onChange={setSituacaoVistoria}
+                      />
+                      <TextInput
+                        label="Medida Corretiva"
+                        placeholder="Informe a medida"
+                        value={medidaCorretiva}
+                        onChange={setMedidaCorretiva}
+                      />
                       <SelectInput
                         label="Avaliação"
                         placeholder="Selecione o estado"
@@ -1002,7 +1110,11 @@ const DetalhesAgendamento = () => {
                 >
                   Cancelar
                 </Button>
-                <Button onClick={handleFinalizarServico} disabled={isSubmitting} className="bg-brand-cta-dark hover:bg-brand-cta-dark/90 text-white w-full md:w-auto md:min-w-[200px] h-[48px] rounded-small px-xl font-bold text-md">
+                <Button
+                  onClick={handleFinalizarServico}
+                  disabled={isSubmitting}
+                  className="bg-brand-cta-dark hover:bg-brand-cta-dark/90 text-white w-full md:w-auto md:min-w-[200px] h-[48px] rounded-small px-xl font-bold text-md"
+                >
                   <Check className="mr-xs" size={20} />
                   Finalizar serviço
                 </Button>
@@ -1069,7 +1181,11 @@ const DetalhesAgendamento = () => {
               >
                 Cancelar
               </Button>
-              <Button onClick={handleFinalizarServico} disabled={isSubmitting} className="bg-brand-cta-dark hover:bg-brand-cta-dark/90 text-white w-full md:w-auto md:min-w-[200px] h-[48px] rounded-small px-xl font-bold text-md">
+              <Button
+                onClick={handleFinalizarServico}
+                disabled={isSubmitting}
+                className="bg-brand-cta-dark hover:bg-brand-cta-dark/90 text-white w-full md:w-auto md:min-w-[200px] h-[48px] rounded-small px-xl font-bold text-md"
+              >
                 <Check className="mr-xs" size={20} />
                 Finalizar serviço
               </Button>
@@ -1124,7 +1240,11 @@ const DetalhesAgendamento = () => {
               >
                 Cancelar
               </Button>
-              <Button onClick={handleFinalizarServico} disabled={isSubmitting} className="bg-brand-cta-dark hover:bg-brand-cta-dark/90 text-white w-full md:w-auto md:min-w-[200px] h-[48px] rounded-small px-xl font-bold text-md">
+              <Button
+                onClick={handleFinalizarServico}
+                disabled={isSubmitting}
+                className="bg-brand-cta-dark hover:bg-brand-cta-dark/90 text-white w-full md:w-auto md:min-w-[200px] h-[48px] rounded-small px-xl font-bold text-md"
+              >
                 <Check className="mr-xs" size={20} />
                 Finalizar serviço
               </Button>

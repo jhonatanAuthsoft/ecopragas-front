@@ -1,27 +1,27 @@
-import { useState, useEffect, useCallback } from "react";
+import { endOfDay, format, startOfDay } from "date-fns";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { format, startOfDay, endOfDay } from "date-fns";
-import { serverRequest } from "@/rest/server-request";
 import { Body2, H1 } from "@/atomic/atm.typography";
 import { CalendarDropdown } from "@/atomic/mol.calendar-dropdown";
+import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
 import { SearchInput } from "@/atomic/mol.search/search.component";
+import type { SchedulingCardProps } from "@/atomic/obj.scheduling-card";
 import { SchedulingList } from "@/atomic/obj.scheduling-list";
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
-import { formatTipoServico, formatPhone } from "@/utils/formatters";
-import type { SchedulingCardProps } from "@/atomic/obj.scheduling-card";
-import { PaginationControl } from "@/atomic/mol.pagination/pagination-control.component";
 import { useDebounce } from "@/hooks/use-debounce";
-
+import { serverRequest } from "@/rest/server-request";
+import { formatPhone, formatTipoServico } from "@/utils/formatters";
 
 const getTipoServicoFromSearch = (search: string) => {
   const normalized = search.toLowerCase().trim();
   if (normalized.includes("sanitiza")) return "SANITIZACAO";
-  if (normalized.includes("praga") || normalized.includes("vetor")) return "CONTROLE_PRAGAS_VETORES";
+  if (normalized.includes("praga") || normalized.includes("vetor"))
+    return "CONTROLE_PRAGAS_VETORES";
   if (normalized.includes("higieniza")) return "HIGIENIZACAO";
   if (normalized.includes("inseto")) return "MONITORAMENTO_INSETOS";
   if (normalized.includes("roedor")) return "MONITORAMENTO_ROEDORES";
-  
+
   // If no known service matches, we don't send it to the API to avoid Enum validation errors
   return "";
 };
@@ -50,16 +50,12 @@ const tipoServicoOptions = [
   { value: "MONITORAMENTO_ROEDORES", label: "Monitoramento de Roedores" },
 ];
 
-
-
 const Agendamentos = () => {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 1000);
-  
-  
-  
+
   const [schedulings, setSchedulings] = useState<SchedulingCardProps[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -72,21 +68,23 @@ const Agendamentos = () => {
     setIsLoading(true);
     try {
       const offset = (currentPage - 1) * limit;
-      
+
       const params = new URLSearchParams();
       params.append("limit", limit.toString());
       params.append("offset", offset.toString());
-      
+
       if (selectedDate) {
         params.append("dataHoraInicio", startOfDay(selectedDate).toISOString());
         params.append("dataHoraFim", endOfDay(selectedDate).toISOString());
       }
-      
-      const mappedTipoServico = debouncedSearchTerm ? getTipoServicoFromSearch(debouncedSearchTerm) : "";
+
+      const mappedTipoServico = debouncedSearchTerm
+        ? getTipoServicoFromSearch(debouncedSearchTerm)
+        : "";
       if (mappedTipoServico) {
         params.append("tipoServico", mappedTipoServico);
       }
-      
+
       params.append("status", "AGENDADO");
       params.append("status", "EM_ANDAMENTO");
 
@@ -95,8 +93,8 @@ const Agendamentos = () => {
       if (response.data.success) {
         const data = response.data.data;
         // Assuming response might be paginated or array
-        const items = Array.isArray(data) ? data : (data.content || data.items || []);
-        
+        const items = Array.isArray(data) ? data : data.content || data.items || [];
+
         const formattedData: SchedulingCardProps[] = items.map((item: any) => ({
           id: item.id,
           time: format(new Date(item.dataHoraServico), "HH:mm"),
@@ -106,12 +104,13 @@ const Agendamentos = () => {
           phone: item.clienteTelefone ? formatPhone(item.clienteTelefone) : "",
           address: `${item.rua}, ${item.numero} - ${item.bairro}, ${item.cidade} - ${item.estado}`,
         }));
-        
+
         setSchedulings(formattedData);
-        
+
         // Setup pagination based on response
         // Default to 1 if the backend doesn't return totalPages
-        const total = data.totalPages || data.totalElements ? Math.ceil(data.totalElements / limit) : 1;
+        const total =
+          data.totalPages || data.totalElements ? Math.ceil(data.totalElements / limit) : 1;
         setTotalPages(total > 0 ? total : 1);
       }
     } catch (error) {
@@ -132,8 +131,9 @@ const Agendamentos = () => {
 
   // API handles the tipoServico filter now, but we can keep local filter for clientName if API doesn't do it.
   const filteredSchedulings = schedulings.filter(
-    (item) => item.clientName.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) || 
-              item.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+    (item) =>
+      item.clientName.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+      item.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase()),
   );
 
   return (
@@ -165,9 +165,7 @@ const Agendamentos = () => {
               />
             </div>
           </div>
-          <div className="flex flex-col md:flex-row items-center gap-md justify-end">
-
-          </div>
+          <div className="flex flex-col md:flex-row items-center gap-md justify-end"></div>
         </div>
 
         {/* List Section */}
@@ -179,9 +177,11 @@ const Agendamentos = () => {
           <div className="flex flex-col gap-md">
             <SchedulingList
               items={filteredSchedulings}
-              onItemClick={(id) => navigate(ROUTES.TECHNICIAN_SCHEDULING_DETAILS.replace(":id", id))}
+              onItemClick={(id) =>
+                navigate(ROUTES.TECHNICIAN_SCHEDULING_DETAILS.replace(":id", id))
+              }
             />
-            
+
             {totalPages > 1 && (
               <PaginationControl
                 currentPage={currentPage}

@@ -2,7 +2,6 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { ChevronRight, ListFilter } from "lucide-react";
 import { useMemo, useState } from "react";
-import { useDebounce } from "@/hooks/use-debounce";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/atomic/atm.badge/badge.component";
 import { Body1, Body2, H1 } from "@/atomic/atm.typography";
@@ -21,6 +20,7 @@ import {
 import { MainLayout } from "@/atomic/tpl.main-layout/main-layout.component";
 import { ROUTES } from "@/constants/routes";
 import { useGetAgendamentosPortal } from "@/domain/cliente";
+import { useDebounce } from "@/hooks/use-debounce";
 import { formatTipoServico, getStatusBadgeClass } from "@/utils/formatters";
 
 type AgendamentoStatus = "todas" | "agendada" | "em_andamento" | "concluida" | "cancelada";
@@ -59,18 +59,18 @@ const Agendamentos = () => {
 
   const searchFilters = useMemo(() => {
     if (!debouncedSearchTerm) return {};
-    
+
     const trimmed = debouncedSearchTerm.trim();
     const normalized = trimmed.toLowerCase();
     const serviceMap: Record<string, string> = {
       dedetizacao: "DEDETIZACAO",
-      "dedetização": "DEDETIZACAO",
-      "limpeza": "LIMPEZA_CAIXA_AGUA",
-      "caixa": "LIMPEZA_CAIXA_AGUA",
+      dedetização: "DEDETIZACAO",
+      limpeza: "LIMPEZA_CAIXA_AGUA",
+      caixa: "LIMPEZA_CAIXA_AGUA",
       sanitizacao: "SANITIZACAO",
-      "sanitização": "SANITIZACAO",
+      sanitização: "SANITIZACAO",
       desratizacao: "DESRATIZACAO",
-      "desratização": "DESRATIZACAO",
+      desratização: "DESRATIZACAO",
       outros: "OUTROS",
     };
 
@@ -85,11 +85,16 @@ const Agendamentos = () => {
 
   const apiStatus = useMemo(() => {
     switch (statusFilter) {
-      case "agendada": return "AGENDADO";
-      case "em_andamento": return "EM_ANDAMENTO";
-      case "concluida": return "CONCLUIDO";
-      case "cancelada": return "CANCELADO";
-      default: return undefined;
+      case "agendada":
+        return "AGENDADO";
+      case "em_andamento":
+        return "EM_ANDAMENTO";
+      case "concluida":
+        return "CONCLUIDO";
+      case "cancelada":
+        return "CANCELADO";
+      default:
+        return undefined;
     }
   }, [statusFilter]);
 
@@ -99,8 +104,12 @@ const Agendamentos = () => {
     servico: searchFilters.servico,
     tecnico: searchFilters.tecnico,
     status: apiStatus,
-    dataHoraInicio: selectedDate ? new Date(selectedDate.setHours(0, 0, 0, 0)).toISOString() : undefined,
-    dataHoraFim: selectedDate ? new Date(selectedDate.setHours(23, 59, 59, 999)).toISOString() : undefined,
+    dataHoraInicio: selectedDate
+      ? new Date(selectedDate.setHours(0, 0, 0, 0)).toISOString()
+      : undefined,
+    dataHoraFim: selectedDate
+      ? new Date(selectedDate.setHours(23, 59, 59, 999)).toISOString()
+      : undefined,
   });
 
   const pagination = agendamentosData?.pagination;
@@ -211,7 +220,7 @@ const Agendamentos = () => {
                 </TableBody>
               </Table>
             </div>
-            
+
             {totalPages > 1 && (
               <PaginationControl
                 currentPage={currentPage}

@@ -56,7 +56,7 @@ export interface paths {
         get?: never;
         /**
          * Finaliza o agendamento
-         * @description Conclui o serviço enviando fotos do antes/depois, observações, atualizando a OS e a data de último serviço do cliente.
+         * @description Conclui o serviço enviando observações opcionais, atualizando o status do agendamento para concluído e a data de último serviço do cliente.
          */
         put: operations["tecnico_agenda_concluir_servico"];
         post?: never;
@@ -76,7 +76,7 @@ export interface paths {
         get?: never;
         /**
          * Atualiza os itens do checklist do serviço
-         * @description Marca tarefas como concluídas ou pendentes no dia da execução.
+         * @description Atualiza as informações e dados específicos do checklist do serviço no dia da execução.
          */
         put: operations["tecnico_agenda_atualizar_checklist"];
         post?: never;
@@ -179,7 +179,7 @@ export interface paths {
         };
         /**
          * Obtém detalhes de um agendamento pelo ID
-         * @description Retorna todos os dados do agendamento, checklist e progresso
+         * @description Retorna todos os dados do agendamento e o checklist
          */
         get: operations["agendamento_obter_por_id"];
         /**
@@ -208,7 +208,7 @@ export interface paths {
         get?: never;
         /**
          * Atualiza os itens do checklist do agendamento
-         * @description Marca as atividades como concluídas ou pendentes, recalculando o progresso do serviço
+         * @description Atualiza as informações e dados específicos do checklist do serviço
          */
         put: operations["agendamento_atualizar_checklist"];
         post?: never;
@@ -858,12 +858,8 @@ export interface components {
             /** Format: date-time */
             updatedAt?: string;
         };
-        ConcluirServicoInputDTO: Record<string, never>;
-        AgendamentoAtividadeResponseDTO: {
-            /** Format: uuid */
-            id?: string;
-            descricao?: string;
-            concluido?: boolean;
+        ConcluirServicoInputDTO: {
+            observacoes?: string;
         };
         AgendamentoResponseDTO: {
             /** Format: uuid */
@@ -875,6 +871,7 @@ export interface components {
             /** Format: uuid */
             clienteId?: string;
             clienteNome?: string;
+            clienteCpfCnpj?: string;
             clienteTelefone?: string;
             valor?: number;
             /** @enum {string} */
@@ -886,6 +883,7 @@ export interface components {
             cidade?: string;
             estado?: string;
             cep?: string;
+            dadosEspecificos?: components["schemas"]["OrdemServicoDetalhesDTO"];
             tecnicos?: components["schemas"]["TecnicoResumoDTO"][];
             /** Format: date-time */
             dataHoraServico?: string;
@@ -893,46 +891,12 @@ export interface components {
             recorrencia?: "NENHUMA" | "SEMANAL" | "MENSAL" | "TRIMESTRAL" | "SEMESTRAL" | "ANUAL";
             /** @enum {string} */
             status?: "AGENDADO" | "EM_ANDAMENTO" | "CONCLUIDO" | "CANCELADO";
-            atividades?: components["schemas"]["AgendamentoAtividadeResponseDTO"][];
             portaIscas?: components["schemas"]["PortaIscaResponseDTO"][];
-            /** Format: double */
-            progresso?: number;
             conflitoHorario?: boolean;
             /** Format: date-time */
             createdAt?: string;
             /** Format: date-time */
             updatedAt?: string;
-        };
-        PortaIscaResponseDTO: {
-            /** Format: uuid */
-            id?: string;
-            qrCode?: string;
-            /** Format: double */
-            latitude?: number;
-            /** Format: double */
-            longitude?: number;
-            status?: string;
-            consumo?: string;
-            observacoes?: string;
-        };
-        StandardResponseAgendamentoResponseDTO: {
-            success?: boolean;
-            timestamp?: string;
-            message?: string;
-            data?: components["schemas"]["AgendamentoResponseDTO"];
-            errors?: components["schemas"]["ErrorDetail"][];
-            pagination?: components["schemas"]["PaginationInfo"];
-        };
-        TecnicoResumoDTO: {
-            /** Format: uuid */
-            id?: string;
-            nome?: string;
-            fotoUrl?: string;
-        };
-        AtualizarAtividadeInputDTO: {
-            /** Format: uuid */
-            id: string;
-            concluido: boolean;
         };
         AreaMonitoramentoInsetosDTO: {
             areaMonitorada?: string;
@@ -971,24 +935,6 @@ export interface components {
             pontoReferencia?: string;
             piscina?: boolean;
             pet?: boolean;
-        };
-        EditarOrdemServicoInputDTO: {
-            /** Format: uuid */
-            clienteId: string;
-            /** @enum {string} */
-            tipoServico: "SANITIZACAO" | "CONTROLE_PRAGAS_VETORES" | "HIGIENIZACAO" | "MONITORAMENTO_INSETOS" | "MONITORAMENTO_ROEDORES";
-            valor: number;
-            /** Format: date-time */
-            dataHoraServico: string;
-            rua?: string;
-            numero?: string;
-            complemento?: string;
-            bairro?: string;
-            cidade?: string;
-            estado?: string;
-            cep?: string;
-            observacoes?: string;
-            dadosEspecificos?: components["schemas"]["OrdemServicoDetalhesDTO"];
         };
         EstacaoControleDTO: {
             produto?: string;
@@ -1031,6 +977,18 @@ export interface components {
             areasMonitoramentoInsetos?: components["schemas"]["AreaMonitoramentoInsetosDTO"][];
             estacoesMonitoramentoRoedores?: components["schemas"]["EstacaoMonitoramentoRoedoresDTO"][];
         };
+        PortaIscaResponseDTO: {
+            /** Format: uuid */
+            id?: string;
+            qrCode?: string;
+            /** Format: double */
+            latitude?: number;
+            /** Format: double */
+            longitude?: number;
+            status?: string;
+            consumo?: string;
+            observacoes?: string;
+        };
         RegistroServicoDTO: {
             imagens?: string[];
             observacoesGerais?: string;
@@ -1052,11 +1010,41 @@ export interface components {
             revestimentoInterno?: string;
             sistemaLadrao?: boolean;
         };
+        StandardResponseAgendamentoResponseDTO: {
+            success?: boolean;
+            timestamp?: string;
+            message?: string;
+            data?: components["schemas"]["AgendamentoResponseDTO"];
+            errors?: components["schemas"]["ErrorDetail"][];
+            pagination?: components["schemas"]["PaginationInfo"];
+        };
+        TecnicoResumoDTO: {
+            /** Format: uuid */
+            id?: string;
+            nome?: string;
+            fotoUrl?: string;
+        };
         VistoriaItemDTO: {
             setor?: string;
             situacao?: string;
             medidaCorretiva?: string;
             avaliacao?: string;
+        };
+        EditarOrdemServicoInputDTO: {
+            /** Format: uuid */
+            clienteId: string;
+            /** @enum {string} */
+            tipoServico: "SANITIZACAO" | "CONTROLE_PRAGAS_VETORES" | "HIGIENIZACAO" | "MONITORAMENTO_INSETOS" | "MONITORAMENTO_ROEDORES";
+            valor: number;
+            rua?: string;
+            numero?: string;
+            complemento?: string;
+            bairro?: string;
+            cidade?: string;
+            estado?: string;
+            cep?: string;
+            observacoes?: string;
+            dadosEspecificos?: components["schemas"]["OrdemServicoDetalhesDTO"];
         };
         OrdemServicoResponseDTO: {
             /** Format: uuid */
@@ -1070,8 +1058,6 @@ export interface components {
             /** @enum {string} */
             tipoServico?: "SANITIZACAO" | "CONTROLE_PRAGAS_VETORES" | "HIGIENIZACAO" | "MONITORAMENTO_INSETOS" | "MONITORAMENTO_ROEDORES";
             valor?: number;
-            /** Format: date-time */
-            dataHoraServico?: string;
             rua?: string;
             numero?: string;
             complemento?: string;
@@ -1292,8 +1278,6 @@ export interface components {
             /** @enum {string} */
             tipoServico: "SANITIZACAO" | "CONTROLE_PRAGAS_VETORES" | "HIGIENIZACAO" | "MONITORAMENTO_INSETOS" | "MONITORAMENTO_ROEDORES";
             valor: number;
-            /** Format: date-time */
-            dataHoraServico: string;
             rua?: string;
             numero?: string;
             complemento?: string;
@@ -1542,18 +1526,6 @@ export interface components {
             laudos?: components["schemas"]["ClienteDocumentoResponseDTO"][];
             certificados?: components["schemas"]["ClienteDocumentoResponseDTO"][];
         };
-        ClienteAgendamentosResponseDTO: {
-            concluidos?: components["schemas"]["AgendamentoResponseDTO"][];
-            emAguardo?: components["schemas"]["AgendamentoResponseDTO"][];
-        };
-        StandardResponseClienteAgendamentosResponseDTO: {
-            success?: boolean;
-            timestamp?: string;
-            message?: string;
-            data?: components["schemas"]["AgendamentoResponseDTO"][];
-            errors?: components["schemas"]["ErrorDetail"][];
-            pagination?: components["schemas"]["PaginationInfo"];
-        };
         ClienteDashboardDTO: {
             /** Format: int64 */
             clientesAtivos?: number;
@@ -1712,7 +1684,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["AtualizarAtividadeInputDTO"][];
+                "application/json": components["schemas"]["OrdemServicoDetalhesDTO"];
             };
         };
         responses: {
@@ -2010,7 +1982,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["AtualizarAtividadeInputDTO"][];
+                "application/json": components["schemas"]["OrdemServicoDetalhesDTO"];
             };
         };
         responses: {
@@ -2495,6 +2467,10 @@ export interface operations {
             query?: {
                 dataHoraInicio?: string;
                 dataHoraFim?: string;
+                tipoServico?: "SANITIZACAO" | "CONTROLE_PRAGAS_VETORES" | "HIGIENIZACAO" | "MONITORAMENTO_INSETOS" | "MONITORAMENTO_ROEDORES";
+                status?: ("AGENDADO" | "EM_ANDAMENTO" | "CONCLUIDO" | "CANCELADO")[];
+                limit?: number;
+                offset?: number;
             };
             header?: never;
             path?: never;
