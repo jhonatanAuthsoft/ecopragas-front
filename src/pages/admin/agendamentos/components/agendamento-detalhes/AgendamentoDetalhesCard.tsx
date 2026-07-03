@@ -7,6 +7,7 @@ import { Badge } from "@/atomic/atm.badge/badge.component";
 import { Button } from "@/atomic/atm.button/button.component";
 import { DetailItem } from "@/atomic/atm.detail-item";
 import { Body2, H2, H3 } from "@/atomic/atm.typography";
+import { cn } from "@/lib/utils";
 import type { Agendamento } from "@/model/rest/agendamento";
 import { formatCurrency, formatPhone } from "@/utils/formatters";
 import { formatTecnicosLabel } from "../../agendamentos.utils";
@@ -62,7 +63,12 @@ export function AgendamentoDetalhesCard({
           </div>
         </div>
 
-        <div className="flex flex-col gap-md pb-sm border-b border-grayscale-light">
+        <div
+          className={cn(
+            "flex flex-col gap-md pb-sm border-grayscale-light",
+            isAgendado && "border-b",
+          )}
+        >
           <H3>Dados do Serviço</H3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
             <DetailItem
