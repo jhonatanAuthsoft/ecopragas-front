@@ -9,25 +9,42 @@ import { Separator } from "@/atomic/atm.separator/separator.component";
 import { TextInput } from "@/atomic/atm.text-input/text-input.component";
 import { TextareaInput } from "@/atomic/atm.textarea-input/textarea-input.component";
 import { H3 } from "@/atomic/atm.typography";
+import { ImageCarousel } from "@/atomic/mol.image-carousel";
 
-const MonitoringPointDetails = ({ onEdit }: { onEdit: () => void }) => {
+export interface MonitoringPointData {
+  grauInfestacao?: string;
+  produtoUtilizado?: string;
+  quantidade?: string;
+  adesivaTrocada?: string;
+  luminosaTrocada?: string;
+  lote?: string;
+  validade?: string;
+  produto?: string;
+  dosagem?: string;
+  refilLuminosa?: boolean | string;
+  quantidadeRefil?: string | number;
+  fotos?: (File | { url?: string; base64?: string } | string)[];
+  observacoes?: string;
+}
+
+const MonitoringPointDetails = ({ data, onEdit }: { data: MonitoringPointData; onEdit: () => void }) => {
   return (
     <div className="flex flex-col gap-md pt-sm text-grayscale-dark">
       <div className="grid grid-cols-2 gap-md">
         <div className="flex flex-col gap-2xs">
           <p className="font-bold text-xs">Grau de Infestação</p>
-          <p className="text-xs">Alto</p>
+          <p className="text-xs capitalize">{data.grauInfestacao || "Não informado"}</p>
         </div>
         <div className="flex flex-col gap-2xs">
           <p className="font-bold text-xs">Produto utilizado</p>
-          <p className="text-xs">J Sanetização</p>
+          <p className="text-xs">{data.produtoUtilizado || "Não informado"}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-md">
         <div className="flex flex-col gap-2xs">
-          <p className="font-bold text-xs">Adesiva</p>
-          <p className="text-xs">NA</p>
+          <p className="font-bold text-xs">Adesiva Trocada</p>
+          <p className="text-xs">{data.adesivaTrocada || "NA"}</p>
         </div>
       </div>
 
@@ -36,80 +53,90 @@ const MonitoringPointDetails = ({ onEdit }: { onEdit: () => void }) => {
       <div className="grid grid-cols-2 gap-md">
         <div className="flex flex-col gap-2xs">
           <p className="font-bold text-xs">Produto</p>
-          <p className="text-xs">Hipoalérgico</p>
+          <p className="text-xs">{data.produto || "Não informado"}</p>
         </div>
         <div className="flex flex-col gap-2xs">
           <p className="font-bold text-xs">ml/L ou g/m³</p>
-          <p className="text-xs">1000</p>
+          <p className="text-xs">{data.dosagem || "Não informado"}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-md">
         <div className="flex flex-col gap-2xs">
           <p className="font-bold text-xs">Refil Luminosa</p>
-          <p className="text-xs">Sim</p>
+          <p className="text-xs">{data.refilLuminosa ? "Sim" : "Não"}</p>
         </div>
-        <div className="flex flex-col gap-2xs">
-          <p className="font-bold text-xs">Quantidade</p>
-          <p className="text-xs">12</p>
-        </div>
+        {data.quantidadeRefil && data.quantidadeRefil !== "0" && data.quantidadeRefil !== 0 && (
+          <div className="flex flex-col gap-2xs">
+            <p className="font-bold text-xs">Quantidade</p>
+            <p className="text-xs">{data.quantidadeRefil}</p>
+          </div>
+        )}
       </div>
 
       <Separator className="bg-muted-foreground/20" />
 
-      <div className="flex flex-col gap-md">
-        <H3 className="text-grayscale-dark font-bold text-lg">Fotos do Serviço</H3>
-        <div className="grid grid-cols-3 gap-xs">
-          {[1, 2, 3].map((img) => (
-            <div
-              key={img}
-              className="aspect-[3/2] bg-grayscale-x-dark rounded-md flex flex-col items-center justify-center text-white p-xs text-center relative overflow-hidden"
-            >
-              <div
-                className="absolute inset-0 border-[0.5px] border-white/20"
-                style={{
-                  background:
-                    "linear-gradient(45deg, transparent 49%, rgba(255,255,255,0.1) 49%, rgba(255,255,255,0.1) 51%, transparent 51%), linear-gradient(-45deg, transparent 49%, rgba(255,255,255,0.1) 49%, rgba(255,255,255,0.1) 51%, transparent 51%), linear-gradient(90deg, transparent 49%, rgba(255,255,255,0.1) 49%, rgba(255,255,255,0.1) 51%, transparent 51%), linear-gradient(0deg, transparent 49%, rgba(255,255,255,0.1) 49%, rgba(255,255,255,0.1) 51%, transparent 51%)",
-                }}
-              ></div>
-              <span className="text-2xl font-bold z-10">3:2</span>
-              <span className="text-[8px] z-10">Replace with Image</span>
-              <span className="text-[6px] z-10">@solo_cube's aspect ratio keeper</span>
-            </div>
-          ))}
+      {data.fotos && data.fotos.length > 0 && (
+        <div className="flex flex-col gap-md pt-md">
+          <H3 className="text-grayscale-dark font-bold text-lg">Fotos do Serviço</H3>
+          <ImageCarousel
+            pageSize={3}
+            images={(data.fotos || []).map((file: File | { url?: string; base64?: string } | string) => {
+              if (typeof file === "string") return file;
+              if (file instanceof File || file instanceof Blob) return URL.createObjectURL(file);
+              if (file && typeof file === "object" && file.url) return file.url;
+              if (file && typeof file === "object" && file.base64)
+                return `data:image/jpeg;base64,${file.base64}`;
+              return "";
+            })}
+          />
         </div>
+      )}
 
+      {data.observacoes && (
+        <div className="flex flex-col gap-xs pt-md">
+          <p className="text-xs text-grayscale-dark">Observações gerais</p>
+          <p className="text-xs text-grayscale-medium leading-relaxed text-justify whitespace-pre-wrap">
+            {data.observacoes}
+          </p>
+        </div>
+      )}
 
-      </div>
-
-      <div className="flex flex-col gap-xs pt-md">
-        <p className="text-xs text-grayscale-dark">Observações gerais</p>
-        <p className="text-xs text-grayscale-medium leading-relaxed text-justify">
-          Sorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum
-          est a, mattis tellus. Sed dignissim, metus nec fringilla accumsan, risus sem sollicitudin
-          lacus, ut interdum tellus elit sed risus. Maecenas eget condimentum velit, sit amet
-          feugiat lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
-          inceptos himenaeos. Praesent auctor purus luctus enim egestas, ac scelerisque ante
-          pulvinar. Donec ut rhoncus ex. Suspendisse ac rhoncus nisl, eu tempor urna. Curabitur vel
-          bibendum lorem. Morbi convallis convallis diam sit amet lacinia. Aliquam in elementum
-          tellus.
-        </p>
-        <p className="text-xs text-grayscale-medium leading-relaxed text-justify mt-sm">
-          Curabitur tempor quis eros tempus lacinia. Nam bibendum pellentesque quam a convallis. Sed
-          ut vulputate nisi. Integer in felis sed leo vestibulum venenatis. Suspendisse quis arcu
-          sem. Aenean feugiat ex eu vestibulum vestibulum. Morbi a eleifend magna. Nam metus lacus,
-          porttitor eu mauris a, blandit ultrices nibh. Mauris sit amet magna non ligula vestibulum
-          eleifend. Nulla varius volutpat turpis sed lacinia. Nam eget mi in purus lobortis
-          eleifend. Sed nec ante dictum sem condimentum ullamcorper quis venenatis nisi. Proin vitae
-          facilisis nisi, ac posuere leo.
-        </p>
+      <div className="flex justify-center pt-md">
+        <Button
+          variant="outline"
+          className="min-w-[200px] h-[48px] rounded-small px-xl font-bold text-md text-brand-cta-dark border-brand-cta-dark hover:bg-brand-cta-dark/10"
+          onClick={onEdit}
+        >
+          Editar informações
+        </Button>
       </div>
     </div>
   );
 };
 
-const MonitoringPointForm = ({ pointId, onSave }: { pointId: number; onSave: () => void }) => {
-  const [refilLuminosa, setRefilLuminosa] = useState<boolean | undefined>(undefined);
+const MonitoringPointForm = ({
+  pointId,
+  onSave,
+  initialData,
+}: {
+  pointId: number;
+  onSave: (data: MonitoringPointData) => void;
+  initialData?: MonitoringPointData;
+}) => {
+  const [grauInfestacao, setGrauInfestacao] = useState<string | undefined>(
+    initialData?.grauInfestacao,
+  );
+  const [produtoUtilizado, setProdutoUtilizado] = useState(initialData?.produtoUtilizado || "");
+  const [adesivaTrocada, setAdesivaTrocada] = useState(initialData?.adesivaTrocada || "");
+  const [produto, setProduto] = useState(initialData?.produto || "");
+  const [dosagem, setDosagem] = useState(initialData?.dosagem || "");
+  const [refilLuminosa, setRefilLuminosa] = useState<string | boolean | undefined>(
+    initialData?.refilLuminosa,
+  );
+  const [quantidadeRefil, setQuantidadeRefil] = useState(initialData?.quantidadeRefil || "");
+  const [observacoes, setObservacoes] = useState(initialData?.observacoes || "");
+  const [fotos, setFotos] = useState<(File | { url?: string; base64?: string } | string)[]>(initialData?.fotos || []);
 
   return (
     <div className="flex flex-col gap-md pt-sm">
@@ -117,23 +144,45 @@ const MonitoringPointForm = ({ pointId, onSave }: { pointId: number; onSave: () 
         <SelectInput
           label="Grau de Infestação"
           placeholder="Selecione o grau"
+          value={grauInfestacao}
+          onChange={setGrauInfestacao}
           options={[
             { label: "Baixo", value: "baixo" },
             { label: "Médio", value: "medio" },
             { label: "Alto", value: "alto" },
           ]}
         />
-        <TextInput label="Produto Utilizado" placeholder="Informe o produto" />
+        <TextInput
+          label="Produto Utilizado"
+          placeholder="Informe o produto"
+          value={produtoUtilizado}
+          onChange={setProdutoUtilizado}
+        />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-        <TextInput label="Adesiva Trocada" placeholder="Informe a quantidade" />
+        <TextInput
+          label="Adesiva Trocada"
+          placeholder="Informe a quantidade"
+          value={adesivaTrocada}
+          onChange={setAdesivaTrocada}
+        />
       </div>
 
       <Separator className="bg-muted-foreground/20" />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-        <TextInput label="Produto" placeholder="Informe o produto" />
-        <TextInput label="ml/L ou g/m³" placeholder="Informe a dosagem" />
+        <TextInput
+          label="Produto"
+          placeholder="Informe o produto"
+          value={produto}
+          onChange={setProduto}
+        />
+        <TextInput
+          label="ml/L ou g/m³"
+          placeholder="Informe a dosagem"
+          value={dosagem}
+          onChange={setDosagem}
+        />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-md items-start">
         <SelectorGroup
@@ -146,26 +195,43 @@ const MonitoringPointForm = ({ pointId, onSave }: { pointId: number; onSave: () 
           ]}
         />
         {refilLuminosa && (
-          <TextInput label="Quantidade(unidades)" placeholder="Ex: 2" type="number" />
+          <TextInput
+            label="Quantidade(unidades)"
+            placeholder="Ex: 2"
+            type="number"
+            value={quantidadeRefil}
+            onChange={setQuantidadeRefil}
+          />
         )}
       </div>
 
       <div className="flex flex-col gap-md pt-md">
         <H3 className="text-grayscale-dark font-bold text-lg">Fotos do Serviço</H3>
-        <FileUpload
-          id={`fotos-ponto-${pointId}`}
-          onFilesChange={(files) => console.log(`Files for point ${pointId}:`, files)}
-        />
+        <FileUpload id={`fotos-ponto-${pointId}`} onFilesChange={setFotos} initialFiles={fotos} />
         <TextareaInput
           label="Observações gerais"
           placeholder="Registre informações importantes sobre a execução do serviço..."
+          value={observacoes}
+          onChange={setObservacoes}
         />
       </div>
 
       <div className="flex justify-center pt-md">
         <Button
           className="bg-brand-cta-dark hover:bg-brand-cta-dark/90 text-white min-w-[200px] h-[48px] rounded-small px-xl font-bold text-md"
-          onClick={onSave}
+          onClick={() =>
+            onSave({
+              grauInfestacao,
+              produtoUtilizado,
+              adesivaTrocada,
+              produto,
+              dosagem,
+              refilLuminosa,
+              quantidadeRefil,
+              observacoes,
+              fotos,
+            })
+          }
         >
           Salvar área
         </Button>
@@ -174,12 +240,29 @@ const MonitoringPointForm = ({ pointId, onSave }: { pointId: number; onSave: () 
   );
 };
 
-export const MonitoringPointContainer = ({ pointId }: { pointId: number }) => {
-  const [isSaved, setIsSaved] = useState(false);
+export const MonitoringPointContainer = ({
+  pointId,
+  externalData,
+  onExternalSave,
+}: {
+  pointId: number;
+  externalData?: MonitoringPointData;
+  onExternalSave?: (d: MonitoringPointData) => void;
+}) => {
+  const [isSaved, setIsSaved] = useState(!!externalData);
+  const [data, setData] = useState<MonitoringPointData | null>(externalData || null);
 
   return isSaved ? (
-    <MonitoringPointDetails onEdit={() => setIsSaved(false)} />
+    <MonitoringPointDetails data={data} onEdit={() => setIsSaved(false)} />
   ) : (
-    <MonitoringPointForm pointId={pointId} onSave={() => setIsSaved(true)} />
+    <MonitoringPointForm
+      pointId={pointId}
+      initialData={data}
+      onSave={(d) => {
+        setData(d);
+        setIsSaved(true);
+        if (onExternalSave) onExternalSave(d);
+      }}
+    />
   );
 };
