@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import { forwardRef, useState } from "react";
+import { forwardRef, type MouseEvent, useState } from "react";
 import { CalendarIcon } from "@/assets/icons/calendar";
 import { Caption } from "@/atomic/atm.caption";
 import { CalendarPicker } from "@/atomic/mol.calendar-picker";
@@ -47,6 +47,12 @@ export const DateInput = forwardRef<HTMLButtonElement, DateInputProps>(
     const [open, setOpen] = useState(false);
     const minDate = minDateProp ?? DATE_INPUT_MIN_DATE;
     const maxDate = maxDateProp ?? DATE_INPUT_MAX_DATE;
+
+    const handlePopoverMouseDown = (event: MouseEvent<HTMLDivElement>) => {
+      const target = event.target as HTMLElement;
+      if (target.closest("input, textarea")) return;
+      event.preventDefault();
+    };
 
     const handleDateChange = (newValue: Date | { start: Date | null; end: Date | null } | null) => {
       if (newValue instanceof Date) {
@@ -106,12 +112,13 @@ export const DateInput = forwardRef<HTMLButtonElement, DateInputProps>(
             align="start"
             onOpenAutoFocus={(event) => event.preventDefault()}
           >
-            <div onMouseDown={(event) => event.preventDefault()}>
+            <div onMouseDown={handlePopoverMouseDown}>
               {open && (
                 <CalendarPicker
                   key={value?.getTime() ?? "empty"}
                   type="single"
                   allowRange={false}
+                  formatInput
                   value={value}
                   maxDate={maxDate}
                   onChange={handleDateChange}
