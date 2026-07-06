@@ -7,6 +7,7 @@ import { Switch } from "@/atomic/atm.switch/switch.component";
 import { TextInput } from "@/atomic/atm.text-input";
 import { Body1, Body2, H2 } from "@/atomic/atm.typography";
 import { cn } from "@/lib/utils";
+import { formatDateDisplay, formatDateInput } from "@/utils/formatters";
 
 interface DateRange {
   start: Date | null;
@@ -20,6 +21,7 @@ interface CalendarPickerProps {
   className?: string;
   maxDate?: Date;
   allowRange?: boolean;
+  formatInput?: boolean;
 }
 
 const WEEK_OPTIONS = { weekStartsOn: 0 as const };
@@ -64,7 +66,11 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
   className,
   maxDate,
   allowRange = true,
+  formatInput = false,
 }) => {
+  const formatSelectedDate = (date: Date) =>
+    formatInput ? formatDateDisplay(date) : date.toLocaleDateString("pt-BR");
+
   const isWeekMode = type === "week";
 
   const [currentDate, setCurrentDate] = useState(() => {
@@ -95,7 +101,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
         return formatWeekRangeLabel(weekValue);
       }
     }
-    return value instanceof Date ? value.toLocaleDateString("pt-BR") : "";
+    return value instanceof Date ? formatSelectedDate(value) : "";
   });
   const [inputRange, setInputRange] = useState(() => {
     if (value && !(value instanceof Date)) {
@@ -156,10 +162,10 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
     if (isWeekMode) return;
 
     if (selectedDate) {
-      setInputDate(selectedDate.toLocaleDateString("pt-BR"));
+      setInputDate(formatSelectedDate(selectedDate));
       setInputError(false);
     }
-  }, [selectedDate, isWeekMode]);
+  }, [selectedDate, isWeekMode, formatInput]);
 
   useEffect(() => {
     setInputRange({
@@ -245,7 +251,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
       }
       return;
     }
-    
+
     if (!range.start || (range.start && range.end)) {
       if (range.start && range.end && isSameDay(date, range.start) && isSameDay(date, range.end)) {
         const newRange = { start: null, end: null };
@@ -262,9 +268,9 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
         setRange(newRange);
         onChange?.(newRange);
       } else {
-        const newRange = { 
-          start: date < range.start ? date : range.start, 
-          end: date < range.start ? range.start : date 
+        const newRange = {
+          start: date < range.start ? date : range.start,
+          end: date < range.start ? range.start : date,
         };
         setRange(newRange);
         onChange?.(newRange);
@@ -339,7 +345,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
         setCurrentDate(newDate);
         setInputError(false);
         onChange?.(newDate);
-        setInputDate(newDate.toLocaleDateString("pt-BR"));
+        setInputDate(formatSelectedDate(newDate));
       } else {
         const newRange = { ...range };
         if (rangePart === "start") {
@@ -405,6 +411,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
             setInputDate(val);
             if (inputError) setInputError(false);
           }}
+          formatter={formatInput ? formatDateInput : undefined}
           onBlur={() => {
             if (!isWeekMode) handleBlur();
           }}
@@ -483,7 +490,10 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
         {calendarDays.map((item, idx) => {
           if (!item.isCurrentMonth) {
             return (
-              <div key={`calendar-day-placeholder-${item.date.toISOString()}-${idx}`} className="h-9" />
+              <div
+                key={`calendar-day-placeholder-${item.date.toISOString()}-${idx}`}
+                className="h-9"
+              />
             );
           }
 
