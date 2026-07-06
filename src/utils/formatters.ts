@@ -101,6 +101,56 @@ export const formatTime = (value: string): string => {
   return `${hours}:${minutes}`;
 };
 
+export const formatDateInput = (value: string): string => {
+  const digits = cleanDigits(value).slice(0, 8);
+
+  if (!digits) {
+    return "";
+  }
+
+  if (digits.length <= 2) {
+    return digits;
+  }
+
+  if (digits.length <= 4) {
+    return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+  }
+
+  return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+};
+
+export const parseDateInput = (value: string): Date | null => {
+  const digits = cleanDigits(value);
+
+  if (digits.length !== 8) {
+    return null;
+  }
+
+  const day = Number(digits.slice(0, 2));
+  const month = Number(digits.slice(2, 4)) - 1;
+  const year = Number(digits.slice(4, 8));
+
+  if (Number.isNaN(day) || Number.isNaN(month) || Number.isNaN(year)) {
+    return null;
+  }
+
+  const date = new Date(year, month, day);
+
+  if (date.getFullYear() === year && date.getMonth() === month && date.getDate() === day) {
+    return date;
+  }
+
+  return null;
+};
+
+export const formatDateDisplay = (date: Date): string => {
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = String(date.getFullYear());
+
+  return `${day}/${month}/${year}`;
+};
+
 export const formatYesNo = (value?: boolean) => {
   if (value === undefined) return "-";
   return value ? "Sim" : "Não";

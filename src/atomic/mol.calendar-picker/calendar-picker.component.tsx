@@ -245,7 +245,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
       }
       return;
     }
-    
+
     if (!range.start || (range.start && range.end)) {
       if (range.start && range.end && isSameDay(date, range.start) && isSameDay(date, range.end)) {
         const newRange = { start: null, end: null };
@@ -262,9 +262,9 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
         setRange(newRange);
         onChange?.(newRange);
       } else {
-        const newRange = { 
-          start: date < range.start ? date : range.start, 
-          end: date < range.start ? range.start : date 
+        const newRange = {
+          start: date < range.start ? date : range.start,
+          end: date < range.start ? range.start : date,
         };
         setRange(newRange);
         onChange?.(newRange);
@@ -483,7 +483,10 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
         {calendarDays.map((item, idx) => {
           if (!item.isCurrentMonth) {
             return (
-              <div key={`calendar-day-placeholder-${item.date.toISOString()}-${idx}`} className="h-9" />
+              <div
+                key={`calendar-day-placeholder-${item.date.toISOString()}-${idx}`}
+                className="h-9"
+              />
             );
           }
 
