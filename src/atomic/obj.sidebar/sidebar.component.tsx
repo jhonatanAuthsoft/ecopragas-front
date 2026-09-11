@@ -15,10 +15,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/atomic/mol.tooltip/to
 import { ROLES } from "@/constants/roles";
 import { ROUTES } from "@/constants/routes";
 import { useLogout } from "@/domain/auth";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth";
 import { useSidebarStore } from "@/store/sidebar";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { accountItemStyle } from "./sidebar.style";
 
 const ADMIN_MENU = [
@@ -74,7 +74,13 @@ const isNavItemActive = (pathname: string, path: string) => {
   return pathname === path || pathname.startsWith(`${path}/`);
 };
 
-export const Sidebar = ({ className, isMobileSheet }: { className?: string; isMobileSheet?: boolean }) => {
+export const Sidebar = ({
+  className,
+  isMobileSheet,
+}: {
+  className?: string;
+  isMobileSheet?: boolean;
+}) => {
   const location = useLocation();
   const isStoreMinimized = useSidebarStore((state) => state.isMinimized);
   const isMobile = useIsMobile();
@@ -94,7 +100,9 @@ export const Sidebar = ({ className, isMobileSheet }: { className?: string; isMo
     <aside
       className={cn(
         "z-10 border-r border-border bg-sidebar transition-all duration-300",
-        isMobileSheet ? "relative w-[256px] h-full" : "fixed inset-y-0 left-0 h-screen hidden md:block",
+        isMobileSheet
+          ? "relative w-[256px] h-full"
+          : "fixed inset-y-0 left-0 h-screen hidden md:block",
         !isMobileSheet && (isMinimized ? "w-[100px]" : "w-[256px]"),
         className,
       )}
@@ -102,7 +110,7 @@ export const Sidebar = ({ className, isMobileSheet }: { className?: string; isMo
       <div className="flex h-full flex-col">
         <div
           className={cn(
-            "flex h-16 items-center border-sidebar-border pt-lg",
+            "flex h-16 shrink-0 items-center border-sidebar-border pt-lg",
             isMinimized ? "justify-center px-2" : "gap-2 px-lg",
           )}
         >
@@ -113,11 +121,17 @@ export const Sidebar = ({ className, isMobileSheet }: { className?: string; isMo
           />
         </div>
 
-        <nav className={cn("flex-1 overflow-hidden py-xl", isMinimized ? "px-2" : "px-md")}>
+        <nav
+          className={cn(
+            "custom-scrollbar min-h-0 flex-1 overflow-y-auto py-xl",
+            isMinimized ? "px-2" : "px-md",
+          )}
+        >
           <ul className="flex flex-col gap-md">
             <li>
-              {(!isMobile && !isMobileSheet) && (
-                isMinimized ? (
+              {!isMobile &&
+                !isMobileSheet &&
+                (isMinimized ? (
                   <Tooltip>
                     <TooltipTrigger className="w-full">
                       <ToggleButton isMinimized={isMinimized} toggleMinimized={toggleMinimized} />
@@ -126,8 +140,7 @@ export const Sidebar = ({ className, isMobileSheet }: { className?: string; isMo
                   </Tooltip>
                 ) : (
                   <ToggleButton isMinimized={isMinimized} toggleMinimized={toggleMinimized} />
-                )
-              )}
+                ))}
             </li>
             {menuItems.map((item) => (
               <li key={item.path}>

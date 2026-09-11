@@ -2,7 +2,7 @@ import { tv, type VariantProps } from "tailwind-variants";
 
 export const accountItemStyle = tv({
   slots: {
-    wrapper: "border-t border-sidebar-border pt-2xs pb-lg",
+    wrapper: "shrink-0 border-t border-sidebar-border pt-2xs pb-lg",
     root: "flex w-full flex-col-reverse gap-xs",
     trigger: [
       "flex w-full cursor-pointer items-center gap-xs rounded-lg py-2xs",
