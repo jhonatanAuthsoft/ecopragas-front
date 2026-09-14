@@ -25,6 +25,7 @@ export type ClienteFormValues = Omit<CadastrarClienteInput, "documentos" | "ende
 export type ListClientesParams = NonNullable<
   operations["cliente_obter_todos"]["parameters"]["query"]
 >;
+export type PeriodoSemServicoRealizado = ListClientesParams["periodoSemServicoRealizado"];
 export type ListClientesResponse = components["schemas"]["StandardResponseListClienteResponseDTO"];
 
 export type ClienteDashboardResponse = components["schemas"]["StandardResponseClienteDashboardDTO"];

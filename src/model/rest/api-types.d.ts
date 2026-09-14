@@ -790,7 +790,7 @@ export interface components {
             cpf?: string;
             senha?: string;
             /** @enum {string} */
-            perfil: "ADMINISTRATIVO" | "TECNICO" | "CLIENTE";
+            perfil: "ADMINISTRATIVO" | "COMERCIAL" | "TECNICO" | "CLIENTE";
             /** @enum {string} */
             status: "ATIVO" | "INATIVO";
         };
@@ -825,7 +825,7 @@ export interface components {
             /** @enum {string} */
             status: "ATIVO" | "INATIVO";
             /** @enum {string} */
-            perfil: "ADMINISTRATIVO" | "TECNICO" | "CLIENTE";
+            perfil: "ADMINISTRATIVO" | "COMERCIAL" | "TECNICO" | "CLIENTE";
             cpf?: string;
         };
         EditarTecnicoInputDTO: {
@@ -1200,6 +1200,7 @@ export interface components {
             valor?: number;
             /** Format: date-time */
             dataHoraAgendamento?: string;
+            tecnicosResponsaveis?: string[];
         };
         StandardResponseClienteResponseDTO: {
             success?: boolean;
@@ -1253,7 +1254,7 @@ export interface components {
             cpf?: string;
             senha?: string;
             /** @enum {string} */
-            perfil: "ADMINISTRATIVO" | "TECNICO" | "CLIENTE";
+            perfil: "ADMINISTRATIVO" | "COMERCIAL" | "TECNICO" | "CLIENTE";
             /** @enum {string} */
             status?: "ATIVO" | "INATIVO";
         };
@@ -2270,6 +2271,7 @@ export interface operations {
                 limit?: number;
                 offset?: number;
                 searchText?: string;
+                periodoSemServicoRealizado?: "HOJE" | "ONTEM" | "UMA_SEMANA" | "QUINZE_DIAS" | "UM_MES" | "TRES_MESES" | "SEIS_MESES" | "ULTIMO_ANO";
             };
             header?: never;
             path?: never;
@@ -2422,7 +2424,7 @@ export interface operations {
                 limit?: number;
                 offset?: number;
                 searchText?: string;
-                perfil?: "ADMINISTRATIVO" | "TECNICO" | "CLIENTE";
+                perfil?: "ADMINISTRATIVO" | "COMERCIAL" | "TECNICO" | "CLIENTE";
                 status?: "ATIVO" | "INATIVO";
             };
             header?: never;
