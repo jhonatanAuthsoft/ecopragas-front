@@ -4,18 +4,19 @@ import { useEffect, useRef, useState } from "react";
 import { Body2 } from "@/atomic/atm.typography";
 import { cn } from "@/lib/utils";
 
-export interface FilterDropdownOption {
-  value: string;
+export interface FilterDropdownOption<T = string> {
+  value: T;
   label: string;
 }
 
-interface FilterDropdownProps {
-  options: FilterDropdownOption[];
-  value?: string;
-  onChange?: (value: string) => void;
+interface FilterDropdownProps<T = string> {
+  options: FilterDropdownOption<T>[];
+  value?: T;
+  onChange?: (value: T) => void;
   placeholder?: string;
   icon?: React.ReactNode;
   className?: string;
+  triggerClassName?: string;
 }
 
 export const FilterDropdown: React.FC<FilterDropdownProps> = ({
@@ -25,6 +26,7 @@ export const FilterDropdown: React.FC<FilterDropdownProps> = ({
   placeholder = "Filtrar",
   icon,
   className,
+  triggerClassName,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -54,7 +56,10 @@ export const FilterDropdown: React.FC<FilterDropdownProps> = ({
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="inline-flex items-center justify-between w-full rounded-small border border-grayscale-light p-md bg-background text-sm font-medium text-grayscale-dark hover:bg-grayscale-x-light focus:outline-none transition-colors shadow-sm"
+        className={cn(
+          "inline-flex items-center justify-between w-full rounded-small border border-grayscale-light p-md bg-background text-sm font-medium text-grayscale-dark hover:bg-grayscale-x-light focus:outline-none transition-colors shadow-sm",
+          triggerClassName,
+        )}
       >
         <div className="flex items-center gap-xs min-w-0">
           {icon && (
@@ -73,7 +78,7 @@ export const FilterDropdown: React.FC<FilterDropdownProps> = ({
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-xs z-50 min-w-max rounded-md border border-grayscale-light bg-popover shadow-md animate-in fade-in-0 zoom-in-95">
+        <div className="absolute left-0 right-0 mt-xs z-50 w-full rounded-md border border-grayscale-light bg-popover shadow-md animate-in fade-in-0 zoom-in-95">
           <div className="p-1">
             {options.map((option) => (
               <button
